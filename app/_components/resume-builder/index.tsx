@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -25,28 +25,34 @@ export default function ResumeBuilder() {
         role: "Senior Software Engineer",
         startDate: "Jan 2020",
         endDate: "Present",
+        enabled: true,
         items: [
           {
             id: "item1",
             description: "Led development of microservices architecture",
+            enabled: true,
             variations: [
               {
                 id: "var1",
                 content: "Led development of microservices architecture, improving system scalability by 200%",
+                enabled: true,
               },
               {
                 id: "var2",
                 content: "Architected and implemented microservices solution that reduced deployment time by 75%",
+                enabled: true,
               },
             ],
           },
           {
             id: "item2",
             description: "Mentored junior developers",
+            enabled: true,
             variations: [
               {
                 id: "var3",
                 content: "Mentored 5 junior developers, improving team productivity by 30%",
+                enabled: true,
               },
             ],
           },
@@ -58,14 +64,17 @@ export default function ResumeBuilder() {
         role: "Software Developer",
         startDate: "Mar 2018",
         endDate: "Dec 2019",
+        enabled: true,
         items: [
           {
             id: "item3",
             description: "Developed e-commerce platform",
+            enabled: true,
             variations: [
               {
                 id: "var4",
                 content: "Developed e-commerce platform that increased sales by 45%",
+                enabled: true,
               },
             ],
           },
@@ -73,11 +82,6 @@ export default function ResumeBuilder() {
       },
     ],
   })
-
-  useEffect(() => {
-    console.log(template);
-    
-  }, [template])
 
   // DnD sensors
   const sensors = useSensors(
@@ -114,10 +118,11 @@ export default function ResumeBuilder() {
     setAddingExperience(true)
   }
 
-  const handleSaveNewExperience = (newExperience: Omit<Experience, "id" | "items">) => {
+  const handleSaveNewExperience = (newExperience: Omit<Experience, "id" | "items" | "enabled">) => {
     const newExp = {
       id: `exp${Date.now()}`,
       ...newExperience,
+      enabled: true,
       items: [],
     }
 
@@ -236,3 +241,4 @@ export default function ResumeBuilder() {
     </div>
   )
 }
+

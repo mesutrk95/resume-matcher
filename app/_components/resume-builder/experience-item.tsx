@@ -5,6 +5,7 @@ import type { Experience, ExperienceItem as ExperienceItemType } from "@/types/r
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Edit, GripVertical, Plus, Save, Trash2, X } from "lucide-react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
@@ -79,6 +80,7 @@ export function ExperienceItem({ experience, onUpdate, onDelete }: ExperienceIte
     const newItem: ExperienceItemType = {
       id: `item${Date.now()}`,
       description,
+      enabled: true,
       variations: [],
     }
 
@@ -122,33 +124,47 @@ export function ExperienceItem({ experience, onUpdate, onDelete }: ExperienceIte
     }
   }
 
+  const handleToggleEnabled = (checked: boolean) => {
+    onUpdate({
+      ...experience,
+      enabled: checked,
+    })
+  }
+
   return (
     <div ref={setNodeRef} style={style} className="mb-4">
-      <div className="flex items-start">
-        <button
-          className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground"
-          {...attributes}
-          {...listeners}
-        >
-          <GripVertical className="h-5 w-5" />
-        </button>
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value={experience.id} className="border rounded-lg overflow-hidden">
+          <div className="flex items-center px-4 py-2">
+            <div
+              className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground"
+              {...attributes}
+              {...listeners}
+            >
+              <GripVertical className="h-5 w-5" />
+            </div>
 
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value={experience.id} className="border rounded-lg overflow-hidden">
-            <AccordionTrigger className="px-4 py-2 hover:no-underline">
+            <Checkbox
+              id={`experience-${experience.id}`}
+              checked={experience.enabled}
+              onCheckedChange={handleToggleEnabled}
+              className="mr-3"
+            />
+
+            <AccordionTrigger className="flex-1 hover:no-underline">
               <div className="flex flex-col items-start text-left">
                 {isEditing ? (
                   <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
                     <Input
                       value={editForm.companyName}
-                      onChange={(e) => setEditForm((prev) => ({ ...prev, company: e.target.value }))}
+                      onChange={(e) => setEditForm((prev) => ({ ...prev, companyName: e.target.value }))}
                       placeholder="Company"
                       className="mb-2"
                     />
                     <Input
                       value={editForm.role}
-                      onChange={(e) => setEditForm((prev) => ({ ...prev, position: e.target.value }))}
-                      placeholder="Position"
+                      onChange={(e) => setEditForm((prev) => ({ ...prev, role: e.target.value }))}
+                      placeholder="Role"
                       className="mb-2"
                     />
                     <Input
@@ -164,7 +180,9 @@ export function ExperienceItem({ experience, onUpdate, onDelete }: ExperienceIte
                   </div>
                 ) : (
                   <>
-                    <div className="font-medium">{experience.role}</div>
+                    <div className={`font-medium ${!experience.enabled ? "text-muted-foreground" : ""}`}>
+                      {experience.role}
+                    </div>
                     <div className="text-sm text-muted-foreground">
                       {experience.companyName} • {experience.startDate} - {experience.endDate}
                     </div>
@@ -173,58 +191,60 @@ export function ExperienceItem({ experience, onUpdate, onDelete }: ExperienceIte
               </div>
             </AccordionTrigger>
 
-            <AccordionContent className="px-4 pb-4">
-              <div className="flex justify-between items-center mb-4">
-                {isEditing ? (
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={handleCancel}>
-                      <X className="h-4 w-4 mr-1" />
-                      Cancel
-                    </Button>
-                    <Button size="sm" onClick={handleSave}>
-                      <Save className="h-4 w-4 mr-1" />
-                      Save
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={handleEdit}>
-                      <Edit className="h-4 w-4 mr-1" />
-                      Edit
-                    </Button>
-                    <Button variant="destructive" size="sm" onClick={() => onDelete(experience.id)}>
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      Delete
-                    </Button>
-                  </div>
-                )}
-
-                {!addingItem && (
-                  <Button size="sm" variant="outline" onClick={handleAddItem}>
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add Item
+            <div className="ml-auto flex items-center">
+              {isEditing ? (
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={handleCancel}>
+                    <X className="h-4 w-4 mr-1" />
+                    Cancel
                   </Button>
-                )}
-              </div>
+                  <Button size="sm" onClick={handleSave}>
+                    <Save className="h-4 w-4 mr-1" />
+                    Save
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={handleEdit}>
+                    <Edit className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
+                  <Button variant="destructive" size="sm" onClick={() => onDelete(experience.id)}>
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Delete
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
 
-              {/* Add Item Form */}
-              {addingItem && <AddItemForm onSave={handleSaveNewItem} onCancel={handleCancelAddItem} />}
+          <AccordionContent className="px-4 pb-4">
+            <div className="flex justify-end mb-4">
+              {!addingItem && (
+                <Button size="sm" variant="outline" onClick={handleAddItem}>
+                  <Plus className="h-4 w-4 mr-1" />
+                  Add Item
+                </Button>
+              )}
+            </div>
 
-              {/* Items List with Drag and Drop */}
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEndItems}>
-                <SortableContext items={experience.items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
-                  <ItemList
-                    experienceId={experience.id}
-                    items={experience.items}
-                    onUpdate={handleUpdateItem}
-                    onDelete={handleDeleteItem}
-                  />
-                </SortableContext>
-              </DndContext>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
+            {/* Add Item Form */}
+            {addingItem && <AddItemForm onSave={handleSaveNewItem} onCancel={handleCancelAddItem} />}
+
+            {/* Items List with Drag and Drop */}
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEndItems}>
+              <SortableContext items={experience.items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
+                <ItemList
+                  experienceId={experience.id}
+                  items={experience.items}
+                  onUpdate={handleUpdateItem}
+                  onDelete={handleDeleteItem}
+                />
+              </SortableContext>
+            </DndContext>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   )
 }

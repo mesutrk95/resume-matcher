@@ -38,11 +38,11 @@ export function AddExperienceForm({ onSave, onCancel }: AddExperienceFormProps) 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label className="text-sm font-medium mb-1 block">Company</label>
-            <Input name="company" value={formData.companyName} onChange={handleChange} placeholder="Company name" />
+            <Input name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Company name" />
           </div>
           <div>
-            <label className="text-sm font-medium mb-1 block">Position</label>
-            <Input name="position" value={formData.role} onChange={handleChange} placeholder="Job title" />
+            <label className="text-sm font-medium mb-1 block">Role</label>
+            <Input name="role" value={formData.role} onChange={handleChange} placeholder="Job title" />
           </div>
           <div>
             <label className="text-sm font-medium mb-1 block">Start Date</label>

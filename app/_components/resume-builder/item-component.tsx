@@ -4,6 +4,7 @@ import { useState } from "react"
 import type { ExperienceItem, Variation } from "@/types/resume"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Edit, GripVertical, Plus, Save, Trash2, X } from "lucide-react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
@@ -70,6 +71,7 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
     const newVariation: Variation = {
       id: `var${Date.now()}`,
       content,
+      enabled: true,
     }
 
     onUpdate({
@@ -114,85 +116,101 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
     }
   }
 
+  const handleToggleEnabled = (checked: boolean) => {
+    onUpdate({
+      ...item,
+      enabled: checked,
+    })
+  }
+
   return (
     <div ref={setNodeRef} style={style} className="mb-3">
-      <div className="flex items-start">
-        <button
-          className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground mt-1"
-          {...attributes}
-          {...listeners}
-        >
-          <GripVertical className="h-4 w-4" />
-        </button>
-
-        <div className="flex-1 border rounded-md p-4">
-          <div className="flex justify-between items-start mb-3">
-            {isEditing ? (
-              <Input
-                value={editForm.description}
-                onChange={(e) => setEditForm((prev) => ({ ...prev, title: e.target.value }))}
-                placeholder="Item title"
-                className="mb-2"
-              />
-            ) : (
-              <h4 className="font-medium">{item.description}</h4>
-            )}
-
-            <div className="flex gap-2">
-              {isEditing ? (
-                <>
-                  <Button variant="outline" size="sm" onClick={handleCancel}>
-                    <X className="h-4 w-4" />
-                  </Button>
-                  <Button size="sm" onClick={handleSave}>
-                    <Save className="h-4 w-4" />
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="outline" size="sm" onClick={handleEdit}>
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button variant="destructive" size="sm" onClick={() => onDelete(item.id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </>
-              )}
-            </div>
+      <div className="flex-1 border rounded-md p-4">
+        <div className="flex items-start">
+          <div
+            className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground mt-1"
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical className="h-4 w-4" />
           </div>
 
-          {/* Variations */}
-          <div className="ml-4 border-l-2 pl-4">
-            <div className="flex justify-between items-center mb-2">
-              <h5 className="text-sm font-medium">Variations</h5>
-              {!addingVariation && (
-                <Button size="sm" variant="ghost" onClick={handleAddVariation}>
-                  <Plus className="h-3 w-3 mr-1" />
-                  Add Variation
-                </Button>
+          <Checkbox
+            id={`item-${item.id}`}
+            checked={item.enabled}
+            onCheckedChange={handleToggleEnabled}
+            className="mr-3 mt-1"
+          />
+
+          <div className="flex-1">
+            <div className="flex justify-between items-start mb-3">
+              {isEditing ? (
+                <Input
+                  value={editForm.description}
+                  onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))}
+                  placeholder="Item description"
+                  className="mb-2"
+                />
+              ) : (
+                <h4 className={`font-medium ${!item.enabled ? "text-muted-foreground" : ""}`}>{item.description}</h4>
               )}
+
+              <div className="flex gap-2 ml-4">
+                {isEditing ? (
+                  <>
+                    <Button variant="outline" size="sm" onClick={handleCancel}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                    <Button size="sm" onClick={handleSave}>
+                      <Save className="h-4 w-4" />
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" size="sm" onClick={handleEdit}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button variant="destructive" size="sm" onClick={() => onDelete(item.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
 
-            {/* Add Variation Form */}
-            {addingVariation && (
-              <AddVariationForm onSave={handleSaveNewVariation} onCancel={handleCancelAddVariation} />
-            )}
+            {/* Variations */}
+            <div className="ml-4 border-l-2 pl-4">
+              <div className="flex justify-between items-center mb-2">
+                <h5 className="text-sm font-medium">Variations</h5>
+                {!addingVariation && (
+                  <Button size="sm" variant="ghost" onClick={handleAddVariation}>
+                    <Plus className="h-3 w-3 mr-1" />
+                    Add Variation
+                  </Button>
+                )}
+              </div>
 
-            {/* Variations List with Drag and Drop */}
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEndVariations}>
-              <SortableContext
-                items={item.variations.map((variation) => variation.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                <VariationList
-                  experienceId={experienceId}
-                  itemId={item.id}
-                  variations={item.variations}
-                  onUpdate={handleUpdateVariation}
-                  onDelete={handleDeleteVariation}
-                />
-              </SortableContext>
-            </DndContext>
+              {/* Add Variation Form */}
+              {addingVariation && (
+                <AddVariationForm onSave={handleSaveNewVariation} onCancel={handleCancelAddVariation} />
+              )}
+
+              {/* Variations List with Drag and Drop */}
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEndVariations}>
+                <SortableContext
+                  items={item.variations.map((variation) => variation.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <VariationList
+                    experienceId={experienceId}
+                    itemId={item.id}
+                    variations={item.variations}
+                    onUpdate={handleUpdateVariation}
+                    onDelete={handleDeleteVariation}
+                  />
+                </SortableContext>
+              </DndContext>
+            </div>
           </div>
         </div>
       </div>

@@ -1,11 +1,13 @@
 export type Variation = {
     id: string
     content: string
+    enabled: boolean
 }
 
 export type ExperienceItem = {
     id: string
     description: string
+    enabled: boolean
     variations: Variation[]
 }
 
@@ -15,6 +17,7 @@ export type Experience = {
     role: string
     startDate: string
     endDate: string
+    enabled: boolean
     items: ExperienceItem[]
 }
 
