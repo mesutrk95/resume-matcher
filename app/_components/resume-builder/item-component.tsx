@@ -1,0 +1,202 @@
+"use client"
+
+import { useState } from "react"
+import type { ExperienceItem, Variation } from "@/types/resume"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Edit, GripVertical, Plus, Save, Trash2, X } from "lucide-react"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
+import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable"
+
+import { VariationList } from "./variation-list"
+import { AddVariationForm } from "./add-variation-form"
+
+type ItemComponentProps = {
+  experienceId: string
+  item: ExperienceItem
+  onUpdate: (item: ExperienceItem) => void
+  onDelete: (itemId: string) => void
+}
+
+export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemComponentProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
+  const [isEditing, setIsEditing] = useState(false)
+  const [editForm, setEditForm] = useState({
+    description: item.description,
+  })
+
+  const [addingVariation, setAddingVariation] = useState(false)
+
+  // DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  )
+
+  const handleEdit = () => {
+    setEditForm({
+      description: item.description,
+    })
+    setIsEditing(true)
+  }
+
+  const handleSave = () => {
+    onUpdate({
+      ...item,
+      description: editForm.description,
+    })
+    setIsEditing(false)
+  }
+
+  const handleCancel = () => {
+    setIsEditing(false)
+  }
+
+  const handleAddVariation = () => {
+    setAddingVariation(true)
+  }
+
+  const handleSaveNewVariation = (content: string) => {
+    const newVariation: Variation = {
+      id: `var${Date.now()}`,
+      content,
+    }
+
+    onUpdate({
+      ...item,
+      variations: [...item.variations, newVariation],
+    })
+
+    setAddingVariation(false)
+  }
+
+  const handleCancelAddVariation = () => {
+    setAddingVariation(false)
+  }
+
+  const handleUpdateVariation = (updatedVariation: Variation) => {
+    onUpdate({
+      ...item,
+      variations: item.variations.map((variation) =>
+        variation.id === updatedVariation.id ? updatedVariation : variation,
+      ),
+    })
+  }
+
+  const handleDeleteVariation = (variationId: string) => {
+    onUpdate({
+      ...item,
+      variations: item.variations.filter((variation) => variation.id !== variationId),
+    })
+  }
+
+  const handleDragEndVariations = (event: any) => {
+    const { active, over } = event
+
+    if (over && active.id !== over.id) {
+      const oldIndex = item.variations.findIndex((variation) => variation.id === active.id)
+      const newIndex = item.variations.findIndex((variation) => variation.id === over.id)
+
+      onUpdate({
+        ...item,
+        variations: arrayMove(item.variations, oldIndex, newIndex),
+      })
+    }
+  }
+
+  return (
+    <div ref={setNodeRef} style={style} className="mb-3">
+      <div className="flex items-start">
+        <button
+          className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground mt-1"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4" />
+        </button>
+
+        <div className="flex-1 border rounded-md p-4">
+          <div className="flex justify-between items-start mb-3">
+            {isEditing ? (
+              <Input
+                value={editForm.description}
+                onChange={(e) => setEditForm((prev) => ({ ...prev, title: e.target.value }))}
+                placeholder="Item title"
+                className="mb-2"
+              />
+            ) : (
+              <h4 className="font-medium">{item.description}</h4>
+            )}
+
+            <div className="flex gap-2">
+              {isEditing ? (
+                <>
+                  <Button variant="outline" size="sm" onClick={handleCancel}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" onClick={handleSave}>
+                    <Save className="h-4 w-4" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" size="sm" onClick={handleEdit}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button variant="destructive" size="sm" onClick={() => onDelete(item.id)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Variations */}
+          <div className="ml-4 border-l-2 pl-4">
+            <div className="flex justify-between items-center mb-2">
+              <h5 className="text-sm font-medium">Variations</h5>
+              {!addingVariation && (
+                <Button size="sm" variant="ghost" onClick={handleAddVariation}>
+                  <Plus className="h-3 w-3 mr-1" />
+                  Add Variation
+                </Button>
+              )}
+            </div>
+
+            {/* Add Variation Form */}
+            {addingVariation && (
+              <AddVariationForm onSave={handleSaveNewVariation} onCancel={handleCancelAddVariation} />
+            )}
+
+            {/* Variations List with Drag and Drop */}
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEndVariations}>
+              <SortableContext
+                items={item.variations.map((variation) => variation.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <VariationList
+                  experienceId={experienceId}
+                  itemId={item.id}
+                  variations={item.variations}
+                  onUpdate={handleUpdateVariation}
+                  onDelete={handleDeleteVariation}
+                />
+              </SortableContext>
+            </DndContext>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+

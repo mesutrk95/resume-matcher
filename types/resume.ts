@@ -1,18 +1,18 @@
 export type Variation = {
     id: string
-    text: string
+    content: string
 }
 
 export type ExperienceItem = {
     id: string
-    title: string
+    description: string
     variations: Variation[]
 }
 
 export type Experience = {
     id: string
-    company: string
-    position: string
+    companyName: string
+    role: string
     startDate: string
     endDate: string
     items: ExperienceItem[]
