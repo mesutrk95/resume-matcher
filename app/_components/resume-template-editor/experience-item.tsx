@@ -238,10 +238,10 @@ export function ExperienceItem({
                         !experience.enabled ? "text-muted-foreground" : ""
                       }`}
                     >
-                      {experience.role}
+                      {experience.companyName}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {experience.companyName} • {experience.startDate} -{" "}
+                      {experience.role} • {experience.startDate} -{" "}
                       {experience.endDate}
                     </div>
                   </>

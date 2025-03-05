@@ -21,7 +21,7 @@ export const POST = withErrorHandling(async (request: Request) => {
 Categorize each keyword as either "hard", "soft", or "none" based on whether it represents a hard skill, soft skill, or neither (e.g., industry terms like "SaaS"). 
 Additionally, assign a level of importance to each keyword on a scale from 0 to 1, where 1 is highly important and 0 is minimally important. 
 Provide the results in a structured JSON format as an array of objects, where each object contains the fields "keyword", "skill", and "level". 
-Ensure the output is pure JSON data as plain text, without any additional formatting or explanations. catch whatever is important for ATSs, Here is the job:`
+Ensure the response is in a valid JSON format with no extra text, without any additional formatting or explanations. catch whatever is important for ATSs, Here is the job:`
     
     const result = await model.generateContent([prompt, {text : description}]);
     // console.log(result.response.text());

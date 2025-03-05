@@ -131,7 +131,7 @@ export const JobMatcher = ({
                 loading={isFetchingKeywords}
                 loadingText="Thinking ..."
               >
-                Get Keywords
+                Analyze Keywords
               </LoadingButton>
               <LoadingButton
                 onClick={() => refetchScores()}
