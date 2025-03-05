@@ -1,193 +1,214 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Edit, Plus, Save, X } from "lucide-react"
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
-import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Edit, Plus, Save, X } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
-import { ExperienceList } from "./experience-list"
-import { AddExperienceForm } from "./add-experience-form"
-import type { Template, Experience } from "@/types/resume"
+import { ExperienceList } from "./experience-list";
+import { AddExperienceForm } from "./add-experience-form";
+import type { Template, Experience } from "@/types/resume";
+import { useRouter } from "next/navigation";
 
-export default function ResumeBuilder() {
+export default function ResumeTemplateBuilder({ data }: { data: Template }) {
   // Sample initial data
-  const [template, setTemplate] = useState<Template>({
-    id: "1",
-    name: "Software Engineer Resume",
-    description: "A template for software engineering positions",
-    experiences: [
-      {
-        id: "exp1",
-        companyName: "Tech Corp",
-        role: "Senior Software Engineer",
-        startDate: "Jan 2020",
-        endDate: "Present",
-        enabled: true,
-        items: [
-          {
-            id: "item1",
-            description: "Led development of microservices architecture",
-            enabled: true,
-            variations: [
-              {
-                id: "var1",
-                content: "Led development of microservices architecture, improving system scalability by 200%",
-                enabled: true,
-              },
-              {
-                id: "var2",
-                content: "Architected and implemented microservices solution that reduced deployment time by 75%",
-                enabled: true,
-              },
-            ],
-          },
-          {
-            id: "item2",
-            description: "Mentored junior developers",
-            enabled: true,
-            variations: [
-              {
-                id: "var3",
-                content: "Mentored 5 junior developers, improving team productivity by 30%",
-                enabled: true,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        id: "exp2",
-        companyName: "Startup Inc",
-        role: "Software Developer",
-        startDate: "Mar 2018",
-        endDate: "Dec 2019",
-        enabled: true,
-        items: [
-          {
-            id: "item3",
-            description: "Developed e-commerce platform",
-            enabled: true,
-            variations: [
-              {
-                id: "var4",
-                content: "Developed e-commerce platform that increased sales by 45%",
-                enabled: true,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  })
+  const [template, setTemplate] = useState<Template>(data);
+  const [editingTemplate, setEditingTemplate] = useState(false);
+  const router = useRouter();
+  const [templateForm, setTemplateForm] = useState({
+    name: template.name,
+    description: template.description,
+  });
+
+  const onUpdated = (t: Template) => {
+    fetch("/api/templates/" + (t.id ? t.id : ""), {
+      method: t.id ? "put" : "post",
+      body: JSON.stringify({
+        id: t.id,
+        name: t.name,
+        description: t.description,
+        content: t.content,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(t.id);
+        if (!t.id) {
+          router.push("/templates/" + data.id);
+        }
+        console.log(data);
+      });
+  };
 
   // DnD sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  )
-
-  // State for editing template
-  const [editingTemplate, setEditingTemplate] = useState(false)
-  const [templateForm, setTemplateForm] = useState({ name: template.name, description: template.description })
+    })
+  );
 
   // State for adding experience
-  const [addingExperience, setAddingExperience] = useState(false)
+  const [addingExperience, setAddingExperience] = useState(false);
 
   // Template handlers
   const handleEditTemplate = () => {
-    setTemplateForm({ name: template.name, description: template.description })
-    setEditingTemplate(true)
-  }
+    setTemplateForm({ name: template.name, description: template.description });
+    setEditingTemplate(true);
+  };
 
   const handleSaveTemplate = () => {
-    setTemplate((prev) => ({
-      ...prev,
-      name: templateForm.name,
-      description: templateForm.description,
-    }))
-    setEditingTemplate(false)
-  }
+    setTemplate((prev) => {
+      const newTemplate = {
+        ...prev,
+        name: templateForm.name,
+        description: templateForm.description,
+      };
+      onUpdated(newTemplate);
+      return newTemplate;
+    });
+    setEditingTemplate(false);
+  };
 
   // Experience handlers
   const handleAddExperience = () => {
-    setAddingExperience(true)
-  }
+    setAddingExperience(true);
+  };
 
-  const handleSaveNewExperience = (newExperience: Omit<Experience, "id" | "items" | "enabled">) => {
+  const handleSaveNewExperience = (
+    newExperience: Omit<Experience, "id" | "items" | "enabled">
+  ) => {
     const newExp = {
       id: `exp${Date.now()}`,
       ...newExperience,
       enabled: true,
       items: [],
-    }
+    };
 
-    setTemplate((prev) => ({
-      ...prev,
-      experiences: [...prev.experiences, newExp],
-    }))
+    setTemplate((prev) => {
+      const newTemplate = {
+        ...prev,
+        content: {
+          ...prev.content,
+          experiences: [...prev.content.experiences, newExp],
+        },
+      };
+      onUpdated(newTemplate);
+      return newTemplate;
+    });
 
-    setAddingExperience(false)
-  }
+    setAddingExperience(false);
+  };
 
   const handleCancelAddExperience = () => {
-    setAddingExperience(false)
-  }
+    setAddingExperience(false);
+  };
 
   const handleDragEndExperiences = (event: any) => {
-    const { active, over } = event
+    const { active, over } = event;
 
     if (over && active.id !== over.id) {
       setTemplate((prev) => {
-        const oldIndex = prev.experiences.findIndex((exp) => exp.id === active.id)
-        const newIndex = prev.experiences.findIndex((exp) => exp.id === over.id)
-
-        return {
+        const oldIndex = prev.content.experiences.findIndex(
+          (exp) => exp.id === active.id
+        );
+        const newIndex = prev.content.experiences.findIndex(
+          (exp) => exp.id === over.id
+        );
+        const newTemplate = {
           ...prev,
-          experiences: arrayMove(prev.experiences, oldIndex, newIndex),
-        }
-      })
+          content: {
+            ...prev.content,
+
+            experiences: arrayMove(
+              prev.content.experiences,
+              oldIndex,
+              newIndex
+            ),
+          },
+        };
+        onUpdated(newTemplate);
+        return newTemplate;
+      });
     }
-  }
+  };
 
   const handleUpdateExperience = (updatedExperience: Experience) => {
-    setTemplate((prev) => ({
-      ...prev,
-      experiences: prev.experiences.map((exp) => (exp.id === updatedExperience.id ? updatedExperience : exp)),
-    }))
-  }
+    setTemplate((prev) => {
+      const newTemplate = {
+        ...prev,
+        content: {
+          ...prev.content,
+          experiences: prev.content.experiences.map((exp) =>
+            exp.id === updatedExperience.id ? updatedExperience : exp
+          ),
+        },
+      };
+      onUpdated(newTemplate);
+      return newTemplate;
+    });
+  };
 
   const handleDeleteExperience = (experienceId: string) => {
-    setTemplate((prev) => ({
-      ...prev,
-      experiences: prev.experiences.filter((exp) => exp.id !== experienceId),
-    }))
-  }
+    setTemplate((prev) => {
+      const newTemplate = {
+        ...prev,
+        content: {
+          ...prev.content,
+          experiences: prev.content.experiences.filter(
+            (exp) => exp.id !== experienceId
+          ),
+        },
+      };
+      onUpdated(newTemplate);
+      return newTemplate;
+    });
+  };
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <>
       <Card className="mb-8">
         <CardHeader className="flex flex-row items-start justify-between">
           {!editingTemplate ? (
             <div>
               <CardTitle className="text-2xl">{template.name}</CardTitle>
-              <p className="text-muted-foreground mt-1">{template.description}</p>
+              <p className="text-muted-foreground mt-1">
+                {template.description}
+              </p>
             </div>
           ) : (
             <div className="w-full space-y-2">
               <Input
                 value={templateForm.name}
-                onChange={(e) => setTemplateForm((prev) => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setTemplateForm((prev) => ({ ...prev, name: e.target.value }))
+                }
                 placeholder="Template name"
                 className="font-semibold text-lg"
               />
               <Input
                 value={templateForm.description}
-                onChange={(e) => setTemplateForm((prev) => ({ ...prev, description: e.target.value }))}
+                onChange={(e) =>
+                  setTemplateForm((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
                 placeholder="Template description"
               />
             </div>
@@ -201,7 +222,11 @@ export default function ResumeBuilder() {
               </Button>
             ) : (
               <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => setEditingTemplate(false)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setEditingTemplate(false)}
+                >
                   <X className="h-4 w-4 mr-1" />
                   Cancel
                 </Button>
@@ -226,19 +251,30 @@ export default function ResumeBuilder() {
       </div>
 
       {/* Add Experience Form */}
-      {addingExperience && <AddExperienceForm onSave={handleSaveNewExperience} onCancel={handleCancelAddExperience} />}
+      {addingExperience && (
+        <AddExperienceForm
+          onSave={handleSaveNewExperience}
+          onCancel={handleCancelAddExperience}
+        />
+      )}
 
       {/* Experiences List with Drag and Drop */}
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEndExperiences}>
-        <SortableContext items={template.experiences.map((exp) => exp.id)} strategy={verticalListSortingStrategy}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEndExperiences}
+      >
+        <SortableContext
+          items={template.content.experiences.map((exp) => exp.id)}
+          strategy={verticalListSortingStrategy}
+        >
           <ExperienceList
-            experiences={template.experiences}
+            experiences={template.content.experiences}
             onUpdate={handleUpdateExperience}
             onDelete={handleDeleteExperience}
           />
         </SortableContext>
       </DndContext>
-    </div>
-  )
+    </>
+  );
 }
-

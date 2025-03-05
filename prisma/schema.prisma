@@ -88,6 +88,7 @@ model ResumeTemplate {
   name           String // Name of the template (e.g., "Software Engineer Resume")
   description    String? // Optional description of the template
   userId         String
+  content        Json?
   experiences    Experience[] // A template can have multiple experiences
   ExperienceItem ExperienceItem[]
   createdAt      DateTime         @default(now())

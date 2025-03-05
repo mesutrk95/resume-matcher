@@ -14,7 +14,7 @@ export const GET = withErrorHandling(async () => {
 // POST /templates
 export const POST = withErrorHandling(async (request: Request) => {
     const body = await request.json();
-    const { name, description } = body;
+    const { name, description, content } = body;
     const user = await currentUser()
 
     // Create a new template in the database
@@ -22,6 +22,7 @@ export const POST = withErrorHandling(async (request: Request) => {
         data: {
             name,
             description,
+            content,
             userId: user?.id!,
         },
     });

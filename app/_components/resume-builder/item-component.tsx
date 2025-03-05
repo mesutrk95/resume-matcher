@@ -128,7 +128,7 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
       <div className="flex-1 border rounded-md p-4">
         <div className="flex items-start">
           <div
-            className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground mt-1"
+            className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground mt-0"
             {...attributes}
             {...listeners}
           >
@@ -179,9 +179,9 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
             </div>
 
             {/* Variations */}
-            <div className="ml-4 border-l-2 pl-4">
+            <div className="ml-0 border-l-2 pl-4">
               <div className="flex justify-between items-center mb-2">
-                <h5 className="text-sm font-medium">Variations</h5>
+                <h5 className="text-sm font-bold">Variations</h5>
                 {!addingVariation && (
                   <Button size="sm" variant="ghost" onClick={handleAddVariation}>
                     <Plus className="h-3 w-3 mr-1" />

@@ -88,9 +88,10 @@ async function AuthNav() {
 export default function Navbar() {
   return (
     <nav className="flex gap-x-4 items-center justify-between bg-gray-50 shadow-sm pl-4">
-      <Link href="/">
+      {/* <Link href="/">
         <h1 className="text-2xl font-semibold">Next Dashboard</h1>
-      </Link>
+      </Link> */}
+      <Link href="/templates" >Templates</Link>
       <AuthNav />
     </nav>
   );

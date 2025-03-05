@@ -21,10 +21,14 @@ export type Experience = {
     items: ExperienceItem[]
 }
 
-export type Template = {
-    id: string
-    name: string
-    description: string
+export type TemplateContent = {
     experiences: Experience[]
+}
+
+export type Template = {
+    id?: string
+    name: string
+    description?: string
+    content: TemplateContent
 }
 

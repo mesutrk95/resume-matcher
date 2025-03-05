@@ -6,12 +6,12 @@ import { NextResponse } from "next/server";
 export const PUT = withErrorHandling(async (request: Request, { params }: { params: { templateId: string } }) => {
   const { templateId } = params;
   const body = await request.json();
-  const { name, description } = body;
+  const { name, description, content } = body;
 
   // Update the template in the database
   const updatedTemplate = await db.resumeTemplate.update({
     where: { id: templateId },
-    data: { name, description },
+    data: { name, description, content },
   });
 
   return NextResponse.json(

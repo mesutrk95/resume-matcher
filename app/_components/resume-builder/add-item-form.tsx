@@ -17,7 +17,7 @@ export function AddItemForm({ onSave, onCancel }: AddItemFormProps) {
   }
 
   return (
-    <div className="mb-4 p-4 border rounded-md">
+    <div className="mt-4 p-4 border rounded-md">
       <h4 className="font-medium mb-2">New Experience Item</h4>
       <Input
         value={description}
