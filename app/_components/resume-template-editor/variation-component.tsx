@@ -1,20 +1,37 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { Variation } from "@/types/resume"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Edit, GripVertical, Save, Trash2, X } from "lucide-react"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+import { useState } from "react";
+import type { Variation } from "@/types/resume";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { useResumeTemplateEditor } from "./context/useResumeTemplateEditor";
 
 type VariationComponentProps = {
-  experienceId: string
-  itemId: string
-  variation: Variation
-  onUpdate: (variation: Variation) => void
-  onDelete: (variationId: string) => void
+  experienceId: string;
+  itemId: string;
+  variation: Variation;
+  onUpdate: (variation: Variation) => void;
+  onDelete: (variationId: string) => void;
+};
+
+function PercentageIndicator({ value }: { value: number }) {
+  const getColor = () => {
+    if (value >= 75) return "text-green-500";
+    if (value >= 50) return "text-yellow-500";
+    return "text-red-500";
+  };
+
+  return (
+    <div
+      className={`text-xs font-bold bg-slate-200 py-1 px-2 rounded-full ${getColor()}`}
+    >
+      {value.toFixed(0)}%
+    </div>
+  );
 }
 
 export function VariationComponent({
@@ -24,43 +41,46 @@ export function VariationComponent({
   onUpdate,
   onDelete,
 }: VariationComponentProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: variation.id })
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: variation.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  }
+  };
 
-  const [isEditing, setIsEditing] = useState(false)
+  const { scores } = useResumeTemplateEditor();
+  const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     content: variation.content,
-  })
+  });
 
   const handleEdit = () => {
     setEditForm({
       content: variation.content,
-    })
-    setIsEditing(true)
-  }
+    });
+    setIsEditing(true);
+  };
 
   const handleSave = () => {
     onUpdate({
       ...variation,
       content: editForm.content,
-    })
-    setIsEditing(false)
-  }
+    });
+    setIsEditing(false);
+  };
 
   const handleCancel = () => {
-    setIsEditing(false)
-  }
+    setIsEditing(false);
+  };
 
   const handleToggleEnabled = (checked: boolean) => {
     onUpdate({
       ...variation,
       enabled: checked,
-    })
-  }
+    });
+  };
+  console.log(scores);
 
   return (
     <div ref={setNodeRef} style={style} className="mb-2">
@@ -87,13 +107,37 @@ export function VariationComponent({
                 {isEditing ? (
                   <Textarea
                     value={editForm.content}
-                    onChange={(e) => setEditForm((prev) => ({ ...prev, content: e.target.value }))}
+                    onChange={(e) =>
+                      setEditForm((prev) => ({
+                        ...prev,
+                        content: e.target.value,
+                      }))
+                    }
                     placeholder="Variation content"
                     className="mb-2"
                     rows={2}
                   />
                 ) : (
-                  <p className={`text-sm ${!variation.enabled ? "text-muted-foreground" : ""}`}>{variation.content}</p>
+                  <p
+                    className={`text-sm ${
+                      !variation.enabled ? "text-muted-foreground" : ""
+                    }`}
+                  >
+                    {variation.content}
+                    <div className="ml-2 inline-flex">
+                    <PercentageIndicator
+                      value={(scores?.[variation.id]?.score || 0) * 100}
+                    />
+
+                    </div>
+                    <div className="flex gap-2 mt-2">
+                      {scores?.[variation.id]?.matched_keywords?.map((k) => (
+                        <span className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs">
+                          {k}
+                        </span>
+                      ))}
+                    </div>
+                  </p>
                 )}
 
                 {/* {isPrimary && (
@@ -118,7 +162,11 @@ export function VariationComponent({
                     <Button variant="ghost" size="sm" onClick={handleEdit}>
                       <Edit className="h-3 w-3" />
                     </Button>
-                    <Button variant="ghost" size="sm" onClick={() => onDelete(variation.id)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDelete(variation.id)}
+                    >
                       <Trash2 className="h-3 w-3" />
                     </Button>
                   </>
@@ -129,6 +177,5 @@ export function VariationComponent({
         </div>
       </div>
     </div>
-  )
+  );
 }
-

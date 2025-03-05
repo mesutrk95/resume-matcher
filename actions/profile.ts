@@ -5,7 +5,7 @@ import { z } from "zod";
 import { currentUser } from "@/lib/auth";
 import { hashPassword, response } from "@/lib/utils";
 import { getUserByEmail, getUserById, updateUserById } from "@/services/user";
-import { update } from "@/auth";
+import { unstable_update } from "@/auth";
 import { deleteTwoFactorConfirmationByUserId } from "@/services/two-factor-confirmation";
 import bcrypt from "bcryptjs";
 import { generateVerificationToken } from "@/services/verification-token";
@@ -39,7 +39,7 @@ export const profile = async (payload: z.infer<typeof profileSchema>) => {
   }
 
   // Check if user does not exist in the database, then return an error.
-  const existingUser = await getUserById(user.id);
+  const existingUser = await getUserById(user.id!);
   if (!existingUser) {
     return response({
       success: false,
@@ -121,7 +121,7 @@ export const profile = async (payload: z.infer<typeof profileSchema>) => {
   });
 
   // Update session
-  await update({ user: { ...updatedUser } });
+  await unstable_update({ user: { ...updatedUser } });
 
   // Return response success.
   return response({

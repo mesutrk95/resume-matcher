@@ -12,7 +12,7 @@ export const POST = withErrorHandling(async (request: Request) => {
 
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // const prompt = `Give me the important keywords in this job description
     //  and give each one a skill type (hard/soft/none) and level of importance(between 0-1) in this format [{ "keyword" : "something", "skill": "hard", "level": 0.55 },...], give me pure json data as normal text no need to format it.` ;
@@ -23,7 +23,6 @@ Additionally, assign a level of importance to each keyword on a scale from 0 to 
 Provide the results in a structured JSON format as an array of objects, where each object contains the fields "keyword", "skill", and "level". 
 Ensure the output is pure JSON data as plain text, without any additional formatting or explanations. catch whatever is important for ATSs, Here is the job:`
     
-
     const result = await model.generateContent([prompt, {text : description}]);
     // console.log(result.response.text());
     const text = result.response.text()

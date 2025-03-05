@@ -1,17 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { extractKeywords, getResumeScore, Keyword } from "@/api/job-matcher";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { constructFinalResume } from "@/app/utils/job-matcher";
 import { Textarea } from "@/components/ui/textarea";
-import { Template, TemplateContent, Variation } from "@/types/resume";
-import { ResumeTemplate } from "@prisma/client";
+import { TemplateContent } from "@/types/resume";
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { ResumeTemplateEditor } from "@/app/_components/resume-template-editor";
 
-type Keyword = {
-  keyword: string;
-  level: number;
-  skill: "soft" | "hard" | "none";
-};
 const ResumePreview = ({
   templateContent,
 }: {
@@ -28,9 +25,11 @@ const ResumePreview = ({
           </p>
           <ul className="list-disc ml-4">
             {experience.items.map((item, index) => {
-              return item.variations.map((variation) => (
-                <li key={item.id + variation.id}>{variation.content}</li>
-              ));
+              return item.variations
+                .filter((v) => v.enabled)
+                .map((variation) => (
+                  <li key={item.id + variation.id}>{variation.content}</li>
+                ));
             })}
           </ul>
         </div>
@@ -39,199 +38,153 @@ const ResumePreview = ({
   );
 };
 
-// function extractKeywords(jobDescription: string) {
-//   // Simple keyword extraction (split by space and filter out common words)
-//   const commonWords = new Set([
-//     "the",
-//     "and",
-//     "of",
-//     "in",
-//     "to",
-//     "a",
-//     "with",
-//     "for",
-//     "on",
-//     "at",
-//     "are",
-//     "you",
-//     "from",
-//     "our",
-//     "has",
-//     "that",
-//     "we",
-//     "need",
-//   ]);
+const KeywordBadge = ({ keyword }: { keyword: Keyword }) => {
+  return (
+    <li className="py-1" key={keyword.keyword}>
+      {keyword.keyword}
+      <span className="rounded-xl px-2 py-1 bg-slate-300 text-xs font-bold ml-1">
+        {keyword.level}
+      </span>
+    </li>
+  );
+};
 
-//   return findDuplicates(
-//     jobDescription
-//       .toLowerCase()
-//       .split(/\W+/)
-//       .filter((word) => word.length > 2 && !commonWords.has(word))
-//   );
-// }
 export const JobMatcher = ({
   templateContent,
 }: {
   templateContent: TemplateContent;
 }) => {
   const [jobDescription, setJobDescription] = useState("");
-  const [keywords, setKeywords] = useState<Keyword[]>([]);
+  // const [keywords, setKeywords] = useState<Keyword[]>([]);
   const [finalResume, setFinalResume] = useState<TemplateContent | null>(null);
 
-  const constructFinalResume = (
-    templateContent: TemplateContent,
-    jobDescription: string
-  ) => {
-    function scoreVariation(variation: Variation, keywords: Keyword[]): number {
-      const contentWords = variation.content.toLowerCase().split(/\W+/);
-      return keywords.filter((word) => contentWords.includes(word.keyword))
-        .length;
-    }
-    function selectBestVariations(
-      resume: TemplateContent,
-      keywords: Keyword[]
-    ): TemplateContent {
-      const selectedResume: TemplateContent = {
-        experiences: resume.experiences.map((experience, index) => {
-          const items = experience.items.map((item) => {
-            const bestVariation = item.variations.reduce(
-              (best, variation) => {
-                const score = scoreVariation(variation, keywords);
-                return score > best.score ? { variation, score } : best;
-              },
-              {
-                variation: item.variations[0],
-                score: scoreVariation(item.variations[0], keywords),
-              }
-            );
+  const {
+    data: keywords,
+    refetch: refetchKeywords,
+    isFetching: isFetchingKeywords,
+  } = useQuery({
+    queryKey: ["keywords", "jd"],
+    queryFn: () => extractKeywords(jobDescription),
+    enabled: false,
+  });
 
-            return {
-              ...item,
-              variations: [bestVariation.variation], // Only keep the best variation
-            };
-          });
-
-          // Apply the rules for the number of items per experience
-          let itemCount;
-          if (index === 0) {
-            itemCount = 5;
-          } else if (index === 1) {
-            itemCount = 3;
-          } else {
-            itemCount = 2;
-          }
-
-          return {
-            ...experience,
-            items: items.slice(0, itemCount), // Only keep the required number of items
-          };
-        }),
-      };
-
-      return selectedResume;
-    }
-
-    // const keywords = extractKeywords(jobDescription);
-
-    // setKeywords(keywords);
-    console.log("keywords", keywords);
-    return selectBestVariations(templateContent, keywords);
-  };
+  const {
+    data: scores,
+    refetch: refetchScores,
+    isFetching: isFetchingScores,
+  } = useQuery({
+    queryKey: ["keywords", "jd", "scores"],
+    queryFn: () => keywords && getResumeScore(templateContent, keywords),
+    enabled: false,
+  });
 
   const handleJobDescriptionChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setJobDescription(e.target.value);
-    // const finalResume = constructFinalResume(templateContent, jobDescription);
-    // console.log(finalResume);
-    // setFinalResume(finalResume);
   };
 
-  const getKeywords = () => {
-    fetch("/api/jd", {
-      method: "POST",
-      body: JSON.stringify({
-        description: jobDescription,
-      }),
-    })
-      .then((res) => res.json())
-      .then(
-        (data: {
-          result: { keyword: string; level: number; skill: "hard" | "soft" }[];
-        }) => {
-          console.log(data);
-          if (data.result) {
-            setKeywords(data.result);
-            const finalResume = constructFinalResume(
-              templateContent,
-              jobDescription
-            );
-            console.log(finalResume);
-            setFinalResume(finalResume);
-          }
-        }
+  useEffect(() => {
+    if (!keywords) return;
+    const finalResume = constructFinalResume(templateContent, keywords);
+    const templateContentCopy = JSON.parse(
+      JSON.stringify(templateContent)
+    ) as TemplateContent;
+    templateContentCopy.experiences.forEach((experience) => {
+      const resultExp = finalResume?.experiences.find(
+        (exp) => exp.id === experience.id
       );
-  };
+      experience.items.forEach((item) => {
+        const resultExpItem = resultExp?.items.find(
+          (expItem) => expItem.id === item.id
+        );
+        item.variations.forEach((variation) => {
+          const resultVariation = resultExpItem?.variations.find(
+            (v) => v.id === variation.id
+          );
+          variation.enabled = !!resultVariation;
+        });
+      });
+    });
+    setFinalResume(templateContentCopy);
+    console.log(finalResume, "copy", templateContentCopy);
+  }, [keywords]);
 
   return (
-    <div className="grid grid-cols-2 gap-5">
-      <div>
-        <Textarea
-          value={jobDescription}
-          onChange={handleJobDescriptionChange}
-          placeholder="Job Description"
-          className="mb-2"
-          rows={20}
-        />
-      </div>
-      <div>
-        {finalResume && <ResumePreview templateContent={finalResume} />}
-        <div className="mt-5 flex flex-col gap-4">
-          <div>
-            <Button onClick={() => getKeywords()}>Get Keywords</Button>
-          </div>
-          <div className="grid grid-cols-2">
-            <div className="flex flex-col gap-2">
-              <h4 className="text-xl font-bold">Hard Skills</h4>
-              <ul className="  gap-2   ">
-                {keywords
-                  .filter((k) => k.skill === "hard")
-                  .sort((k1, k2) => k2.level - k1.level)
-                  .map((keyword) => (
-                    <li className=" py-1  " key={keyword.keyword}>
-                      {keyword.keyword} {keyword.level}
-                    </li>
-                  ))}
-              </ul>
+    <div>
+      <div className="grid grid-cols-2 gap-5">
+        <div>
+          <Textarea
+            value={jobDescription}
+            onChange={handleJobDescriptionChange}
+            placeholder="Job Description"
+            className="mb-2"
+            rows={20}
+          />
+        </div>
+        <div>
+          {finalResume && <ResumePreview templateContent={finalResume} />}
+          <div className="mt-5 flex flex-col gap-4">
+            <div className="flex gap-2">
+              <LoadingButton
+                onClick={() => refetchKeywords()}
+                loading={isFetchingKeywords}
+                loadingText="Thinking ..."
+              >
+                Get Keywords
+              </LoadingButton>
+              <LoadingButton
+                onClick={() => refetchScores()}
+                loading={isFetchingScores}
+                loadingText="Thinking ..."
+              >
+                Analyze Scores
+              </LoadingButton>
             </div>
-            <div className="flex flex-col gap-2">
-              <h4 className="text-xl font-bold">Soft Skills</h4>
-              <ul className="  gap-2   ">
-                {keywords
-                  .filter((k) => k.skill === "soft")
-                  .sort((k1, k2) => k2.level - k1.level)
-                  .map((keyword) => (
-                    <li className=" py-1  " key={keyword.keyword}>
-                      {keyword.keyword} {keyword.level}
-                    </li>
-                  ))}
-              </ul>
-            </div>
-            <div className="flex flex-col gap-2">
-              <h4 className="text-xl font-bold">Other</h4>
-              <ul className="  gap-2   ">
-                {keywords
-                  .filter((k) => k.skill === "none")
-                  .sort((k1, k2) => k2.level - k1.level)
-                  .map((keyword) => (
-                    <li className=" py-1  " key={keyword.keyword}>
-                      {keyword.keyword} {keyword.level}
-                    </li>
-                  ))}
-              </ul>
+            <div className="grid grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <h4 className="text-xl font-bold">Hard Skills</h4>
+                <ul className="  gap-2   ">
+                  {keywords
+                    ?.filter((k) => k.skill === "hard")
+                    .sort((k1, k2) => k2.level - k1.level)
+                    .map((keyword) => (
+                      <KeywordBadge keyword={keyword} key={keyword.keyword} />
+                    ))}
+                </ul>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h4 className="text-xl font-bold">Soft Skills</h4>
+                <ul className="  gap-2   ">
+                  {keywords
+                    ?.filter((k) => k.skill === "soft")
+                    .sort((k1, k2) => k2.level - k1.level)
+                    .map((keyword) => (
+                      <KeywordBadge keyword={keyword} key={keyword.keyword} />
+                    ))}
+                </ul>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h4 className="text-xl font-bold">Other</h4>
+                <ul className="  gap-2   ">
+                  {keywords
+                    ?.filter((k) => k.skill === "none")
+                    .sort((k1, k2) => k2.level - k1.level)
+                    .map((keyword) => (
+                      <KeywordBadge keyword={keyword} key={keyword.keyword} />
+                    ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* builder preview */}
+      <div>
+        {finalResume && (
+          <ResumeTemplateEditor data={{ name: "", content: finalResume }} resumeScores={scores}/>
+        )}
       </div>
     </div>
   );

@@ -24,14 +24,23 @@ import { ExperienceList } from "./experience-list";
 import { AddExperienceForm } from "./add-experience-form";
 import type { Template, Experience } from "@/types/resume";
 import { useRouter } from "next/navigation";
+import {
+  ResumeScore,
+  ResumeTemplateEditorProvider,
+} from "./context/ResumeTemplateEditorProvider";
+import { useResumeTemplateEditor } from "./context/useResumeTemplateEditor";
 
-export function ResumeTemplateEditor({
-  data,
-  onUpdate,
-}: {
+type IPropsType = {
   data: Template;
+  resumeScores?: ResumeScore[];
   onUpdate?: (t: Template) => void;
-}) {
+};
+
+function ResumeTemplateEditorComponent({
+  data,
+  resumeScores,
+  onUpdate,
+}: IPropsType) {
   // Sample initial data
   const [lastTemplate, setLastTemplate] = useState<string>(
     JSON.stringify(data)
@@ -53,6 +62,23 @@ export function ResumeTemplateEditor({
       setLastTemplate(newTemplate);
     }
   }, [template, lastTemplate, onUpdate]);
+
+  const { setScores } = useResumeTemplateEditor();
+  useEffect(() => {
+    setScores(
+      resumeScores?.reduce((acc, curr) => {
+        acc[curr.id!] = {
+          score: curr.score,
+          matched_keywords: curr.matched_keywords,
+        };
+        return acc;
+      }, {} as Record<string, ResumeScore>)
+    );
+  }, [resumeScores, setScores]);
+
+  useEffect(() => {
+    setTemplate(data);
+  }, [data]);
 
   // DnD sensors
   const sensors = useSensors(
@@ -270,5 +296,13 @@ export function ResumeTemplateEditor({
         </SortableContext>
       </DndContext>
     </>
+  );
+}
+
+export function ResumeTemplateEditor(props: IPropsType) {
+  return (
+    <ResumeTemplateEditorProvider>
+      <ResumeTemplateEditorComponent {...props} />
+    </ResumeTemplateEditorProvider>
   );
 }

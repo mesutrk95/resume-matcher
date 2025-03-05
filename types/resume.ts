@@ -31,4 +31,3 @@ export type Template = {
     description?: string
     content: TemplateContent
 }
-
