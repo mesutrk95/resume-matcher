@@ -1,127 +1,154 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { ExperienceItem, Variation } from "@/types/resume"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Edit, GripVertical, Plus, Save, Trash2, X } from "lucide-react"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
-import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { useState } from "react";
+import type { ExperienceItem, Variation } from "@/types/resume";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Edit, GripVertical, Plus, Save, Trash2, X } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
-import { VariationList } from "./variation-list"
-import { AddVariationForm } from "./add-variation-form"
+import { VariationList } from "./variation-list";
+import { AddVariationForm } from "./add-variation-form";
 
 type ItemComponentProps = {
-  experienceId: string
-  item: ExperienceItem
-  onUpdate: (item: ExperienceItem) => void
-  onDelete: (itemId: string) => void
-}
+  experienceId: string;
+  item: ExperienceItem;
+  onUpdate: (item: ExperienceItem) => void;
+  onDelete: (itemId: string) => void;
+};
 
-export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemComponentProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id })
+export function ItemComponent({
+  experienceId,
+  item,
+  onUpdate,
+  onDelete,
+}: ItemComponentProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: item.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  }
+  };
 
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     description: item.description,
-  })
+  });
 
-  const [addingVariation, setAddingVariation] = useState(false)
+  const [addingVariation, setAddingVariation] = useState(false);
 
   // DnD sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
-  )
+    })
+  );
 
   const handleEdit = () => {
     setEditForm({
       description: item.description,
-    })
-    setIsEditing(true)
-  }
+    });
+    setIsEditing(true);
+  };
 
   const handleSave = () => {
     onUpdate({
       ...item,
       description: editForm.description,
-    })
-    setIsEditing(false)
-  }
+    });
+    setIsEditing(false);
+  };
 
   const handleCancel = () => {
-    setIsEditing(false)
-  }
+    setIsEditing(false);
+  };
 
   const handleAddVariation = () => {
-    setAddingVariation(true)
-  }
+    setAddingVariation(true);
+  };
 
   const handleSaveNewVariation = (content: string) => {
-    const newVariation: Variation = {
-      id: `var${Date.now()}`,
-      content,
-      enabled: true,
-    }
+    const newVariations: Variation[] = content
+      .split("\n")
+      .filter((item) => item.trim().length > 0)
+      .map((content, index) => ({
+        id: `var${Date.now() + index}`,
+        content,
+        enabled: true,
+      }));
 
     onUpdate({
       ...item,
-      variations: [...item.variations, newVariation],
-    })
+      variations: [...item.variations, ...newVariations],
+    });
 
-    setAddingVariation(false)
-  }
+    setAddingVariation(false);
+  };
 
   const handleCancelAddVariation = () => {
-    setAddingVariation(false)
-  }
+    setAddingVariation(false);
+  };
 
   const handleUpdateVariation = (updatedVariation: Variation) => {
     onUpdate({
       ...item,
       variations: item.variations.map((variation) =>
-        variation.id === updatedVariation.id ? updatedVariation : variation,
+        variation.id === updatedVariation.id ? updatedVariation : variation
       ),
-    })
-  }
+    });
+  };
 
   const handleDeleteVariation = (variationId: string) => {
     onUpdate({
       ...item,
-      variations: item.variations.filter((variation) => variation.id !== variationId),
-    })
-  }
+      variations: item.variations.filter(
+        (variation) => variation.id !== variationId
+      ),
+    });
+  };
 
   const handleDragEndVariations = (event: any) => {
-    const { active, over } = event
+    const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = item.variations.findIndex((variation) => variation.id === active.id)
-      const newIndex = item.variations.findIndex((variation) => variation.id === over.id)
+      const oldIndex = item.variations.findIndex(
+        (variation) => variation.id === active.id
+      );
+      const newIndex = item.variations.findIndex(
+        (variation) => variation.id === over.id
+      );
 
       onUpdate({
         ...item,
         variations: arrayMove(item.variations, oldIndex, newIndex),
-      })
+      });
     }
-  }
+  };
 
   const handleToggleEnabled = (checked: boolean) => {
     onUpdate({
       ...item,
       enabled: checked,
-    })
-  }
+    });
+  };
 
   return (
     <div ref={setNodeRef} style={style} className="mb-3">
@@ -147,12 +174,29 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
               {isEditing ? (
                 <Input
                   value={editForm.description}
-                  onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))}
+                  onChange={(e) =>
+                    setEditForm((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
                   placeholder="Item description"
                   className="mb-2"
                 />
               ) : (
-                <h4 className={`font-medium ${!item.enabled ? "text-muted-foreground" : ""}`}>{item.description}</h4>
+                <h4
+                  className={`font-medium ${
+                    !item.enabled ? "text-muted-foreground" : ""
+                  }`}
+                >
+                  {item.description ? (
+                    <> {item.description}</>
+                  ) : (
+                    <span className="text-muted-foreground">
+                      No Description
+                    </span>
+                  )}
+                </h4>
               )}
 
               <div className="flex gap-2 ml-4">
@@ -170,7 +214,11 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
                     <Button variant="outline" size="sm" onClick={handleEdit}>
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button variant="destructive" size="sm" onClick={() => onDelete(item.id)}>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => onDelete(item.id)}
+                    >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </>
@@ -183,7 +231,11 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
               <div className="flex justify-between items-center mb-2">
                 <h5 className="text-sm font-bold">Variations</h5>
                 {!addingVariation && (
-                  <Button size="sm" variant="ghost" onClick={handleAddVariation}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={handleAddVariation}
+                  >
                     <Plus className="h-3 w-3 mr-1" />
                     Add Variation
                   </Button>
@@ -192,11 +244,18 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
 
               {/* Add Variation Form */}
               {addingVariation && (
-                <AddVariationForm onSave={handleSaveNewVariation} onCancel={handleCancelAddVariation} />
+                <AddVariationForm
+                  onSave={handleSaveNewVariation}
+                  onCancel={handleCancelAddVariation}
+                />
               )}
 
               {/* Variations List with Drag and Drop */}
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEndVariations}>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEndVariations}
+              >
                 <SortableContext
                   items={item.variations.map((variation) => variation.id)}
                   strategy={verticalListSortingStrategy}
@@ -215,6 +274,5 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
         </div>
       </div>
     </div>
-  )
+  );
 }
-

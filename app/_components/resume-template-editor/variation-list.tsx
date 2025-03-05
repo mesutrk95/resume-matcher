@@ -20,7 +20,7 @@ export function VariationList({ experienceId, itemId, variations, onUpdate, onDe
           experienceId={experienceId}
           itemId={itemId}
           variation={variation}
-          isPrimary={index === 0}
+          // isPrimary={index === 0}
           onUpdate={onUpdate}
           onDelete={onDelete}
         />

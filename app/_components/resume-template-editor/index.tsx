@@ -25,35 +25,34 @@ import { AddExperienceForm } from "./add-experience-form";
 import type { Template, Experience } from "@/types/resume";
 import { useRouter } from "next/navigation";
 
-export default function ResumeTemplateBuilder({ data }: { data: Template }) {
+export function ResumeTemplateEditor({
+  data,
+  onUpdate,
+}: {
+  data: Template;
+  onUpdate?: (t: Template) => void;
+}) {
   // Sample initial data
+  const [lastTemplate, setLastTemplate] = useState<string>(
+    JSON.stringify(data)
+  );
   const [template, setTemplate] = useState<Template>(data);
   const [editingTemplate, setEditingTemplate] = useState(false);
-  const router = useRouter();
   const [templateForm, setTemplateForm] = useState({
     name: template.name,
     description: template.description,
   });
 
-  const onUpdated = (t: Template) => {
-    fetch("/api/templates/" + (t.id ? t.id : ""), {
-      method: t.id ? "put" : "post",
-      body: JSON.stringify({
-        id: t.id,
-        name: t.name,
-        description: t.description,
-        content: t.content,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(t.id);
-        if (!t.id) {
-          router.push("/templates/" + data.id);
-        }
-        console.log(data);
-      });
-  };
+  useEffect(() => {
+    console.log("updated", template);
+    const newTemplate = JSON.stringify(template);
+
+    if (newTemplate !== lastTemplate) {
+      console.log(newTemplate);
+      onUpdate?.(template);
+      setLastTemplate(newTemplate);
+    }
+  }, [template, lastTemplate, onUpdate]);
 
   // DnD sensors
   const sensors = useSensors(
@@ -79,7 +78,6 @@ export default function ResumeTemplateBuilder({ data }: { data: Template }) {
         name: templateForm.name,
         description: templateForm.description,
       };
-      onUpdated(newTemplate);
       return newTemplate;
     });
     setEditingTemplate(false);
@@ -108,7 +106,6 @@ export default function ResumeTemplateBuilder({ data }: { data: Template }) {
           experiences: [...prev.content.experiences, newExp],
         },
       };
-      onUpdated(newTemplate);
       return newTemplate;
     });
 
@@ -142,7 +139,6 @@ export default function ResumeTemplateBuilder({ data }: { data: Template }) {
             ),
           },
         };
-        onUpdated(newTemplate);
         return newTemplate;
       });
     }
@@ -159,7 +155,6 @@ export default function ResumeTemplateBuilder({ data }: { data: Template }) {
           ),
         },
       };
-      onUpdated(newTemplate);
       return newTemplate;
     });
   };
@@ -175,7 +170,6 @@ export default function ResumeTemplateBuilder({ data }: { data: Template }) {
           ),
         },
       };
-      onUpdated(newTemplate);
       return newTemplate;
     });
   };

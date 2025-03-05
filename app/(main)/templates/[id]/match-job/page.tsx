@@ -1,10 +1,14 @@
-import { db } from "@/lib/db";
-import { TemplateContent } from "@/types/resume";
+ 
+import { db } from "@/lib/db"; 
 import { Metadata } from "next";
-import { TemplateEditor } from "./template-editor";
+import Link from "next/link";  
+import { Button } from "@/components/ui/button"; 
+import { Textarea } from "@/components/ui/textarea";
+import { TemplateContent } from "@/types/resume";
+import { JobMatcher } from "./JobMatcher";
 
 export const metadata: Metadata = {
-  title: "Resume Template Builder",
+  title: "Job Matcher",
 };
 
 export default async function TemplateBuilderPage({
@@ -18,15 +22,10 @@ export default async function TemplateBuilderPage({
 
   if (!template) return null;
   const content = template?.content as TemplateContent;
-
+ 
   return (
-    <TemplateEditor
-      template={{
-        id: template.id,
-        name: template.name,
-        description: template.description || "",
-        content: content,
-      }}
-    />
+    <div> 
+      <JobMatcher templateContent={content} ></JobMatcher>
+    </div>
   );
 }

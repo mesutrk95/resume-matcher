@@ -92,6 +92,7 @@ export default function Navbar() {
         <h1 className="text-2xl font-semibold">Next Dashboard</h1>
       </Link> */}
       <Link href="/templates" >Templates</Link>
+      {/* <Link href="/job-matcher" >Job Matcher</Link> */}
       <AuthNav />
     </nav>
   );

@@ -13,7 +13,6 @@ type VariationComponentProps = {
   experienceId: string
   itemId: string
   variation: Variation
-  isPrimary: boolean
   onUpdate: (variation: Variation) => void
   onDelete: (variationId: string) => void
 }
@@ -22,7 +21,6 @@ export function VariationComponent({
   experienceId,
   itemId,
   variation,
-  isPrimary,
   onUpdate,
   onDelete,
 }: VariationComponentProps) {
@@ -66,7 +64,7 @@ export function VariationComponent({
 
   return (
     <div ref={setNodeRef} style={style} className="mb-2">
-      <div className={`p-2 rounded-md ${isPrimary ? "bg-primary/10 border border-primary/20" : "bg-muted/30"}`}>
+      <div className={`p-2 rounded-md bg-muted/30`}>
         <div className="flex items-start">
           <div
             className="p-1 mr-1 cursor-grab text-muted-foreground hover:text-foreground"
@@ -98,11 +96,11 @@ export function VariationComponent({
                   <p className={`text-sm ${!variation.enabled ? "text-muted-foreground" : ""}`}>{variation.content}</p>
                 )}
 
-                {isPrimary && (
+                {/* {isPrimary && (
                   <span className="text-xs text-primary-foreground bg-primary px-2 py-0.5 rounded-full mt-1 inline-block">
                     Primary
                   </span>
-                )}
+                )} */}
               </div>
 
               <div className="flex gap-1">

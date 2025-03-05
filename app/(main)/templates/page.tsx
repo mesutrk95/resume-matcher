@@ -1,35 +1,25 @@
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+"use client";
+
 import { db } from "@/lib/db";
-import { ResumeTemplate } from "@prisma/client";
 import { Metadata } from "next";
 import Link from "next/link";
-// import Moment from 'react-moment';
-import moment from "moment";
 import { Button } from "@/components/ui/button";
+import { ResumeTemplateItem } from "./template-resume-item";
+import { useQuery } from "@tanstack/react-query";
+import { getTemplates } from "@/api/templates";
+import { ContentLoading } from "@/app/_components/loading";
 
-export const metadata: Metadata = {
-  title: "Templates",
-};
+// export const metadata: Metadata = {
+//   title: "Templates",
+// };
 
-function ResumeTemplateItem({ template }: { template: ResumeTemplate }) {
-  return (
-    <Link href={`/templates/${template.id}`}>
-      <Card className="">
-        <CardHeader className="flex  ">
-          <CardTitle className="text-2xl">{template.name}</CardTitle>
-          <p className="text-muted-foreground mt-1">{template.description}</p>
-          <p className="text-muted-foreground text-sm">
-            {moment(template.createdAt).format("YYYY/MM/DD HH:MM:SS")} {" "}
-            ({moment(template.createdAt).fromNow()})
-          </p>
-        </CardHeader>
-      </Card>
-    </Link>
-  );
-}
+export default function TemplatesPage() {
+  // const templates = await db.resumeTemplate.findMany();
 
-export default async function TemplatesPage() {
-  const templates = await db.resumeTemplate.findMany();
+  const { data: templates, isFetching } = useQuery({
+    queryKey: ["/templates"],
+    queryFn: getTemplates,
+  });
 
   return (
     <div>
@@ -38,12 +28,13 @@ export default async function TemplatesPage() {
           <Link href="/templates/create">Create New</Link>
         </Button>
       </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        {templates.map((template) => (
-          <ResumeTemplateItem key={template.id} template={template} />
-        ))}
-      </div>
+      <ContentLoading loading={isFetching}>
+        <div className="grid grid-cols-2 gap-2">
+          {templates?.data.map((template) => (
+            <ResumeTemplateItem key={template.id} template={template} />
+          ))}
+        </div>
+      </ContentLoading>
     </div>
   );
 }
