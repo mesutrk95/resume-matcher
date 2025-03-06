@@ -1,6 +1,6 @@
 "use client";
 
-import { CardWrapper } from "@/components/auth/card-wrapper";
+import { CardWrapper } from "@/components/shared/card-wrapper";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -9,7 +9,7 @@ import { loginSchema } from "@/schemas";
 import { Button } from "@/components/ui/button";
 import { useTransition } from "react";
 import { login } from "@/actions/login";
-import { FormInput } from "@/components/auth/form-input";
+import { FormInput } from "@/components/shared/form-input";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

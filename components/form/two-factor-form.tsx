@@ -1,11 +1,11 @@
 "use client";
 
-import { CardWrapper } from "@/components/auth/card-wrapper";
+import { CardWrapper } from "@/components/shared/card-wrapper";
 import { loginSchema, twoFactorSchema } from "@/schemas";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "@/components/ui/form";
-import { FormInput } from "@/components/auth/form-input";
+import { FormInput } from "@/components/shared/form-input";
 import { Button } from "@/components/ui/button";
 import { useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";

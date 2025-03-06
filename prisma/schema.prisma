@@ -46,7 +46,8 @@ model User {
   accounts              Account[]
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
-  ResumeTemplate        ResumeTemplate[]
+  resumeTemplate        ResumeTemplate[]
+  job                   Job[]
 }
 
 model VerificationToken {
@@ -90,7 +91,7 @@ model ResumeTemplate {
   userId         String
   content        Json?
   experiences    Experience[] // A template can have multiple experiences
-  ExperienceItem ExperienceItem[]
+  experienceItem ExperienceItem[]
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
@@ -129,4 +130,25 @@ model ExperienceItemVariation {
   experienceItem   ExperienceItem @relation(fields: [experienceItemId], references: [id])
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  description String?
+  companyName String?
+  title       String?
+  url         String?
+  moreDetails Json?     @default("{}") @db.Json
+  createdAt   DateTime  @default(now())
+  postedAt    DateTime?
+  userId      String
+
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobResume JobResume[]
+}
+
+model JobResume {
+  id    String @id @default(cuid())
+  jobId String
+  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
 }

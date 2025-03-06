@@ -89,3 +89,11 @@ export const profileSchema = z
       path: ["newPassword"],
     }
   );
+
+export const jobSchema = z.object({
+  title: z.string().min(1, "Job title is required"),
+  companyName: z.string().min(1, "Company name is required"),
+  description: z.string().optional(),
+  url: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
+  postedAt: z.string().optional().nullable().transform(val => val ? new Date(val) : null),
+});

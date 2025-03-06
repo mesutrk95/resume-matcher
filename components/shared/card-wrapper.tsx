@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Social } from "@/components/auth/social";
+import { Social } from "@/components/shared/social";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 
