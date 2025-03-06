@@ -132,7 +132,7 @@ export function VariationComponent({
                     </div>
                     <div className="flex gap-2 mt-2">
                       {scores?.[variation.id]?.matched_keywords?.map((k) => (
-                        <span className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs">
+                        <span key={k} className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs">
                           {k}
                         </span>
                       ))}

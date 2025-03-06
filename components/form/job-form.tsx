@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { createJob, updateJob } from "@/actions/job";
 import { FormTextarea } from "../shared/form-text-area";
 import { jobSchema } from "@/schemas";
+import { extractJobDetailsFromUrl } from "@/api/job-matcher";
 
 type JobFormValues = z.infer<typeof jobSchema>;
 
@@ -62,8 +63,16 @@ export const JobForm = ({ initialData }: JobFormProps) => {
     });
   });
 
+  const handleExtractJD = async () => {
+    const url = form.getValues().url;
+    if (!url) return;
+    const content = await extractJobDetailsFromUrl(url);
+    console.log(content);
+  };
+
   return (
     <CardWrapper
+      className="w-[600px] shadow mx-4 md:mx-0"
       headerTitle={isEditing ? "Edit Job" : "Add New Job"}
       headerDescription="Please fill out the form below with the job details."
       backButtonLabel="Back to jobs"
@@ -72,13 +81,25 @@ export const JobForm = ({ initialData }: JobFormProps) => {
       <Form {...form}>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
-            <FormInput
-              control={form.control}
-              name="url"
-              label="Job URL"
-              placeholder="https://example.com/job-posting"
-              isPending={isPending}
-            />
+            <div className="w-full flex items-end gap-2">
+              <FormInput
+                className="flex-grow"
+                control={form.control}
+                name="url"
+                label="Job URL"
+                placeholder="https://example.com/job-posting"
+                isPending={isPending}
+              />
+              <Button
+                className="flex-shrink-0"
+                onClick={(e) => {
+                  e.preventDefault();  
+                  handleExtractJD();
+                }}
+              >
+                Extract From Link
+              </Button>
+            </div>
 
             <FormInput
               control={form.control}

@@ -132,15 +132,25 @@ model ExperienceItemVariation {
   updatedAt        DateTime       @updatedAt
 }
 
+enum JobStatus {
+  BOOKMARKED
+  APPLYING
+  APPLIED
+  INTERVIEWING
+  ARCHIVED
+}
+
 model Job {
-  id          String    @id @default(cuid())
+  id          String     @id @default(cuid())
   description String?
   companyName String?
   title       String?
   url         String?
-  moreDetails Json?     @default("{}") @db.Json
-  createdAt   DateTime  @default(now())
   postedAt    DateTime?
+  location    String?
+  status      JobStatus? @default(BOOKMARKED)
+  moreDetails Json?      @default("{}") @db.Json
+  createdAt   DateTime   @default(now())
   userId      String
 
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)

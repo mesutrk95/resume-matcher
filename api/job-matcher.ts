@@ -9,7 +9,7 @@ export type Keyword = {
 }
 
 export const extractKeywords = (description: string) => {
-    return axios.post<{ result: Keyword[] }>('/api/jd/keywords/extract', { description }).
+    return axios.post<{ result: Keyword[] }>('/api/jd/keywords/analyze', { description }).
         then(res => res.data.result || [])
 }
 export const getResumeScore = async (templateContent: TemplateContent, keywords: Keyword[]) => {
@@ -39,4 +39,8 @@ export const getResumeScore = async (templateContent: TemplateContent, keywords:
     }))
 
     return result.flat()
+}
+
+export const extractJobDetailsFromUrl = (url: string) => {
+    return axios.get(`/api/jd/extract-form-url`, { params: { url } }).then(res => res.data)
 }
