@@ -16,6 +16,7 @@ const LoadingButton = React.forwardRef<
       asChild = false,
       loading = false,
       loadingText,
+      children,
       ...props
     },
     ref
@@ -28,14 +29,13 @@ const LoadingButton = React.forwardRef<
         disabled={loading}
         {...props}
       >
-        {" "}
         {loading ? (
           <div className="flex items-center gap-2">
             <Loader2 className="h-4 w-4 animate-spin" />{" "}
-            {loadingText || props.children}
+            {loadingText || children}
           </div>
         ) : (
-          props.children
+          children
         )}
       </Comp>
     );

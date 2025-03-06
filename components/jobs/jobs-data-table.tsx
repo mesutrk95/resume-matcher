@@ -111,6 +111,7 @@ export function JobsDataTable({
             <TableRow>
               <TableHead>Title</TableHead>
               <TableHead>Company</TableHead>
+              <TableHead>Location</TableHead>
               <TableHead>Created</TableHead>
               <TableHead>Posted</TableHead>
               <TableHead className="w-[100px]">Actions</TableHead>
@@ -128,6 +129,7 @@ export function JobsDataTable({
                 <TableRow key={job.id}>
                   <TableCell className="font-medium">{job.title}</TableCell>
                   <TableCell>{job.companyName}</TableCell>
+                  <TableCell>{job.location}</TableCell>
                   <TableCell>{format(new Date(job.createdAt), "MMM d, yyyy HH:mm")}</TableCell>
                   <TableCell>
                     {job.postedAt ? format(new Date(job.postedAt), "MMM d, yyyy HH:mm") : "Not posted"}

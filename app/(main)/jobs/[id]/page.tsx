@@ -1,6 +1,7 @@
 import { JobForm } from "@/components/form/job-form";
 import { db } from "@/lib/db";
 import { Metadata } from "next";
+import { format } from "date-fns";
 
 export const metadata: Metadata = {
   title: "Update Job",
@@ -21,9 +22,10 @@ export default async function UpdateJobPage({
     id: job.id,
     title: job.title || "",
     companyName: job.companyName || "",
+    location: job.location || "",
     description: job.description || "",
     url: job.url || "",
-    postedAt: job.postedAt || null,
+    postedAt: (job.postedAt && format(job.postedAt, "yyyy-MM-dd")) || null,
   };
 
   return <JobForm initialData={initialData} />;

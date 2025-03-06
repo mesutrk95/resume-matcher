@@ -6,14 +6,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { FormInput } from "@/components/shared/form-input";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createJob, updateJob } from "@/actions/job";
-import { FormTextarea } from "../shared/form-text-area";
 import { jobSchema } from "@/schemas";
 import { extractJobDetailsFromUrl } from "@/api/job-matcher";
+import { LoadingButton } from "../ui/loading-button";
+import { useQuery } from "@tanstack/react-query";
+import { JoeditInput } from "../shared/joedit-input";
 
 type JobFormValues = z.infer<typeof jobSchema>;
 
@@ -34,6 +36,7 @@ export const JobForm = ({ initialData }: JobFormProps) => {
       title: initialData?.title || "",
       companyName: initialData?.companyName || "",
       description: initialData?.description || "",
+      location: initialData?.location || "",
       url: initialData?.url || "",
       postedAt: initialData?.postedAt || null,
     },
@@ -63,12 +66,33 @@ export const JobForm = ({ initialData }: JobFormProps) => {
     });
   });
 
-  const handleExtractJD = async () => {
-    const url = form.getValues().url;
-    if (!url) return;
-    const content = await extractJobDetailsFromUrl(url);
-    console.log(content);
-  };
+  const {
+    refetch,
+    data: extractedJobDescription,
+    isFetched: isJDFetched,
+    isFetching: isJDFetching,
+  } = useQuery({
+    queryKey: ["extract-job-details"],
+    queryFn: () => extractJobDetailsFromUrl(form.getValues().url || ""),
+    enabled: false,
+  });
+
+  useEffect(() => {
+    if (!form) return;
+
+    extractedJobDescription?.description &&
+      form.setValue("description", extractedJobDescription?.description);
+    extractedJobDescription?.companyName &&
+      form.setValue("companyName", extractedJobDescription?.companyName);
+    extractedJobDescription?.location &&
+      form.setValue("location", extractedJobDescription?.location);
+    extractedJobDescription?.title &&
+      form.setValue("title", extractedJobDescription?.title);
+    extractedJobDescription?.postedDate &&
+      form.setValue("postedAt", extractedJobDescription?.postedDate);
+
+    console.log(extractedJobDescription?.postedDate);
+  }, [extractedJobDescription, form]);
 
   return (
     <CardWrapper
@@ -90,15 +114,19 @@ export const JobForm = ({ initialData }: JobFormProps) => {
                 placeholder="https://example.com/job-posting"
                 isPending={isPending}
               />
-              <Button
-                className="flex-shrink-0"
+              <LoadingButton
+                asChild
+                className="flex-shrink-0 cursor-pointer"
+                loading={isJDFetching}
+                disabled={isJDFetching}
+                loadingText="Extracting ..."
                 onClick={(e) => {
-                  e.preventDefault();  
-                  handleExtractJD();
+                  e.preventDefault();
+                  refetch();
                 }}
               >
-                Extract From Link
-              </Button>
+                <span>Extract From Link</span>
+              </LoadingButton>
             </div>
 
             <FormInput
@@ -116,20 +144,28 @@ export const JobForm = ({ initialData }: JobFormProps) => {
               placeholder="e.g. Acme Inc."
               isPending={isPending}
             />
+            <FormInput
+              control={form.control}
+              name="location"
+              label="Location"
+              placeholder=""
+              isPending={isPending}
+            />
 
-            <FormTextarea
+            <JoeditInput
               control={form.control}
               name="description"
               label="Job Description"
               placeholder="Describe the job role, responsibilities, and requirements..."
               isPending={isPending}
+              config={{ height: "350px" }}
             />
 
             <FormInput
               control={form.control}
               name="postedAt"
               label="Posted Date"
-              type="date"
+              type="text"
               isPending={isPending}
             />
           </div>

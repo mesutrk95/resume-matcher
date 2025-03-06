@@ -1051,6 +1051,11 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
 
+autobind-decorator@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/autobind-decorator/-/autobind-decorator-2.4.0.tgz#ea9e1c98708cf3b5b356f7cf9f10f265ff18239c"
+  integrity sha512-OGYhWUO72V6DafbF8PM8rm3EPbfuyMZcJhtm5/n26IDwO18pohE4eNazLoCGhPiXOCD0gEGmrbU3849QvM8bbw==
+
 autoprefixer@^10.0.1:
   version "10.4.20"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-10.4.20.tgz#5caec14d43976ef42e32dcb4bd62878e96be5b3b"
@@ -2642,6 +2647,20 @@ jiti@^1.21.6:
   version "1.21.7"
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.21.7.tgz#9dd81043424a3d28458b193d965f0d18a2300ba9"
   integrity sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==
+
+jodit-react@^5.2.15:
+  version "5.2.15"
+  resolved "https://registry.yarnpkg.com/jodit-react/-/jodit-react-5.2.15.tgz#3f4302ec06093471ca52572f011d885875a872ab"
+  integrity sha512-KUaDV8cwL96EOlG93t0W41DX1rPcHUS18rgHCZF16Na8UFUGmXYGX5Vbjaa10ExXvBAwc4c92RLxsnrRQM+rgQ==
+  dependencies:
+    jodit "^4.5.17"
+
+jodit@^4.5.17:
+  version "4.5.17"
+  resolved "https://registry.yarnpkg.com/jodit/-/jodit-4.5.17.tgz#7767a2677e7b5236c97345a9da754db413f5f80a"
+  integrity sha512-mfpdYgnkPQRnlGU/xZzBH+L666E/K7KAZi39sF4kOkQzIozG2/csYW2rvPMDNgiPz1bDr8bgHw0m69M5+jVNEA==
+  dependencies:
+    autobind-decorator "^2.4.0"
 
 jose@^5.1.3, jose@^5.9.3:
   version "5.10.0"

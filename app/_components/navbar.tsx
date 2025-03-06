@@ -23,7 +23,10 @@ async function AuthNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="pr-4 rounded-none h-fit flex gap-x-2 focus-visible:ring-offset-0">
+        <Button
+          variant="ghost"
+          className="pr-4 rounded-none h-fit flex gap-x-2 focus-visible:ring-offset-0"
+        >
           <Avatar>
             <AvatarImage src={user.image ?? ""} />
             <AvatarFallback>
@@ -87,14 +90,16 @@ async function AuthNav() {
 
 export default function Navbar() {
   return (
-    <nav className="flex gap-x-4 items-center justify-between bg-gray-50 shadow-sm pl-4">
-      {/* <Link href="/">
-        <h1 className="text-2xl font-semibold">Next Dashboard</h1>
-      </Link> */}
-      <Link href="/templates" >Templates</Link>
-      <Link href="/jobs" >Jobs</Link>
-      {/* <Link href="/job-matcher" >Job Matcher</Link> */}
-      <AuthNav />
+    <nav className=" bg-gray-100 shadow-sm">
+      <div className="container ">
+        <div className="flex gap-x-4 items-center justify-between">
+          <div className="flex gap-10">
+            <Link href="/templates">Resume Templates</Link>
+            <Link href="/jobs">Jobs</Link>
+          </div>
+          <AuthNav />
+        </div>
+      </div>
     </nav>
   );
 }

@@ -41,6 +41,14 @@ export const getResumeScore = async (templateContent: TemplateContent, keywords:
     return result.flat()
 }
 
+type ExtractedJD = {
+    description: string,
+    companyName: string,
+    location: string,
+    title: string,
+    postedDate: string
+}
+
 export const extractJobDetailsFromUrl = (url: string) => {
-    return axios.get(`/api/jd/extract-form-url`, { params: { url } }).then(res => res.data)
+    return axios.get<{ result: ExtractedJD }>(`/api/jd/extract-form-url`, { params: { url } }).then(res => res.data.result)
 }

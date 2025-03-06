@@ -76,7 +76,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   const totalPages = Math.ceil(totalJobs / pageSize);
 
   return (
-    <div className="container py-10">
+    <div className="">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Jobs</h1>

@@ -85,51 +85,15 @@ model TwoFactorConfirmation {
 }
 
 model ResumeTemplate {
-  id             String           @id @default(cuid())
-  name           String // Name of the template (e.g., "Software Engineer Resume")
-  description    String? // Optional description of the template
-  userId         String
-  content        Json?
-  experiences    Experience[] // A template can have multiple experiences
-  experienceItem ExperienceItem[]
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  userId      String
+  content     Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Experience {
-  id          String           @id @default(cuid())
-  companyName String // Name of the company
-  role        String // Role in the company (e.g., "Software Engineer")
-  startDate   DateTime // Start date of the experience
-  endDate     DateTime? // End date (optional for ongoing roles)
-  items       ExperienceItem[] // An experience can have multiple items
-  templateId  String // Foreign key to Template
-  template    ResumeTemplate   @relation(fields: [templateId], references: [id])
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-}
-
-model ExperienceItem {
-  id           String                    @id @default(cuid())
-  description  String // Description of the item (e.g., "Developed scalable APIs")
-  variations   ExperienceItemVariation[] // An item can have multiple variations
-  experienceId String // Foreign key to Experience
-  templateId   String // Foreign key to Template
-  experience   Experience                @relation(fields: [experienceId], references: [id])
-  template     ResumeTemplate            @relation(fields: [templateId], references: [id])
-  createdAt    DateTime                  @default(now())
-  updatedAt    DateTime                  @updatedAt
-}
-
-model ExperienceItemVariation {
-  id               String         @id @default(cuid())
-  content          String // Content of the variation (e.g., "Built RESTful APIs using Node.js")
-  experienceItemId String // Foreign key to ExperienceItem
-  experienceItem   ExperienceItem @relation(fields: [experienceItemId], references: [id])
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
 }
 
 enum JobStatus {

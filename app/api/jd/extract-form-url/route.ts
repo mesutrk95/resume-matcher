@@ -30,7 +30,7 @@ export const GET = withErrorHandling(async (request: Request) => {
 
 
     const jd = `Banner: ${cardTop}, Description: ${description}`.replaceAll('\n', '')
-    const prompt = `Extract the following details from the given text, with this keys "description", "companyName", "location" , "title", "postedDate". Ensure the response is in a valid JSON format with no extra text:\n ${jd}`;
+    const prompt = `Extract the following details from the given text, with this keys "description", "companyName", "location" , "title", "postedDate".keep the description in html format and make sure postedDate is in correct date format. Ensure the response is in a valid JSON format with no extra text:\n ${jd}`;
 
     const result = await getAIJsonResponse(prompt)
 

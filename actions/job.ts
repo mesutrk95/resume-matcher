@@ -36,8 +36,9 @@ export const createJob = async (values: z.infer<typeof jobSchema>): Promise<JobA
                 title: values.title,
                 companyName: values.companyName,
                 description: values.description,
+                location: values.location,
                 url: values.url,
-                postedAt: values.postedAt,
+                postedAt: values.postedAt && new Date(values.postedAt),
                 createdAt: new Date(),
                 userId: user?.id!,
             },
@@ -95,9 +96,10 @@ export const updateJob = async (values: z.infer<typeof jobSchema> & { id: string
             data: {
                 title: values.title,
                 companyName: values.companyName,
+                location: values.location,
                 description: values.description,
                 url: values.url,
-                postedAt: values.postedAt,
+                postedAt: values.postedAt && new Date(values.postedAt),
             },
         });
 
