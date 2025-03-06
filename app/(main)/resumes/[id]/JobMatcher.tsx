@@ -2,12 +2,13 @@
 
 import { extractKeywords, getResumeScore, Keyword } from "@/api/job-matcher";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { constructFinalResume } from "@/app/utils/job-matcher";
-import { Textarea } from "@/components/ui/textarea";
+import { constructFinalResume } from "@/app/utils/job-matching";
 import { TemplateContent } from "@/types/resume";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { ResumeTemplateEditor } from "@/app/_components/resume-template-editor";
+import { Job } from "@prisma/client";
+import { JobDescriptionPreview } from "@/components/jobs/job-description-preview";
 
 const ResumePreview = ({
   templateContent,
@@ -51,10 +52,11 @@ const KeywordBadge = ({ keyword }: { keyword: Keyword }) => {
 
 export const JobMatcher = ({
   templateContent,
+  job,
 }: {
   templateContent: TemplateContent;
+  job: Job;
 }) => {
-  const [jobDescription, setJobDescription] = useState("");
   // const [keywords, setKeywords] = useState<Keyword[]>([]);
   const [finalResume, setFinalResume] = useState<TemplateContent | null>(null);
 
@@ -64,7 +66,7 @@ export const JobMatcher = ({
     isFetching: isFetchingKeywords,
   } = useQuery({
     queryKey: ["keywords", "jd"],
-    queryFn: () => extractKeywords(jobDescription),
+    queryFn: () => extractKeywords(job.description || ""),
     enabled: false,
   });
 
@@ -77,12 +79,6 @@ export const JobMatcher = ({
     queryFn: () => keywords && getResumeScore(templateContent, keywords),
     enabled: false,
   });
-
-  const handleJobDescriptionChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setJobDescription(e.target.value);
-  };
 
   useEffect(() => {
     if (!keywords) return;
@@ -114,13 +110,7 @@ export const JobMatcher = ({
     <div>
       <div className="grid grid-cols-2 gap-5">
         <div>
-          <Textarea
-            value={jobDescription}
-            onChange={handleJobDescriptionChange}
-            placeholder="Job Description"
-            className="mb-2"
-            rows={20}
-          />
+          <JobDescriptionPreview job={job} />
         </div>
         <div>
           {finalResume && <ResumePreview templateContent={finalResume} />}
@@ -183,7 +173,10 @@ export const JobMatcher = ({
       {/* builder preview */}
       <div>
         {finalResume && (
-          <ResumeTemplateEditor data={{ name: "", content: finalResume }} resumeScores={scores}/>
+          <ResumeTemplateEditor
+            data={{ name: "", content: finalResume }}
+            resumeScores={scores}
+          />
         )}
       </div>
     </div>

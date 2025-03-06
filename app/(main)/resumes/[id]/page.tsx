@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
+import { JobMatcher } from "./JobMatcher";
+import { TemplateContent } from "@/types/resume";
 
 interface EditResumePageProps {
   params: {
@@ -12,7 +14,7 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
   const user = await currentUser();
 
   // Fetch the ResumeJob record
-  const resumeJob = await db.jobResume.findUnique({
+  const jobResume = await db.jobResume.findUnique({
     where: {
       id: params.id,
       userId: user?.id,
@@ -23,17 +25,19 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
     },
   });
 
-  if (!resumeJob) {
+  if (!jobResume) {
     notFound();
   }
+
+  const content = jobResume?.content as TemplateContent;
 
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">
-        Edit Resume for {resumeJob.job.title}
+        Edit Resume for {jobResume.job.title}
       </h1>
-      {/* <p>Template: {resumeJob.resumeTemplate.name}</p> */}
-      {/* Add your resume editor here */}
+
+      <JobMatcher templateContent={content} job={jobResume.job}></JobMatcher>
     </div>
   );
 }

@@ -104,29 +104,29 @@ export const JobForm = ({ initialData }: JobFormProps) => {
 
       <Form {...form}>
         <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="flex items-end gap-2">
-  <FormInput
-    className="flex-grow" // This makes the input fill the available space
-    control={form.control}
-    name="url"
-    label="Job URL"
-    placeholder="https://example.com/job-posting"
-    isPending={isPending}
-  />
-  <LoadingButton
-    asChild
-    className="flex-shrink-0 cursor-pointer" // Prevents the button from shrinking
-    loading={isJDFetching}
-    disabled={isJDFetching}
-    loadingText="Extracting ..."
-    onClick={(e) => {
-      e.preventDefault();
-      refetch();
-    }}
-  >
-    <span>Extract From Link</span>
-  </LoadingButton>
-</div>
+          <div className="flex items-end gap-2">
+            <FormInput
+              className="flex-grow" // This makes the input fill the available space
+              control={form.control}
+              name="url"
+              label="Job URL"
+              placeholder="https://example.com/job-posting"
+              isPending={isPending}
+            />
+            <LoadingButton
+              asChild
+              className="flex-shrink-0 cursor-pointer" // Prevents the button from shrinking
+              loading={isJDFetching}
+              disabled={isJDFetching}
+              loadingText="Extracting ..."
+              onClick={(e) => {
+                e.preventDefault();
+                refetch();
+              }}
+            >
+              <span>Extract From Link</span>
+            </LoadingButton>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left Column: Input Fields */}
             <div className="space-y-4">

@@ -15,8 +15,8 @@ import { ChevronLeft, ChevronRight, Edit, Search, Trash } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { ResumeTemplate } from "@prisma/client";
-import { deleteResumeTemplate } from "@/actions/resume-template";
+import { Job, JobResume } from "@prisma/client";
+import { deleteJobResume } from "@/actions/job-resume"; // Assuming you have an action to delete a job resume
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogTrigger } from "@radix-ui/react-alert-dialog";
 import {
@@ -29,21 +29,21 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 
-interface ResumeTemplatesDateTableProps {
-  data: ResumeTemplate[];
+interface JobResumesDataTableProps {
+  data: (JobResume & { job: Job })[];
   pageCount: number;
   currentPage: number;
   pageSize: number;
   searchQuery: string;
 }
 
-export function ResumeTemplatesDateTable({
+export function JobResumesDataTable({
   data,
   pageCount,
   currentPage,
   pageSize,
   searchQuery,
-}: ResumeTemplatesDateTableProps) {
+}: JobResumesDataTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [search, setSearch] = useState(searchQuery);
@@ -66,17 +66,17 @@ export function ResumeTemplatesDateTable({
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const handleDeleteTemplate = async (id: string) => {
+  const handleDeleteJobResume = async (id: string) => {
     try {
       setIsDeleting(id);
-      const result = await deleteResumeTemplate(id);
+      const result = await deleteJobResume(id);
 
       if (!result.success) {
-        toast.error(result.error?.message || "Failed to delete template");
+        toast.error(result.error?.message || "Failed to delete job resume");
         return;
       }
 
-      toast.success("Template deleted successfully");
+      toast.success("Job resume deleted successfully");
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
@@ -93,7 +93,7 @@ export function ResumeTemplatesDateTable({
           className="flex w-full max-w-sm items-center space-x-2"
         >
           <Input
-            placeholder="Search templates..."
+            placeholder="Search in resumes..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full"
@@ -109,7 +109,7 @@ export function ResumeTemplatesDateTable({
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Description</TableHead>
+              <TableHead>Company</TableHead>
               <TableHead>Created</TableHead>
               <TableHead>Updated</TableHead>
               <TableHead className="w-[100px]">Actions</TableHead>
@@ -118,33 +118,35 @@ export function ResumeTemplatesDateTable({
           <TableBody>
             {data.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  No templates found.
+                <TableCell colSpan={6} className="h-24 text-center">
+                  No job resumes found.
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((template) => (
-                <TableRow key={template.id}>
-                  <TableCell className="font-medium">{template.name}</TableCell>
-                  <TableCell>{template.description}</TableCell>
+              data.map((jobResume) => (
+                <TableRow key={jobResume.id}>
+                  <TableCell className="font-medium">
+                    <Link href={`/resumes/${jobResume.id}`}>
+                      {jobResume.name}
+                    </Link>
+                  </TableCell>
+                  <TableCell>{jobResume.job.companyName}</TableCell>
                   <TableCell>
-                    {format(new Date(template.createdAt), "MMM d, yyyy HH:mm")}
+                    {format(new Date(jobResume.createdAt), "MMM d, yyyy HH:mm")}
                   </TableCell>
                   <TableCell>
-                    {format(new Date(template.updatedAt), "MMM d, yyyy HH:mm")}
+                    {format(new Date(jobResume.updatedAt), "MMM d, yyyy HH:mm")}
                   </TableCell>
                   <TableCell className="flex gap-2">
                     {/* Delete Confirmation Dialog */}
-
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button
                           variant={"outline"}
-                          disabled={isDeleting === template.id}
+                          disabled={isDeleting === jobResume.id}
                           className="text-destructive focus:text-destructive"
                         >
-                          <Trash className=" h-4 w-4" />
-                          {/* Delete */}
+                          <Trash className="h-4 w-4" />
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
@@ -154,14 +156,14 @@ export function ResumeTemplatesDateTable({
                           </AlertDialogTitle>
                           <AlertDialogDescription>
                             This action cannot be undone. This will permanently
-                            delete the resume and remove your data from our
+                            delete the job resume and remove your data from our
                             servers.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => handleDeleteTemplate(template.id)}
+                            onClick={() => handleDeleteJobResume(jobResume.id)}
                           >
                             Yes, Delete!
                           </AlertDialogAction>
@@ -171,11 +173,10 @@ export function ResumeTemplatesDateTable({
                     <Button
                       asChild
                       variant={"outline"}
-                      disabled={isDeleting === template.id}
+                      disabled={isDeleting === jobResume.id}
                     >
-                      <Link href={`/templates/${template.id}`}>
-                        <Edit className=" h-4 w-4" />
-                        {/* Edit */}
+                      <Link href={`/resumes/${jobResume.id}`}>
+                        <Edit className="h-4 w-4" />
                       </Link>
                     </Button>
                   </TableCell>
@@ -201,8 +202,8 @@ export function ResumeTemplatesDateTable({
                   (currentPage - 1) * pageSize + data.length
                 )}
               </span>{" "}
-              of <span className="font-medium">{pageCount * pageSize}</span>{" "}
-              templates
+              of <span className="font-medium">{pageCount * pageSize}</span> job
+              resumes
             </>
           )}
         </div>
