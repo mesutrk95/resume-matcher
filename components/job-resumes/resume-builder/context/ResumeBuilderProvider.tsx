@@ -17,11 +17,11 @@ export type IResumeTemplateEditor = {
   >;
 };
 
-export const ResumeTemplateEditorContext = createContext<IResumeTemplateEditor>(
+export const ResumeBuilderContext = createContext<IResumeTemplateEditor>(
   {} as IResumeTemplateEditor
 );
 
-export const ResumeTemplateEditorProvider = ({
+export const ResumeBuilderProvider = ({
   children,
 }: {
   children: React.ReactNode;
@@ -29,8 +29,8 @@ export const ResumeTemplateEditorProvider = ({
   const [scores, setScores] = useState<Record<string, ResumeScore>>();
 
   return (
-    <ResumeTemplateEditorContext.Provider value={{ setScores, scores }}>
+    <ResumeBuilderContext.Provider value={{ setScores, scores }}>
       {children}
-    </ResumeTemplateEditorContext.Provider>
+    </ResumeBuilderContext.Provider>
   );
 };

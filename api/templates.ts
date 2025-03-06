@@ -11,10 +11,10 @@ export const deleteTemplate = (id: string) => {
     return axios.delete(`/api/templates/${id}`).then(res => res.data)
 }
 
-export const updateTemplate = (template: ResumeTemplate | Template) => { 
+export const updateTemplate = (template: ResumeTemplate) => { 
     return axios.put(`/api/templates/${template.id}`, template).then(res => res.data)
 }
 
-export const createTemplate = (template: ResumeTemplate | Template) => { 
+export const createTemplate = (template: ResumeTemplate) => { 
     return axios.post(`/api/templates`, template).then(res => res.data)
 }

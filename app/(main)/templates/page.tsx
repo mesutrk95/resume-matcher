@@ -1,11 +1,9 @@
 import { Metadata } from "next";
 import { ResumeTemplatesDateTable } from "@/components/resume-templates/resume-templates-data-table";
 import { db } from "@/lib/db";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Plus } from "lucide-react";
 import { currentUser } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
+import { CreateNewTemplateForm } from "@/components/resume-templates/create-new-template-button";
 
 export const metadata: Metadata = {
   title: "Resume Templates",
@@ -20,7 +18,9 @@ interface TemplatesPageProps {
   };
 }
 
-export default async function TemplatesPage({ searchParams }: TemplatesPageProps) {
+export default async function TemplatesPage({
+  searchParams,
+}: TemplatesPageProps) {
   const user = await currentUser();
 
   const page = Number(searchParams.page) || 1;
@@ -70,17 +70,14 @@ export default async function TemplatesPage({ searchParams }: TemplatesPageProps
     <div className="">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Resume Templates</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Resume Templates
+          </h1>
           <p className="text-muted-foreground mt-2">
             Manage your resume templates
           </p>
         </div>
-        <Button asChild>
-          <Link href="/templates/create">
-            <Plus className="mr-2 h-4 w-4" />
-            Add New Template
-          </Link>
-        </Button>
+        <CreateNewTemplateForm />
       </div>
 
       <ResumeTemplatesDateTable

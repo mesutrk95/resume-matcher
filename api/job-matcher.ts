@@ -1,5 +1,6 @@
-import { ResumeScore } from "@/app/_components/resume-template-editor/context/ResumeTemplateEditorProvider";
-import { TemplateContent } from "@/types/resume";
+
+import { ResumeScore } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
+import { ResumeContent } from "@/types/resume";
 import axios from "axios"
 
 export type Keyword = {
@@ -12,7 +13,8 @@ export const extractKeywords = (description: string) => {
     return axios.post<{ result: Keyword[] }>('/api/jd/keywords/analyze', { description }).
         then(res => res.data.result || [])
 }
-export const getResumeScore = async (templateContent: TemplateContent, keywords: Keyword[]) => {
+
+export const getResumeScore = async (templateContent: ResumeContent, keywords: Keyword[]) => {
     // const experience = templateContent.experiences[0]
     // const content = experience.items
     //     .map((item, index) =>

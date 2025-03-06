@@ -3,12 +3,12 @@ import { currentUser } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { withErrorHandling } from "@/lib/error-handler";
 import { getAIJsonResponse } from "@/lib/ai";
-import * as cheerio from 'cheerio';
+import cheerio from 'cheerio';
 import axios from "axios";
 
 // GET /jd/extract-from-url?url=
 export const GET = withErrorHandling(async (request: Request) => {
-    const user = await currentUser()
+    // const user = await currentUser()
 
     const { searchParams } = new URL(request.url);
     const url = searchParams.get('url');
@@ -26,7 +26,7 @@ export const GET = withErrorHandling(async (request: Request) => {
     // Load the HTML into cheerio
     const $ = cheerio.load(html);
     const cardTop = $('.top-card-layout__entity-info-container').text().trim();
-    const description = $('.description__text--rich .show-more-less-html__markup').html().trim();
+    const description = $('.description__text--rich .show-more-less-html__markup').html()?.trim();
 
 
     const jd = `Banner: ${cardTop}, Description: ${description}`.replaceAll('\n', '')

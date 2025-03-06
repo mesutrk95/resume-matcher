@@ -3,17 +3,17 @@
 import { extractKeywords, getResumeScore, Keyword } from "@/api/job-matcher";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { constructFinalResume } from "@/app/utils/job-matching";
-import { TemplateContent } from "@/types/resume";
+import { ResumeContent } from "@/types/resume";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
-import { ResumeTemplateEditor } from "@/app/_components/resume-template-editor";
+import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
 import { Job } from "@prisma/client";
 import { JobDescriptionPreview } from "@/components/jobs/job-description-preview";
 
 const ResumePreview = ({
   templateContent,
 }: {
-  templateContent: TemplateContent;
+  templateContent: ResumeContent;
 }) => {
   return (
     <div className="flex flex-col gap-4">
@@ -54,11 +54,11 @@ export const JobMatcher = ({
   templateContent,
   job,
 }: {
-  templateContent: TemplateContent;
+  templateContent: ResumeContent;
   job: Job;
 }) => {
   // const [keywords, setKeywords] = useState<Keyword[]>([]);
-  const [finalResume, setFinalResume] = useState<TemplateContent | null>(null);
+  const [finalResume, setFinalResume] = useState<ResumeContent | null>(null);
 
   const {
     data: keywords,
@@ -85,7 +85,7 @@ export const JobMatcher = ({
     const finalResume = constructFinalResume(templateContent, keywords);
     const templateContentCopy = JSON.parse(
       JSON.stringify(templateContent)
-    ) as TemplateContent;
+    ) as ResumeContent;
     templateContentCopy.experiences.forEach((experience) => {
       const resultExp = finalResume?.experiences.find(
         (exp) => exp.id === experience.id
@@ -173,10 +173,7 @@ export const JobMatcher = ({
       {/* builder preview */}
       <div>
         {finalResume && (
-          <ResumeTemplateEditor
-            data={{ name: "", content: finalResume }}
-            resumeScores={scores}
-          />
+          <ResumeBuilder data={finalResume} resumeScores={scores} />
         )}
       </div>
     </div>

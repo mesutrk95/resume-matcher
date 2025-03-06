@@ -22,21 +22,21 @@ import {
 
 import { ExperienceList } from "./experience-list";
 import { AddExperienceForm } from "./add-experience-form";
-import type { Template, Experience } from "@/types/resume";
+import type { Experience, ResumeContent } from "@/types/resume";
 import { useRouter } from "next/navigation";
 import {
   ResumeScore,
-  ResumeTemplateEditorProvider,
-} from "./context/ResumeTemplateEditorProvider";
-import { useResumeTemplateEditor } from "./context/useResumeTemplateEditor";
+  ResumeBuilderProvider,
+} from "./context/ResumeBuilderProvider";
+import { useResumeBuilder } from "./context/useResumeBuilder";
 
 type IPropsType = {
-  data: Template;
+  data: ResumeContent;
   resumeScores?: ResumeScore[];
-  onUpdate?: (t: Template) => void;
+  onUpdate?: (t: ResumeContent) => void;
 };
 
-function ResumeTemplateEditorComponent({
+function ResumeBuilderComponent({
   data,
   resumeScores,
   onUpdate,
@@ -45,12 +45,7 @@ function ResumeTemplateEditorComponent({
   const [lastTemplate, setLastTemplate] = useState<string>(
     JSON.stringify(data)
   );
-  const [template, setTemplate] = useState<Template>(data);
-  const [editingTemplate, setEditingTemplate] = useState(false);
-  const [templateForm, setTemplateForm] = useState({
-    name: template.name,
-    description: template.description,
-  });
+  const [template, setTemplate] = useState<ResumeContent>(data);
 
   useEffect(() => {
     console.log("updated", template);
@@ -63,7 +58,7 @@ function ResumeTemplateEditorComponent({
     }
   }, [template, lastTemplate, onUpdate]);
 
-  const { setScores } = useResumeTemplateEditor();
+  const { setScores } = useResumeBuilder();
   useEffect(() => {
     setScores(
       resumeScores?.reduce((acc, curr) => {
@@ -91,24 +86,6 @@ function ResumeTemplateEditorComponent({
   // State for adding experience
   const [addingExperience, setAddingExperience] = useState(false);
 
-  // Template handlers
-  const handleEditTemplate = () => {
-    setTemplateForm({ name: template.name, description: template.description });
-    setEditingTemplate(true);
-  };
-
-  const handleSaveTemplate = () => {
-    setTemplate((prev) => {
-      const newTemplate = {
-        ...prev,
-        name: templateForm.name,
-        description: templateForm.description,
-      };
-      return newTemplate;
-    });
-    setEditingTemplate(false);
-  };
-
   // Experience handlers
   const handleAddExperience = () => {
     setAddingExperience(true);
@@ -127,10 +104,7 @@ function ResumeTemplateEditorComponent({
     setTemplate((prev) => {
       const newTemplate = {
         ...prev,
-        content: {
-          ...prev.content,
-          experiences: [...prev.content.experiences, newExp],
-        },
+        experiences: [...prev.experiences, newExp],
       };
       return newTemplate;
     });
@@ -147,23 +121,15 @@ function ResumeTemplateEditorComponent({
 
     if (over && active.id !== over.id) {
       setTemplate((prev) => {
-        const oldIndex = prev.content.experiences.findIndex(
+        const oldIndex = prev.experiences.findIndex(
           (exp) => exp.id === active.id
         );
-        const newIndex = prev.content.experiences.findIndex(
+        const newIndex = prev.experiences.findIndex(
           (exp) => exp.id === over.id
         );
         const newTemplate = {
           ...prev,
-          content: {
-            ...prev.content,
-
-            experiences: arrayMove(
-              prev.content.experiences,
-              oldIndex,
-              newIndex
-            ),
-          },
+          experiences: arrayMove(prev.experiences, oldIndex, newIndex),
         };
         return newTemplate;
       });
@@ -174,12 +140,9 @@ function ResumeTemplateEditorComponent({
     setTemplate((prev) => {
       const newTemplate = {
         ...prev,
-        content: {
-          ...prev.content,
-          experiences: prev.content.experiences.map((exp) =>
-            exp.id === updatedExperience.id ? updatedExperience : exp
-          ),
-        },
+        experiences: prev.experiences.map((exp) =>
+          exp.id === updatedExperience.id ? updatedExperience : exp
+        ),
       };
       return newTemplate;
     });
@@ -189,12 +152,9 @@ function ResumeTemplateEditorComponent({
     setTemplate((prev) => {
       const newTemplate = {
         ...prev,
-        content: {
-          ...prev.content,
-          experiences: prev.content.experiences.filter(
-            (exp) => exp.id !== experienceId
-          ),
-        },
+        experiences: prev.experiences.filter(
+          (exp) => exp.id !== experienceId
+        ),
       };
       return newTemplate;
     });
@@ -202,64 +162,6 @@ function ResumeTemplateEditorComponent({
 
   return (
     <>
-      <Card className="mb-8">
-        <CardHeader className="flex flex-row items-start justify-between">
-          {!editingTemplate ? (
-            <div>
-              <CardTitle className="text-2xl">{template.name}</CardTitle>
-              <p className="text-muted-foreground mt-1">
-                {template.description}
-              </p>
-            </div>
-          ) : (
-            <div className="w-full space-y-2">
-              <Input
-                value={templateForm.name}
-                onChange={(e) =>
-                  setTemplateForm((prev) => ({ ...prev, name: e.target.value }))
-                }
-                placeholder="Template name"
-                className="font-semibold text-lg"
-              />
-              <Input
-                value={templateForm.description}
-                onChange={(e) =>
-                  setTemplateForm((prev) => ({
-                    ...prev,
-                    description: e.target.value,
-                  }))
-                }
-                placeholder="Template description"
-              />
-            </div>
-          )}
-
-          <div>
-            {!editingTemplate ? (
-              <Button variant="outline" size="sm" onClick={handleEditTemplate}>
-                <Edit className="h-4 w-4 mr-1" />
-                Edit
-              </Button>
-            ) : (
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditingTemplate(false)}
-                >
-                  <X className="h-4 w-4 mr-1" />
-                  Cancel
-                </Button>
-                <Button size="sm" onClick={handleSaveTemplate}>
-                  <Save className="h-4 w-4 mr-1" />
-                  Save
-                </Button>
-              </div>
-            )}
-          </div>
-        </CardHeader>
-      </Card>
-
       <div className="mb-6 flex justify-between items-center">
         <h2 className="text-xl font-semibold">Experiences</h2>
         {!addingExperience ? (
@@ -285,11 +187,11 @@ function ResumeTemplateEditorComponent({
         onDragEnd={handleDragEndExperiences}
       >
         <SortableContext
-          items={template.content.experiences.map((exp) => exp.id)}
+          items={template.experiences.map((exp) => exp.id)}
           strategy={verticalListSortingStrategy}
         >
           <ExperienceList
-            experiences={template.content.experiences}
+            experiences={template.experiences}
             onUpdate={handleUpdateExperience}
             onDelete={handleDeleteExperience}
           />
@@ -299,10 +201,10 @@ function ResumeTemplateEditorComponent({
   );
 }
 
-export function ResumeTemplateEditor(props: IPropsType) {
+export function ResumeBuilder(props: IPropsType) {
   return (
-    <ResumeTemplateEditorProvider>
-      <ResumeTemplateEditorComponent {...props} />
-    </ResumeTemplateEditorProvider>
+    <ResumeBuilderProvider>
+      <ResumeBuilderComponent {...props} />
+    </ResumeBuilderProvider>
   );
 }

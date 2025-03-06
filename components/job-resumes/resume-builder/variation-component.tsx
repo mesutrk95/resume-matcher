@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useResumeTemplateEditor } from "./context/useResumeTemplateEditor";
+import { useResumeBuilder } from "./context/useResumeBuilder";
 
 type VariationComponentProps = {
   experienceId: string;
@@ -49,7 +49,7 @@ export function VariationComponent({
     transition,
   };
 
-  const { scores } = useResumeTemplateEditor();
+  const { scores } = useResumeBuilder();
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     content: variation.content,
@@ -130,7 +130,7 @@ export function VariationComponent({
                     />
 
                     </div>
-                    <div className="flex gap-2 mt-2">
+                    <div className="flex flex-wrap gap-1 mt-2">
                       {scores?.[variation.id]?.matched_keywords?.map((k) => (
                         <span key={k} className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs">
                           {k}

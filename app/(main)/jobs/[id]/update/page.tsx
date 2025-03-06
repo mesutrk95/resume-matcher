@@ -1,4 +1,4 @@
-import { JobForm } from "@/components/form/job-form";
+import { JobForm } from "@/components/jobs/job-form";
 import { db } from "@/lib/db";
 import { Metadata } from "next";
 import { format } from "date-fns";

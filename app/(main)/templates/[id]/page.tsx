@@ -1,7 +1,8 @@
+import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
+import { ResumeTemplateForm } from "@/components/resume-templates/resume-template-form";
 import { db } from "@/lib/db";
-import { TemplateContent } from "@/types/resume";
+import { ResumeContent } from "@/types/resume";
 import { Metadata } from "next";
-import { TemplateEditor } from "./template-editor";
 
 export const metadata: Metadata = {
   title: "Resume Template Builder",
@@ -17,16 +18,12 @@ export default async function TemplateBuilderPage({
   });
 
   if (!template) return null;
-  const content = template?.content as TemplateContent;
+  const content = template?.content as ResumeContent;
 
   return (
-    <TemplateEditor
-      template={{
-        id: template.id,
-        name: template.name,
-        description: template.description || "",
-        content: content,
-      }}
-    />
+    <>
+      <ResumeTemplateForm template={template} />
+      <ResumeBuilder data={content} />
+    </>
   );
 }

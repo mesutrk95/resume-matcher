@@ -21,13 +21,6 @@ export type Experience = {
     items: ExperienceItem[]
 }
 
-export type TemplateContent = {
+export type ResumeContent = {
     experiences: Experience[]
-}
-
-export type Template = {
-    id?: string
-    name: string
-    description?: string
-    content: TemplateContent
 }
