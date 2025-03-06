@@ -106,17 +106,18 @@ enum JobStatus {
 }
 
 model Job {
-  id          String     @id @default(cuid())
-  description String?
-  companyName String?
-  title       String?
-  url         String?
-  postedAt    DateTime?
-  location    String?
-  status      JobStatus? @default(BOOKMARKED)
-  moreDetails Json?      @default("{}") @db.Json
-  createdAt   DateTime   @default(now())
-  userId      String
+  id             String     @id @default(cuid())
+  description    String?
+  companyName    String?
+  title          String?
+  url            String?
+  postedAt       DateTime?
+  location       String?
+  status         JobStatus? @default(BOOKMARKED)
+  moreDetails    Json?      @default("{}") @db.Json
+  analyzeResults Json?      @default("{}") @db.Json
+  createdAt      DateTime   @default(now())
+  userId         String
 
   user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   jobResume JobResume[]

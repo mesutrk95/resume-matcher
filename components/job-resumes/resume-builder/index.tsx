@@ -2,9 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Edit, Plus, Save, X } from "lucide-react";
+import { Plus } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -23,7 +21,6 @@ import {
 import { ExperienceList } from "./experience-list";
 import { AddExperienceForm } from "./add-experience-form";
 import type { Experience, ResumeContent } from "@/types/resume";
-import { useRouter } from "next/navigation";
 import {
   ResumeScore,
   ResumeBuilderProvider,
@@ -36,11 +33,7 @@ type IPropsType = {
   onUpdate?: (t: ResumeContent) => void;
 };
 
-function ResumeBuilderComponent({
-  data,
-  resumeScores,
-  onUpdate,
-}: IPropsType) {
+function ResumeBuilderComponent({ data, resumeScores, onUpdate }: IPropsType) {
   // Sample initial data
   const [lastTemplate, setLastTemplate] = useState<string>(
     JSON.stringify(data)
@@ -152,9 +145,7 @@ function ResumeBuilderComponent({
     setTemplate((prev) => {
       const newTemplate = {
         ...prev,
-        experiences: prev.experiences.filter(
-          (exp) => exp.id !== experienceId
-        ),
+        experiences: prev.experiences.filter((exp) => exp.id !== experienceId),
       };
       return newTemplate;
     });

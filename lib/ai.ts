@@ -3,7 +3,11 @@ import OpenAI from "openai";
 
 export const getAIJsonResponse = async (prompt: string, content?: string[]) => {
     const response = await getGeminiResponse(prompt, content)
-    return parseResult(response)
+    return parseJson(response)
+}
+export const getAIHtmlResponse = async (prompt: string, content?: string[]) => {
+    const result = await getGeminiResponse(prompt, content)
+    return parseHtml(result)
 }
 
 const getDeepSeekResponse = async (prompt: string, contents?: string[]) => {
@@ -30,7 +34,7 @@ const getGeminiResponse = async (prompt: string, contents?: string[]) => {
     return msg;
 };
 
-const parseResult = (message: string) => {
+const parseJson = (message: string) => {
     let error = null;
     let object = null;
     try {
@@ -40,4 +44,9 @@ const parseResult = (message: string) => {
     }
 
     return { error, result: object, rawResult: message }
+}
+
+const parseHtml = (message: string) => {
+    let error = null;
+    return { error, result: message.replace('```html', '').replace('```', ''), rawResult: message }
 }

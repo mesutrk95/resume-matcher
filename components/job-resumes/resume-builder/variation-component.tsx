@@ -80,10 +80,9 @@ export function VariationComponent({
       enabled: checked,
     });
   };
-  console.log(scores);
 
   return (
-    <div ref={setNodeRef} style={style} className="mb-2">
+    <div ref={setNodeRef} style={style} className="">
       <div className={`p-2 rounded-md bg-muted/30`}>
         <div className="flex items-start">
           <div
@@ -125,14 +124,16 @@ export function VariationComponent({
                   >
                     {variation.content}
                     <div className="ml-2 inline-flex">
-                    <PercentageIndicator
-                      value={(scores?.[variation.id]?.score || 0) * 100}
-                    />
-
+                      <PercentageIndicator
+                        value={(scores?.[variation.id]?.score || 0) * 100}
+                      />
                     </div>
                     <div className="flex flex-wrap gap-1 mt-2">
                       {scores?.[variation.id]?.matched_keywords?.map((k) => (
-                        <span key={k} className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs">
+                        <span
+                          key={k}
+                          className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs"
+                        >
                           {k}
                         </span>
                       ))}

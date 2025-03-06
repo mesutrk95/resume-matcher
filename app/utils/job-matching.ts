@@ -64,7 +64,6 @@ function selectBestVariations(
                 const bestVariation = item.variations.reduce(
                     (best, variation) => {
                         const score = scoreVariation(variation, keywords);
-                        console.log(variation.id, score, { variation, keywords });
                         scores[item.id + '-' + variation.id] = score
                         return score > best.score ? { variation, score } : best;
                     },
@@ -73,11 +72,11 @@ function selectBestVariations(
                         score: scoreVariation(item.variations[0], keywords),
                     }
                 );
-
-                return {
-                    ...item,
-                    variations: [bestVariation.variation], // Only keep the best variation
-                };
+                item.variations.forEach((variation) => {
+                    variation.enabled = false;
+                });
+                bestVariation.variation.enabled = true;
+                return item
             });
 
             // Apply the rules for the number of items per experience
@@ -97,16 +96,13 @@ function selectBestVariations(
         }),
     };
 
-    console.log('scores', scores);
-
-
     return selectedResume;
 }
 
 export const constructFinalResume = (templateContent: ResumeContent, keywords: Keyword[]) => {
     // const keywords = extractKeywords(jobDescription);
     // setKeywords(keywords);
-    console.log("keywords", keywords);
+    // console.log("keywords", keywords);
 
     if (!keywords) return null;
     return selectBestVariations(templateContent, keywords);

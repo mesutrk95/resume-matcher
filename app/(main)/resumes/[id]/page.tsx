@@ -37,7 +37,7 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
         Edit Resume for {jobResume.job.title}
       </h1>
 
-      <JobMatcher templateContent={content} job={jobResume.job}></JobMatcher>
+      <JobMatcher initialResume={content} initialJob={jobResume.job}></JobMatcher>
     </div>
   );
 }
