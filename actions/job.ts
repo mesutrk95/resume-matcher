@@ -3,7 +3,6 @@
 import { db } from "@/lib/db";
 import { jobSchema } from "@/schemas";
 import { z } from "zod";
-import { auth } from "@/auth";
 import { currentUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
@@ -17,18 +16,7 @@ export type JobActionResponse = {
 
 export const createJob = async (values: z.infer<typeof jobSchema>): Promise<JobActionResponse> => {
     try {
-        const session = await auth();
         const user = await currentUser();
-
-        // Verify the user is authenticated and the userId matches the session
-        if (!session || session.user.id !== user?.id) {
-            return {
-                success: false,
-                error: {
-                    message: "Unauthorized",
-                },
-            };
-        }
 
         // Create job in database
         const job = await db.job.create({
@@ -61,37 +49,13 @@ export const createJob = async (values: z.infer<typeof jobSchema>): Promise<JobA
 
 export const updateJob = async (values: z.infer<typeof jobSchema> & { id: string }): Promise<JobActionResponse> => {
     try {
-        const session = await auth();
-
-        if (!session) {
-            return {
-                success: false,
-                error: {
-                    message: "Unauthorized",
-                },
-            };
-        }
-
-        // Verify the job belongs to the current user
-        const job = await db.job.findUnique({
-            where: {
-                id: values.id,
-            },
-        });
-
-        if (!job || job.userId !== session.user.id) {
-            return {
-                success: false,
-                error: {
-                    message: "Job not found or you don't have permission to edit it",
-                },
-            };
-        }
+        const user = await currentUser();
 
         // Update job in database
         const updatedJob = await db.job.update({
             where: {
                 id: values.id,
+                userId: user?.id,
             },
             data: {
                 title: values.title,
@@ -123,25 +87,18 @@ export const updateJob = async (values: z.infer<typeof jobSchema> & { id: string
 
 export const deleteJob = async (id: string): Promise<JobActionResponse> => {
     try {
-        const session = await auth();
+        const user = await currentUser();
 
-        if (!session) {
-            return {
-                success: false,
-                error: {
-                    message: "Unauthorized",
-                },
-            };
-        }
 
         // Verify the job belongs to the current user
         const job = await db.job.findUnique({
             where: {
                 id,
+                userId: user?.id,
             },
         });
 
-        if (!job || job.userId !== session.user.id) {
+        if (!job) {
             return {
                 success: false,
                 error: {

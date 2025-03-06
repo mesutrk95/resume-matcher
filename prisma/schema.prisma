@@ -48,6 +48,7 @@ model User {
   twoFactorConfirmation TwoFactorConfirmation?
   resumeTemplate        ResumeTemplate[]
   job                   Job[]
+  JobResume             JobResume[]
 }
 
 model VerificationToken {
@@ -122,7 +123,15 @@ model Job {
 }
 
 model JobResume {
-  id    String @id @default(cuid())
-  jobId String
-  job   Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  id                   String   @id @default(cuid())
+  jobId                String
+  userId               String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @default(now()) @updatedAt
+  content              Json?
+  baseResumeTemplateId String?
+  name                 String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
 }

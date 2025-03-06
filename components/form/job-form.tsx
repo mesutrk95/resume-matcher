@@ -1,6 +1,5 @@
 "use client";
 
-import { CardWrapper } from "@/components/shared/card-wrapper";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -95,86 +94,94 @@ export const JobForm = ({ initialData }: JobFormProps) => {
   }, [extractedJobDescription, form]);
 
   return (
-    <CardWrapper
-      className="w-[600px] shadow mx-4 md:mx-0"
-      headerTitle={isEditing ? "Edit Job" : "Add New Job"}
-      headerDescription="Please fill out the form below with the job details."
-      backButtonLabel="Back to jobs"
-      backButtonHref="/jobs"
-    >
+    <div className="">
+      <h1 className="text-2xl font-bold mb-4">
+        {isEditing ? "Edit Job" : "Add New Job"}
+      </h1>
+      <p className="text-muted-foreground mb-6">
+        Please fill out the form below with the job details.
+      </p>
+
       <Form {...form}>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
-            <div className="w-full flex items-end gap-2">
+        <div className="flex items-end gap-2">
+  <FormInput
+    className="flex-grow" // This makes the input fill the available space
+    control={form.control}
+    name="url"
+    label="Job URL"
+    placeholder="https://example.com/job-posting"
+    isPending={isPending}
+  />
+  <LoadingButton
+    asChild
+    className="flex-shrink-0 cursor-pointer" // Prevents the button from shrinking
+    loading={isJDFetching}
+    disabled={isJDFetching}
+    loadingText="Extracting ..."
+    onClick={(e) => {
+      e.preventDefault();
+      refetch();
+    }}
+  >
+    <span>Extract From Link</span>
+  </LoadingButton>
+</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Left Column: Input Fields */}
+            <div className="space-y-4">
               <FormInput
-                className="flex-grow"
                 control={form.control}
-                name="url"
-                label="Job URL"
-                placeholder="https://example.com/job-posting"
+                name="title"
+                label="Job Title"
+                placeholder="e.g. Frontend Developer"
                 isPending={isPending}
               />
-              <LoadingButton
-                asChild
-                className="flex-shrink-0 cursor-pointer"
-                loading={isJDFetching}
-                disabled={isJDFetching}
-                loadingText="Extracting ..."
-                onClick={(e) => {
-                  e.preventDefault();
-                  refetch();
-                }}
-              >
-                <span>Extract From Link</span>
-              </LoadingButton>
+
+              <FormInput
+                control={form.control}
+                name="companyName"
+                label="Company Name"
+                placeholder="e.g. Acme Inc."
+                isPending={isPending}
+              />
+
+              <FormInput
+                control={form.control}
+                name="location"
+                label="Location"
+                placeholder="e.g. Remote, USA"
+                isPending={isPending}
+              />
+
+              <FormInput
+                control={form.control}
+                name="postedAt"
+                label="Posted Date"
+                type="text"
+                isPending={isPending}
+              />
             </div>
 
-            <FormInput
-              control={form.control}
-              name="title"
-              label="Job Title"
-              placeholder="e.g. Frontend Developer"
-              isPending={isPending}
-            />
-
-            <FormInput
-              control={form.control}
-              name="companyName"
-              label="Company Name"
-              placeholder="e.g. Acme Inc."
-              isPending={isPending}
-            />
-            <FormInput
-              control={form.control}
-              name="location"
-              label="Location"
-              placeholder=""
-              isPending={isPending}
-            />
-
-            <JoeditInput
-              control={form.control}
-              name="description"
-              label="Job Description"
-              placeholder="Describe the job role, responsibilities, and requirements..."
-              isPending={isPending}
-              config={{ height: "350px" }}
-            />
-
-            <FormInput
-              control={form.control}
-              name="postedAt"
-              label="Posted Date"
-              type="text"
-              isPending={isPending}
-            />
+            {/* Right Column: Job Description */}
+            <div className="space-y-4">
+              <JoeditInput
+                control={form.control}
+                name="description"
+                label="Job Description"
+                placeholder="Describe the job role, responsibilities, and requirements..."
+                isPending={isPending}
+                config={{ height: "400px" }}
+              />
+            </div>
           </div>
 
-          <Button type="submit" disabled={isPending} className="w-full">
+          {/* Submit Button */}
+          <Button type="submit" disabled={isPending} className=" ">
             {isEditing ? "Update Job" : "Create Job"}
           </Button>
         </form>
       </Form>
-    </CardWrapper>
+    </div>
   );
 };

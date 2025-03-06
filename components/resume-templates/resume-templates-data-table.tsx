@@ -16,14 +16,13 @@ import {
   ChevronRight,
   Edit,
   ExternalLink,
-  LucideScrollText,
   Search,
   Trash,
 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Job } from "@prisma/client";
+import { ResumeTemplate } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,24 +30,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { deleteJob } from "@/actions/job";
+import { deleteResumeTemplate } from "@/actions/resume-template";
 import { toast } from "sonner";
+import { AlertDialog, AlertDialogTrigger } from "@radix-ui/react-alert-dialog";
+import {
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
 
-interface JobsDataTableProps {
-  data: Job[];
+interface ResumeTemplatesDateTableProps {
+  data: ResumeTemplate[];
   pageCount: number;
   currentPage: number;
   pageSize: number;
   searchQuery: string;
 }
 
-export function JobsDataTable({
+export function ResumeTemplatesDateTable({
   data,
   pageCount,
   currentPage,
   pageSize,
   searchQuery,
-}: JobsDataTableProps) {
+}: ResumeTemplatesDateTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [search, setSearch] = useState(searchQuery);
@@ -71,17 +80,17 @@ export function JobsDataTable({
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const handleDeleteJob = async (id: string) => {
+  const handleDeleteTemplate = async (id: string) => {
     try {
       setIsDeleting(id);
-      const result = await deleteJob(id);
+      const result = await deleteResumeTemplate(id);
 
       if (!result.success) {
-        toast.error(result.error?.message || "Failed to delete job");
+        toast.error(result.error?.message || "Failed to delete template");
         return;
       }
 
-      toast.success("Job deleted successfully");
+      toast.success("Template deleted successfully");
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
@@ -98,7 +107,7 @@ export function JobsDataTable({
           className="flex w-full max-w-sm items-center space-x-2"
         >
           <Input
-            placeholder="Search jobs..."
+            placeholder="Search templates..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full"
@@ -113,11 +122,10 @@ export function JobsDataTable({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Company</TableHead>
-              <TableHead>Location</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Description</TableHead>
               <TableHead>Created</TableHead>
-              <TableHead>Posted</TableHead>
+              <TableHead>Updated</TableHead>
               <TableHead className="w-[100px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -125,67 +133,65 @@ export function JobsDataTable({
             {data.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center">
-                  No jobs found.
+                  No templates found.
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((job) => (
-                <TableRow key={job.id}>
-                  <TableCell className="font-medium">
-                    <Link href={`/jobs/${job.id}`}>{job.title}</Link>
-                  </TableCell>
-                  <TableCell>{job.companyName}</TableCell>
-                  <TableCell>{job.location}</TableCell>
+              data.map((template) => (
+                <TableRow key={template.id}>
+                  <TableCell className="font-medium">{template.name}</TableCell>
+                  <TableCell>{template.description}</TableCell>
                   <TableCell>
-                    {format(new Date(job.createdAt), "MMM d, yyyy HH:mm")}
+                    {format(new Date(template.createdAt), "MMM d, yyyy HH:mm")}
                   </TableCell>
                   <TableCell>
-                    {job.postedAt
-                      ? format(new Date(job.postedAt), "MMM d, yyyy HH:mm")
-                      : "Not posted"}
+                    {format(new Date(template.updatedAt), "MMM d, yyyy HH:mm")}
                   </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem asChild>
-                          <Link href={`/jobs/${job.id}/update`}>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link href={`/jobs/${job.id}/create-resume`}>
-                            <LucideScrollText className="mr-2 h-4 w-4" />
-                            Make Resume
-                          </Link>
-                        </DropdownMenuItem>
-                        {job.url && (
-                          <DropdownMenuItem asChild>
-                            <a
-                              href={job.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <ExternalLink className="mr-2 h-4 w-4" />
-                              View listing
-                            </a>
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuItem
-                          onClick={() => handleDeleteJob(job.id)}
-                          disabled={isDeleting === job.id}
+                  <TableCell className="flex gap-2">
+                    {/* Delete Confirmation Dialog */}
+
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          disabled={isDeleting === template.id}
                           className="text-destructive focus:text-destructive"
                         >
-                          <Trash className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                          <Trash className=" h-4 w-4" />
+                          {/* Delete */}
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete the resume and remove your data from our
+                            servers.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDeleteTemplate(template.id)}
+                          >
+                            Yes, Delete!
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                    <Button
+                      asChild
+                      variant={"outline"}
+                      disabled={isDeleting === template.id}
+                    >
+                      <Link href={`/templates/${template.id}`}>
+                        <Edit className=" h-4 w-4" />
+                        {/* Edit */}
+                      </Link>
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
@@ -210,7 +216,7 @@ export function JobsDataTable({
                 )}
               </span>{" "}
               of <span className="font-medium">{pageCount * pageSize}</span>{" "}
-              jobs
+              templates
             </>
           )}
         </div>

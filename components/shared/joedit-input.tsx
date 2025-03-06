@@ -35,7 +35,7 @@ export const JoeditInput = ({
   const conf = useMemo(
     () => ({
       readonly: disabled,
-      toolbar:false,
+      toolbar: false,
       toolbarSticky: false,
       // toolbarButtonSize: 'small',
       ...config,
@@ -44,19 +44,23 @@ export const JoeditInput = ({
   );
 
   return (
-    <div>
-      <label>{label}</label>
-      <JoditEditor
-        value={value}
-        config={conf}
-        tabIndex={1} // tabIndex of textarea
-        onBlur={(newContent) => {
-          onChange(newContent);
-        }}
-        onChange={(newContent) => {
-          onChange(newContent);
-        }}
-      />
+    <div className="flex flex-col space-y-2">
+      <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+        {label}
+      </label>
+      <div className="pt-2">
+        <JoditEditor
+          value={value}
+          config={conf}
+          tabIndex={1} // tabIndex of textarea
+          onBlur={(newContent) => {
+            onChange(newContent);
+          }}
+          onChange={(newContent) => {
+            onChange(newContent);
+          }}
+        />
+      </div>
     </div>
   );
 };

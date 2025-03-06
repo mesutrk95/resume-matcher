@@ -96,6 +96,7 @@ export default function Navbar() {
           <div className="flex gap-10">
             <Link href="/templates">Resume Templates</Link>
             <Link href="/jobs">Jobs</Link>
+            <Link href="/resumes">Resumes</Link>
           </div>
           <AuthNav />
         </div>
