@@ -15,6 +15,7 @@ type AddProjectFormProps = {
     content: string;
     startDate: string;
     endDate: string;
+    link: string;
   }) => void;
   onCancel: () => void;
 };
@@ -22,6 +23,7 @@ type AddProjectFormProps = {
 export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
+  const [link, setLink] = useState("");
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [isPresent, setIsPresent] = useState(false);
@@ -31,6 +33,7 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
       onSave({
         name,
         content,
+        link,
         startDate: format(startDate, "yyyy MM dd"),
         endDate: isPresent
           ? "Present"
@@ -52,12 +55,20 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
     <Card className="mb-4 p-4">
       <h4 className="font-medium mb-3">New Project</h4>
       <div className="space-y-3">
-        <div>
+      <div>
           <label className="text-sm font-medium mb-1 block">Project Name</label>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter project name"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium mb-1 block">Project Link</label>
+          <Input
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            placeholder="Enter project link"
           />
         </div>
 

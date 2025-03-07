@@ -10,7 +10,7 @@ import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
+import { DatePicker } from "@/components/ui/date-picker";
 
 type ProjectItemProps = {
   project: ResumeProject;
@@ -31,6 +31,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
   const [editForm, setEditForm] = useState({
     name: project.name,
     content: project.content,
+    link: project.link,
   });
 
   // Parse dates from strings to Date objects for the date picker
@@ -75,6 +76,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
     setEditForm({
       name: project.name,
       content: project.content,
+      link: project.link,
     });
     setStartDate(parseDate(project.startDate));
     setEndDate(parseDate(project.endDate));
@@ -87,13 +89,14 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
       ...project,
       name: editForm.name,
       content: editForm.content,
+      link: editForm.link,
       startDate: startDate
-        ? format(startDate, "yyyy MM dd")
+        ? format(startDate, "yyyy/MM")
         : project.startDate,
       endDate: isPresent
         ? "Present"
         : endDate
-        ? format(endDate, "yyyy MM dd")
+        ? format(endDate, "yyyy/MM")
         : project.endDate,
     });
     setIsEditing(false);
@@ -150,20 +153,30 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
                   placeholder="Project name"
                 />
               </div>
+              <div>
+                <label className="text-sm font-medium mb-1 block">
+                  Project Link
+                </label>
+                <Input
+                  value={editForm.link}
+                  onChange={(e) =>
+                    setEditForm((prev) => ({ ...prev, link: e.target.value }))
+                  }
+                  placeholder="Project link"
+                />
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">
                     Start Date
                   </label>
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    onSelect={setStartDate}
-                    // initialFocus
-                  />
 
-                  {/* <DatePicker date={startDate} setDate={setStartDate} placeholder="Select start date" /> */}
+                  <DatePicker
+                    date={startDate}
+                    setDate={setStartDate}
+                    placeholder="Select start date"
+                  />
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">
@@ -172,17 +185,11 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
                   {isPresent ? (
                     <Input value="Present" disabled className="bg-muted" />
                   ) : (
-                    <Calendar
-                      mode="single"
-                      selected={endDate}
-                      onSelect={setEndDate}
-                      // initialFocus
+                    <DatePicker
+                      date={endDate}
+                      setDate={setEndDate}
+                      placeholder="Select end date"
                     />
-                    // <DatePicker
-                    //   date={endDate}
-                    //   setDate={setEndDate}
-                    //   placeholder="Select end date"
-                    // />
                   )}
                   <div className="flex items-center mt-2">
                     <Checkbox
@@ -227,11 +234,14 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
               >
                 {project.name}
               </h3>
-              <div className="text-sm text-muted-foreground mb-2">
+              <div className="text-sm text-muted-foreground  ">
                 {project.startDate} - {project.endDate}
               </div>
+              <div className="text-sm text-muted-foreground  ">
+                {project.link}
+              </div>
               <p
-                className={`text-sm ${
+                className={`text-sm mt-2 ${
                   !project.enabled ? "text-muted-foreground" : ""
                 }`}
               >

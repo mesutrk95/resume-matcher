@@ -48,6 +48,7 @@ export function ProjectsSection({ resume, onUpdate }: ProjectsSectionProps) {
     content: string;
     startDate: string;
     endDate: string;
+    link: string;
   }) => {
     const newProject: ResumeProject = {
       id: `project${Date.now()}`,
@@ -55,6 +56,7 @@ export function ProjectsSection({ resume, onUpdate }: ProjectsSectionProps) {
       content: project.content,
       startDate: project.startDate,
       endDate: project.endDate,
+      link: project.link,
       enabled: true,
     };
 

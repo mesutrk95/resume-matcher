@@ -25,7 +25,7 @@ const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
           <h1 className="text-xl font-bold">
             {resume.contactInfo.firstName + "" + resume.contactInfo.lastName}
           </h1>
-          <span className="text-xs">
+          <p className="text-xs">
             {[
               resume.contactInfo.country,
               resume.contactInfo.email,
@@ -37,7 +37,7 @@ const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
             ]
               .filter((r) => !!r)
               .join(" • ")}
-          </span>
+          </p>
         </div>
 
         <div className="">
@@ -92,7 +92,7 @@ const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
               .map((p, index) => (
                 <div key={index}>
                   <h2 className="text-lg font-bold">{p.name}</h2>
-                  <h3 className="text-md font-bold">{p.link}</h3>
+                  <h3 className="text-sm font-bold">{p.link}</h3>
                   <p className="text-sm text-muted-foreground">
                     {format(p.startDate, "yyyy/MM")} -{" "}
                     {format(p.endDate, "yyyy/MM")}
