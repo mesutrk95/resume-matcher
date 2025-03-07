@@ -4,21 +4,7 @@ import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { ResumeTemplate } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-
-const DEFAULT_RESUME_CONTENT = {
-    experiences: [],
-    contactInfo: {},
-    titles: [],
-    summaries: [],
-    educations: [],
-    skills: [],
-    projects: [],
-    languages: [],
-    certifications: [],
-    awards: [],
-    interests: [],
-    references: [],
-}
+import { DEFAULT_RESUME_CONTENT } from "./constants";
 
 export const deleteResumeTemplate = async (id: string) => {
     const user = await currentUser()

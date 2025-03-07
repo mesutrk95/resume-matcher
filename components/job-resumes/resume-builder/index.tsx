@@ -12,6 +12,9 @@ import { ContactInfoSection } from "./contact-information";
 import { ProjectsSection } from "./projects";
 import { ExperiencesSection } from "./experiences";
 import { EducationsSection } from "./educations";
+import { SummariesSection } from "./summaries";
+import { TitlesSection } from "./titles";
+import { SkillsSection } from "./skills";
 
 type IPropsType = {
   data: ResumeContent;
@@ -63,6 +66,18 @@ function ResumeBuilderComponent({ data, resumeScores, onUpdate }: IPropsType) {
         }
       />
 
+      <TitlesSection
+        resume={template}
+        onUpdate={(titles) => setTemplate((prev) => ({ ...prev, titles }))}
+      />
+
+      <SummariesSection
+        resume={template}
+        onUpdate={(summaries) =>
+          setTemplate((prev) => ({ ...prev, summaries }))
+        }
+      />
+
       <ExperiencesSection
         resume={template}
         onUpdate={(experiences) =>
@@ -80,6 +95,11 @@ function ResumeBuilderComponent({ data, resumeScores, onUpdate }: IPropsType) {
       <ProjectsSection
         resume={template}
         onUpdate={(projects) => setTemplate({ ...template, projects })}
+      />
+
+      <SkillsSection
+        resume={template}
+        onUpdate={(skills) => setTemplate({ ...template, skills })}
       />
     </div>
   );

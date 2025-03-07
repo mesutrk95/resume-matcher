@@ -44,6 +44,7 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
       </h1>
 
       <JobMatcher
+        jobResume={jobResume}
         initialResume={content}
         initialJob={jobResume.job}
       ></JobMatcher>

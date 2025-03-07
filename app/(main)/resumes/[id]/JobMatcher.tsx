@@ -5,7 +5,7 @@ import { constructFinalResume } from "@/app/utils/job-matching";
 import { ResumeContent } from "@/types/resume";
 import React, { useEffect, useMemo, useState, useTransition } from "react";
 import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
-import { Job } from "@prisma/client";
+import { Job, JobResume } from "@prisma/client";
 import { JobDescriptionPreview } from "@/components/jobs/job-description-preview";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import { analyzeJobByAI, analyzeJobScores } from "@/actions/job";
 import { JobAnalyzeResult, JobKeyword, JobKeywordType } from "@/types/job";
 import { useParams } from "next/navigation";
 import { ResumeScore } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
+import { updateJobResume } from "@/actions/job-resume";
 // import { useLayout } from "@/app/context/LayoutProvider";
 
 const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
@@ -177,9 +178,11 @@ const JobTab = ({
 };
 
 export const JobMatcher = ({
+  jobResume,
   initialResume,
   initialJob,
 }: {
+  jobResume: JobResume;
   initialResume: ResumeContent;
   initialJob: Job;
 }) => {
@@ -244,10 +247,9 @@ export const JobMatcher = ({
               </TabsTrigger>
               <TabsTrigger value="keywords" variant={"outline"}>
                 Resume Score
-              </TabsTrigger> 
+              </TabsTrigger>
             </TabsList>
             <TabsContent className="pt-4" value="builder">
-              
               <div className="mb-4 flex flex-col gap-4">
                 <div className="flex gap-2">
                   <LoadingButton
@@ -259,13 +261,19 @@ export const JobMatcher = ({
                   </LoadingButton>
                 </div>
               </div>
-              
+
               {resume && (
                 <ResumeBuilder
                   data={resume}
                   resumeScores={scores}
-                  onUpdate={(tmp) => {
+                  onUpdate={async (tmp) => {
                     setResume(tmp);
+                    console.log(jobResume);
+                    try {
+                      await updateJobResume({ ...jobResume, content: tmp });
+                    } catch (ex) {
+                      toast.error('Something went wrong when saving the resume changes.')
+                    }
                   }}
                 />
               )}

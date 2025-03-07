@@ -2,7 +2,9 @@
 
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { JobResume } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { DEFAULT_RESUME_CONTENT } from "./constants";
 
 export const createJobResume = async (jobId: string, resumeTemplateId: string,) => {
 
@@ -27,6 +29,26 @@ export const createJobResume = async (jobId: string, resumeTemplateId: string,) 
     return resumeJob
 }
 
+export const updateJobResume = async (resume: JobResume) => {
+    const user = await currentUser();
+
+    // Update job in database
+    const updatedJob = await db.jobResume.update({
+        where: {
+            id: resume.id,
+            userId: user?.id,
+        },
+        data: {
+            name: resume.name,
+            content: resume.content || DEFAULT_RESUME_CONTENT,
+        },
+    });
+
+    revalidatePath("/resumes");
+    revalidatePath(`/resumes/${resume.id}`);
+
+    return updatedJob
+}
 export const deleteJobResume = async (id: string) => {
 
     await db.jobResume.delete({
