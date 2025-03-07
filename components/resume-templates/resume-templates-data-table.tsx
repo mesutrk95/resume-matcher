@@ -69,13 +69,7 @@ export function ResumeTemplatesDateTable({
   const handleDeleteTemplate = async (id: string) => {
     try {
       setIsDeleting(id);
-      const result = await deleteResumeTemplate(id);
-
-      if (!result.success) {
-        toast.error(result.error || "Failed to delete template");
-        return;
-      }
-
+      await deleteResumeTemplate(id);
       toast.success("Template deleted successfully");
       router.refresh();
     } catch (error) {

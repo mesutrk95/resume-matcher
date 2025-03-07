@@ -10,6 +10,9 @@ import { getAIHtmlResponse, getAIJsonResponse, } from "@/lib/ai";
 import { JobAnalyzeResult } from "@/types/job";
 import { withErrorHandling } from "./with-error-handling";
 
+import cheerio from 'cheerio';
+import axios from "axios";
+
 export const createJob = withErrorHandling(async (values: z.infer<typeof jobSchema>): Promise<Job> => {
     const user = await currentUser();
     const job = await db.job.create({
@@ -93,7 +96,7 @@ const analyzeJobSummary = async (job: Job) => {
     return getAIHtmlResponse(prompt, [job.description || ''])
 }
 
-export const analyzeJobByAI = withErrorHandling(async (jobId: string) => {
+export const analyzeJobByAI = async (jobId: string) => {
 
     const user = await currentUser();
 
@@ -127,9 +130,9 @@ export const analyzeJobByAI = withErrorHandling(async (jobId: string) => {
     })
 
     return analyzeResults;
-})
+}
 
-export const analyzeJobScores = withErrorHandling(async (jobResumeId: string, content: string) => {
+export const analyzeJobScores = async (jobResumeId: string, content: string) => {
 
     const user = await currentUser();
     const jobResume = await db.jobResume.findUnique({
@@ -148,7 +151,7 @@ export const analyzeJobScores = withErrorHandling(async (jobResumeId: string, co
 
     let analyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
     if (!analyzeResults) {
-        analyzeResults = (await analyzeJobByAI(jobResume.jobId)).data!
+        analyzeResults = (await analyzeJobByAI(jobResume.jobId))!
     }
 
     const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, an experience has items, and each item has variations, you need to give a score (on a scale from 0 to 1) to each variation based on how well it matches the job description, in an experience item only one variation can be selected, give me the best matches in this format [{ "id" : "variation_id", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`
@@ -158,4 +161,22 @@ export const analyzeJobScores = withErrorHandling(async (jobResumeId: string, co
     const generatedContent = await getAIJsonResponse(prompt, [content + '\n' + `keywords: ${keywords} \n Make sure all the variations have score.`])
 
     return generatedContent
-})
+}
+
+export const extractJobDescriptionFromUrl = async (url: string) => {
+    // Fetch the content of the URL
+    const response = await axios.get(url);
+    const html = response.data;
+
+    // Load the HTML into cheerio
+    const $ = cheerio.load(html);
+    const cardTop = $('.top-card-layout__entity-info-container').text().trim();
+    const description = $('.description__text--rich .show-more-less-html__markup').html()?.trim();
+
+
+    const jd = `Banner: ${cardTop}, Description: ${description}`.replaceAll('\n', '')
+    const prompt = `Extract the following details from the given text, with this keys "description", "companyName", "location" , "title", "postedDate".keep the description in html format and make sure postedDate is in correct date format. Ensure the response is in a valid JSON format with no extra text:\n ${jd}`;
+
+    const result = await getAIJsonResponse(prompt)
+    return result
+}

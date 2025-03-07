@@ -14,9 +14,8 @@ export function CreateNewTemplateForm() {
   const handleCreateNewResumeTemplate = async () => {
     startTransition(() => {
       createResumeTemplate()
-        .then((data) => {
-          if (!data || data.error) return toast.error("Something went wrong.");
-          const templateId = data.data?.id;
+        .then((data) => { 
+          const templateId = data?.id;
           router.push("/templates/" + templateId);
           toast.success("Resume template successfully created!");
         })

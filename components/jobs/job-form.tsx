@@ -5,15 +5,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 import { FormInput } from "@/components/shared/form-input";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { createJob, updateJob } from "@/actions/job";
+import {
+  createJob,
+  extractJobDescriptionFromUrl,
+  updateJob,
+} from "@/actions/job";
 import { jobSchema } from "@/schemas";
-import { extractJobDetailsFromUrl } from "@/api/job-matcher";
 import { LoadingButton } from "../ui/loading-button";
-import { useQuery } from "@tanstack/react-query";
 import { JoeditInput } from "../shared/joedit-input";
 
 type JobFormValues = z.infer<typeof jobSchema>;
@@ -25,6 +27,7 @@ interface JobFormProps {
 export const JobForm = ({ initialData }: JobFormProps) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [isExtractingJD, startExtractingJDTransition] = useTransition();
 
   const isEditing = !!initialData?.id;
 
@@ -62,33 +65,26 @@ export const JobForm = ({ initialData }: JobFormProps) => {
     });
   });
 
-  const {
-    refetch,
-    data: extractedJobDescription,
-    // isFetched: isJDFetched,
-    isFetching: isJDFetching,
-  } = useQuery({
-    queryKey: ["extract-job-details"],
-    queryFn: () => extractJobDetailsFromUrl(form.getValues().url || ""),
-    enabled: false,
-  });
-
-  useEffect(() => {
-    if (!form) return;
-
-    extractedJobDescription?.description &&
-      form.setValue("description", extractedJobDescription?.description);
-    extractedJobDescription?.companyName &&
-      form.setValue("companyName", extractedJobDescription?.companyName);
-    extractedJobDescription?.location &&
-      form.setValue("location", extractedJobDescription?.location);
-    extractedJobDescription?.title &&
-      form.setValue("title", extractedJobDescription?.title);
-    extractedJobDescription?.postedDate &&
-      form.setValue("postedAt", extractedJobDescription?.postedDate);
-
-    console.log(extractedJobDescription?.postedDate);
-  }, [extractedJobDescription, form]);
+  const handleExtractJD = () => {
+    startExtractingJDTransition(async () => {
+      try {
+        const result = await extractJobDescriptionFromUrl(
+          form.getValues().url || ""
+        );
+        const data = result?.result;
+        data?.description && form.setValue("description", data?.description);
+        data?.companyName && form.setValue("companyName", data?.companyName);
+        data?.location && form.setValue("location", data?.location);
+        data?.title && form.setValue("title", data?.title);
+        data?.postedDate && form.setValue("postedAt", data?.postedDate);
+        
+      } catch (error) {
+        console.log(error);
+        
+        // toast.error(error.error || "Something went wrong.")
+      }
+    });
+  };
 
   return (
     <div className="">
@@ -103,22 +99,22 @@ export const JobForm = ({ initialData }: JobFormProps) => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex items-end gap-2">
             <FormInput
-              className="flex-grow" // This makes the input fill the available space
+              className="flex-grow"
               control={form.control}
               name="url"
               label="Job URL"
               placeholder="https://example.com/job-posting"
-              isPending={isPending}
+              isPending={isPending || isExtractingJD}
             />
             <LoadingButton
               asChild
-              className="flex-shrink-0 cursor-pointer" // Prevents the button from shrinking
-              loading={isJDFetching}
-              disabled={isJDFetching}
+              className="flex-shrink-0 cursor-pointer"
+              loading={isExtractingJD}
+              disabled={isExtractingJD}
               loadingText="Extracting ..."
               onClick={(e) => {
                 e.preventDefault();
-                refetch();
+                handleExtractJD();
               }}
             >
               <span>Extract From Link</span>

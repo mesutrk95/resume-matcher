@@ -70,7 +70,7 @@ export const JobMatcher = ({
   const jobAnalyzeResults = job.analyzeResults as JobAnalyzeResult;
 
   const [isAnalyzingScores, startAnalyzeScoresTransition] = useTransition();
-  
+
   useEffect(() => {
     if (!jobAnalyzeResults?.keywords) return;
     const fr = constructFinalResume(initialResume, jobAnalyzeResults?.keywords);
@@ -93,14 +93,15 @@ export const JobMatcher = ({
 
   const handleAnalyzeJob = async () => {
     startJobAnalyzeTransition(async () => {
-      const result = await analyzeJobByAI(job.id);
-      if (result?.data && result.success) {
+      try {
+        const result = await analyzeJobByAI(job.id);
+
         toast.success("Job analyzed successfully.");
         setJob({
           ...job,
-          analyzeResults: result.data,
+          analyzeResults: result,
         });
-      } else {
+      } catch (error) {
         toast.error("Failed to analyze job.");
       }
     });
@@ -108,23 +109,29 @@ export const JobMatcher = ({
 
   const handleAnalyzeScores = async () => {
     startAnalyzeScoresTransition(async () => {
-      const result = await Promise.all(
-        finalResume.experiences.map((experience) => {
-          const content = experience.items
-            .map(
-              (item, index) =>
-                `Experience Item ${index + 1}\n` +
-                item.variations.map((v) => `${v.id} - ${v.content}`).join("\n")
-            )
-            .flat()
-            .join("\n");
-          return analyzeJobScores(jobResumeId as string, content);
-        })
-      );
+      try {
+        const result = await Promise.all(
+          finalResume.experiences.map((experience) => {
+            const content = experience.items
+              .map(
+                (item, index) =>
+                  `Experience Item ${index + 1}\n` +
+                  item.variations
+                    .map((v) => `${v.id} - ${v.content}`)
+                    .join("\n")
+              )
+              .flat()
+              .join("\n");
+            return analyzeJobScores(jobResumeId as string, content);
+          })
+        );
 
-      const scores = result.map(r => r.data?.result) as ResumeScore[]
-      setScores(scores)
-      console.log(scores);
+        const scores = result.map((r) => r.result) as ResumeScore[];
+        setScores(scores);
+        console.log(scores);
+      } catch (error) {
+        toast.error("Failed to analyze scores.");
+      }
     });
   };
 

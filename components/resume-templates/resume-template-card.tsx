@@ -28,9 +28,9 @@ export function ResumeTemplateCard({
         // Call the Server Action to create the ResumeJob
         const result = await createJobResume(jobId, template.id);
 
-        if (result.success) {
+        if (result) {
           // Redirect to the edit page
-          router.push(`/resumes/${result.data?.id}`);
+          router.push(`/resumes/${result?.id}`);
         } else {
           toast.error("Failed to create resume");
         }

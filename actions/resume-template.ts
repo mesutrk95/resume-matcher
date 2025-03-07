@@ -4,24 +4,21 @@ import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { ResumeTemplate } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { withErrorHandling } from "./with-error-handling";
 
 const DEFAULT_RESUME_CONTENT = {
     experiences: []
 }
 
-export const deleteResumeTemplate  = withErrorHandling( async (id: string)=> {
-   
+export const deleteResumeTemplate = async (id: string) => {
     const user = await currentUser()
     await db.resumeTemplate.delete({
         where: { id, userId: user?.id },
     });
-
     revalidatePath("/templates");
     return true
-})
+}
 
-export const updateResumeTemplate = withErrorHandling(async (template: ResumeTemplate) => {
+export const updateResumeTemplate = async (template: ResumeTemplate) => {
     const user = await currentUser();
 
     // Update job in database
@@ -41,9 +38,9 @@ export const updateResumeTemplate = withErrorHandling(async (template: ResumeTem
     revalidatePath(`/templates/${template.id}`);
 
     return updatedJob
-})
+}
 
-export const createResumeTemplate = withErrorHandling(async () => {
+export const createResumeTemplate = async () => {
     const user = await currentUser();
 
     // Update job in database
@@ -59,4 +56,4 @@ export const createResumeTemplate = withErrorHandling(async () => {
     revalidatePath("/templates");
 
     return template
-})
+} 

@@ -3,6 +3,9 @@ type ServerActionResponse<T> = {
     data?: T;
     error?: string;
 };
+export type ServerActionError = {
+    error?: string;
+};
 
 export function withErrorHandling<T extends (...args: any[]) => Promise<any>>(
     action: T

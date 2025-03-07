@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import {
   Table,
   TableBody,
@@ -47,7 +47,7 @@ export function JobResumesDataTable({
   const router = useRouter();
   const pathname = usePathname();
   const [search, setSearch] = useState(searchQuery);
-  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [isDeleting, startDeletingTransition] = useTransition();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,22 +67,16 @@ export function JobResumesDataTable({
   };
 
   const handleDeleteJobResume = async (id: string) => {
-    try {
-      setIsDeleting(id);
-      const result = await deleteJobResume(id);
+    startDeletingTransition(async () => {
+      try { 
+        await deleteJobResume(id);
+        toast.success("Job resume deleted successfully");
+        router.refresh();
+      } catch (error) {
+        toast.error(error?.toString() || "Something went wrong");
+      }  
 
-      if (!result.success) {
-        toast.error(result.error?.message || "Failed to delete job resume");
-        return;
-      }
-
-      toast.success("Job resume deleted successfully");
-      router.refresh();
-    } catch (error) {
-      toast.error("Something went wrong");
-    } finally {
-      setIsDeleting(null);
-    }
+    })
   };
 
   return (
@@ -143,7 +137,7 @@ export function JobResumesDataTable({
                       <AlertDialogTrigger asChild>
                         <Button
                           variant={"outline"}
-                          disabled={isDeleting === jobResume.id}
+                          disabled={isDeleting}
                           className="text-destructive focus:text-destructive"
                         >
                           <Trash className="h-4 w-4" />
@@ -173,7 +167,7 @@ export function JobResumesDataTable({
                     <Button
                       asChild
                       variant={"outline"}
-                      disabled={isDeleting === jobResume.id}
+                      disabled={isDeleting}
                     >
                       <Link href={`/resumes/${jobResume.id}`}>
                         <Edit className="h-4 w-4" />

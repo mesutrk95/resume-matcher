@@ -3,9 +3,8 @@
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { withErrorHandling } from "./with-error-handling";
 
-export const createJobResume = withErrorHandling(async (jobId: string, resumeTemplateId: string,) => {
+export const createJobResume = async (jobId: string, resumeTemplateId: string,) => {
 
     const user = await currentUser()
     const resumeTemplate = await db.resumeTemplate.findUnique({ where: { id: resumeTemplateId, userId: user?.id } })
@@ -26,9 +25,9 @@ export const createJobResume = withErrorHandling(async (jobId: string, resumeTem
     });
 
     return resumeJob
-})
+}
 
-export const deleteJobResume = withErrorHandling(async (id: string) => {
+export const deleteJobResume = async (id: string) => {
 
     await db.jobResume.delete({
         where: { id },
@@ -36,4 +35,4 @@ export const deleteJobResume = withErrorHandling(async (id: string) => {
 
     revalidatePath("/jobs/[id]", "page");
     return true
-})
+} 
