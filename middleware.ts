@@ -1,20 +1,22 @@
 import { authConfig } from "@/auth/config";
 import NextAuth from "next-auth";
 import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from "@/routes";
+import { NextRequest } from "next/server";
 
 export const { auth } = NextAuth(authConfig);
 
-export default auth((req) => {
+export default async function middleware(req: NextRequest) {
   const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
+  const session = await auth();
+  const isLoggedIn = !!session;
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoutes = publicRoutes.includes(nextUrl.pathname);
-  const isAuthRoutes = authRoutes.includes(nextUrl.pathname);
-
   if (isApiAuthRoute) {
     return null;
   }
+
+  const isPublicRoutes = publicRoutes.includes(nextUrl.pathname);
+  const isAuthRoutes = authRoutes.includes(nextUrl.pathname);
 
   if (isAuthRoutes) {
     if (isLoggedIn) {
@@ -28,7 +30,7 @@ export default auth((req) => {
   }
 
   return null;
-});
+};
 
 // Optionally, don't invoke Middleware on some paths
 // Read more: https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher

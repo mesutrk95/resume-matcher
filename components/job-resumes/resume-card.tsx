@@ -20,14 +20,9 @@ export function JobResumeCard({ jobResume }: JobResumeCardProps) {
   const handleDelete = () => {
     startTransition(async () => {
       try {
-        const result = await deleteJobResume(jobResume.id);
-
-        if (result.success) {
-          toast.success("Resume deleted successfully");
-          router.refresh();
-        } else {
-          toast.error(result.error?.message || "Failed to delete resume");
-        }
+        await deleteJobResume(jobResume.id);
+        toast.success("Resume deleted successfully");
+        router.refresh();
       } catch (error) {
         toast.error("Something went wrong");
       }

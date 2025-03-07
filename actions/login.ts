@@ -136,14 +136,14 @@ export const signInCredentials = async (email: string, password: string) => {
             },
           });
 
-        case "AuthorizedCallbackError":
-          return response({
-            success: false,
-            error: {
-              code: 422,
-              message: "Authorization failed. Please try again.",
-            },
-          });
+        // case "AuthorizedCallbackError":
+        //   return response({
+        //     success: false,
+        //     error: {
+        //       code: 422,
+        //       message: "Authorization failed. Please try again.",
+        //     },
+        //   });
 
         default:
           return response({

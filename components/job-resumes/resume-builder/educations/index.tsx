@@ -50,6 +50,7 @@ export function EducationsSection({
     content: string;
     location: string;
     startDate: string;
+    institution: string;
     endDate: string;
   }) => {
     const newEducation: ResumeEducation = {
@@ -59,6 +60,7 @@ export function EducationsSection({
       location: education.location,
       startDate: education.startDate,
       endDate: education.endDate,
+      institution: education.institution,
       enabled: true,
     };
 

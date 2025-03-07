@@ -1,5 +1,3 @@
-// import { Template } from '@/types/resume'
-import { Template } from '@/types/resume'
 import { ResumeTemplate } from '@prisma/client'
 import axios from 'axios'
 
