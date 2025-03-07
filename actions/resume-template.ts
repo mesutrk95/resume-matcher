@@ -53,4 +53,18 @@ export const createResumeTemplate = async () => {
     revalidatePath("/templates");
 
     return template
+}
+
+export const getResumeTemplate = async (id: string) => {
+    const user = await currentUser();
+
+    // Update job in database
+    const rt = await db.resumeTemplate.findUnique({
+        where: {
+            id,
+            userId: user?.id!
+        },
+    });
+
+    return rt
 } 

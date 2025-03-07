@@ -18,6 +18,7 @@ import { ExperienceList } from "./experience-list";
 import { Experience, ResumeContent } from "@/types/resume";
 import { useState } from "react";
 import { AddExperienceForm } from "./add-experience-form";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 type ExperiencesSectionProps = {
   resume: ResumeContent;
@@ -89,42 +90,45 @@ export function ExperiencesSection({
   };
 
   return (
-    <>
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Experiences</h2>
+    <Card className="">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>Experiences</CardTitle>
+
         {!addingExperience ? (
           <Button onClick={handleAddExperience}>
             <Plus className="h-4 w-4 mr-1" />
             Add Experience
           </Button>
         ) : null}
-      </div>
+      </CardHeader>
 
-      {/* Add Experience Form */}
-      {addingExperience && (
-        <AddExperienceForm
-          onSave={handleSaveNewExperience}
-          onCancel={handleCancelAddExperience}
-        />
-      )}
-
-      {/* Experiences List with Drag and Drop */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEndExperiences}
-      >
-        <SortableContext
-          items={resume.experiences.map((exp) => exp.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          <ExperienceList
-            experiences={resume.experiences}
-            onUpdate={handleUpdateExperience}
-            onDelete={handleDeleteExperience}
+      <div className="p-6 pt-0">
+        {/* Add Experience Form */}
+        {addingExperience && (
+          <AddExperienceForm
+            onSave={handleSaveNewExperience}
+            onCancel={handleCancelAddExperience}
           />
-        </SortableContext>
-      </DndContext>
-    </>
+        )}
+
+        {/* Experiences List with Drag and Drop */}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEndExperiences}
+        >
+          <SortableContext
+            items={resume.experiences.map((exp) => exp.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <ExperienceList
+              experiences={resume.experiences}
+              onUpdate={handleUpdateExperience}
+              onDelete={handleDeleteExperience}
+            />
+          </SortableContext>
+        </DndContext>
+      </div>
+    </Card>
   );
 }

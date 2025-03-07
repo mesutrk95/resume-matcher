@@ -56,7 +56,7 @@ export function TitleItem({ title, onUpdate, onDelete }: TitleItemProps) {
 
   return (
     <div ref={setNodeRef} style={style} className="border rounded-md p-4">
-      <div className="flex items-start">
+      <div className="flex items-center">
         <div
           className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground"
           {...attributes}
@@ -69,7 +69,7 @@ export function TitleItem({ title, onUpdate, onDelete }: TitleItemProps) {
           id={`title-${title.id}`}
           checked={title.enabled}
           onCheckedChange={handleToggleEnabled}
-          className="mr-3 mt-1"
+          className="mr-3  "
         />
 
         <div className="flex-1">
@@ -77,8 +77,7 @@ export function TitleItem({ title, onUpdate, onDelete }: TitleItemProps) {
             <Input
               value={editForm.content}
               onChange={(e) => setEditForm({ content: e.target.value })}
-              placeholder="Title"
-              className="mb-2"
+              placeholder="Title" 
             />
           ) : (
             <p className={`${!title.enabled ? "text-muted-foreground" : ""}`}>{title.content}</p>

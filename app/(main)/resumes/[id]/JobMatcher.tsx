@@ -14,36 +14,123 @@ import { JobAnalyzeResult, JobKeyword, JobKeywordType } from "@/types/job";
 import { useParams } from "next/navigation";
 import { ResumeScore } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
 import { updateJobResume } from "@/actions/job-resume";
+import { format } from "date-fns";
 // import { useLayout } from "@/app/context/LayoutProvider";
 
 const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
   return (
-    <div className="p-5">
-      <div className="flex flex-col gap-4 shadow-lg px-10 py5">
-        {resume.experiences
-          .filter((e) => e.enabled)
-          .map((experience, index) => (
-            <div key={index}>
-              <h2 className="text-lg font-bold">{experience.companyName}</h2>
-              <h3 className="text-md font-bold">{experience.role}</h3>
-              <p className="text-sm">
-                {experience.startDate} - {experience.endDate}
-              </p>
-              <ul className="list-disc ml-4">
-                {experience.items
-                  .filter((e) => e.enabled)
-                  .map((item, index) => {
-                    return item.variations
-                      .filter((v) => v.enabled)
-                      .map((variation) => (
-                        <li className="text-sm" key={item.id + variation.id}>
-                          {variation.content}
-                        </li>
-                      ));
-                  })}
-              </ul>
-            </div>
-          ))}
+    <div className="px-5 ">
+      <div className="flex flex-col gap-4 p-10 border rounded">
+        <div>
+          <h1 className="text-xl font-bold">
+            {resume.contactInfo.firstName + "" + resume.contactInfo.lastName}
+          </h1>
+          <span className="text-xs">
+            {[
+              resume.contactInfo.country,
+              resume.contactInfo.email,
+              resume.contactInfo.phone,
+              resume.contactInfo.linkedIn,
+              resume.contactInfo.github,
+              resume.contactInfo.website,
+              resume.contactInfo.twitter,
+            ]
+              .filter((r) => !!r)
+              .join(" • ")}
+          </span>
+        </div>
+
+        <div className="">
+          <h3 className="text-lg font-bold">
+            {resume.titles.find((t) => t.enabled)?.content}
+          </h3>
+          <p className="text-xs">
+            {resume.summaries.find((s) => s.enabled)?.content}
+          </p>
+        </div>
+
+        <div>
+          <h5 className="text-green-500 font-bold">Work Experiences</h5>
+          <div className="flex flex-col gap-5">
+            {resume.experiences
+              .filter((e) => e.enabled)
+              .map((experience, index) => (
+                <div key={index}>
+                  <h2 className="text-lg font-bold">
+                    {experience.companyName}
+                  </h2>
+                  <h3 className="text-md font-bold">{experience.role}</h3>
+                  <p className="text-sm">
+                    {experience.startDate} - {experience.endDate}
+                  </p>
+                  <ul className="list-disc ml-4">
+                    {experience.items
+                      .filter((e) => e.enabled)
+                      .map((item, index) => {
+                        return item.variations
+                          .filter((v) => v.enabled)
+                          .map((variation) => (
+                            <li
+                              className="text-sm"
+                              key={item.id + variation.id}
+                            >
+                              {variation.content}
+                            </li>
+                          ));
+                      })}
+                  </ul>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        <div>
+          <h5 className="text-green-500 font-bold">Projects</h5>
+          <div className="flex flex-col gap-5">
+            {resume.projects
+              .filter((p) => p.enabled)
+              .map((p, index) => (
+                <div key={index}>
+                  <h2 className="text-lg font-bold">{p.name}</h2>
+                  <h3 className="text-md font-bold">{p.link}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {format(p.startDate, "yyyy/MM")} -{" "}
+                    {format(p.endDate, "yyyy/MM")}
+                  </p>
+                  <p className="text-sm">{p.content}</p>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        <div>
+          <h5 className="text-green-500 font-bold">Educations</h5>
+          <div className="flex flex-col gap-5">
+            {resume.educations
+              .filter((e) => e.enabled)
+              .map((e, index) => (
+                <div key={index}>
+                  <h2 className="text-lg font-bold">{e.institution}</h2>
+                  <h3 className="text-md font-bold">{e.degree}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {format(e.startDate, "yyyy/MM")} -{" "}
+                    {format(e.endDate, "yyyy/MM")}
+                  </p>
+                  <p className="text-sm">{e.content}</p>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        <div>
+          <h5 className="text-green-500 font-bold">Skills</h5>
+          <div className="flex flex-wrap gap-5 text-sm">
+            {resume.skills
+              .filter((s) => s.enabled)
+              .map((s) => s.content)
+              .join(", ")}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -268,11 +355,12 @@ export const JobMatcher = ({
                   resumeScores={scores}
                   onUpdate={async (tmp) => {
                     setResume(tmp);
-                    console.log(jobResume);
                     try {
                       await updateJobResume({ ...jobResume, content: tmp });
                     } catch (ex) {
-                      toast.error('Something went wrong when saving the resume changes.')
+                      toast.error(
+                        "Something went wrong when saving the resume changes."
+                      );
                     }
                   }}
                 />

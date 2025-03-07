@@ -60,6 +60,8 @@ export function ExperienceItem({
     role: experience.role,
     startDate: experience.startDate,
     endDate: experience.endDate,
+    location: experience.location,
+    type: experience.type,
   });
 
   const [addingItem, setAddingItem] = useState(false);
@@ -78,6 +80,8 @@ export function ExperienceItem({
       role: experience.role,
       startDate: experience.startDate,
       endDate: experience.endDate,
+      location: experience.location,
+      type: experience.type,
     });
     setIsEditing(true);
   };
@@ -225,24 +229,24 @@ export function ExperienceItem({
                   placeholder="End Date"
                 />
                 <Input
-                  value={editForm.startDate}
+                  value={editForm.type}
                   onChange={(e) =>
                     setEditForm((prev) => ({
                       ...prev,
-                      startDate: e.target.value,
+                      type: e.target.value,
                     }))
                   }
-                  placeholder="Start Date"
+                  placeholder="Full-time"
                 />
                 <Input
-                  value={editForm.endDate}
+                  value={editForm.location}
                   onChange={(e) =>
                     setEditForm((prev) => ({
                       ...prev,
-                      endDate: e.target.value,
+                      location: e.target.value,
                     }))
                   }
-                  placeholder="End Date"
+                  placeholder="Location"
                 />
               </div>
             )}

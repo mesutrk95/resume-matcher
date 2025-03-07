@@ -19,6 +19,8 @@ export type Experience = {
     endDate: string
     enabled: boolean
     items: ExperienceItem[]
+    location: string
+    type: string
 }
 
 export type ResumeProfessionalSummary = {
@@ -37,6 +39,7 @@ export type ResumeSkill = {
 export type ResumeProject = {
     id: string
     name: string
+    link: string
     content: string
     startDate: string
     endDate: string
@@ -49,6 +52,8 @@ export type ResumeContactInfo = {
     phone: string
     email: string
     linkedIn: string
+    github: string
+    website: string
     twitter: string
     address: string
     country: string
@@ -67,6 +72,7 @@ export type ResumeEducation = {
     enabled: boolean
     startDate: string
     endDate: string
+    institution: string
     location: string
     degree: string
 }

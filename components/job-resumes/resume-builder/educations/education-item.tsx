@@ -1,69 +1,94 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { ResumeEducation } from "@/types/resume"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
-import { DatePicker } from "@/components/ui/date-picker"
-import { Edit, GripVertical, Save, Trash2, X } from "lucide-react"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import { format } from "date-fns"
+import { useState } from "react";
+import type { ResumeEducation } from "@/types/resume";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DatePicker } from "@/components/ui/date-picker";
+import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { format } from "date-fns";
+import { Textarea } from "@/components/ui/textarea";
 
 type EducationItemProps = {
-  education: ResumeEducation
-  onUpdate: (education: ResumeEducation) => void
-  onDelete: (educationId: string) => void
-}
+  education: ResumeEducation;
+  onUpdate: (education: ResumeEducation) => void;
+  onDelete: (educationId: string) => void;
+};
 
-export function EducationItem({ education, onUpdate, onDelete }: EducationItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: education.id })
+export function EducationItem({
+  education,
+  onUpdate,
+  onDelete,
+}: EducationItemProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: education.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  }
+  };
 
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     degree: education.degree,
     content: education.content,
     location: education.location,
-  })
+    institution: education.institution,
+  });
 
   // Parse dates from strings to Date objects for the date picker
   const parseDate = (dateStr: string): Date | undefined => {
-    if (dateStr === "Present") return undefined
+    if (dateStr === "Present") return undefined;
 
-    const parts = dateStr.split(" ")
-    if (parts.length !== 2) return undefined
+    const parts = dateStr.split(" ");
+    if (parts.length !== 2) return undefined;
 
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    const monthIndex = months.indexOf(parts[0])
-    if (monthIndex === -1) return undefined
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const monthIndex = months.indexOf(parts[0]);
+    if (monthIndex === -1) return undefined;
 
-    const year = Number.parseInt(parts[1])
-    if (isNaN(year)) return undefined
+    const year = Number.parseInt(parts[1]);
+    if (isNaN(year)) return undefined;
 
-    return new Date(year, monthIndex, 1)
-  }
+    return new Date(year, monthIndex, 1);
+  };
 
-  const [startDate, setStartDate] = useState<Date | undefined>(parseDate(education.startDate))
-  const [endDate, setEndDate] = useState<Date | undefined>(parseDate(education.endDate))
-  const [isPresent, setIsPresent] = useState(education.endDate === "Present")
+  const [startDate, setStartDate] = useState<Date | undefined>(
+    parseDate(education.startDate)
+  );
+  const [endDate, setEndDate] = useState<Date | undefined>(
+    parseDate(education.endDate)
+  );
+  const [isPresent, setIsPresent] = useState(education.endDate === "Present");
 
   const handleEdit = () => {
     setEditForm({
       degree: education.degree,
       content: education.content,
       location: education.location,
-    })
-    setStartDate(parseDate(education.startDate))
-    setEndDate(parseDate(education.endDate))
-    setIsPresent(education.endDate === "Present")
-    setIsEditing(true)
-  }
+      institution: education.institution,
+    });
+    setStartDate(parseDate(education.startDate));
+    setEndDate(parseDate(education.endDate));
+    setIsPresent(education.endDate === "Present");
+    setIsEditing(true);
+  };
 
   const handleSave = () => {
     onUpdate({
@@ -71,29 +96,36 @@ export function EducationItem({ education, onUpdate, onDelete }: EducationItemPr
       degree: editForm.degree,
       content: editForm.content,
       location: editForm.location,
-      startDate: startDate ? format(startDate, 'yyyy MM dd') : education.startDate,
-      endDate: isPresent ? "Present" : endDate ? format(endDate, 'yyyy MM dd') : education.endDate,
-    })
-    setIsEditing(false)
-  }
+      institution: editForm.institution,
+      startDate: startDate
+        ? format(startDate, "yyyy/MM")
+        : education.startDate,
+      endDate: isPresent
+        ? "Present"
+        : endDate
+        ? format(endDate, "yyyy/MM")
+        : education.endDate,
+    });
+    setIsEditing(false);
+  };
 
   const handleCancel = () => {
-    setIsEditing(false)
-  }
+    setIsEditing(false);
+  };
 
   const handlePresentToggle = (checked: boolean) => {
-    setIsPresent(checked)
+    setIsPresent(checked);
     if (checked) {
-      setEndDate(undefined)
+      setEndDate(undefined);
     }
-  }
+  };
 
   const handleToggleEnabled = (checked: boolean) => {
     onUpdate({
       ...education,
       enabled: checked,
-    })
-  }
+    });
+  };
 
   return (
     <div ref={setNodeRef} style={style} className="border rounded-md p-4">
@@ -120,40 +152,68 @@ export function EducationItem({ education, onUpdate, onDelete }: EducationItemPr
                 <label className="text-sm font-medium mb-1 block">Degree</label>
                 <Input
                   value={editForm.degree}
-                  onChange={(e) => setEditForm((prev) => ({ ...prev, degree: e.target.value }))}
+                  onChange={(e) =>
+                    setEditForm((prev) => ({ ...prev, degree: e.target.value }))
+                  }
                   placeholder="Degree"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium mb-1 block">Institution</label>
+                <label className="text-sm font-medium mb-1 block">
+                  Institution
+                </label>
                 <Input
-                  value={editForm.content}
-                  onChange={(e) => setEditForm((prev) => ({ ...prev, content: e.target.value }))}
+                  value={editForm.institution}
+                  onChange={(e) =>
+                    setEditForm((prev) => ({
+                      ...prev,
+                      institution: e.target.value,
+                    }))
+                  }
                   placeholder="Institution name"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium mb-1 block">Location</label>
+                <label className="text-sm font-medium mb-1 block">
+                  Location
+                </label>
                 <Input
                   value={editForm.location}
-                  onChange={(e) => setEditForm((prev) => ({ ...prev, location: e.target.value }))}
+                  onChange={(e) =>
+                    setEditForm((prev) => ({
+                      ...prev,
+                      location: e.target.value,
+                    }))
+                  }
                   placeholder="Location"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Start Date</label>
-                  <DatePicker date={startDate} setDate={setStartDate} placeholder="Select start date" />
+                  <label className="text-sm font-medium mb-1 block">
+                    Start Date
+                  </label>
+                  <DatePicker
+                    date={startDate}
+                    setDate={setStartDate}
+                    placeholder="Select start date"
+                  />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-1 block">End Date</label>
+                  <label className="text-sm font-medium mb-1 block">
+                    End Date
+                  </label>
                   {isPresent ? (
                     <Input value="Present" disabled className="bg-muted" />
                   ) : (
-                    <DatePicker date={endDate} setDate={setEndDate} placeholder="Select end date" />
+                    <DatePicker
+                      date={endDate}
+                      setDate={setEndDate}
+                      placeholder="Select end date"
+                    />
                   )}
                   <div className="flex items-center mt-2">
                     <Checkbox
@@ -162,19 +222,51 @@ export function EducationItem({ education, onUpdate, onDelete }: EducationItemPr
                       onCheckedChange={handlePresentToggle}
                       className="mr-2"
                     />
-                    <label htmlFor={`isPresent-${education.id}`} className="text-sm">
+                    <label
+                      htmlFor={`isPresent-${education.id}`}
+                      className="text-sm"
+                    >
                       Currently studying
                     </label>
                   </div>
                 </div>
               </div>
+
+              <div>
+                <label className="text-sm font-medium mb-1 block">
+                  Description
+                </label>
+                <Textarea
+                  value={editForm.content}
+                  onChange={(e) =>
+                    setEditForm((prev) => ({
+                      ...prev,
+                      content: e.target.value,
+                    }))
+                  }
+                  placeholder="Description"
+                />
+              </div>
             </div>
           ) : (
             <div>
-              <h3 className={`font-medium ${!education.enabled ? "text-muted-foreground" : ""}`}>{education.degree}</h3>
-              <div className={`${!education.enabled ? "text-muted-foreground" : ""}`}>{education.content}</div>
+              <h3
+                className={`font-medium ${
+                  !education.enabled ? "text-muted-foreground" : ""
+                }`}
+              >
+                {education.degree}
+              </h3>
+              <div
+                className={`${
+                  !education.enabled ? "text-muted-foreground" : ""
+                }`}
+              >
+                {education.content}
+              </div>
               <div className="text-sm text-muted-foreground">
-                {education.location} • {education.startDate} - {education.endDate}
+                {education.institution} • {education.location} •{" "}
+                {education.startDate} - {education.endDate}
               </div>
             </div>
           )}
@@ -195,7 +287,11 @@ export function EducationItem({ education, onUpdate, onDelete }: EducationItemPr
               <Button variant="outline" size="sm" onClick={handleEdit}>
                 <Edit className="h-4 w-4" />
               </Button>
-              <Button variant="destructive" size="sm" onClick={() => onDelete(education.id)}>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => onDelete(education.id)}
+              >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </>
@@ -203,6 +299,5 @@ export function EducationItem({ education, onUpdate, onDelete }: EducationItemPr
         </div>
       </div>
     </div>
-  )
+  );
 }
-

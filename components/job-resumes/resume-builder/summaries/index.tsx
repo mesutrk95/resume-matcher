@@ -46,7 +46,7 @@ export function SummariesSection({ resume, onUpdate }: SummariesSectionProps) {
     const newSummary: ResumeProfessionalSummary = {
       id: `summary${Date.now()}`,
       content,
-      enabled: true,
+      enabled: false,
     };
 
     onUpdate([...resume.summaries, newSummary]);
@@ -58,8 +58,17 @@ export function SummariesSection({ resume, onUpdate }: SummariesSectionProps) {
   };
 
   const handleUpdateSummary = (updatedSummary: ResumeProfessionalSummary) => {
+    let summaries = resume.summaries;
+    if (updatedSummary.enabled) {
+      summaries = summaries.map((summary) =>
+        summary.id !== updatedSummary.id
+          ? { ...summary, enabled: false }
+          : updatedSummary
+      );
+    }
+
     onUpdate(
-      resume.summaries.map((summary) =>
+      summaries.map((summary) =>
         summary.id === updatedSummary.id ? updatedSummary : summary
       )
     );
