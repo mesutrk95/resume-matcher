@@ -1,3 +1,4 @@
+import { updateResumeTemplate } from "@/actions/resume-template";
 import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
 import { ResumeTemplateForm } from "@/components/resume-templates/resume-template-form";
 import { db } from "@/lib/db";
@@ -13,17 +14,24 @@ export default async function TemplateBuilderPage({
 }: {
   params: { id: string };
 }) {
-  const template = await db.resumeTemplate.findUnique({
+  const resumeTemplate = await db.resumeTemplate.findUnique({
     where: { id: params.id },
   });
 
-  if (!template) return null;
-  const content = template?.content as ResumeContent;
+  if (!resumeTemplate) return null;
+  const content = resumeTemplate?.content as ResumeContent;
 
   return (
     <>
-      <ResumeTemplateForm template={template} />
-      <ResumeBuilder data={content} />
+      <ResumeTemplateForm template={resumeTemplate} />
+      <ResumeBuilder
+        data={content}
+        onUpdate={async (resumeContent) => {
+          "use server";
+
+          await updateResumeTemplate({ ...resumeTemplate, content: resumeContent });
+        }}
+      />
     </>
   );
 }

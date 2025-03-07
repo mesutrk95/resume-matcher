@@ -1,4 +1,5 @@
-import { Keyword } from "@/api/job-matcher";
+ 
+import { JobKeyword } from "@/types/job";
 import { ResumeContent, Variation } from "@/types/resume";
 
 function findDuplicates(arr: string[]): { keyword: string; repeats: number }[] {
@@ -44,7 +45,7 @@ function extractKeywords(jobDescription: string) {
     );
 }
 
-function scoreVariation(variation: Variation, keywords: Keyword[]): number {
+function scoreVariation(variation: Variation, keywords: JobKeyword[]): number {
     const contentWords = variation.content.toLowerCase().split(/\W+/).map(w => w.toLowerCase());
 
     return keywords.filter((word) => contentWords.includes(word.keyword.toLowerCase()))
@@ -53,12 +54,13 @@ function scoreVariation(variation: Variation, keywords: Keyword[]): number {
 
 function selectBestVariations(
     resume: ResumeContent,
-    keywords: Keyword[]
+    keywords: JobKeyword[]
 ): ResumeContent {
     let scores: any = {
 
     }
     const selectedResume: ResumeContent = {
+        ...resume,
         experiences: resume.experiences.map((experience, index) => {
             const items = experience.items.map((item) => {
                 const bestVariation = item.variations.reduce(
@@ -99,7 +101,7 @@ function selectBestVariations(
     return selectedResume;
 }
 
-export const constructFinalResume = (templateContent: ResumeContent, keywords: Keyword[]) => {
+export const constructFinalResume = (templateContent: ResumeContent, keywords: JobKeyword[]) => {
     // const keywords = extractKeywords(jobDescription);
     // setKeywords(keywords);
     // console.log("keywords", keywords);

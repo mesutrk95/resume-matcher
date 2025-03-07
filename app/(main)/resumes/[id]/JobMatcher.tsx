@@ -59,40 +59,18 @@ const KeywordBadge = ({ keyword }: { keyword: JobKeyword }) => {
   );
 };
 
-export const JobMatcher = ({
-  initialResume,
-  initialJob,
+const JobTab = ({
+  job,
+  resume,
+  onUpdateJob,
+  onScoresUpdate,
 }: {
-  initialResume: ResumeContent;
-  initialJob: Job;
+  job: Job;
+  resume: ResumeContent;
+  onUpdateJob: (j: Job) => void;
+  onScoresUpdate: (s: ResumeScore[]) => void;
 }) => {
-  const { id: jobResumeId } = useParams();
-  const [finalResume, setFinalResume] = useState<ResumeContent>(initialResume);
-  const [scores, setScores] = useState<ResumeScore[]>();
-  const [job, setJob] = useState<Job>(initialJob);
-
   const [isAnalyzingJob, startJobAnalyzeTransition] = useTransition();
-  const jobAnalyzeResults = job.analyzeResults as JobAnalyzeResult;
-
-  const [isAnalyzingScores, startAnalyzeScoresTransition] = useTransition();
-
-  // const { setIsFluid } = useLayout();
-  // // console.log(data);
-
-  // useEffect(() => {
-  //   setIsFluid(true); // Enable fluid layout on this page
-  //   return () => setIsFluid(false); // Reset on unmount
-  // }, [setIsFluid]);
-
-  useEffect(() => {
-    if (!jobAnalyzeResults?.keywords) return;
-    const fr = constructFinalResume(initialResume, jobAnalyzeResults?.keywords);
-    if (!fr) {
-      toast.error("Keywords are not extracted, please first analyze keywords.");
-      return;
-    }
-    setFinalResume(fr);
-  }, [jobAnalyzeResults?.keywords, initialResume]);
 
   const jobKeywords = useMemo(() => {
     const results = job.analyzeResults as { keywords: JobKeyword[] };
@@ -110,7 +88,7 @@ export const JobMatcher = ({
         const result = await analyzeJobByAI(job.id);
 
         toast.success("Job analyzed successfully.");
-        setJob({
+        onUpdateJob({
           ...job,
           analyzeResults: result,
         });
@@ -120,11 +98,104 @@ export const JobMatcher = ({
     });
   };
 
+  return (
+    <Tabs defaultValue="jd" className=" ">
+      <TabsList className="grid w-full grid-cols-4" variant={"outline"}>
+        <TabsTrigger value="jd" variant={"outline"}>
+          Job Description
+        </TabsTrigger>
+        <TabsTrigger value="keywords" variant={"outline"}>
+          Keywords
+        </TabsTrigger>
+        <TabsTrigger value="summary" variant={"outline"}>
+          Job Summary by AI
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent className="px-2 pt-4" value="jd">
+        <LoadingButton
+          onClick={handleAnalyzeJob}
+          loading={isAnalyzingJob}
+          loadingText="Thinking ..."
+        >
+          Analyze Job
+        </LoadingButton>
+        <JobDescriptionPreview job={job} />
+      </TabsContent>
+      <TabsContent className="px-2 pt-4" value="keywords">
+        <div className="grid grid-cols-3 gap-2">
+          <div className="flex flex-col gap-1">
+            <h4 className="font-bold">Hard Skills</h4>
+            <ul className="  gap-2   ">
+              {jobKeywords?.["hard"]
+                ?.sort((k1, k2) => k2.level - k1.level)
+                .map((keyword) => (
+                  <KeywordBadge keyword={keyword} key={keyword.keyword} />
+                ))}
+
+              {/* {(jobKeywords?.["hard"]?.length || 0) > 15 && (
+                      <li
+                        onClick={() => {}}
+                        className="py-1 text-sm text-primary"
+                      >
+                        Show + {(jobKeywords?.["hard"]?.length || 0) - 15} more
+                      </li>
+                    )} */}
+            </ul>
+          </div>
+          <div className="flex flex-col gap-1">
+            <h4 className="  font-bold">Soft Skills</h4>
+            <ul className="  gap-2   ">
+              {jobKeywords?.["soft"]
+                ?.sort((k1, k2) => k2.level - k1.level)
+                .map((keyword) => (
+                  <KeywordBadge keyword={keyword} key={keyword.keyword} />
+                ))}
+            </ul>
+          </div>
+          <div className="flex flex-col gap-1">
+            <h4 className="  font-bold">Other</h4>
+            <ul className="  gap-2   ">
+              {jobKeywords?.["none"]
+                ?.sort((k1, k2) => k2.level - k1.level)
+                .map((keyword) => (
+                  <KeywordBadge keyword={keyword} key={keyword.keyword} />
+                ))}
+            </ul>
+          </div>
+        </div>
+      </TabsContent>
+      <TabsContent className="px-2 pt-4" value="summary">
+        <div
+          className="jd-preview text-sm"
+          dangerouslySetInnerHTML={{
+            __html: (job.analyzeResults as { summary: string })?.summary,
+          }}
+        ></div>
+      </TabsContent>
+    </Tabs>
+  );
+};
+
+export const JobMatcher = ({
+  initialResume,
+  initialJob,
+}: {
+  initialResume: ResumeContent;
+  initialJob: Job;
+}) => {
+  const { id: jobResumeId } = useParams();
+  const [resume, setResume] = useState<ResumeContent>(initialResume);
+  const [scores, setScores] = useState<ResumeScore[]>();
+  const [job, setJob] = useState<Job>(initialJob);
+
+  const jobAnalyzeResults = job.analyzeResults as JobAnalyzeResult;
+
+  const [isAnalyzingScores, startAnalyzeScoresTransition] = useTransition();
   const handleAnalyzeScores = async () => {
     startAnalyzeScoresTransition(async () => {
       try {
         const result = await Promise.all(
-          finalResume.experiences.map((experience) => {
+          resume.experiences.map((experience) => {
             const content = experience.items
               .map(
                 (item, index) =>
@@ -142,111 +213,74 @@ export const JobMatcher = ({
         const scores = result.map((r) => r.result).flat() as ResumeScore[];
         setScores(scores);
         console.log(scores);
+        toast.success("Analyze rate and scores are successfully done!");
       } catch (error) {
         toast.error("Failed to analyze scores.");
       }
     });
   };
 
+  useEffect(() => {
+    if (!jobAnalyzeResults?.keywords) return;
+    const fr = constructFinalResume(initialResume, jobAnalyzeResults?.keywords);
+    if (!fr) {
+      toast.error("Keywords are not extracted, please first analyze keywords.");
+      return;
+    }
+    setResume(fr);
+  }, [jobAnalyzeResults?.keywords, initialResume]);
+
   return (
     <div>
       <div className="grid grid-cols-2 gap-5">
         <div>
           <Tabs defaultValue="builder" className=" ">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="builder">Designer</TabsTrigger>
-              <TabsTrigger value="jd">Job Description</TabsTrigger>
-              <TabsTrigger value="keywords">Keywords</TabsTrigger>
-              <TabsTrigger value="summary">Summary (AI)</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3" variant={"outline"}>
+              <TabsTrigger value="builder" variant={"outline"}>
+                Resume Builder
+              </TabsTrigger>
+              <TabsTrigger value="jd" variant={"outline"}>
+                Job Description
+              </TabsTrigger>
+              <TabsTrigger value="keywords" variant={"outline"}>
+                Resume Score
+              </TabsTrigger> 
             </TabsList>
             <TabsContent className="pt-4" value="builder">
-              {finalResume && (
+              
+              <div className="mb-4 flex flex-col gap-4">
+                <div className="flex gap-2">
+                  <LoadingButton
+                    onClick={handleAnalyzeScores}
+                    loading={isAnalyzingScores}
+                    loadingText="Thinking ..."
+                  >
+                    Analyze Scores
+                  </LoadingButton>
+                </div>
+              </div>
+              
+              {resume && (
                 <ResumeBuilder
-                  data={finalResume}
+                  data={resume}
                   resumeScores={scores}
                   onUpdate={(tmp) => {
-                    setFinalResume(tmp);
+                    setResume(tmp);
                   }}
                 />
               )}
             </TabsContent>
-            <TabsContent className="px-2 pt-4" value="jd">
-              <LoadingButton
-                onClick={handleAnalyzeJob}
-                loading={isAnalyzingJob}
-                loadingText="Thinking ..."
-              >
-                Analyze Job
-              </LoadingButton>
-              <JobDescriptionPreview job={job} />
-            </TabsContent>
-            <TabsContent className="px-2 pt-4" value="keywords">
-              <div className="grid grid-cols-3 gap-2">
-                <div className="flex flex-col gap-1">
-                  <h4 className="font-bold">Hard Skills</h4>
-                  <ul className="  gap-2   ">
-                    {jobKeywords?.["hard"]
-                      ?.sort((k1, k2) => k2.level - k1.level)
-                      .map((keyword) => (
-                        <KeywordBadge keyword={keyword} key={keyword.keyword} />
-                      ))}
-
-                    {/* {(jobKeywords?.["hard"]?.length || 0) > 15 && (
-                      <li
-                        onClick={() => {}}
-                        className="py-1 text-sm text-primary"
-                      >
-                        Show + {(jobKeywords?.["hard"]?.length || 0) - 15} more
-                      </li>
-                    )} */}
-                  </ul>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <h4 className="  font-bold">Soft Skills</h4>
-                  <ul className="  gap-2   ">
-                    {jobKeywords?.["soft"]
-                      ?.sort((k1, k2) => k2.level - k1.level)
-                      .map((keyword) => (
-                        <KeywordBadge keyword={keyword} key={keyword.keyword} />
-                      ))}
-                  </ul>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <h4 className="  font-bold">Other</h4>
-                  <ul className="  gap-2   ">
-                    {jobKeywords?.["none"]
-                      ?.sort((k1, k2) => k2.level - k1.level)
-                      .map((keyword) => (
-                        <KeywordBadge keyword={keyword} key={keyword.keyword} />
-                      ))}
-                  </ul>
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent className="px-2 pt-4" value="summary">
-              <div
-                className="jd-preview text-sm"
-                dangerouslySetInnerHTML={{
-                  __html: (job.analyzeResults as { summary: string })?.summary,
-                }}
-              ></div>
+            <TabsContent className="" value="jd">
+              <JobTab
+                job={job}
+                onUpdateJob={setJob}
+                onScoresUpdate={setScores}
+                resume={resume}
+              />
             </TabsContent>
           </Tabs>
         </div>
-        <div>
-          {finalResume && <ResumePreview resume={finalResume} />}
-          <div className="mt-5 flex flex-col gap-4">
-            <div className="flex gap-2">
-              <LoadingButton
-                onClick={handleAnalyzeScores}
-                loading={isAnalyzingScores}
-                loadingText="Thinking ..."
-              >
-                Analyze Scores
-              </LoadingButton>
-            </div>
-          </div>
-        </div>
+        <div>{resume && <ResumePreview resume={resume} />}</div>
       </div>
 
       {/* builder preview */}

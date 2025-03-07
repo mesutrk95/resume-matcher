@@ -6,7 +6,18 @@ import { ResumeTemplate } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 const DEFAULT_RESUME_CONTENT = {
-    experiences: []
+    experiences: [],
+    contactInfo: {},
+    titles: [],
+    summaries: [],
+    educations: [],
+    skills: [],
+    projects: [],
+    languages: [],
+    certifications: [],
+    awards: [],
+    interests: [],
+    references: [],
 }
 
 export const deleteResumeTemplate = async (id: string) => {
