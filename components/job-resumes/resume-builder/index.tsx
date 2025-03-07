@@ -41,7 +41,7 @@ function ResumeBuilderComponent({ data, resumeScores, onUpdate }: IPropsType) {
   const [template, setTemplate] = useState<ResumeContent>(data);
 
   useEffect(() => {
-    console.log("updated", template);
+    // console.log("updated", template);
     const newTemplate = JSON.stringify(template);
 
     if (newTemplate !== lastTemplate) {

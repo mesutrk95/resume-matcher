@@ -186,7 +186,7 @@ export function ExperienceItem({
             />
 
             {isEditing && (
-              <div className="w-[500px] grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
+              <div className="w-[400px] grid grid-cols-1 md:grid-cols-2 gap-1 py-2">
                 <Input
                   value={editForm.companyName}
                   onChange={(e) =>
@@ -195,16 +195,34 @@ export function ExperienceItem({
                       companyName: e.target.value,
                     }))
                   }
-                  placeholder="Company"
-                  className="mb-2"
+                  placeholder="Company" 
                 />
                 <Input
                   value={editForm.role}
                   onChange={(e) =>
                     setEditForm((prev) => ({ ...prev, role: e.target.value }))
                   }
-                  placeholder="Role"
-                  className="mb-2"
+                  placeholder="Role" 
+                />
+                <Input
+                  value={editForm.startDate}
+                  onChange={(e) =>
+                    setEditForm((prev) => ({
+                      ...prev,
+                      startDate: e.target.value,
+                    }))
+                  }
+                  placeholder="Start Date"
+                />
+                <Input
+                  value={editForm.endDate}
+                  onChange={(e) =>
+                    setEditForm((prev) => ({
+                      ...prev,
+                      endDate: e.target.value,
+                    }))
+                  }
+                  placeholder="End Date"
                 />
                 <Input
                   value={editForm.startDate}
@@ -264,16 +282,16 @@ export function ExperienceItem({
               ) : (
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={handleEdit}>
-                    <Edit className="h-4 w-4 mr-1" />
-                    Edit
+                    <Edit className="h-4 w-4 " />
+                    {/* Edit */}
                   </Button>
                   <Button
                     variant="destructive"
                     size="sm"
                     onClick={() => onDelete(experience.id)}
                   >
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    Delete
+                    <Trash2 className="h-4 w-4 " />
+                    {/* Delete */}
                   </Button>
                 </div>
               )}

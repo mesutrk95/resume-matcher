@@ -13,32 +13,37 @@ import { analyzeJobByAI, analyzeJobScores } from "@/actions/job";
 import { JobAnalyzeResult, JobKeyword, JobKeywordType } from "@/types/job";
 import { useParams } from "next/navigation";
 import { ResumeScore } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
+// import { useLayout } from "@/app/context/LayoutProvider";
 
-const ResumePreview = ({
-  templateContent,
-}: {
-  templateContent: ResumeContent;
-}) => {
+const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
   return (
-    <div className="flex flex-col gap-4">
-      {templateContent.experiences.map((experience, index) => (
-        <div key={index}>
-          <h2 className="text-lg font-bold">{experience.companyName}</h2>
-          <h3 className="text-md font-bold">{experience.role}</h3>
-          <p className="text-sm">
-            {experience.startDate} - {experience.endDate}
-          </p>
-          <ul className="list-disc ml-4">
-            {experience.items.map((item, index) => {
-              return item.variations
-                .filter((v) => v.enabled)
-                .map((variation) => (
-                  <li key={item.id + variation.id}>{variation.content}</li>
-                ));
-            })}
-          </ul>
-        </div>
-      ))}
+    <div className="p-5">
+      <div className="flex flex-col gap-4 shadow-lg px-10 py5">
+        {resume.experiences
+          .filter((e) => e.enabled)
+          .map((experience, index) => (
+            <div key={index}>
+              <h2 className="text-lg font-bold">{experience.companyName}</h2>
+              <h3 className="text-md font-bold">{experience.role}</h3>
+              <p className="text-sm">
+                {experience.startDate} - {experience.endDate}
+              </p>
+              <ul className="list-disc ml-4">
+                {experience.items
+                  .filter((e) => e.enabled)
+                  .map((item, index) => {
+                    return item.variations
+                      .filter((v) => v.enabled)
+                      .map((variation) => (
+                        <li className="text-sm" key={item.id + variation.id}>
+                          {variation.content}
+                        </li>
+                      ));
+                  })}
+              </ul>
+            </div>
+          ))}
+      </div>
     </div>
   );
 };
@@ -70,6 +75,14 @@ export const JobMatcher = ({
   const jobAnalyzeResults = job.analyzeResults as JobAnalyzeResult;
 
   const [isAnalyzingScores, startAnalyzeScoresTransition] = useTransition();
+
+  // const { setIsFluid } = useLayout();
+  // // console.log(data);
+
+  // useEffect(() => {
+  //   setIsFluid(true); // Enable fluid layout on this page
+  //   return () => setIsFluid(false); // Reset on unmount
+  // }, [setIsFluid]);
 
   useEffect(() => {
     if (!jobAnalyzeResults?.keywords) return;
@@ -126,7 +139,7 @@ export const JobMatcher = ({
           })
         );
 
-        const scores = result.map((r) => r.result) as ResumeScore[];
+        const scores = result.map((r) => r.result).flat() as ResumeScore[];
         setScores(scores);
         console.log(scores);
       } catch (error) {
@@ -139,12 +152,24 @@ export const JobMatcher = ({
     <div>
       <div className="grid grid-cols-2 gap-5">
         <div>
-          <Tabs defaultValue="jd" className=" ">
-            <TabsList className="grid w-full grid-cols-3">
+          <Tabs defaultValue="builder" className=" ">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="builder">Designer</TabsTrigger>
               <TabsTrigger value="jd">Job Description</TabsTrigger>
               <TabsTrigger value="keywords">Keywords</TabsTrigger>
               <TabsTrigger value="summary">Summary (AI)</TabsTrigger>
             </TabsList>
+            <TabsContent className="pt-4" value="builder">
+              {finalResume && (
+                <ResumeBuilder
+                  data={finalResume}
+                  resumeScores={scores}
+                  onUpdate={(tmp) => {
+                    setFinalResume(tmp);
+                  }}
+                />
+              )}
+            </TabsContent>
             <TabsContent className="px-2 pt-4" value="jd">
               <LoadingButton
                 onClick={handleAnalyzeJob}
@@ -200,7 +225,7 @@ export const JobMatcher = ({
             </TabsContent>
             <TabsContent className="px-2 pt-4" value="summary">
               <div
-                className="jd-preview"
+                className="jd-preview text-sm"
                 dangerouslySetInnerHTML={{
                   __html: (job.analyzeResults as { summary: string })?.summary,
                 }}
@@ -209,7 +234,7 @@ export const JobMatcher = ({
           </Tabs>
         </div>
         <div>
-          {finalResume && <ResumePreview templateContent={finalResume} />}
+          {finalResume && <ResumePreview resume={finalResume} />}
           <div className="mt-5 flex flex-col gap-4">
             <div className="flex gap-2">
               <LoadingButton
@@ -225,7 +250,7 @@ export const JobMatcher = ({
       </div>
 
       {/* builder preview */}
-      <div>
+      {/* <div>
         {finalResume && (
           <ResumeBuilder
             data={finalResume}
@@ -235,7 +260,7 @@ export const JobMatcher = ({
             }}
           />
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

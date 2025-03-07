@@ -37,9 +37,9 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
     // include: {
     //   resumeTemplate: true,
     // },
-    // orderBy: {
-    //   createdAt: "desc",
-    // },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   return (

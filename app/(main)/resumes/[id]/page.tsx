@@ -3,12 +3,18 @@ import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
 import { JobMatcher } from "./JobMatcher";
 import { ResumeContent } from "@/types/resume";
+import { Metadata } from "next";
 
 interface EditResumePageProps {
   params: {
     id: string;
   };
 }
+
+export const metadata: Metadata = {
+  title: "Build Resume for job",
+  description: "Build your resume based on job description.",
+};
 
 export default async function EditResumePage({ params }: EditResumePageProps) {
   const user = await currentUser();
@@ -37,7 +43,10 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
         Edit Resume for {jobResume.job.title}
       </h1>
 
-      <JobMatcher initialResume={content} initialJob={jobResume.job}></JobMatcher>
+      <JobMatcher
+        initialResume={content}
+        initialJob={jobResume.job}
+      ></JobMatcher>
     </div>
   );
 }

@@ -29,7 +29,7 @@ function PercentageIndicator({ value }: { value: number }) {
     <div
       className={`text-xs font-bold bg-slate-200 py-1 px-2 rounded-full ${getColor()}`}
     >
-      {value.toFixed(0)}%
+      {value.toFixed(0)}% Match
     </div>
   );
 }
@@ -81,23 +81,25 @@ export function VariationComponent({
     });
   };
 
+  const score = scores?.[variation.id];
+
   return (
-    <div ref={setNodeRef} style={style} className="">
-      <div className={`p-2 rounded-md bg-muted/30`}>
+    <div ref={setNodeRef} style={style} className={`bg-white z-10`}>
+      <div className={`p-2 bg-muted/30 border-b`}>
         <div className="flex items-start">
           <div
-            className="p-1 mr-1 cursor-grab text-muted-foreground hover:text-foreground"
+            className=" mr-2 mt-1 cursor-grab text-muted-foreground hover:text-foreground"
             {...attributes}
             {...listeners}
           >
-            <GripVertical className="h-3 w-3" />
+            <GripVertical className="h-4 w-4" />
           </div>
 
           <Checkbox
             id={`variation-${variation.id}`}
             checked={variation.enabled}
             onCheckedChange={handleToggleEnabled}
-            className="mr-2"
+            className="mr-2 mt-1"
           />
 
           <div className="flex-1">
@@ -114,7 +116,7 @@ export function VariationComponent({
                     }
                     placeholder="Variation content"
                     className="mb-2"
-                    rows={2}
+                    rows={5}
                   />
                 ) : (
                   <p
@@ -123,21 +125,30 @@ export function VariationComponent({
                     }`}
                   >
                     {variation.content}
-                    <div className="ml-2 inline-flex">
-                      <PercentageIndicator
-                        value={(scores?.[variation.id]?.score || 0) * 100}
-                      />
-                    </div>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {scores?.[variation.id]?.matched_keywords?.map((k) => (
-                        <span
-                          key={k}
-                          className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs"
-                        >
-                          {k}
-                        </span>
-                      ))}
-                    </div>
+                    {score && (
+                      <>
+                        {/* <div className="ml-2 inline-flex">
+                          <PercentageIndicator
+                            value={(score?.score || 0) * 100}
+                          />
+                        </div> */}
+                        <div className="flex flex-wrap gap-1 mt-2">
+                        <PercentageIndicator
+                            value={(score?.score || 0) * 100}
+                          />
+                          {score?.matched_keywords?.map(
+                            (k) => (
+                              <span
+                                key={k}
+                                className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs"
+                              >
+                                {k}
+                              </span>
+                            )
+                          )}
+                        </div>
+                      </>
+                    )}
                   </p>
                 )}
 
@@ -159,7 +170,7 @@ export function VariationComponent({
                     </Button>
                   </>
                 ) : (
-                  <>
+                  <div className="flex flex-col">
                     <Button variant="ghost" size="sm" onClick={handleEdit}>
                       <Edit className="h-3 w-3" />
                     </Button>
@@ -170,7 +181,7 @@ export function VariationComponent({
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
-                  </>
+                  </div>
                 )}
               </div>
             </div>

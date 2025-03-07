@@ -1,12 +1,8 @@
-import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
-import { JobResumeCard } from "@/components/job-resumes/resume-card";
 import { JobResumesDataTable } from "@/components/job-resumes/resumes-data-table";
 import { Prisma } from "@prisma/client";
+import { Metadata } from "next";
 
 interface ResumesPageProps {
   searchParams: {
@@ -15,6 +11,11 @@ interface ResumesPageProps {
     search?: string;
   };
 }
+
+export const metadata: Metadata = {
+  title: "Resumes List",
+  description: "List of all resumes.",
+};
 
 export default async function ResumesPage({ searchParams }: ResumesPageProps) {
   const user = await currentUser();
