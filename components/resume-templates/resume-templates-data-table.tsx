@@ -72,7 +72,7 @@ export function ResumeTemplatesDateTable({
       const result = await deleteResumeTemplate(id);
 
       if (!result.success) {
-        toast.error(result.error?.message || "Failed to delete template");
+        toast.error(result.error || "Failed to delete template");
         return;
       }
 
