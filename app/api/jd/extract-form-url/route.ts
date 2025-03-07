@@ -1,7 +1,5 @@
-
-import { currentUser } from "@/lib/auth";
 import { NextResponse } from "next/server";
-import { withErrorHandling } from "@/lib/error-handler";
+import { withErrorHandling } from "@/lib/api-error-handler";
 import { getAIJsonResponse } from "@/lib/ai";
 import cheerio from 'cheerio';
 import axios from "axios";

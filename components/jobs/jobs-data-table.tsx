@@ -77,7 +77,7 @@ export function JobsDataTable({
       const result = await deleteJob(id);
 
       if (!result.success) {
-        toast.error(result.error?.message || "Failed to delete job");
+        toast.error(result.error || "Failed to delete job");
         return;
       }
 

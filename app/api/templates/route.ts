@@ -1,6 +1,6 @@
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { withErrorHandling } from "@/lib/error-handler";
+import { withErrorHandling } from "@/lib/api-error-handler";
 import { NextResponse } from "next/server";
 
 // GET /templates

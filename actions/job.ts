@@ -7,130 +7,76 @@ import { currentUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { Job } from "@prisma/client";
 import { getAIHtmlResponse, getAIJsonResponse, } from "@/lib/ai";
+import { JobAnalyzeResult } from "@/types/job";
+import { withErrorHandling } from "./with-error-handling";
 
-export type JobActionResponse = {
-    success: boolean;
-    error?: {
-        message: string;
-    };
-    data?: any;
-};
+export const createJob = withErrorHandling(async (values: z.infer<typeof jobSchema>): Promise<Job> => {
+    const user = await currentUser();
+    const job = await db.job.create({
+        data: {
+            title: values.title,
+            companyName: values.companyName,
+            description: values.description,
+            location: values.location,
+            url: values.url,
+            postedAt: values.postedAt && new Date(values.postedAt),
+            createdAt: new Date(),
+            userId: user?.id!,
+        },
+    });
 
-export const createJob = async (values: z.infer<typeof jobSchema>): Promise<JobActionResponse> => {
-    try {
-        const user = await currentUser();
+    return job
+})
 
-        // Create job in database
-        const job = await db.job.create({
-            data: {
-                title: values.title,
-                companyName: values.companyName,
-                description: values.description,
-                location: values.location,
-                url: values.url,
-                postedAt: values.postedAt && new Date(values.postedAt),
-                createdAt: new Date(),
-                userId: user?.id!,
-            },
-        });
+export const updateJob = withErrorHandling(async (values: z.infer<typeof jobSchema> & { id: string }): Promise<Job> => {
 
-        return {
-            success: true,
-            data: job,
-        };
-    } catch (error) {
-        console.error(error);
-        return {
-            success: false,
-            error: {
-                message: "Failed to create job",
-            },
-        };
+    const user = await currentUser();
+
+    const updatedJob = await db.job.update({
+        where: {
+            id: values.id,
+            userId: user?.id,
+        },
+        data: {
+            title: values.title,
+            companyName: values.companyName,
+            location: values.location,
+            description: values.description,
+            url: values.url,
+            postedAt: values.postedAt && new Date(values.postedAt),
+        },
+    });
+
+    revalidatePath("/jobs");
+    revalidatePath(`/jobs/${values.id}`);
+
+    return updatedJob
+});
+
+export const deleteJob = withErrorHandling(async (id: string): Promise<boolean> => {
+    const user = await currentUser();
+    const job = await db.job.findUnique({
+        where: {
+            id,
+            userId: user?.id,
+        },
+    });
+
+    if (!job) {
+        throw new Error("Job not found or you don't have permission to delete it")
     }
-};
 
-export const updateJob = async (values: z.infer<typeof jobSchema> & { id: string }): Promise<JobActionResponse> => {
-    try {
-        const user = await currentUser();
+    // Delete the job
+    await db.job.delete({
+        where: {
+            id,
+        },
+    });
 
-        // Update job in database
-        const updatedJob = await db.job.update({
-            where: {
-                id: values.id,
-                userId: user?.id,
-            },
-            data: {
-                title: values.title,
-                companyName: values.companyName,
-                location: values.location,
-                description: values.description,
-                url: values.url,
-                postedAt: values.postedAt && new Date(values.postedAt),
-            },
-        });
+    revalidatePath("/jobs");
 
-        revalidatePath("/jobs");
-        revalidatePath(`/jobs/${values.id}`);
-
-        return {
-            success: true,
-            data: updatedJob,
-        };
-    } catch (error) {
-        console.error(error);
-        return {
-            success: false,
-            error: {
-                message: "Failed to update job",
-            },
-        };
-    }
-};
-
-export const deleteJob = async (id: string): Promise<JobActionResponse> => {
-    try {
-        const user = await currentUser();
-
-
-        // Verify the job belongs to the current user
-        const job = await db.job.findUnique({
-            where: {
-                id,
-                userId: user?.id,
-            },
-        });
-
-        if (!job) {
-            return {
-                success: false,
-                error: {
-                    message: "Job not found or you don't have permission to delete it",
-                },
-            };
-        }
-
-        // Delete the job
-        await db.job.delete({
-            where: {
-                id,
-            },
-        });
-
-        revalidatePath("/jobs");
-
-        return {
-            success: true,
-        };
-    } catch (error) {
-        console.error(error);
-        return {
-            success: false,
-            error: {
-                message: "Failed to delete job",
-            },
-        };
-    }
-};
+    return true;
+});
 
 const analyzeJobKeywords = async (job: Job) => {
     const prompt = `Analyze the following job description and extract important keywords. 
@@ -147,7 +93,7 @@ const analyzeJobSummary = async (job: Job) => {
     return getAIHtmlResponse(prompt, [job.description || ''])
 }
 
-export const analyzeJobByAI = async (jobId: string) => {
+export const analyzeJobByAI = withErrorHandling(async (jobId: string) => {
 
     const user = await currentUser();
 
@@ -159,24 +105,13 @@ export const analyzeJobByAI = async (jobId: string) => {
     });
 
     if (!job) {
-        return {
-            success: false,
-            data: {
-                analysis: "Job not found",
-            },
-        };
-
+        throw new Error("Job not found");
     }
 
     const results = await Promise.all([analyzeJobKeywords(job), analyzeJobSummary(job)])
 
     if (results.some(r => r.error)) {
-        return {
-            success: false,
-            data: {
-                analysis: "Failed to analyze job.",
-            },
-        };
+        throw new Error("Failed to analyze job");
 
     }
     const keywords = results[0].result
@@ -184,15 +119,43 @@ export const analyzeJobByAI = async (jobId: string) => {
     const analyzeResults = {
         keywords,
         summary,
-    }
+    } as JobAnalyzeResult
     await db.job.update({
         where: { id: jobId }, data: {
             analyzeResults
         }
     })
 
-    return {
-        success: true,
-        data: analyzeResults,
-    };
-};
+    return analyzeResults;
+})
+
+export const analyzeJobScores = withErrorHandling(async (jobResumeId: string, content: string) => {
+
+    const user = await currentUser();
+    const jobResume = await db.jobResume.findUnique({
+        where: {
+            id: jobResumeId,
+            userId: user?.id,
+        },
+        include: {
+            job: true
+        }
+    });
+
+    if (!jobResume) {
+        throw new Error("Job Resume not found");
+    }
+
+    let analyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
+    if (!analyzeResults) {
+        analyzeResults = (await analyzeJobByAI(jobResume.jobId)).data!
+    }
+
+    const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, an experience has items, and each item has variations, you need to give a score (on a scale from 0 to 1) to each variation based on how well it matches the job description, in an experience item only one variation can be selected, give me the best matches in this format [{ "id" : "variation_id", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`
+
+    const keywords = analyzeResults.keywords.map(k => `${k.keyword} (${k.level})`).join(',')
+
+    const generatedContent = await getAIJsonResponse(prompt, [content + '\n' + `keywords: ${keywords} \n Make sure all the variations have score.`])
+
+    return generatedContent
+})

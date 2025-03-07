@@ -1,18 +1,18 @@
 "use client";
 
-import { getResumeScore } from "@/api/job-matcher";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { constructFinalResume } from "@/app/utils/job-matching";
 import { ResumeContent } from "@/types/resume";
-import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useMemo, useState, useTransition } from "react";
 import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
 import { Job } from "@prisma/client";
 import { JobDescriptionPreview } from "@/components/jobs/job-description-preview";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { analyzeJobByAI } from "@/actions/job";
+import { analyzeJobByAI, analyzeJobScores } from "@/actions/job";
 import { JobAnalyzeResult, JobKeyword, JobKeywordType } from "@/types/job";
+import { useParams } from "next/navigation";
+import { ResumeScore } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
 
 const ResumePreview = ({
   templateContent,
@@ -61,33 +61,16 @@ export const JobMatcher = ({
   initialResume: ResumeContent;
   initialJob: Job;
 }) => {
+  const { id: jobResumeId } = useParams();
   const [finalResume, setFinalResume] = useState<ResumeContent>(initialResume);
+  const [scores, setScores] = useState<ResumeScore[]>();
   const [job, setJob] = useState<Job>(initialJob);
 
-  // const {
-  //   data: keywords,
-  //   refetch: refetchKeywords,
-  //   isFetching: isFetchingKeywords,
-  // } = useQuery({
-  //   queryKey: ["keywords", "jd"],
-  //   queryFn: () => extractKeywords(job.description || ""),
-  //   enabled: false,
-  // });
   const [isAnalyzingJob, startJobAnalyzeTransition] = useTransition();
   const jobAnalyzeResults = job.analyzeResults as JobAnalyzeResult;
 
-  const {
-    data: scores,
-    refetch: refetchScores,
-    isFetching: isFetchingScores,
-  } = useQuery({
-    queryKey: ["keywords", "jd", "scores"],
-    queryFn: () =>
-      jobAnalyzeResults?.keywords &&
-      getResumeScore(initialResume, jobAnalyzeResults.keywords),
-    enabled: false,
-  });
-
+  const [isAnalyzingScores, startAnalyzeScoresTransition] = useTransition();
+  
   useEffect(() => {
     if (!jobAnalyzeResults?.keywords) return;
     const fr = constructFinalResume(initialResume, jobAnalyzeResults?.keywords);
@@ -111,7 +94,7 @@ export const JobMatcher = ({
   const handleAnalyzeJob = async () => {
     startJobAnalyzeTransition(async () => {
       const result = await analyzeJobByAI(job.id);
-      if (result.success) {
+      if (result?.data && result.success) {
         toast.success("Job analyzed successfully.");
         setJob({
           ...job,
@@ -120,6 +103,28 @@ export const JobMatcher = ({
       } else {
         toast.error("Failed to analyze job.");
       }
+    });
+  };
+
+  const handleAnalyzeScores = async () => {
+    startAnalyzeScoresTransition(async () => {
+      const result = await Promise.all(
+        finalResume.experiences.map((experience) => {
+          const content = experience.items
+            .map(
+              (item, index) =>
+                `Experience Item ${index + 1}\n` +
+                item.variations.map((v) => `${v.id} - ${v.content}`).join("\n")
+            )
+            .flat()
+            .join("\n");
+          return analyzeJobScores(jobResumeId as string, content);
+        })
+      );
+
+      const scores = result.map(r => r.data?.result) as ResumeScore[]
+      setScores(scores)
+      console.log(scores);
     });
   };
 
@@ -201,8 +206,8 @@ export const JobMatcher = ({
           <div className="mt-5 flex flex-col gap-4">
             <div className="flex gap-2">
               <LoadingButton
-                onClick={() => refetchScores()}
-                loading={isFetchingScores}
+                onClick={handleAnalyzeScores}
+                loading={isAnalyzingScores}
                 loadingText="Thinking ..."
               >
                 Analyze Scores

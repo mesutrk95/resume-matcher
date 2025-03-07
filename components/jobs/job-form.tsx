@@ -50,9 +50,6 @@ export const JobForm = ({ initialData }: JobFormProps) => {
       action
         .then((data) => {
           if (!data) return;
-          if (!data.success) {
-            return toast.error(data.error?.message || "Problem in job action");
-          }
 
           toast.success(
             isEditing
@@ -61,14 +58,14 @@ export const JobForm = ({ initialData }: JobFormProps) => {
           );
           return router.push("/jobs");
         })
-        .catch(() => toast.error("Something went wrong."));
+        .catch((error) => toast.error("Something went wrong."));
     });
   });
 
   const {
     refetch,
     data: extractedJobDescription,
-    isFetched: isJDFetched,
+    // isFetched: isJDFetched,
     isFetching: isJDFetching,
   } = useQuery({
     queryKey: ["extract-job-details"],
