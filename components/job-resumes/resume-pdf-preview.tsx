@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "#FFFFFF",
     padding: 30,
+    margin:0 ,
     fontFamily: "Open Sans",
   },
   section: {
@@ -140,7 +141,7 @@ const CVDocument = ({ resume }: { resume: ResumeContent }) => (
 
       {/* Experience */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Professional Experience</Text>
+        <Text style={styles.sectionTitle}>Experiences</Text>
         {resume.experiences
           .filter((e) => e.enabled)
           .map((experience, index) => (
@@ -246,25 +247,27 @@ const CVPreview = ({
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="w-full h-screen">
-        <PDFViewer showToolbar={false} className="w-full h-full">
+    <div className="flex flex-col h-screen gap-4">
+      <div className="w-full flex-grow ">
+        <PDFViewer showToolbar={false} className="w-full h-full" style={{ margin: 0, backgroundColor: 'red'}}>
           <CVDocument resume={data} />
         </PDFViewer>
       </div>
-      <Button asChild>
-        <PDFDownloadLink
-          document={<CVDocument resume={data} />}
-          fileName={`${(
-            jobResume.name ||
-            data.contactInfo.firstName + " " + data.contactInfo.lastName
-          ).replace(/\s+/g, "_")}.pdf`}
-        >
-          {({ blob, url, loading, error }) =>
-            loading ? "Generating PDF..." : "Download PDF"
-          }
-        </PDFDownloadLink>
-      </Button>
+      <div className="shrink-0">
+        <Button asChild>
+          <PDFDownloadLink
+            document={<CVDocument resume={data} />}
+            fileName={`${(
+              jobResume.name ||
+              data.contactInfo.firstName + " " + data.contactInfo.lastName
+            ).replace(/\s+/g, "_")}.pdf`}
+          >
+            {({ blob, url, loading, error }) =>
+              loading ? "Generating PDF..." : "Download PDF"
+            }
+          </PDFDownloadLink>
+        </Button>
+      </div>
     </div>
   );
 };

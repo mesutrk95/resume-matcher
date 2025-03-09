@@ -9,13 +9,32 @@ import { Job, JobResume } from "@prisma/client";
 import { JobDescriptionPreview } from "@/components/jobs/job-description-preview";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { analyzeJobByAI, analyzeJobScores } from "@/actions/job";
+import {
+  analyzeExperienceJobScores,
+  analyzeJobByAI,
+  analyzeProjectJobScores,
+} from "@/actions/job";
 import { JobAnalyzeResult, JobKeyword, JobKeywordType } from "@/types/job";
 import { useParams } from "next/navigation";
 import { ResumeScore } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
 import { updateJobResume } from "@/actions/job-resume";
 import { format } from "date-fns";
 import CVPreview from "@/components/job-resumes/resume-pdf-preview";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  updateResumeTemplate,
+  updateResumeTemplateContent,
+} from "@/actions/resume-template";
 // import { useLayout } from "@/app/context/LayoutProvider";
 
 // const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
@@ -281,12 +300,13 @@ export const JobMatcher = ({
 
   const jobAnalyzeResults = job.analyzeResults as JobAnalyzeResult;
 
+  const [isSyncingToTemplate, startSyncToTemplateTransition] = useTransition();
   const [isAnalyzingScores, startAnalyzeScoresTransition] = useTransition();
   const handleAnalyzeScores = async () => {
     startAnalyzeScoresTransition(async () => {
       try {
-        const result = await Promise.all(
-          resume.experiences.map((experience) => {
+        const result = await Promise.all([
+          ...resume.experiences.map((experience) => {
             const content = experience.items
               .map(
                 (item, index) =>
@@ -297,29 +317,61 @@ export const JobMatcher = ({
               )
               .flat()
               .join("\n");
-            return analyzeJobScores(jobResumeId as string, content);
-          })
-        );
+            return analyzeExperienceJobScores(jobResumeId as string, content);
+          }),
+          analyzeProjectJobScores(
+            jobResumeId as string,
+            resume.projects
+              .map((prj) => `(${prj.id}) ${prj.content}`)
+              .join("\n")
+          ),
+        ]);
 
         const scores = result.map((r) => r.result).flat() as ResumeScore[];
         setScores(scores);
         console.log(scores);
         toast.success("Analyze rate and scores are successfully done!");
+
+        if (!jobAnalyzeResults?.keywords) return;
+        const fr = constructFinalResume(
+          initialResume,
+          jobAnalyzeResults?.keywords
+        );
+        if (!fr) {
+          toast.error(
+            "Keywords are not extracted, please first analyze keywords."
+          );
+          return;
+        }
+        setResume(fr);
       } catch (error) {
         toast.error("Failed to analyze scores.");
       }
     });
   };
+  const handleSyncToTemplate = () => {
+    startSyncToTemplateTransition(async () => {
+      try {
+        await updateResumeTemplateContent(
+          jobResume.baseResumeTemplateId!,
+          resume
+        );
+        toast.success("Successfully synced to template!");
+      } catch (error) {
+        toast.error("Failed to sync.");
+      }
+    });
+  };
 
-  useEffect(() => {
-    if (!jobAnalyzeResults?.keywords) return;
-    const fr = constructFinalResume(initialResume, jobAnalyzeResults?.keywords);
-    if (!fr) {
-      toast.error("Keywords are not extracted, please first analyze keywords.");
-      return;
-    }
-    setResume(fr);
-  }, [jobAnalyzeResults?.keywords, initialResume]);
+  // useEffect(() => {
+  //   if (!jobAnalyzeResults?.keywords) return;
+  //   const fr = constructFinalResume(initialResume, jobAnalyzeResults?.keywords);
+  //   if (!fr) {
+  //     toast.error("Keywords are not extracted, please first analyze keywords.");
+  //     return;
+  //   }
+  //   setResume(fr);
+  // }, [jobAnalyzeResults?.keywords, initialResume]);
 
   return (
     <div>
@@ -337,7 +389,7 @@ export const JobMatcher = ({
                 Resume Score
               </TabsTrigger>
             </TabsList>
-            <TabsContent className="pt-4" value="builder">
+            <TabsContent className="pt-0" value="builder">
               <div className="mb-4 flex flex-col gap-4">
                 <div className="flex gap-2">
                   <LoadingButton
@@ -347,6 +399,37 @@ export const JobMatcher = ({
                   >
                     Analyze Scores
                   </LoadingButton>
+
+                  {jobResume.baseResumeTemplateId && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <LoadingButton
+                          loading={isSyncingToTemplate}
+                          loadingText="Saving to template ..."
+                        >
+                          Sync to Template
+                        </LoadingButton>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            syncs and saves this job resume content to the
+                            resume template.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleSyncToTemplate}>
+                            Yes, Sync!
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
                 </div>
               </div>
 
@@ -378,7 +461,7 @@ export const JobMatcher = ({
           </Tabs>
         </div>
         {/* <div>{resume && <ResumePreview resume={resume} />}</div> */}
-        <div className="">
+        <div className="sticky top-0 h-screen">
           <CVPreview data={resume} jobResume={jobResume} />
         </div>
       </div>

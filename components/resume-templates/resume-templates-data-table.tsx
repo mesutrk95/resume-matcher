@@ -119,7 +119,11 @@ export function ResumeTemplatesDateTable({
             ) : (
               data.map((template) => (
                 <TableRow key={template.id}>
-                  <TableCell className="font-medium">{template.name}</TableCell>
+                  <TableCell className="font-medium">
+                    <Link href={`/templates/${template.id}`}>
+                      {template.name}
+                    </Link>
+                  </TableCell>
                   <TableCell>{template.description}</TableCell>
                   <TableCell>
                     {format(new Date(template.createdAt), "MMM d, yyyy HH:mm")}

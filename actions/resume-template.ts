@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { ResumeTemplate } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { DEFAULT_RESUME_CONTENT } from "./constants";
+import { ResumeContent } from "@/types/resume";
 
 export const deleteResumeTemplate = async (id: string) => {
     const user = await currentUser()
@@ -33,6 +34,25 @@ export const updateResumeTemplate = async (template: ResumeTemplate) => {
 
     revalidatePath("/templates");
     revalidatePath(`/templates/${template.id}`);
+
+    return updatedJob
+}
+
+export const updateResumeTemplateContent = async (templateId: string, resmueContent: ResumeContent) => {
+    const user = await currentUser();
+
+    const updatedJob = await db.resumeTemplate.update({
+        where: {
+            id: templateId,
+            userId: user?.id,
+        },
+        data: { 
+            content: resmueContent || DEFAULT_RESUME_CONTENT,
+        },
+    });
+
+    revalidatePath("/templates");
+    revalidatePath(`/templates/${templateId}`);
 
     return updatedJob
 }

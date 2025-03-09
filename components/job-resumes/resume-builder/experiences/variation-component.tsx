@@ -9,6 +9,7 @@ import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useResumeBuilder } from "../context/useResumeBuilder";
+import { MatchPercentageIndicator } from "../match-percentage-indicator";
 
 type VariationComponentProps = {
   experienceId: string;
@@ -17,22 +18,6 @@ type VariationComponentProps = {
   onUpdate: (variation: Variation) => void;
   onDelete: (variationId: string) => void;
 };
-
-function PercentageIndicator({ value }: { value: number }) {
-  const getColor = () => {
-    if (value >= 75) return "text-green-500";
-    if (value >= 50) return "text-yellow-500";
-    return "text-red-500";
-  };
-
-  return (
-    <div
-      className={`text-xs font-bold bg-slate-200 py-1 px-2 rounded-full ${getColor()}`}
-    >
-      {value.toFixed(0)}% Match
-    </div>
-  );
-}
 
 export function VariationComponent({
   experienceId,
@@ -133,19 +118,17 @@ export function VariationComponent({
                           />
                         </div> */}
                         <div className="flex flex-wrap gap-1 mt-2">
-                        <PercentageIndicator
+                          <MatchPercentageIndicator
                             value={(score?.score || 0) * 100}
                           />
-                          {score?.matched_keywords?.map(
-                            (k) => (
-                              <span
-                                key={k}
-                                className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs"
-                              >
-                                {k}
-                              </span>
-                            )
-                          )}
+                          {score?.matched_keywords?.map((k) => (
+                            <span
+                              key={k}
+                              className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs"
+                            >
+                              {k}
+                            </span>
+                          ))}
                         </div>
                       </>
                     )}

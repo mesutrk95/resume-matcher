@@ -28,6 +28,12 @@ export const ResumeBuilderProvider = ({
 }) => {
   const [scores, setScores] = useState<Record<string, ResumeScore>>();
 
+  // const getScoreById = (id: string) => {
+  //   if (!scores?.[id]) return null;
+
+  //   return scores[id];
+  // };
+
   return (
     <ResumeBuilderContext.Provider value={{ setScores, scores }}>
       {children}

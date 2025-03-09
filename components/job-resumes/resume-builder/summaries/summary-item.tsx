@@ -82,7 +82,7 @@ export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
               rows={3}
             />
           ) : (
-            <p className={`${!summary.enabled ? "text-muted-foreground" : ""}`}>{summary.content}</p>
+            <p className={`text-sm ${!summary.enabled ? "text-muted-foreground" : ""}`}>{summary.content}</p>
           )}
         </div>
 

@@ -132,7 +132,7 @@ export const analyzeJobByAI = async (jobId: string) => {
     return analyzeResults;
 }
 
-export const analyzeJobScores = async (jobResumeId: string, content: string) => {
+export const analyzeExperienceJobScores = async (jobResumeId: string, content: string) => {
 
     const user = await currentUser();
     const jobResume = await db.jobResume.findUnique({
@@ -155,6 +155,37 @@ export const analyzeJobScores = async (jobResumeId: string, content: string) => 
     }
 
     const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, an experience has items, and each item has variations, you need to give a score (on a scale from 0 to 1) to each variation based on how well it matches the job description, in an experience item only one variation can be selected, give me the best matches in this format [{ "id" : "variation_id", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`
+
+    const keywords = analyzeResults.keywords.map(k => `${k.keyword} (${k.level})`).join(',')
+
+    const generatedContent = await getAIJsonResponse(prompt, [content + '\n' + `keywords: ${keywords} \n Make sure all the variations have score.`])
+
+    return generatedContent
+}
+
+export const analyzeProjectJobScores = async (jobResumeId: string, content: string) => {
+
+    const user = await currentUser();
+    const jobResume = await db.jobResume.findUnique({
+        where: {
+            id: jobResumeId,
+            userId: user?.id,
+        },
+        include: {
+            job: true
+        }
+    });
+
+    if (!jobResume) {
+        throw new Error("Job Resume not found");
+    }
+
+    let analyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
+    if (!analyzeResults) {
+        analyzeResults = (await analyzeJobByAI(jobResume.jobId))!
+    }
+
+    const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, you need to give a score (on a scale from 0 to 1) to each project item based on how well it matches the job description, give me the best matches in this format [{ "id" : "project_..", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`
 
     const keywords = analyzeResults.keywords.map(k => `${k.keyword} (${k.level})`).join(',')
 

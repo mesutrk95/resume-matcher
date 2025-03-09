@@ -11,6 +11,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { format } from "date-fns";
 import { YearMonthPicker } from "@/components/ui/year-month-picker";
+import { useResumeBuilder } from "../context/useResumeBuilder";
+import { MatchPercentageIndicator } from "../match-percentage-indicator";
 
 type ProjectItemProps = {
   project: ResumeProject;
@@ -19,6 +21,7 @@ type ProjectItemProps = {
 };
 
 export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
+  const { scores } = useResumeBuilder();
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: project.id });
 
@@ -94,6 +97,8 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
       enabled: checked,
     });
   };
+
+  const score = scores?.[project.id];
 
   return (
     <div ref={setNodeRef} style={style} className="border rounded-md p-4">
@@ -222,6 +227,28 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
               >
                 {project.content}
               </p>
+              {score && (
+                <>
+                  {/* <div className="ml-2 inline-flex">
+                          <PercentageIndicator
+                            value={(score?.score || 0) * 100}
+                          />
+                        </div> */}
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    <MatchPercentageIndicator
+                      value={(score?.score || 0) * 100}
+                    />
+                    {score?.matched_keywords?.map((k) => (
+                      <span
+                        key={k}
+                        className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs"
+                      >
+                        {k}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -237,7 +264,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
               </Button>
             </>
           ) : (
-            <>
+            <div className="flex flex-col gap-2">
               <Button variant="outline" size="sm" onClick={handleEdit}>
                 <Edit className="h-4 w-4" />
               </Button>
@@ -248,7 +275,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
-            </>
+            </div>
           )}
         </div>
       </div>
