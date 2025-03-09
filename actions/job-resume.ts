@@ -57,4 +57,4 @@ export const deleteJobResume = async (id: string) => {
 
     revalidatePath("/jobs/[id]", "page");
     return true
-} 
+}

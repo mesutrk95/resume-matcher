@@ -93,6 +93,8 @@ export function ExperienceItem({
       role: editForm.role,
       startDate: editForm.startDate,
       endDate: editForm.endDate,
+      location: editForm.location,
+      type: editForm.type,
     });
     setIsEditing(false);
   };

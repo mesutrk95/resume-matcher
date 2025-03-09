@@ -10,7 +10,7 @@ import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { format } from "date-fns";
-import { DatePicker } from "@/components/ui/date-picker";
+import { YearMonthPicker } from "@/components/ui/year-month-picker";
 
 type ProjectItemProps = {
   project: ResumeProject;
@@ -38,30 +38,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
   const parseDate = (dateStr: string): Date | undefined => {
     if (dateStr === "Present") return undefined;
 
-    const parts = dateStr.split(" ");
-    if (parts.length !== 2) return undefined;
-
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const monthIndex = months.indexOf(parts[0]);
-    if (monthIndex === -1) return undefined;
-
-    const year = Number.parseInt(parts[1]);
-    if (isNaN(year)) return undefined;
-
-    return new Date(year, monthIndex, 1);
+    return new Date(`${dateStr}/01`);
   };
 
   const [startDate, setStartDate] = useState<Date | undefined>(
@@ -90,9 +67,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
       name: editForm.name,
       content: editForm.content,
       link: editForm.link,
-      startDate: startDate
-        ? format(startDate, "yyyy/MM")
-        : project.startDate,
+      startDate: startDate ? format(startDate, "yyyy/MM") : project.startDate,
       endDate: isPresent
         ? "Present"
         : endDate
@@ -172,8 +147,8 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
                     Start Date
                   </label>
 
-                  <DatePicker
-                    date={startDate}
+                  <YearMonthPicker
+                    date={startDate || new Date()}
                     setDate={setStartDate}
                     placeholder="Select start date"
                   />
@@ -185,8 +160,8 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
                   {isPresent ? (
                     <Input value="Present" disabled className="bg-muted" />
                   ) : (
-                    <DatePicker
-                      date={endDate}
+                    <YearMonthPicker
+                      date={endDate || new Date()}
                       setDate={setEndDate}
                       placeholder="Select end date"
                     />
@@ -221,7 +196,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
                     }))
                   }
                   placeholder="Project description"
-                  rows={3}
+                  rows={8}
                 />
               </div>
             </div>

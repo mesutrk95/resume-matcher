@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
-import { DatePicker } from "@/components/ui/date-picker";
 import { formatDate } from "date-fns";
+import { YearMonthPicker } from "@/components/ui/year-month-picker";
 
 type AddEducationFormProps = {
   onSave: (education: {
@@ -36,11 +36,11 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
         content,
         location,
         institution,
-        startDate: formatDate(startDate, "yyyy MM dd"),
+        startDate: formatDate(startDate, "yyyy/MM"),
         endDate: isPresent
           ? "Present"
           : endDate
-          ? formatDate(endDate, "yyyy MM dd")
+          ? formatDate(endDate, "yyyy/MM")
           : "",
       });
     }
@@ -87,8 +87,8 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium mb-1 block">Start Date</label>
-            <DatePicker
-              date={startDate}
+            <YearMonthPicker
+              date={startDate || new Date()}
               setDate={setStartDate}
               placeholder="Select start date"
             />
@@ -98,8 +98,8 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
             {isPresent ? (
               <Input value="Present" disabled className="bg-muted" />
             ) : (
-              <DatePicker
-                date={endDate}
+              <YearMonthPicker
+                date={endDate || new Date()}
                 setDate={setEndDate}
                 placeholder="Select end date"
               />
@@ -135,7 +135,7 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
         <Button
           size="sm"
           onClick={handleSubmit}
-          disabled={!degree.trim() || !content.trim() || !startDate}
+          disabled={!degree.trim() || !startDate}
         >
           Save
         </Button>

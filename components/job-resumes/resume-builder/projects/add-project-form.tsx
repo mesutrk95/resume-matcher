@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
-import { DatePicker } from "@/components/ui/date-picker";
+import { YearMonthPicker } from "@/components/ui/year-month-picker";
 
 type AddProjectFormProps = {
   onSave: (project: {
@@ -55,7 +55,7 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
     <Card className="mb-4 p-4">
       <h4 className="font-medium mb-3">New Project</h4>
       <div className="space-y-3">
-      <div>
+        <div>
           <label className="text-sm font-medium mb-1 block">Project Name</label>
           <Input
             value={name}
@@ -75,8 +75,8 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium mb-1 block">Start Date</label>
-            <DatePicker
-              date={startDate}
+            <YearMonthPicker
+              date={startDate || new Date()}
               setDate={setStartDate}
               placeholder="Select start date"
             />
@@ -86,8 +86,8 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
             {isPresent ? (
               <Input value="Present" disabled className="bg-muted" />
             ) : (
-              <DatePicker
-                date={endDate}
+              <YearMonthPicker
+                date={endDate || new Date()}
                 setDate={setEndDate}
                 placeholder="Select end date"
               />

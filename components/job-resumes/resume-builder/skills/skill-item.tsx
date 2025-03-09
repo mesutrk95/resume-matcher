@@ -53,7 +53,7 @@ export function SkillItem({ skill, onUpdate, onDelete, isDragging = false }: Ski
         id={`skill-${skill.id}`}
         checked={skill.enabled}
         onCheckedChange={handleToggleEnabled}
-        className="h-3 w-3"
+        // className="h-3 w-3"
         onClick={(e) => e.stopPropagation()}
       />
       <span className={`text-sm ${!skill.enabled ? "text-muted-foreground" : ""}`}>{skill.content}</span>

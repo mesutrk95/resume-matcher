@@ -5,12 +5,12 @@ import type { ResumeEducation } from "@/types/resume";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DatePicker } from "@/components/ui/date-picker";
 import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { format } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
+import { YearMonthPicker } from "@/components/ui/year-month-picker";
 
 type EducationItemProps = {
   education: ResumeEducation;
@@ -43,30 +43,7 @@ export function EducationItem({
   const parseDate = (dateStr: string): Date | undefined => {
     if (dateStr === "Present") return undefined;
 
-    const parts = dateStr.split(" ");
-    if (parts.length !== 2) return undefined;
-
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    const monthIndex = months.indexOf(parts[0]);
-    if (monthIndex === -1) return undefined;
-
-    const year = Number.parseInt(parts[1]);
-    if (isNaN(year)) return undefined;
-
-    return new Date(year, monthIndex, 1);
+    return new Date(`${dateStr}/01`);
   };
 
   const [startDate, setStartDate] = useState<Date | undefined>(
@@ -75,6 +52,7 @@ export function EducationItem({
   const [endDate, setEndDate] = useState<Date | undefined>(
     parseDate(education.endDate)
   );
+
   const [isPresent, setIsPresent] = useState(education.endDate === "Present");
 
   const handleEdit = () => {
@@ -97,9 +75,7 @@ export function EducationItem({
       content: editForm.content,
       location: editForm.location,
       institution: editForm.institution,
-      startDate: startDate
-        ? format(startDate, "yyyy/MM")
-        : education.startDate,
+      startDate: startDate ? format(startDate, "yyyy/MM") : education.startDate,
       endDate: isPresent
         ? "Present"
         : endDate
@@ -196,8 +172,8 @@ export function EducationItem({
                   <label className="text-sm font-medium mb-1 block">
                     Start Date
                   </label>
-                  <DatePicker
-                    date={startDate}
+                  <YearMonthPicker
+                    date={startDate || new Date()}
                     setDate={setStartDate}
                     placeholder="Select start date"
                   />
@@ -209,8 +185,8 @@ export function EducationItem({
                   {isPresent ? (
                     <Input value="Present" disabled className="bg-muted" />
                   ) : (
-                    <DatePicker
-                      date={endDate}
+                    <YearMonthPicker
+                      date={endDate || new Date()}
                       setDate={setEndDate}
                       placeholder="Select end date"
                     />

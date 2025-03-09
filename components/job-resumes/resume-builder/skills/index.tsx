@@ -131,23 +131,37 @@ export function SkillsSection({ resume, onUpdate }: SkillsSectionProps) {
     onUpdate(sortedSkills);
   };
 
+  const handleSelectAll = () => {
+    onUpdate(skills.map((s) => ({ ...s, enabled: true })));
+  };
+  const handleDeselectAll = () => {
+    onUpdate(skills.map((s) => ({ ...s, enabled: false })));
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Skills</CardTitle>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={toggleSort}>
+          {/* <Button variant="outline" size="sm" onClick={toggleSort}>
             <ArrowUpDown className="h-4 w-4 mr-1" />
             Sort {sortAscending ? "A-Z" : "Z-A"}
-          </Button>
+          </Button> */}
           <Button
             variant="outline"
             size="sm"
             onClick={() => setAddingCategory(true)}
           >
-            <Plus className="h-4 w-4 mr-1" />
-            Add Category
+            <Plus className="h-4 w-4 mr-0" />
+            Category
           </Button>
+          <Button variant="outline" size="sm" onClick={handleSelectAll}>
+            Check All
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleDeselectAll}>
+            Uncheck All
+          </Button>
+
           <Button size="sm" onClick={() => setAddingSkills(true)}>
             <Plus className="h-4 w-4 mr-1" />
             Add Skills

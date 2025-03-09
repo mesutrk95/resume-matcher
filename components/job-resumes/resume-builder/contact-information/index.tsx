@@ -15,12 +15,14 @@ type ContactInfoSectionProps = {
 };
 
 export function ContactInfoSection({
-    resume,
+  resume,
   onUpdate,
 }: ContactInfoSectionProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<ResumeContactInfo>(resume.contactInfo  );
-// console.log(resume.contactInfo);
+  const [formData, setFormData] = useState<ResumeContactInfo>(
+    resume.contactInfo
+  );
+  // console.log(resume.contactInfo);
 
   const handleEdit = () => {
     setFormData(resume.contactInfo);
@@ -29,7 +31,7 @@ export function ContactInfoSection({
 
   const handleSave = () => {
     console.log(formData);
-    
+
     onUpdate(formData);
     setIsEditing(false);
   };
@@ -46,8 +48,7 @@ export function ContactInfoSection({
     }));
   };
 
-//   console.log(resume);
-  
+  //   console.log(resume);
 
   return (
     <Card>
@@ -164,7 +165,7 @@ export function ContactInfoSection({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
               <h3 className="text-sm font-medium text-muted-foreground">
                 Name
