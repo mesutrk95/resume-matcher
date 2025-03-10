@@ -145,7 +145,7 @@ const CVDocument = ({ resume }: { resume: ResumeContent }) => (
       </View>
 
       {/* Experience */}
-      <View style={styles.section}>
+      <View style={styles.section} wrap>
         <Text style={styles.sectionTitle}>Experiences</Text>
         {resume.experiences
           .filter((e) => e.enabled)

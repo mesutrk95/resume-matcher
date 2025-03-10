@@ -173,9 +173,9 @@ export function ExperienceItem({
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem
           value={experience.id}
-          className="border rounded-lg overflow-hidden"
+          className="border rounded-lg  "
         >
-          <div className="flex items-center px-4 py-2">
+          <div className="flex items-center mx-1 px-4 py-2 sticky top-0 bg-white rounded-lg">
             <div
               className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground"
               {...attributes}

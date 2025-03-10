@@ -57,7 +57,12 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
         {/* Job Description Column */}
-        <JobDescriptionPreview job={job} />
+        <JobDescriptionPreview
+          job={job}
+          onUpdateJob={async (j) => {
+            "use server";
+          }}
+        />
 
         {/* Resumes Column */}
         <div className="md:col-span-1 bg-white rounded-lg  ">
