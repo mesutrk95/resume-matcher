@@ -20,8 +20,8 @@ import {
 } from "./select";
 
 interface DatePickerProps {
-  date: Date | undefined;
-  setDate: (date: Date | undefined) => void;
+  date: string | undefined;
+  setDate: (date: string | undefined) => void;
   startYear?: number;
   endYear?: number;
   placeholder?: string;
@@ -54,12 +54,12 @@ export function YearMonthPicker({
 
   const handleMonthChange = (month: string) => {
     const newDate = setMonth(date || new Date(), months.indexOf(month));
-    setDate(newDate);
+    setDate(format(newDate, 'yyyy/MM'));
   };
 
   const handleYearChange = (year: string) => {
     const newDate = setYear(date || new Date(), parseInt(year));
-    setDate(newDate);
+    setDate(format(newDate, 'yyyy/MM'));
   };
 
   return (
@@ -72,7 +72,7 @@ export function YearMonthPicker({
             !date && "text-muted-foreground"
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
+          <CalendarIcon className="mr-2 h-4 w-4" /> 
           {date ? format(date, "yyyy/MM") : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>

@@ -40,16 +40,16 @@ export function EducationItem({
   });
 
   // Parse dates from strings to Date objects for the date picker
-  const parseDate = (dateStr: string): Date | undefined => {
+  const parseDate = (dateStr: string): string | undefined => {
     if (dateStr === "Present") return undefined;
 
-    return new Date(`${dateStr}/01`);
+    return `${dateStr}/01`;
   };
 
-  const [startDate, setStartDate] = useState<Date | undefined>(
+  const [startDate, setStartDate] = useState<string | undefined>(
     parseDate(education.startDate)
   );
-  const [endDate, setEndDate] = useState<Date | undefined>(
+  const [endDate, setEndDate] = useState<string | undefined>(
     parseDate(education.endDate)
   );
 
@@ -173,7 +173,7 @@ export function EducationItem({
                     Start Date
                   </label>
                   <YearMonthPicker
-                    date={startDate || new Date()}
+                    date={startDate}
                     setDate={setStartDate}
                     placeholder="Select start date"
                   />
@@ -186,7 +186,7 @@ export function EducationItem({
                     <Input value="Present" disabled className="bg-muted" />
                   ) : (
                     <YearMonthPicker
-                      date={endDate || new Date()}
+                      date={endDate}
                       setDate={setEndDate}
                       placeholder="Select end date"
                     />

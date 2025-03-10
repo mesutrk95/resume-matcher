@@ -56,7 +56,7 @@ export function SkillItem({ skill, onUpdate, onDelete, isDragging = false }: Ski
         // className="h-3 w-3"
         onClick={(e) => e.stopPropagation()}
       />
-      <span className={`text-sm ${!skill.enabled ? "text-muted-foreground" : ""}`}>{skill.content}</span>
+      <span className={`text-xs ${!skill.enabled ? "text-muted-foreground" : ""}`}>{skill.content}</span>
     </div>
   )
 }

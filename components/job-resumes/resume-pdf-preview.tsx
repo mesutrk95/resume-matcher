@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     backgroundColor: "#FFFFFF",
     padding: 30,
-    margin:0 ,
+    margin: 0,
     fontFamily: "Open Sans",
   },
   section: {
@@ -71,12 +71,17 @@ const styles = StyleSheet.create({
     paddingBottom: 3,
   },
   experience: {
-    marginBottom: 10,
+    marginBottom: 0,
+    fontSize: 10,
+  },
+  project: {
+    marginBottom: 5,
     fontSize: 10,
   },
   experienceItem: {
     marginBottom: 5,
     marginLeft: 10,
+    fontSize: 10,
   },
   jobTitle: {
     fontSize: 12,
@@ -145,25 +150,27 @@ const CVDocument = ({ resume }: { resume: ResumeContent }) => (
         {resume.experiences
           .filter((e) => e.enabled)
           .map((experience, index) => (
-            <View key={index} style={styles.experience}>
-              {/* <Text style={styles.jobTitle}>{experience.role}</Text> */}
-              <Text style={styles.jobTitle}>
-                <SeperateList
-                  data={[experience.role, experience.companyName]}
-                />
-              </Text>
-              <Text style={styles.date}>
-                <SeperateList
-                  data={[
-                    experience.location,
-                    experience.type,
-                    `${experience.startDate} - ${experience.endDate}`,
-                  ]}
-                />{" "}
-              </Text>
+            // <View key={index} style={styles.experience}>
+            <>
+              <View key={index} style={styles.experience} wrap={false}>
+                <Text style={styles.jobTitle}>
+                  <SeperateList
+                    data={[experience.role, experience.companyName]}
+                  />
+                </Text>
+                <Text style={styles.date}>
+                  <SeperateList
+                    data={[
+                      experience.location,
+                      experience.type,
+                      `${experience.startDate} - ${experience.endDate}`,
+                    ]}
+                  />
+                </Text>
+              </View>
               {experience.items
                 .filter((e) => e.enabled)
-                .map((item, index) => {
+                .map((item) => {
                   return item.variations
                     .filter((v) => v.enabled)
                     .map((variation) => (
@@ -176,15 +183,16 @@ const CVDocument = ({ resume }: { resume: ResumeContent }) => (
                       </Text>
                     ));
                 })}
-            </View>
+            </>
+            // </View>
           ))}
       </View>
 
       {/* Projects */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Projects</Text>
-        {resume.projects.map((prj, index) => (
-          <View key={index} style={styles.experience}>
+        {resume.projects.filter(prj => prj.enabled).map((prj, index) => (
+          <View key={index} style={styles.project}>
             <Text style={styles.jobTitle}>{prj.name}</Text>
             <Text style={styles.date}>
               {prj.startDate} - {prj.endDate}
@@ -198,7 +206,7 @@ const CVDocument = ({ resume }: { resume: ResumeContent }) => (
       {/* Education */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Education</Text>
-        {resume.educations.map((edu, index) => (
+        {resume.educations.filter(edu => edu.enabled).map((edu, index) => (
           <View key={index} style={styles.experience}>
             <Text style={styles.jobTitle}>{edu.degree}</Text>
             <Text style={styles.company}>
@@ -249,7 +257,7 @@ const CVPreview = ({
   return (
     <div className="flex flex-col h-screen gap-4">
       <div className="w-full flex-grow ">
-        <PDFViewer showToolbar={false} className="w-full h-full" style={{ margin: 0, backgroundColor: 'red'}}>
+        <PDFViewer showToolbar={false} className="w-full h-full">
           <CVDocument resume={data} />
         </PDFViewer>
       </div>

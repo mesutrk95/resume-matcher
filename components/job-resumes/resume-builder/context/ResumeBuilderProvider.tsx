@@ -1,10 +1,5 @@
+import { ResumeItemScoreAnalyze } from "@/types/resume";
 import React, { createContext, useState } from "react";
-
-export type ResumeScore = {
-  id?: string;
-  score: number;
-  matched_keywords: string[];
-};
 
 export type IResumeTemplateEditor = {
   scores:
@@ -26,7 +21,7 @@ export const ResumeBuilderProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [scores, setScores] = useState<Record<string, ResumeScore>>();
+  const [scores, setScores] = useState<Record<string, ResumeItemScoreAnalyze>>();
 
   // const getScoreById = (id: string) => {
   //   if (!scores?.[id]) return null;

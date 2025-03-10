@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import type { ResumeContent } from "@/types/resume";
-import {
-  ResumeScore,
+import type { ResumeContent, ResumeItemScoreAnalyze } from "@/types/resume";
+import { 
   ResumeBuilderProvider,
 } from "./context/ResumeBuilderProvider";
 import { useResumeBuilder } from "./context/useResumeBuilder";
@@ -18,11 +17,11 @@ import { SkillsSection } from "./skills";
 
 type IPropsType = {
   data: ResumeContent;
-  resumeScores?: ResumeScore[];
+  resumeItemsScore?: ResumeItemScoreAnalyze[];
   onUpdate?: (t: ResumeContent) => void;
 };
 
-function ResumeBuilderComponent({ data, resumeScores, onUpdate }: IPropsType) {
+function ResumeBuilderComponent({ data, resumeItemsScore, onUpdate }: IPropsType) {
   // Sample initial data
   const [lastTemplate, setLastTemplate] = useState<string>(
     JSON.stringify(data)
@@ -43,15 +42,15 @@ function ResumeBuilderComponent({ data, resumeScores, onUpdate }: IPropsType) {
   const { setScores } = useResumeBuilder();
   useEffect(() => {
     setScores(
-      resumeScores?.reduce((acc, curr) => {
+      resumeItemsScore?.reduce((acc, curr) => {
         acc[curr.id!] = {
           score: curr.score,
           matched_keywords: curr.matched_keywords,
         };
         return acc;
-      }, {} as Record<string, ResumeScore>)
+      }, {} as Record<string, ResumeItemScoreAnalyze>)
     );
-  }, [resumeScores, setScores]);
+  }, [resumeItemsScore, setScores]);
 
   useEffect(() => {
     setTemplate(data);

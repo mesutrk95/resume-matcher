@@ -25,8 +25,8 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
   const [content, setContent] = useState("");
   const [location, setLocation] = useState("");
   const [institution, setInstitution] = useState("");
-  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
-  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [startDate, setStartDate] = useState<string | undefined>(undefined);
+  const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [isPresent, setIsPresent] = useState(false);
 
   const handleSubmit = () => {
@@ -88,7 +88,7 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
           <div>
             <label className="text-sm font-medium mb-1 block">Start Date</label>
             <YearMonthPicker
-              date={startDate || new Date()}
+              date={startDate}
               setDate={setStartDate}
               placeholder="Select start date"
             />
@@ -99,7 +99,7 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
               <Input value="Present" disabled className="bg-muted" />
             ) : (
               <YearMonthPicker
-                date={endDate || new Date()}
+                date={endDate}
                 setDate={setEndDate}
                 placeholder="Select end date"
               />

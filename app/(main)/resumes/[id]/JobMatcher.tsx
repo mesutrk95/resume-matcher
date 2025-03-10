@@ -1,8 +1,12 @@
 "use client";
 
 import { LoadingButton } from "@/components/ui/loading-button";
-import { constructFinalResume } from "@/app/utils/job-matching";
-import { ResumeContent } from "@/types/resume";
+import { constructFinalResume } from "@/utils/job-matching";
+import {
+  ResumeContent,
+  ResumeItemScoreAnalyze,
+  ResumeOverallScoreAnalyze,
+} from "@/types/resume";
 import React, { useEffect, useMemo, useState, useTransition } from "react";
 import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
 import { Job, JobResume } from "@prisma/client";
@@ -11,14 +15,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import {
   analyzeExperienceJobScores,
-  analyzeJobByAI,
   analyzeProjectJobScores,
 } from "@/actions/job";
 import { JobAnalyzeResult, JobKeyword, JobKeywordType } from "@/types/job";
 import { useParams } from "next/navigation";
-import { ResumeScore } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
-import { updateJobResume } from "@/actions/job-resume";
-import { format } from "date-fns";
+import { analyzeResumeScore, updateJobResume } from "@/actions/job-resume";
 import CVPreview from "@/components/job-resumes/resume-pdf-preview";
 import {
   AlertDialog,
@@ -31,10 +32,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  updateResumeTemplate,
-  updateResumeTemplateContent,
-} from "@/actions/resume-template";
+import { updateResumeTemplateContent } from "@/actions/resume-template";
+import { CheckCircle, CircleX } from "lucide-react";
 // import { useLayout } from "@/app/context/LayoutProvider";
 
 // const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
@@ -176,10 +175,8 @@ const JobTab = ({
   job: Job;
   resume: ResumeContent;
   onUpdateJob: (j: Job) => void;
-  onScoresUpdate: (s: ResumeScore[]) => void;
+  onScoresUpdate: (s: ResumeItemScoreAnalyze[]) => void;
 }) => {
-  const [isAnalyzingJob, startJobAnalyzeTransition] = useTransition();
-
   const jobKeywords = useMemo(() => {
     const results = job.analyzeResults as { keywords: JobKeyword[] };
     return results?.keywords?.reduce((acc, keyword) => {
@@ -189,22 +186,6 @@ const JobTab = ({
       return acc;
     }, {} as Record<JobKeywordType, JobKeyword[]>);
   }, [job]);
-
-  const handleAnalyzeJob = async () => {
-    startJobAnalyzeTransition(async () => {
-      try {
-        const result = await analyzeJobByAI(job.id);
-
-        toast.success("Job analyzed successfully.");
-        onUpdateJob({
-          ...job,
-          analyzeResults: result,
-        });
-      } catch (error) {
-        toast.error("Failed to analyze job.");
-      }
-    });
-  };
 
   return (
     <Tabs defaultValue="jd" className=" ">
@@ -219,17 +200,10 @@ const JobTab = ({
           Job Summary by AI
         </TabsTrigger>
       </TabsList>
-      <TabsContent className="px-2 pt-4" value="jd">
-        <LoadingButton
-          onClick={handleAnalyzeJob}
-          loading={isAnalyzingJob}
-          loadingText="Thinking ..."
-        >
-          Analyze Job
-        </LoadingButton>
-        <JobDescriptionPreview job={job} />
+      <TabsContent className="px-2" value="jd">
+        <JobDescriptionPreview job={job} onUpdateJob={onUpdateJob} />
       </TabsContent>
-      <TabsContent className="px-2 pt-4" value="keywords">
+      <TabsContent className="px-2" value="keywords">
         <div className="grid grid-cols-3 gap-2">
           <div className="flex flex-col gap-1">
             <h4 className="font-bold">Hard Skills</h4>
@@ -272,7 +246,7 @@ const JobTab = ({
           </div>
         </div>
       </TabsContent>
-      <TabsContent className="px-2 pt-4" value="summary">
+      <TabsContent className="px-2" value="summary">
         <div
           className="jd-preview text-sm"
           dangerouslySetInnerHTML={{
@@ -295,7 +269,7 @@ export const JobMatcher = ({
 }) => {
   const { id: jobResumeId } = useParams();
   const [resume, setResume] = useState<ResumeContent>(initialResume);
-  const [scores, setScores] = useState<ResumeScore[]>();
+  const [scores, setScores] = useState<ResumeItemScoreAnalyze[]>();
   const [job, setJob] = useState<Job>(initialJob);
 
   const jobAnalyzeResults = job.analyzeResults as JobAnalyzeResult;
@@ -327,7 +301,9 @@ export const JobMatcher = ({
           ),
         ]);
 
-        const scores = result.map((r) => r.result).flat() as ResumeScore[];
+        const scores = result
+          .map((r) => r.result)
+          .flat() as ResumeItemScoreAnalyze[];
         setScores(scores);
         console.log(scores);
         toast.success("Analyze rate and scores are successfully done!");
@@ -373,6 +349,19 @@ export const JobMatcher = ({
   //   setResume(fr);
   // }, [jobAnalyzeResults?.keywords, initialResume]);
 
+  const [resumeScore, setResumeScore] =
+    useState<ResumeOverallScoreAnalyze | null>();
+  const [isRatingResume, startRatingResumeTransition] = useTransition();
+  const handleResumeScore = () => {
+    startRatingResumeTransition(async () => {
+      try {
+        const score = await analyzeResumeScore(jobResume.id);
+        console.log(score);
+        setResumeScore(score.result);
+      } catch (error) {}
+    });
+  };
+
   return (
     <div>
       <div className="grid grid-cols-2 gap-5">
@@ -385,7 +374,7 @@ export const JobMatcher = ({
               <TabsTrigger value="jd" variant={"outline"}>
                 Job Description
               </TabsTrigger>
-              <TabsTrigger value="keywords" variant={"outline"}>
+              <TabsTrigger value="score" variant={"outline"}>
                 Resume Score
               </TabsTrigger>
             </TabsList>
@@ -436,7 +425,7 @@ export const JobMatcher = ({
               {resume && (
                 <ResumeBuilder
                   data={resume}
-                  resumeScores={scores}
+                  resumeItemsScore={scores}
                   onUpdate={async (tmp) => {
                     setResume(tmp);
                     try {
@@ -458,6 +447,55 @@ export const JobMatcher = ({
                 resume={resume}
               />
             </TabsContent>
+            <TabsContent className="" value="score">
+              <LoadingButton
+                onClick={handleResumeScore}
+                loading={isRatingResume}
+                loadingText="Thinking ..."
+              >
+                Rate Resume!
+              </LoadingButton>
+              {/* <CircleX className="text-red-500" /> Missed Keywords{" "} */}
+              {resumeScore && (
+                <div className="flex flex-col gap-5 mt-10">
+                  <h3 className="text-xl font-bold">
+                    Rate: {resumeScore.score}%
+                  </h3>
+                  <div className="flex flex-col gap-2">
+                    <h3 className="text-lg font-bold flex items-center gap-2">
+                      <CircleX className="text-red-500" />
+                      Missed Keywords ({resumeScore.missed_keywords.length})
+                    </h3>
+                    <div className="flex flex-wrap gap-1">
+                      {resumeScore.missed_keywords.map((k) => (
+                        <span
+                          key={k}
+                          className="px-2 py-1 text-sm bg-slate-200 rounded-full"
+                        >
+                          {k}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <h3 className="text-lg font-bold flex items-center gap-2">
+                      <CheckCircle className="text-green-500" />
+                      Matched Keywords ({resumeScore.matched_keywords.length})
+                    </h3>
+                    <div className="flex flex-wrap gap-1">
+                      {resumeScore.matched_keywords.map((k) => (
+                        <span
+                          key={k}
+                          className="px-2 py-1 text-sm bg-slate-200 rounded-full"
+                        >
+                          {k}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </TabsContent>
           </Tabs>
         </div>
         {/* <div>{resume && <ResumePreview resume={resume} />}</div> */}
@@ -465,19 +503,6 @@ export const JobMatcher = ({
           <CVPreview data={resume} jobResume={jobResume} />
         </div>
       </div>
-
-      {/* builder preview */}
-      {/* <div>
-        {finalResume && (
-          <ResumeBuilder
-            data={finalResume}
-            resumeScores={scores}
-            onUpdate={(tmp) => {
-              setFinalResume(tmp);
-            }}
-          />
-        )}
-      </div> */}
     </div>
   );
 };

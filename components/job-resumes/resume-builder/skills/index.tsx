@@ -238,7 +238,7 @@ function CategorySection({
 
   return (
     <div className="space-y-2">
-      <h3 className="text-md font-medium">{category}</h3>
+      <h3 className="text-md font-medium">{category} ({skills.filter(s =>s.enabled).length})</h3>
       <div
         ref={setNodeRef}
         className={`
