@@ -45,6 +45,7 @@ function extractKeywords(jobDescription: string) {
 }
 
 function scoreVariation(variation: Variation, keywords: JobKeyword[]): number {
+  if (!variation) return 0;
   const contentWords = variation.content
     .toLowerCase()
     .split(/\W+/)
@@ -78,7 +79,9 @@ function selectBestVariations(
         item.variations.forEach((variation) => {
           variation.enabled = false;
         });
-        bestVariation.variation.enabled = true;
+        if (bestVariation.variation) {
+          bestVariation.variation.enabled = true;
+        }
         return item;
       });
 
@@ -145,7 +148,10 @@ export const convertResumeObjectToString = (resume: ResumeContent) => {
     content += `Education\n${edu.degree} • ${edu.institution} • ${edu.content} \n`;
   }
   if (edu) {
-    content += `Skills\n${resume.skills.filter((e) => e.enabled).map(s => s.content).join(', ')} \n`;
+    content += `Skills\n${resume.skills
+      .filter((e) => e.enabled)
+      .map((s) => s.content)
+      .join(", ")} \n`;
   }
   return content;
 };

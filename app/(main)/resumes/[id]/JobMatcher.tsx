@@ -307,19 +307,6 @@ export const JobMatcher = ({
         setScores(scores);
         console.log(scores);
         toast.success("Analyze rate and scores are successfully done!");
-
-        if (!jobAnalyzeResults?.keywords) return;
-        const fr = constructFinalResume(
-          initialResume,
-          jobAnalyzeResults?.keywords
-        );
-        if (!fr) {
-          toast.error(
-            "Keywords are not extracted, please first analyze keywords."
-          );
-          return;
-        }
-        setResume(fr);
       } catch (error) {
         toast.error("Failed to analyze scores.");
       }
@@ -367,7 +354,7 @@ export const JobMatcher = ({
       <div className="grid grid-cols-2 gap-5">
         <div>
           <Tabs defaultValue="builder" className=" ">
-            <TabsList className="grid w-full grid-cols-3" variant={"outline"}>
+            <TabsList className="grid w-full grid-cols-3  " variant={"outline"}>
               <TabsTrigger value="builder" variant={"outline"}>
                 Resume Builder
               </TabsTrigger>
@@ -382,6 +369,7 @@ export const JobMatcher = ({
               <div className="mb-4 flex flex-col gap-4">
                 <div className="flex gap-2">
                   <LoadingButton
+                    variant={"outline"}
                     onClick={handleAnalyzeScores}
                     loading={isAnalyzingScores}
                     loadingText="Thinking ..."
@@ -389,12 +377,33 @@ export const JobMatcher = ({
                     Analyze Scores
                   </LoadingButton>
 
+                  <LoadingButton
+                    variant={"outline"}
+                    onClick={() => {
+                      if (!jobAnalyzeResults?.keywords) return;
+                      const fr = constructFinalResume(
+                        initialResume,
+                        jobAnalyzeResults?.keywords
+                      );
+                      if (!fr) {
+                        toast.error(
+                          "Keywords are not extracted, please first analyze keywords."
+                        );
+                        return;
+                      }
+                      setResume(fr);
+                      toast.success("Auto select has been done!");
+                    }}
+                  >
+                    Auto-choose by keywords
+                  </LoadingButton>
                   {jobResume.baseResumeTemplateId && (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <LoadingButton
                           loading={isSyncingToTemplate}
                           loadingText="Saving to template ..."
+                          variant={"outline"}
                         >
                           Sync to Template
                         </LoadingButton>
