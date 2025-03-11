@@ -90,6 +90,7 @@ export type ResumeContent = {
 export type ResumeOverallScoreAnalyze = {
   missed_keywords: string[];
   matched_keywords: string[];
+  notes: string[];
   score: number;
 };
 
