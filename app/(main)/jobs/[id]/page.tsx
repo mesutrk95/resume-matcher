@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { JobResumeCard } from "@/components/job-resumes/resume-card";
-import { JobDescriptionPreview } from "@/components/jobs/job-description-preview";
+import { JobPostPreview } from "@/components/jobs/job-post-preview";
 
 interface JobResumesPageProps {
   params: {
@@ -57,13 +57,9 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
         {/* Job Description Column */}
-        <JobDescriptionPreview
-          job={job}
-          onUpdateJob={async (j) => {
-            "use server";
-          }}
-        />
-
+        <div className="md:col-span-2    ">
+          <JobPostPreview job={job} />
+        </div>
         {/* Resumes Column */}
         <div className="md:col-span-1 bg-white rounded-lg  ">
           <div className="space-y-4">

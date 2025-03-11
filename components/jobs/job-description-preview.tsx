@@ -2,18 +2,18 @@
 
 import { analyzeJobByAI } from "@/actions/job";
 import { Job } from "@prisma/client";
-import { format } from "date-fns";
 import React, { useTransition } from "react";
 import { toast } from "sonner";
+import moment from "moment";
 import { LoadingButton } from "../ui/loading-button";
-import { Briefcase } from "lucide-react";
+import { Briefcase, LucideExternalLink } from "lucide-react";
 
 export const JobDescriptionPreview = ({
   job,
-  onUpdateJob,
+  onJobUpdated,
 }: {
   job: Job;
-  onUpdateJob: (j: Job) => void;
+  onJobUpdated?: (j: Job) => void;
 }) => {
   const [isAnalyzingJob, startJobAnalyzeTransition] = useTransition();
   const handleAnalyzeJob = async () => {
@@ -22,7 +22,7 @@ export const JobDescriptionPreview = ({
         const result = await analyzeJobByAI(job.id);
 
         toast.success("Job analyzed successfully.");
-        onUpdateJob({
+        onJobUpdated?.({
           ...job,
           analyzeResults: result,
         });
@@ -36,11 +36,17 @@ export const JobDescriptionPreview = ({
       <div className="space-y-4">
         <div className="flex justify-between">
           <div>
-            <h3 className="text-2xl font-bold">{job.title}</h3>
+            <h3 className="text-2xl font-bold">{job.title}</h3> 
             <p className="text-sm text-muted-foreground">
               {job.companyName} - {job.location} - Posted at{" "}
-              {job.postedAt && format(job.postedAt || "", "yyyy/MM/dd")}
+              {job.postedAt && <>{moment(job.postedAt).format("YYYY/MM/DD")} ({moment(job.postedAt).fromNow()})</> }
             </p>
+            {job.url && (
+              <a href={job.url} className="flex items-center text-sm gap-1 text-muted-foreground mt-1" target="_blank">
+                 Job post Link
+                 <LucideExternalLink size={14} />
+              </a>
+            )}
           </div>
           <LoadingButton
             variant={"outline"}

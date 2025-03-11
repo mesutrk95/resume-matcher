@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 10,
     lineHeight: 1.5,
+    marginBottom: 10,
   },
   skills: {
     fontSize: 10,
@@ -192,14 +193,16 @@ const CVDocument = ({ resume }: { resume: ResumeContent }) => (
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Projects</Text>
         {resume.projects.filter(prj => prj.enabled).map((prj, index) => (
-          <View key={index} style={styles.project}>
+          // <View key={index} style={styles.project}>
+          <>
             <Text style={styles.jobTitle}>{prj.name}</Text>
             <Text style={styles.date}>
               {prj.startDate} - {prj.endDate}
             </Text>
             <Text style={styles.link}>{prj.link}</Text>
             <Text style={styles.description}>{prj.content}</Text>
-          </View>
+          </>
+        // </View>
         ))}
       </View>
 

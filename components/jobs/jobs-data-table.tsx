@@ -33,6 +33,7 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { deleteJob } from "@/actions/job";
 import { toast } from "sonner";
+import moment from "moment";
 
 interface JobsDataTableProps {
   data: Job[];
@@ -140,9 +141,10 @@ export function JobsDataTable({
                     {format(new Date(job.createdAt), "MMM d, yyyy HH:mm")}
                   </TableCell>
                   <TableCell>
-                    {job.postedAt
-                      ? format(new Date(job.postedAt), "MMM d, yyyy HH:mm")
-                      : "Not posted"}
+                    <div className="flex flex-col">
+                      <span>{moment(job.postedAt).format("YYYY/MM/DD")}</span>
+                      <span className="text-xs text-muted-foreground">{moment(job.postedAt).fromNow()}</span>
+                    </div>
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>

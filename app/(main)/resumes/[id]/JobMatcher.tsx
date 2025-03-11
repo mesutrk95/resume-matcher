@@ -7,17 +7,16 @@ import {
   ResumeItemScoreAnalyze,
   ResumeOverallScoreAnalyze,
 } from "@/types/resume";
-import React, { useEffect, useMemo, useState, useTransition } from "react";
+import React, { useState, useTransition } from "react";
 import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
 import { Job, JobResume } from "@prisma/client";
-import { JobDescriptionPreview } from "@/components/jobs/job-description-preview";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import {
   analyzeExperienceJobScores,
   analyzeProjectJobScores,
 } from "@/actions/job";
-import { JobAnalyzeResult, JobKeyword, JobKeywordType } from "@/types/job";
+import { JobAnalyzeResult } from "@/types/job";
 import { useParams } from "next/navigation";
 import { analyzeResumeScore, updateJobResume } from "@/actions/job-resume";
 import CVPreview from "@/components/job-resumes/resume-pdf-preview";
@@ -34,6 +33,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { updateResumeTemplateContent } from "@/actions/resume-template";
 import { CheckCircle, CircleX } from "lucide-react";
+import { JobPostPreview } from "@/components/jobs/job-post-preview";
 // import { useLayout } from "@/app/context/LayoutProvider";
 
 // const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
@@ -154,109 +154,6 @@ import { CheckCircle, CircleX } from "lucide-react";
 //     </div>
 //   );
 // };
-
-const KeywordBadge = ({ keyword }: { keyword: JobKeyword }) => {
-  return (
-    <li className="py-1 text-sm" key={keyword.keyword}>
-      {keyword.keyword}
-      {/* <span className="rounded-xl px-2 py-1 bg-slate-200 text-xxs font-bold ml-1">
-        {keyword.level}
-      </span> */}
-    </li>
-  );
-};
-
-const JobTab = ({
-  job,
-  resume,
-  onUpdateJob,
-  onScoresUpdate,
-}: {
-  job: Job;
-  resume: ResumeContent;
-  onUpdateJob: (j: Job) => void;
-  onScoresUpdate: (s: ResumeItemScoreAnalyze[]) => void;
-}) => {
-  const jobKeywords = useMemo(() => {
-    const results = job.analyzeResults as { keywords: JobKeyword[] };
-    return results?.keywords?.reduce((acc, keyword) => {
-      const ks = acc[keyword.skill] || [];
-      ks.push(keyword);
-      acc[keyword.skill] = ks;
-      return acc;
-    }, {} as Record<JobKeywordType, JobKeyword[]>);
-  }, [job]);
-
-  return (
-    <Tabs defaultValue="jd" className=" ">
-      <TabsList className="grid w-full grid-cols-4" variant={"outline"}>
-        <TabsTrigger value="jd" variant={"outline"}>
-          Job Description
-        </TabsTrigger>
-        <TabsTrigger value="keywords" variant={"outline"}>
-          Keywords
-        </TabsTrigger>
-        <TabsTrigger value="summary" variant={"outline"}>
-          Job Summary by AI
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent className="px-2" value="jd">
-        <JobDescriptionPreview job={job} onUpdateJob={onUpdateJob} />
-      </TabsContent>
-      <TabsContent className="px-2" value="keywords">
-        <div className="grid grid-cols-3 gap-2">
-          <div className="flex flex-col gap-1">
-            <h4 className="font-bold">Hard Skills</h4>
-            <ul className="  gap-2   ">
-              {jobKeywords?.["hard"]
-                ?.sort((k1, k2) => k2.level - k1.level)
-                .map((keyword) => (
-                  <KeywordBadge keyword={keyword} key={keyword.keyword} />
-                ))}
-
-              {/* {(jobKeywords?.["hard"]?.length || 0) > 15 && (
-                      <li
-                        onClick={() => {}}
-                        className="py-1 text-sm text-primary"
-                      >
-                        Show + {(jobKeywords?.["hard"]?.length || 0) - 15} more
-                      </li>
-                    )} */}
-            </ul>
-          </div>
-          <div className="flex flex-col gap-1">
-            <h4 className="  font-bold">Soft Skills</h4>
-            <ul className="  gap-2   ">
-              {jobKeywords?.["soft"]
-                ?.sort((k1, k2) => k2.level - k1.level)
-                .map((keyword) => (
-                  <KeywordBadge keyword={keyword} key={keyword.keyword} />
-                ))}
-            </ul>
-          </div>
-          <div className="flex flex-col gap-1">
-            <h4 className="  font-bold">Other</h4>
-            <ul className="  gap-2   ">
-              {jobKeywords?.["none"]
-                ?.sort((k1, k2) => k2.level - k1.level)
-                .map((keyword) => (
-                  <KeywordBadge keyword={keyword} key={keyword.keyword} />
-                ))}
-            </ul>
-          </div>
-        </div>
-      </TabsContent>
-      <TabsContent className="px-2" value="summary">
-        <div
-          className="jd-preview text-sm"
-          dangerouslySetInnerHTML={{
-            __html: (job.analyzeResults as { summary: string })?.summary,
-          }}
-        ></div>
-      </TabsContent>
-    </Tabs>
-  );
-};
 
 export const JobMatcher = ({
   jobResume,
@@ -449,11 +346,11 @@ export const JobMatcher = ({
               )}
             </TabsContent>
             <TabsContent className="" value="jd">
-              <JobTab
+              <JobPostPreview
                 job={job}
-                onUpdateJob={setJob}
-                onScoresUpdate={setScores}
-                resume={resume}
+                onJobUpdated={setJob}
+                // onScoresUpdate={setScores}
+                // resume={resume}
               />
             </TabsContent>
             <TabsContent className="" value="score">
