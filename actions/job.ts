@@ -166,14 +166,14 @@ export const analyzeExperienceJobScores = async (
 
   const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, an experience has items, and each item has variations, you need to give a score (on a scale from 0 to 1) to each variation based on how well it matches the job description, in an experience item only one variation can be selected, give me the best matches in this format [{ "id" : "variation_id", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
 
-  const keywords = analyzeResults.keywords
-    .map((k) => `${k.keyword} (${k.level})`)
-    .join(",");
+//   const keywords = analyzeResults.keywords
+//     .map((k) => `${k.keyword} (${k.level})`)
+//     .join(",");
 
   const generatedContent = await getAIJsonResponse(prompt, [
     content +
       "\n" +
-      `keywords: ${keywords} \n Make sure all the variations have score.`,
+      `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
   ]);
 
   return generatedContent;
@@ -205,14 +205,14 @@ export const analyzeProjectJobScores = async (
 
   const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, you need to give a score (on a scale from 0 to 1) to each project item based on how well it matches the job description, give me the best matches in this format [{ "id" : "project_..", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
 
-  const keywords = analyzeResults.keywords
-    .map((k) => `${k.keyword} (${k.level})`)
-    .join(",");
+//   const keywords = analyzeResults.keywords
+//     .map((k) => `${k.keyword} (${k.level})`)
+//     .join(",");
 
   const generatedContent = await getAIJsonResponse(prompt, [
     content +
       "\n" +
-      `keywords: ${keywords} \n Make sure all the variations have score.`,
+      `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
   ]);
 
   return generatedContent;
