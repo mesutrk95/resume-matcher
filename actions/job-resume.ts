@@ -86,7 +86,7 @@ export const analyzeResumeScore = async (jobResumeId: string) => {
     },
   });
 
-  const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, you need to give a score to the resume content based on how well it matches the job description, for missed_keywords dont need to mention not important ones, for notes try to mention the best points with example to increase the score from ATS viewpoint in html format, give me the details in this format { "score" : 45, "matched_keywords": [...] , "missed_keywords": [...], "notes": ["try to talk about bla bla...", ...]}, , Ensure the response is in a valid JSON format with no extra text!`;
+  const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, you need to give a score to the resume content based on how well it matches the job description, for missed_keywords dont need to mention not important ones, for notes try to mention the best imporvment points with example to increase the score from ATS viewpoint in html format, give me the details in this format { "score" : 45, "matched_keywords": [...] , "missed_keywords": [...], "notes": ["try to talk about bla bla...", ...]}, , Ensure the response is in a valid JSON format with no extra text!`;
   const content = `Job Description: \n${jobResume?.job.title}\n${
     jobResume?.job.description
   }\nResume Content: \n${convertResumeObjectToString(
