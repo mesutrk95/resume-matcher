@@ -85,6 +85,12 @@ const styles = StyleSheet.create({
   },
   jobTitle: {
     fontSize: 12,
+    marginBottom: 2,
+    fontWeight: "bold",
+  },
+  role: {
+    fontSize: 10,
+    marginBottom: 2,
     fontWeight: "bold",
   },
   company: {
@@ -155,10 +161,12 @@ const CVDocument = ({ resume }: { resume: ResumeContent }) => (
             <>
               <View key={index} style={styles.experience} wrap={false}>
                 <Text style={styles.jobTitle}>
-                  <SeperateList
+                  {experience.companyName}
+                  {/* <SeperateList
                     data={[experience.role, experience.companyName]}
-                  />
+                  /> */}
                 </Text>
+                <Text style={styles.role}>{experience.role} </Text>
                 <Text style={styles.date}>
                   <SeperateList
                     data={[
@@ -192,32 +200,36 @@ const CVDocument = ({ resume }: { resume: ResumeContent }) => (
       {/* Projects */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Projects</Text>
-        {resume.projects.filter(prj => prj.enabled).map((prj, index) => (
-          // <View key={index} style={styles.project}>
-          <>
-            <Text style={styles.jobTitle}>{prj.name}</Text>
-            <Text style={styles.date}>
-              {prj.startDate} - {prj.endDate}
-            </Text>
-            <Text style={styles.link}>{prj.link}</Text>
-            <Text style={styles.description}>{prj.content}</Text>
-          </>
-        // </View>
-        ))}
+        {resume.projects
+          .filter((prj) => prj.enabled)
+          .map((prj, index) => (
+            // <View key={index} style={styles.project}>
+            <>
+              <Text style={styles.jobTitle}>{prj.name}</Text>
+              <Text style={styles.date}>
+                {prj.startDate} - {prj.endDate}
+              </Text>
+              <Text style={styles.link}>{prj.link}</Text>
+              <Text style={styles.description}>{prj.content}</Text>
+            </>
+            // </View>
+          ))}
       </View>
 
       {/* Education */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Education</Text>
-        {resume.educations.filter(edu => edu.enabled).map((edu, index) => (
-          <View key={index} style={styles.experience}>
-            <Text style={styles.jobTitle}>{edu.degree}</Text>
-            <Text style={styles.company}>
-              <SeperateList data={[edu.institution, edu.location]} />
-            </Text>
-            <Text style={styles.date}>Graduated: {edu.endDate}</Text>
-          </View>
-        ))}
+        {resume.educations
+          .filter((edu) => edu.enabled)
+          .map((edu, index) => (
+            <View key={index} style={styles.experience}>
+              <Text style={styles.jobTitle}>{edu.degree}</Text>
+              <Text style={styles.company}>
+                <SeperateList data={[edu.institution, edu.location]} />
+              </Text>
+              <Text style={styles.date}>Graduated: {edu.endDate}</Text>
+            </View>
+          ))}
       </View>
 
       {/* Skills */}

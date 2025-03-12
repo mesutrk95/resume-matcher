@@ -96,7 +96,7 @@ export const JobPostPreview = ({
         <div
           className="jd-preview text-sm"
           dangerouslySetInnerHTML={{
-            __html: (job.analyzeResults as { summary: string })?.summary,
+            __html: (job.analyzeResults as { summary: string })?.summary || '',
           }}
         ></div>
       </TabsContent>
