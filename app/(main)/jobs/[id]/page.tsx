@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { JobResumeCard } from "@/components/job-resumes/resume-card";
 import { JobPostPreview } from "@/components/jobs/job-post-preview";
+import { JobStatusUpdateForm } from "@/components/jobs/job-status-update-form";
 
 interface JobResumesPageProps {
   params: {
@@ -62,6 +63,11 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
         </div>
         {/* Resumes Column */}
         <div className="md:col-span-1 bg-white rounded-lg  ">
+          {/* Job Status Update Section */}
+          <div className="mb-6">
+            <h3 className="text-xl font-bold mb-3">Application Status</h3>
+            <JobStatusUpdateForm job={job} />
+          </div>
           <div className="space-y-4">
             <h3 className="text-xl font-bold">Resumes</h3>
             <div className="space-y-3">

@@ -16,6 +16,10 @@ import {
   ChevronRight,
   Edit,
   ExternalLink,
+  LucideArchive,
+  LucideCheckCircle,
+  LucideFileX,
+  LucideMessageCircleX,
   LucideScrollText,
   Search,
   Trash,
@@ -23,15 +27,16 @@ import {
 import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Job } from "@prisma/client";
+import { Job, JobStatus } from "@prisma/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { deleteJob } from "@/actions/job";
+import { deleteJob, updateJobStatus } from "@/actions/job";
 import { toast } from "sonner";
 import moment from "moment";
 
@@ -91,6 +96,10 @@ export function JobsDataTable({
     }
   };
 
+  const handleUpdateStatus = async (job: Job, status: JobStatus) => {
+    updateJobStatus(job.id, status);
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -116,6 +125,7 @@ export function JobsDataTable({
             <TableRow>
               <TableHead>Title</TableHead>
               <TableHead>Company</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead>Location</TableHead>
               <TableHead>Created</TableHead>
               <TableHead>Posted</TableHead>
@@ -136,6 +146,7 @@ export function JobsDataTable({
                     <Link href={`/jobs/${job.id}`}>{job.title}</Link>
                   </TableCell>
                   <TableCell>{job.companyName}</TableCell>
+                  <TableCell className="capitalize">{job.status?.toLowerCase()}</TableCell>
                   <TableCell>{job.location}</TableCell>
                   <TableCell>
                     {format(new Date(job.createdAt), "MMM d, yyyy HH:mm")}
@@ -143,7 +154,9 @@ export function JobsDataTable({
                   <TableCell>
                     <div className="flex flex-col">
                       <span>{moment(job.postedAt).format("YYYY/MM/DD")}</span>
-                      <span className="text-xs text-muted-foreground">{moment(job.postedAt).fromNow()}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {moment(job.postedAt).fromNow()}
+                      </span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -186,6 +199,54 @@ export function JobsDataTable({
                           <Trash className="mr-2 h-4 w-4" />
                           Delete
                         </DropdownMenuItem>
+
+                        {job?.status === JobStatus.BOOKMARKED && (
+                          <>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              className="cursor-pointer"
+                              onClick={() =>
+                                handleUpdateStatus(job, JobStatus.APPLIED)
+                              }
+                            >
+                              <LucideCheckCircle className="mr-2 h-4 w-4" />
+                              Mark as Applied
+                            </DropdownMenuItem>
+                          </>
+                        )}
+                        {job?.status === JobStatus.APPLIED && (
+                          <>
+                            {/* <DropdownMenuLabel className="text-muted-foreground">Application Status</DropdownMenuLabel> */}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              className="cursor-pointer"
+                              onClick={() =>
+                                handleUpdateStatus(job, JobStatus.REJECTED)
+                              }
+                            >
+                              <LucideFileX className="mr-2 h-4 w-4" />
+                              Mark as Rejected
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="cursor-pointer"
+                              onClick={() =>
+                                handleUpdateStatus(job, JobStatus.NO_ANSWER)
+                              }
+                            >
+                              <LucideMessageCircleX className="mr-2 h-4 w-4" />
+                              Mark as No Response
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="cursor-pointer"
+                              onClick={() =>
+                                handleUpdateStatus(job, JobStatus.ARCHIVED)
+                              }
+                            >
+                              <LucideArchive className="mr-2 h-4 w-4" />
+                              Archive Job
+                            </DropdownMenuItem>
+                          </>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
