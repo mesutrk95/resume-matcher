@@ -13,7 +13,7 @@ import { Job, JobResume } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import {
-  analyzeExperienceJobScores,
+  analyzeResumeExperiencesScores,
   analyzeProjectJobScores,
 } from "@/actions/job";
 import { JobAnalyzeResult } from "@/types/job";
@@ -188,7 +188,10 @@ export const JobMatcher = ({
               )
               .flat()
               .join("\n");
-            return analyzeExperienceJobScores(jobResumeId as string, content);
+            return analyzeResumeExperiencesScores(
+              jobResumeId as string,
+              content
+            );
           }),
           analyzeProjectJobScores(
             jobResumeId as string,
@@ -369,7 +372,7 @@ export const JobMatcher = ({
                   </h3>
                   <div className="flex flex-col gap-2">
                     <h3 className="text-lg font-bold flex items-center gap-2">
-                      <CircleX className="text-red-500" size={18}/>
+                      <CircleX className="text-red-500" size={18} />
                       Missed Keywords ({resumeScore.missed_keywords.length})
                     </h3>
                     <div className="flex flex-wrap gap-1">
@@ -385,7 +388,7 @@ export const JobMatcher = ({
                   </div>
                   <div className="flex flex-col gap-2">
                     <h3 className="text-lg font-bold flex items-center gap-2">
-                      <CheckCircle className="text-green-500" size={18}/>
+                      <CheckCircle className="text-green-500" size={18} />
                       Matched Keywords ({resumeScore.matched_keywords.length})
                     </h3>
                     <div className="flex flex-wrap gap-1">
@@ -402,7 +405,10 @@ export const JobMatcher = ({
                   {resumeScore.notes.length && (
                     <div className="flex flex-col gap-2">
                       <h3 className="text-lg font-bold flex items-center gap-2">
-                        <LucideNotebookPen className="text-yellow-500" size={18}/>
+                        <LucideNotebookPen
+                          className="text-yellow-500"
+                          size={18}
+                        />
                         Notes ({resumeScore.notes.length})
                       </h3>
                       <div className="flex flex-wrap gap-1">

@@ -159,7 +159,7 @@ export const analyzeJobByAI = async (jobId: string) => {
   return analyzeResults;
 };
 
-export const analyzeExperienceJobScores = async (
+export const analyzeResumeExperiencesScores = async (
   jobResumeId: string,
   content: string
 ) => {
