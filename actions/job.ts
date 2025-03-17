@@ -12,6 +12,7 @@ import { withErrorHandling } from "./with-error-handling";
 
 import cheerio from "cheerio";
 import axios from "axios";
+import moment from "moment";
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {
@@ -118,7 +119,7 @@ Ensure the response is in a valid JSON format with no extra text, without any ad
 };
 
 const analyzeJobSummary = async (job: Job) => {
-  const prompt = `Analyze the following job description concise it, keep all important keywords as it is, you can use bullets for items and <b> <br /> tag, Ensure the response is in a valid HTML format with no extra text:`;
+  const prompt = `Analyze the following job description concise it, keep all important keywords as it is, you can use bullets for items and <b> <br /> tags, Ensure the response is in a valid HTML format with no extra text:`;
   return getAIHtmlResponse(prompt, [job.description || ""]);
 };
 
@@ -256,7 +257,8 @@ export const extractJobDescriptionFromUrl = async (url: string) => {
     "\n",
     ""
   );
-  const prompt = `Extract the following details from the given text, with this keys "description", "companyName", "location" , "title", "postedDate".keep the description in html format and make sure postedDate is in correct date format. Ensure the response is in a valid JSON format with no extra text:\n ${jd}`;
+  
+  const prompt = `Extract the following details from the given text, with this keys "description", "companyName", "location" , "title", "postedDate".keep the description in html format and make sure postedDate is in correct date format (YYYY/MM/DD HH:mm) (now: ${moment().format('YYYY/MM/DD HH:mm')}). Ensure the response is in a valid JSON format with no extra text:\n ${jd}`;
 
   const result = await getAIJsonResponse(prompt);
   return result;
