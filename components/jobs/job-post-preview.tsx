@@ -120,7 +120,7 @@ export const JobPostPreview = ({
           </TabsTrigger>
         </TabsList>
         <TabsContent className="px-2" value="jd">
-          <JobDescriptionPreview job={job} onJobUpdated={onJobUpdated} />
+          <JobDescriptionPreview job={job} />
         </TabsContent>
         <TabsContent className="px-2" value="keywords">
           <ContentPlaceholder

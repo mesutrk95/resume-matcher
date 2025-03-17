@@ -152,7 +152,7 @@ export function JobsDataTable({
                   <TableCell>
                     <Moment
                       date={job.createdAt}
-                      format="MMM d, yyyy HH:mm"
+                      format="yyyy/MM/DD HH:mm"
                       utc
                     />
                   </TableCell>

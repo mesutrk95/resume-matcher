@@ -47,8 +47,8 @@ export function ResumeTemplateCard({
         <h3 className="text-lg font-semibold">{template.name}</h3>
         <p className="text-sm text-muted-foreground">{template.description}</p>
         <p className="text-xs text-muted-foreground mt-2">
-          Last updated at
-          <Moment date={template.updatedAt} format="yyyy/MM/dd HH:mm" utc/>
+          Last updated at{" "}
+          <Moment date={template.updatedAt} format="yyyy/MM/DD HH:mm" utc />
         </p>
       </div>
       <LoadingButton

@@ -128,14 +128,14 @@ export function ResumeTemplatesDateTable({
                   <TableCell>
                     <Moment
                       date={template.createdAt}
-                      format="MMM d, yyyy HH:mm"
+                      format="YYYY/MM/DD HH:mm"
                       utc
                     />
                   </TableCell>
                   <TableCell>
                     <Moment
                       date={template.updatedAt}
-                      format="MMM d, yyyy HH:mm"
+                      format="YYYY/MM/DD HH:mm"
                       utc
                     />
                   </TableCell>
