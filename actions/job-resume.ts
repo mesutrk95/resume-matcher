@@ -80,7 +80,15 @@ export const deleteJobResume = async (id: string) => {
   return true;
 };
 
-export const analyzeResumeScore = async (jobResumeId: string) => {
+export const analyzeResumeScore = async (
+  formData: FormData,
+  jobResumeId: string
+) => {
+  const file = formData.get("file") as File;
+
+  const bytes = await file.arrayBuffer();
+  const pdfBuffer = Buffer.from(bytes);
+
   const user = await currentUser();
   const jobResume = await db.jobResume.findUnique({
     where: { id: jobResumeId, userId: user?.id },
@@ -88,13 +96,13 @@ export const analyzeResumeScore = async (jobResumeId: string) => {
       job: true,
     },
   });
-  const content = `Job Description: \n${jobResume?.job.title}\n${
-    jobResume?.job.description
-  }\n\nMy Resume Content: \n${convertResumeObjectToString(
-    jobResume?.content as ResumeContent
-  )}`;
+  let content = `Job Description: \n${jobResume?.job.title}\n${jobResume?.job.description}`;
 
-  const getImprovementNotes = async (content: string) => {
+  // content += `\n\nMy Resume Content: \n${convertResumeObjectToString(
+  //   jobResume?.content as ResumeContent
+  // )}`
+
+  const getImprovementNotes = async () => {
     const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, address top 10 notes and imporvments can applied to the resume to make it best to increase the score from ATS viewpoint in html format,
   you are allowed to use tailwind classes to highlight the texts by bg and text color classes like [bg|text]-[red|green|orange]-[100-500], font-bold, ...
   give me the details in this format:
@@ -106,22 +114,19 @@ export const analyzeResumeScore = async (jobResumeId: string) => {
   text and improvement should be html formatted text, Ensure the response is in a valid JSON format with no extra text!
   `;
 
-    return getAIJsonResponse(prompt, [content]);
+    return getAIJsonResponse(prompt, [pdfBuffer, content]);
   };
-  const getScore = async (content: string) => {
-    const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, you need to give a score to the resume content based on how well it matches the job description, for missed_keywords dont need to mention not important ones, for notes try to mention the best imporvment points with example to increase the score from ATS viewpoint in html format, give me the details in this format { "score" : 45, "matched_keywords": [...] , "missed_keywords": [...] }, , Ensure the response is in a valid JSON format with no extra text!`;
+  const getScore = async () => {
+    const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, you need to give a score to the resume content based on how well it matches the job description, for missed_keywords dont need to mention not important ones, give me the details in this format { "score" : 45, "matched_keywords": [...] , "missed_keywords": [...] }, , Ensure the response is in a valid JSON format with no extra text!`;
 
-    return getAIJsonResponse(prompt, [content]);
+    return getAIJsonResponse(prompt, [pdfBuffer, content]);
   };
 
-  const results = await Promise.all([
-    getScore(content),
-    getImprovementNotes(content),
-  ]);
+  const results = await Promise.all([getScore(), getImprovementNotes()]);
   const result = { ...results[0].result, notes: results[1].result };
   return {
     result,
-    prompts: results.map((r) => r.prompt),
-    contents: results.map((r) => r.content),
+    // prompts: results.map((r) => r.prompt),
+    // contents: results.map((r) => r.content),
   };
 };

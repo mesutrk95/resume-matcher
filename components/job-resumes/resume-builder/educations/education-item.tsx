@@ -75,11 +75,11 @@ export function EducationItem({
       content: editForm.content,
       location: editForm.location,
       institution: editForm.institution,
-      startDate: startDate ? format(startDate, "yyyy/MM") : education.startDate,
+      startDate: startDate ? format(startDate, "MM/yyyy") : education.startDate,
       endDate: isPresent
         ? "Present"
         : endDate
-        ? format(endDate, "yyyy/MM")
+        ? format(endDate, "MM/yyyy")
         : education.endDate,
     });
     setIsEditing(false);

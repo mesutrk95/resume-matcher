@@ -36,11 +36,11 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
         content,
         location,
         institution,
-        startDate: formatDate(startDate, "yyyy/MM"),
+        startDate: formatDate(startDate, "MM/yyyy"),
         endDate: isPresent
           ? "Present"
           : endDate
-          ? formatDate(endDate, "yyyy/MM")
+          ? formatDate(endDate, "MM/yyyy")
           : "",
       });
     }

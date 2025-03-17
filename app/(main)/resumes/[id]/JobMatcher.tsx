@@ -34,6 +34,8 @@ import {
 import { updateResumeTemplateContent } from "@/actions/resume-template";
 import { CheckCircle, CircleX, LucideCheck, LucideX } from "lucide-react";
 import { JobPostPreview } from "@/components/jobs/job-post-preview";
+import { BlobProvider } from "@react-pdf/renderer";
+import { ResumeDocument } from "@/components/job-resumes/resume-document";
 // import { useLayout } from "@/app/context/LayoutProvider";
 
 // const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
@@ -239,10 +241,18 @@ export const JobMatcher = ({
   const [resumeScore, setResumeScore] =
     useState<ResumeOverallScoreAnalyze | null>();
   const [isRatingResume, startRatingResumeTransition] = useTransition();
-  const handleResumeScore = () => {
+  const handleResumeScore = (resumePdfBlob: Blob) => {
     startRatingResumeTransition(async () => {
       try {
-        const score = await analyzeResumeScore(jobResume.id);
+        const file = new File([resumePdfBlob], "resume.pdf", {
+          type: "application/pdf",
+        });
+
+        // Create FormData and append the file
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const score = await analyzeResumeScore(formData, jobResume.id);
         console.log(score);
         setResumeScore(score.result);
       } catch (error) {}
@@ -357,13 +367,23 @@ export const JobMatcher = ({
               />
             </TabsContent>
             <TabsContent className="" value="score">
-              <LoadingButton
-                onClick={handleResumeScore}
-                loading={isRatingResume}
-                loadingText="Thinking ..."
-              >
-                Rate Resume!
-              </LoadingButton>
+              <BlobProvider document={<ResumeDocument resume={resume} />}>
+                {({ blob, url, loading, error }) => {
+                  // if (error) {
+                  //   return <div>Error: {error}</div>;
+                  // }
+
+                  return (
+                    <LoadingButton
+                      onClick={() => handleResumeScore(blob!)}
+                      loading={loading || isRatingResume}
+                      loadingText="Thinking ..."
+                    >
+                      Rate Resume!
+                    </LoadingButton>
+                  );
+                }}
+              </BlobProvider>
               {/* <CircleX className="text-red-500" /> Missed Keywords{" "} */}
               {resumeScore && (
                 <div className="flex flex-col gap-5 mt-10">
@@ -402,7 +422,7 @@ export const JobMatcher = ({
                       ))}
                     </div>
                   </div>
-                  {resumeScore.notes.length && (
+                  {resumeScore.notes?.length > 0 && (
                     <div className="flex flex-col gap-2">
                       <h3 className="text-lg font-bold flex items-center gap-2">
                         Notes ({resumeScore.notes.length})
