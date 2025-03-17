@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronLeft, ChevronRight, Edit, Search, Trash } from "lucide-react";
-import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { ResumeTemplate } from "@prisma/client";
@@ -28,6 +27,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
+import Moment from "react-moment";
 
 interface ResumeTemplatesDateTableProps {
   data: ResumeTemplate[];
@@ -126,10 +126,18 @@ export function ResumeTemplatesDateTable({
                   </TableCell>
                   <TableCell>{template.description}</TableCell>
                   <TableCell>
-                    {format(new Date(template.createdAt), "MMM d, yyyy HH:mm")}
+                    <Moment
+                      date={template.createdAt}
+                      format="MMM d, yyyy HH:mm"
+                      utc
+                    />
                   </TableCell>
                   <TableCell>
-                    {format(new Date(template.updatedAt), "MMM d, yyyy HH:mm")}
+                    <Moment
+                      date={template.updatedAt}
+                      format="MMM d, yyyy HH:mm"
+                      utc
+                    />
                   </TableCell>
                   <TableCell className="flex gap-2">
                     {/* Delete Confirmation Dialog */}
