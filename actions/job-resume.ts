@@ -45,6 +45,8 @@ export const createJobResume = async (
     },
   });
 
+  revalidatePath("/resumes");
+
   return resumeJob;
 };
 
@@ -73,7 +75,8 @@ export const deleteJobResume = async (id: string) => {
     where: { id },
   });
 
-  revalidatePath("/jobs/[id]", "page");
+  revalidatePath("/resumes");
+  revalidatePath(`/resumes/${id}`);
   return true;
 };
 

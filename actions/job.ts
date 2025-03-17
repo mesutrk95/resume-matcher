@@ -29,6 +29,7 @@ export const createJob = withErrorHandling(
       },
     });
 
+    revalidatePath("/jobs");
     return job;
   }
 );
