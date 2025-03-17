@@ -118,10 +118,10 @@ export const analyzeResumeScore = async (jobResumeId: string) => {
     getScore(content),
     getImprovementNotes(content),
   ]);
-  const result = { ...results[0].result, notes: results[0].result };
-
+  const result = { ...results[0].result, notes: results[1].result };
   return {
-    ...result,
-    prompts: { prompt, content },
+    result,
+    prompts: results.map((r) => r.prompt),
+    contents: results.map((r) => r.content),
   };
 };
