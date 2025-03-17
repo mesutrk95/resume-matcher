@@ -6,6 +6,7 @@ import { useMemo, useTransition } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { JobDescriptionPreview } from "./job-description-preview";
 import moment from "moment";
+import Moment from "react-moment";
 import { Briefcase, LucideExternalLink } from "lucide-react";
 import { LoadingButton } from "../ui/loading-button";
 import { analyzeJobByAI } from "@/actions/job";
@@ -65,8 +66,8 @@ export const JobPostPreview = ({
           {job.companyName} - {job.location} - Posted at{" "}
           {job.postedAt && (
             <>
-              {moment(job.postedAt).format("YYYY/MM/DD")}
-              ({moment(job.postedAt).fromNow()})
+              <Moment format="YYYY/MM/DD" date={job.postedAt} utc />
+              (<Moment date={job.postedAt} fromNow utc/>) 
             </>
           )}
         </p>

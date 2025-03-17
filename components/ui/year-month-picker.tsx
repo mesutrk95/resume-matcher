@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
+import Moment from "react-moment";
 
 interface DatePickerProps {
   date: string | undefined;
@@ -54,12 +55,12 @@ export function YearMonthPicker({
 
   const handleMonthChange = (month: string) => {
     const newDate = setMonth(date || new Date(), months.indexOf(month));
-    setDate(format(newDate, 'yyyy/MM'));
+    setDate(format(newDate, "yyyy/MM"));
   };
 
   const handleYearChange = (year: string) => {
     const newDate = setYear(date || new Date(), parseInt(year));
-    setDate(format(newDate, 'yyyy/MM'));
+    setDate(format(newDate, "yyyy/MM"));
   };
 
   return (
@@ -72,8 +73,12 @@ export function YearMonthPicker({
             !date && "text-muted-foreground"
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" /> 
-          {date ? format(date, "yyyy/MM") : <span>Pick a date</span>}
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {date ? (
+            <Moment format="yyyy/MM" date={date} utc />
+          ) : (
+            <span>Pick a date</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

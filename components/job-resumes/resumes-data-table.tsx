@@ -28,6 +28,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
+import Moment from "react-moment";
 
 interface JobResumesDataTableProps {
   data: (JobResume & { job: Job })[];
@@ -126,10 +127,10 @@ export function JobResumesDataTable({
                   </TableCell>
                   <TableCell>{jobResume.job.companyName}</TableCell>
                   <TableCell>
-                    {format(new Date(jobResume.createdAt), "MMM d, yyyy HH:mm")}
+                    <Moment date={jobResume.createdAt} format="MMM d, yyyy HH:mm" utc />
                   </TableCell>
                   <TableCell>
-                    {format(new Date(jobResume.updatedAt), "MMM d, yyyy HH:mm")}
+                    <Moment date={jobResume.updatedAt} format="MMM d, yyyy HH:mm" utc />
                   </TableCell>
                   <TableCell className="flex gap-2">
                     {/* Delete Confirmation Dialog */}

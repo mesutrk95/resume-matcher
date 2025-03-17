@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import Moment from "react-moment"
 
 interface DatePickerProps {
   date: Date | undefined
@@ -23,7 +24,7 @@ export function DatePicker({ date, setDate, placeholder = "Select date", classNa
           className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground", className)}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "MMM yyyy") : <span>{placeholder}</span>}
+          {date ? <Moment date={date} format="MMM yyyy" utc/> : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

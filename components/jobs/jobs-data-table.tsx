@@ -24,7 +24,6 @@ import {
   Search,
   Trash,
 } from "lucide-react";
-import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { Job, JobStatus } from "@prisma/client";
@@ -38,7 +37,7 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { deleteJob, updateJobStatus } from "@/actions/job";
 import { toast } from "sonner";
-import moment from "moment";
+import Moment from "react-moment";
 
 interface JobsDataTableProps {
   data: Job[];
@@ -146,18 +145,26 @@ export function JobsDataTable({
                     <Link href={`/jobs/${job.id}`}>{job.title}</Link>
                   </TableCell>
                   <TableCell>{job.companyName}</TableCell>
-                  <TableCell className="capitalize">{job.status?.toLowerCase()}</TableCell>
+                  <TableCell className="capitalize">
+                    {job.status?.toLowerCase()}
+                  </TableCell>
                   <TableCell>{job.location}</TableCell>
                   <TableCell>
-                    {format(new Date(job.createdAt), "MMM d, yyyy HH:mm")}
+                    <Moment
+                      date={job.createdAt}
+                      format="MMM d, yyyy HH:mm"
+                      utc
+                    />
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col">
-                      <span>{moment(job.postedAt).format("YYYY/MM/DD")}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {moment(job.postedAt).fromNow()}
-                      </span>
-                    </div>
+                    {job.postedAt && (
+                      <div className="flex flex-col">
+                        <Moment date={job.postedAt} format="YYYY/MM/DD" utc />
+                        <span className="text-xs text-muted-foreground">
+                          <Moment date={job.postedAt} fromNow utc />
+                        </span>
+                      </div>
+                    )}
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>

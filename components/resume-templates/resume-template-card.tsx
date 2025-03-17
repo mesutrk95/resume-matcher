@@ -8,7 +8,8 @@ import { createJobResume } from "@/actions/job-resume";
 import { useRouter } from "next/navigation";
 import { LoadingButton } from "../ui/loading-button";
 
-import { format } from "date-fns"; 
+import { format } from "date-fns";
+import Moment from "react-moment";
 
 interface ResumeTemplateCardProps {
   template: ResumeTemplate;
@@ -46,7 +47,8 @@ export function ResumeTemplateCard({
         <h3 className="text-lg font-semibold">{template.name}</h3>
         <p className="text-sm text-muted-foreground">{template.description}</p>
         <p className="text-xs text-muted-foreground mt-2">
-          Last updated at {format(template.updatedAt, "yyyy/MM/dd HH:mm")}
+          Last updated at
+          <Moment date={template.updatedAt} format="yyyy/MM/dd HH:mm" utc/>
         </p>
       </div>
       <LoadingButton
