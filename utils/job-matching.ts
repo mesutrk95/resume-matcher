@@ -135,7 +135,7 @@ export const convertResumeObjectToString = (resume: ResumeContent) => {
     if (!exp.enabled) return;
     exp.items.forEach((item) => {
       const variation = item.variations.find((v) => v.enabled);
-      content += `${variation?.content}\n`;
+      if (variation?.content) content += `- ${variation.content}\n`;
     });
   });
   resume.projects.forEach((prj) => {

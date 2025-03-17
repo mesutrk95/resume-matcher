@@ -202,7 +202,7 @@ export const analyzeResumeExperiencesScores = async (
   return generatedContent;
 };
 
-export const analyzeProjectJobScores = async (
+export const analyzeResumeProjectsScores = async (
   jobResumeId: string,
   content: string
 ) => {

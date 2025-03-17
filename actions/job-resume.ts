@@ -88,15 +88,40 @@ export const analyzeResumeScore = async (jobResumeId: string) => {
       job: true,
     },
   });
-
-  const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, you need to give a score to the resume content based on how well it matches the job description, for missed_keywords dont need to mention not important ones, for notes try to mention the best imporvment points with example to increase the score from ATS viewpoint in html format, give me the details in this format { "score" : 45, "matched_keywords": [...] , "missed_keywords": [...], "notes": ["try to talk about bla bla...", ...]}, , Ensure the response is in a valid JSON format with no extra text!`;
   const content = `Job Description: \n${jobResume?.job.title}\n${
     jobResume?.job.description
-  }\nResume Content: \n${convertResumeObjectToString(
+  }\n\nMy Resume Content: \n${convertResumeObjectToString(
     jobResume?.content as ResumeContent
   )}`;
 
-  const generatedContent = await getAIJsonResponse(prompt, [content]);
+  const getImprovementNotes = async (content: string) => {
+    const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, address top 10 notes and imporvments can applied to the resume to make it best to increase the score from ATS viewpoint in html format,
+  you are allowed to use tailwind classes to highlight the texts by bg and text color classes like [bg|text]-[red|green|orange]-[100-500], font-bold, ...
+  give me the details in this format:
+  [
+    { "title": "correct bla bla ...", text: "..." , "improvement": "..."},
+     ...
+  ]
 
-  return generatedContent;
+  text and improvement should be html formatted text, Ensure the response is in a valid JSON format with no extra text!
+  `;
+
+    return getAIJsonResponse(prompt, [content]);
+  };
+  const getScore = async (content: string) => {
+    const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, you need to give a score to the resume content based on how well it matches the job description, for missed_keywords dont need to mention not important ones, for notes try to mention the best imporvment points with example to increase the score from ATS viewpoint in html format, give me the details in this format { "score" : 45, "matched_keywords": [...] , "missed_keywords": [...] }, , Ensure the response is in a valid JSON format with no extra text!`;
+
+    return getAIJsonResponse(prompt, [content]);
+  };
+
+  const results = await Promise.all([
+    getScore(content),
+    getImprovementNotes(content),
+  ]);
+  const result = { ...results[0].result, notes: results[0].result };
+
+  return {
+    ...result,
+    prompts: { prompt, content },
+  };
 };

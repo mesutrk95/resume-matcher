@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import {
   analyzeResumeExperiencesScores,
-  analyzeProjectJobScores,
+  analyzeResumeProjectsScores,
 } from "@/actions/job";
 import { JobAnalyzeResult } from "@/types/job";
 import { useParams } from "next/navigation";
@@ -32,7 +32,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { updateResumeTemplateContent } from "@/actions/resume-template";
-import { CheckCircle, CircleX, LucideNotebookPen } from "lucide-react";
+import { CheckCircle, CircleX, LucideCheck, LucideX } from "lucide-react";
 import { JobPostPreview } from "@/components/jobs/job-post-preview";
 // import { useLayout } from "@/app/context/LayoutProvider";
 
@@ -193,7 +193,7 @@ export const JobMatcher = ({
               content
             );
           }),
-          analyzeProjectJobScores(
+          analyzeResumeProjectsScores(
             jobResumeId as string,
             resume.projects
               .map((prj) => `(${prj.id}) ${prj.content}`)
@@ -405,19 +405,40 @@ export const JobMatcher = ({
                   {resumeScore.notes.length && (
                     <div className="flex flex-col gap-2">
                       <h3 className="text-lg font-bold flex items-center gap-2">
-                        <LucideNotebookPen
-                          className="text-yellow-500"
-                          size={18}
-                        />
                         Notes ({resumeScore.notes.length})
                       </h3>
-                      <div className="flex flex-wrap gap-1">
-                        {resumeScore.notes.map((n) => (
-                          <div
-                            key={n}
-                            className="px-2 py-1 text-sm  "
-                            dangerouslySetInnerHTML={{ __html: n }}
-                          ></div>
+                      <div className="flex flex-col gap-4">
+                        {resumeScore.notes.map((n, index) => (
+                          <div className="flex flex-col gap-2" key={n.title}>
+                            <h4 className=" font-bold">
+                              {index + 1}. {n.title}
+                            </h4>
+                            <div className="flex ">
+                              <div>
+                                <LucideX className="text-red-500" size={18} />
+                              </div>
+                              <p
+                                className="px-2 text-sm  "
+                                dangerouslySetInnerHTML={{ __html: n.text }}
+                              ></p>
+                            </div>
+                            {n.improvement && (
+                              <div className="flex ">
+                                <div>
+                                  <LucideCheck
+                                    className="text-green-500"
+                                    size={18}
+                                  />
+                                </div>
+                                <p
+                                  className="px-2 text-sm  "
+                                  dangerouslySetInnerHTML={{
+                                    __html: n.improvement,
+                                  }}
+                                ></p>
+                              </div>
+                            )}
+                          </div>
                         ))}
                       </div>
                     </div>
