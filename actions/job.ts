@@ -157,6 +157,8 @@ export const analyzeJobByAI = async (jobId: string) => {
     },
   });
 
+  revalidatePath(`/jobs/${jobId}`)
+
   return analyzeResults;
 };
 

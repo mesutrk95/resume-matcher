@@ -124,7 +124,10 @@ const CVDocument = ({ resume }: { resume: ResumeContent }) => (
       {/* Header / Personal Info */}
       <View style={styles.header}>
         <Text style={styles.name}>
-          {resume.contactInfo.firstName + " " + resume.contactInfo.lastName}
+          <SeperateList
+            data={[resume.contactInfo.firstName, resume.contactInfo.lastName]}
+            by=" "
+          />
         </Text>
         <Text style={styles.title}>
           {resume.titles.find((t) => t.enabled)?.content}

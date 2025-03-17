@@ -3,9 +3,11 @@ import React from "react";
 
 export const ContentLoading = ({
   loading,
+  loadingContent,
   children,
 }: {
   loading: boolean;
+  loadingContent?: string | React.ReactNode;
   children: React.ReactNode;
 }) => {
   if (!loading) {
@@ -13,8 +15,14 @@ export const ContentLoading = ({
   }
   return (
     <div className="flex items-center justify-center gap-2">
-      <LucideLoader2 className="animate-spin" />
-      Loading...
+      {typeof loadingContent === "string" || !loadingContent ? (
+        <>
+          <LucideLoader2 className="animate-spin" />
+          {loadingContent || "Loading..."}
+        </>
+      ) : (
+        <>{loadingContent}</>
+      )}
     </div>
   );
 };

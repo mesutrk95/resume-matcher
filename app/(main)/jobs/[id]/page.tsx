@@ -7,6 +7,7 @@ import { ChevronLeft } from "lucide-react";
 import { JobResumeCard } from "@/components/job-resumes/resume-card";
 import { JobPostPreview } from "@/components/jobs/job-post-preview";
 import { JobStatusUpdateForm } from "@/components/jobs/job-status-update-form";
+import { ContentPlaceholder } from "@/app/_components/content-placeholder";
 
 interface JobResumesPageProps {
   params: {
@@ -71,9 +72,18 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
           <div className="space-y-4">
             <h3 className="text-xl font-bold">Resumes</h3>
             <div className="space-y-3">
-              {resumeJobs.map((resumeJob) => (
-                <JobResumeCard key={resumeJob.id} jobResume={resumeJob} />
-              ))}
+              <ContentPlaceholder
+                show={resumeJobs.length === 0}
+                placeholder={
+                  <div className="text-sm text-muted-foreground">
+                    No resume available for this job!
+                  </div>
+                }
+              >
+                {resumeJobs.map((resumeJob) => (
+                  <JobResumeCard key={resumeJob.id} jobResume={resumeJob} />
+                ))}
+              </ContentPlaceholder>
             </div>
             <div className="mt-4">
               <Button asChild className="w-full">
