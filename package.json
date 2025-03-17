@@ -43,6 +43,7 @@
     "cheerio": "^0.22.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "cmdk": "1.0.0",
     "date-fns": "^4.1.0",
     "jodit-react": "^5.2.15",
     "jsonwebtoken": "^9.0.2",

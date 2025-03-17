@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { currentUser } from "@/lib/auth";
-import { Prisma } from "@prisma/client";
+import { JobStatus, Prisma } from "@prisma/client";
 
 export const metadata: Metadata = {
   title: "Jobs",
@@ -17,15 +17,16 @@ interface JobsPageProps {
     page?: string;
     pageSize?: string;
     search?: string;
+    status?: string;
   };
 }
 
 export default async function JobsPage({ searchParams }: JobsPageProps) {
   const user = await currentUser();
-
   const page = Number(searchParams.page) || 1;
   const pageSize = Number(searchParams.pageSize) || 10;
   const search = searchParams.search || "";
+  const statuses = searchParams.status ? searchParams.status.split(",") : [];
   const skip = (page - 1) * pageSize;
 
   // Prepare search filter
@@ -49,11 +50,17 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
       }
     : {};
 
+  // Prepare status filter
+  const statusFilter = statuses.length > 0
+    ? { status: { in: statuses as JobStatus[] } }
+    : {};
+
   // Get jobs with filters, pagination and sorting
   const jobs = await db.job.findMany({
     where: {
       userId: user?.id,
       ...searchFilter,
+      ...statusFilter,
     },
     orderBy: {
       createdAt: "desc",
@@ -67,9 +74,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
     where: {
       userId: user?.id,
       ...searchFilter,
-    },
-    orderBy: {
-      createdAt: "desc",
+      ...statusFilter,
     },
   });
 
@@ -91,13 +96,13 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
           </Link>
         </Button>
       </div>
-
       <JobsDataTable
         data={jobs}
         pageCount={totalPages}
         currentPage={page}
         pageSize={pageSize}
         searchQuery={search}
+        statusFilter={statuses}
       />
     </div>
   );

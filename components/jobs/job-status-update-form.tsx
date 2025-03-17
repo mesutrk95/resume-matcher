@@ -37,8 +37,9 @@ export const JobStatusUpdateForm = ({ job }: { job: Job }) => {
       <SelectContent>
         {Object.values(JobStatus).map((status) => (
           <SelectItem key={status} value={status}>
-            <span className="capitalize">{status?.toLowerCase()}</span>
-            
+            <span className="capitalize">
+              {status?.replaceAll("_", " ").toLowerCase()}
+            </span>
           </SelectItem>
         ))}
       </SelectContent>

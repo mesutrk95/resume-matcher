@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -38,6 +38,8 @@ import { MoreHorizontal } from "lucide-react";
 import { deleteJob, updateJobStatus } from "@/actions/job";
 import { toast } from "sonner";
 import Moment from "react-moment";
+import MultipleSelector, { Option } from "../ui/multiple-select";
+import { capitalizeText } from "@/lib/utils";
 
 interface JobsDataTableProps {
   data: Job[];
@@ -45,6 +47,11 @@ interface JobsDataTableProps {
   currentPage: number;
   pageSize: number;
   searchQuery: string;
+  statusFilter: string[];
+}
+
+function getJobStatusLabel(s: JobStatus) {
+  return capitalizeText(s.replaceAll("_", " "));
 }
 
 export function JobsDataTable({
@@ -53,16 +60,23 @@ export function JobsDataTable({
   currentPage,
   pageSize,
   searchQuery,
+  statusFilter,
 }: JobsDataTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [search, setSearch] = useState(searchQuery);
+
+  const [selectedStatuses, setSelectedStatuses] = useState<Option[]>(
+    statusFilter.map((s) => ({ value: s, label: getJobStatusLabel(s as JobStatus) }))
+  );
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
     const params = new URLSearchParams();
     if (search) params.set("search", search);
+    if (selectedStatuses.length > 0)
+      params.set("status", selectedStatuses.map((s) => s.value).join(","));
     params.set("page", "1");
     params.set("pageSize", pageSize.toString());
     router.push(`${pathname}?${params.toString()}`);
@@ -71,6 +85,8 @@ export function JobsDataTable({
   const handleChangePage = (page: number) => {
     const params = new URLSearchParams();
     if (search) params.set("search", search);
+    if (selectedStatuses.length > 0)
+      params.set("status", selectedStatuses.join(","));
     params.set("page", page.toString());
     params.set("pageSize", pageSize.toString());
     router.push(`${pathname}?${params.toString()}`);
@@ -99,9 +115,32 @@ export function JobsDataTable({
     updateJobStatus(job.id, status);
   };
 
+  useEffect(() => {
+    handleSearch();
+  }, [selectedStatuses]);
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <div className="max-w-[400px]">
+            <MultipleSelector
+              options={Object.values(JobStatus).map((status) => ({
+                value: status,
+                label: getJobStatusLabel(status),
+              }))}
+              value={selectedStatuses}
+              onChange={setSelectedStatuses}
+              maxSelected={3}
+              placeholder="Filter by status..."
+              emptyIndicator={
+                <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                  no results found.
+                </p>
+              }
+            />
+          </div>
+        </div>
         <form
           onSubmit={handleSearch}
           className="flex w-full max-w-sm items-center space-x-2"
@@ -134,8 +173,11 @@ export function JobsDataTable({
           <TableBody>
             {data.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  No jobs found.
+                <TableCell
+                  colSpan={7}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  No jobs found!
                 </TableCell>
               </TableRow>
             ) : (

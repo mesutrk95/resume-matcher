@@ -65,3 +65,7 @@ export function response<T extends Record<string, unknown>>(response: Response<T
 export function response<T extends object>(response: T): T {
   return response;
 }
+
+export function capitalizeText(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
