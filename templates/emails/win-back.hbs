@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>We Miss You at Resume Matcher Pro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background-color: #3498db;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px 5px 0 0;
+    }
+    .content {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 5px 5px;
+    }
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+    }
+    .button {
+      display: inline-block;
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+    .offer {
+      background-color: #fffbeb;
+      border: 2px dashed #f5b82e;
+      padding: 15px;
+      margin: 20px 0;
+      text-align: center;
+      border-radius: 5px;
+    }
+    .testimonial {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>We Miss You!</h1>
+  </div>
+  <div class="content">
+    <p>Hi {{name}},</p>
+    
+    <p>We noticed that your Resume Matcher Pro subscription has ended, and we wanted to check in. We've been improving our platform with new features that could help with your job search.</p>
+    
+    <div class="offer">
+      <h2>Special Offer: 50% OFF for 3 months!</h2>
+      <p>We'd love to have you back, so we're offering you a special discount:</p>
+      <p style="font-size: 18px; font-weight: bold;">Use code: <span style="color: #f5b82e;">WELCOME-BACK</span></p>
+      <p>This offer expires in 7 days, so don't miss out!</p>
+    </div>
+    
+    <h3>What's new since you left:</h3>
+    <ul>
+      <li><strong>New resume templates</strong> designed specifically for your industry</li>
+      <li><strong>Improved ATS matching</strong> with 30% better keyword detection</li>
+      <li><strong>Interview practice tool</strong> with AI-powered feedback</li>
+      <li><strong>Enhanced job tracking</strong> to manage your applications</li>
+    </ul>
+    
+    <div class="testimonial">
+      <p>"After resubscribing to Resume Matcher Pro, I received 3 interview offers in just one week. The new templates and ATS optimization made all the difference!"</p>
+      <p>— Sarah J., Software Engineer</p>
+    </div>
+    
+    <p>The job market is competitive, and having the right tools can make all the difference. Resume Matcher Pro is continuously evolving to help you stand out from the crowd.</p>
+    
+    <p style="text-align: center;">
+      <a href="{{specialOfferUrl}}" class="button">Reactivate with 50% OFF</a>
+    </p>
+    
+    <p>If you have any questions or feedback about your previous experience with us, I'd love to hear from you. Just reply to this email.</p>
+    
+    <p>Best regards,<br>
+    Alex Johnson<br>
+    Customer Success Manager<br>
+    Resume Matcher</p>
+  </div>
+  <div class="footer">
+    <p>© {{currentYear}} Resume Matcher. All rights reserved.</p>
+    <p>
+      <a href="{{specialOfferUrl}}">Reactivate Subscription</a> |
+      <a href="{{appUrl}}/settings">Account Settings</a> |
+      <a href="{{appUrl}}/unsubscribe?email={{emailEncoded}}">Unsubscribe</a>
+    </p>
+  </div>
+</body>
+</html>
