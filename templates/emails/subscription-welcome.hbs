@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Resume Matcher Pro!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background-color: #4a6cf7;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px 5px 0 0;
+    }
+    .content {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 5px 5px;
+    }
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+    }
+    .button {
+      display: inline-block;
+      background-color: #4a6cf7;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+    .feature {
+      margin-bottom: 15px;
+    }
+    .countdown {
+      font-size: 18px;
+      font-weight: bold;
+      color: #4a6cf7;
+      text-align: center;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Welcome to Resume Matcher Pro!</h1>
+  </div>
+  <div class="content">
+    <p>Hi {{name}},</p>
+    
+    <p>We're thrilled to have you join Resume Matcher Pro! Your 3-day free trial has started, giving you full access to all our premium features.</p>
+    
+    <div class="countdown">
+      Your trial ends on: {{trialEndDate}}
+    </div>
+    
+    <h2>What's included in your subscription:</h2>
+    
+    <div class="feature">
+      <strong>✓ Unlimited job postings</strong>
+      <p>Create as many job listings as you need.</p>
+    </div>
+    
+    <div class="feature">
+      <strong>✓ Advanced ATS optimization</strong>
+      <p>Get the edge on Applicant Tracking Systems with our smart resume builder.</p>
+    </div>
+    
+    <div class="feature">
+      <strong>✓ All premium templates</strong>
+      <p>Access our full library of professional resume templates.</p>
+    </div>
+    
+    <div class="feature">
+      <strong>✓ Priority support</strong>
+      <p>Get help faster with dedicated support.</p>
+    </div>
+    
+    <p>Ready to get started? We've prepared some resources to help you make the most of your subscription:</p>
+    
+    <ul>
+      <li><a href="#">How to create the perfect resume</a></li>
+      <li><a href="#">Tips for beating ATS systems</a></li>
+      <li><a href="#">Resume templates explained</a></li>
+    </ul>
+    
+    <p>If you have any questions or need assistance, our support team is here to help. Just reply to this email!</p>
+    
+    <a href="{{appUrl}}/dashboard" class="button">Go to Your Dashboard</a>
+    
+    <p>Best regards,<br>
+    The Resume Matcher Team</p>
+  </div>
+  <div class="footer">
+    <p>© {{currentYear}} Resume Matcher. All rights reserved.</p>
+    <p>
+      <a href="{{appUrl}}/settings/billing">Manage Subscription</a> |
+      <a href="{{appUrl}}/settings">Account Settings</a> |
+      <a href="{{appUrl}}/privacy">Privacy Policy</a>
+    </p>
+  </div>
+</body>
+</html>

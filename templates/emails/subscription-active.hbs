@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Resume Matcher Pro Subscription is Active</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background-color: #2ecc71;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px 5px 0 0;
+    }
+    .content {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 5px 5px;
+    }
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+    }
+    .button {
+      display: inline-block;
+      background-color: #2ecc71;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+    .receipt {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+    }
+    .success-checkmark {
+      font-size: 48px;
+      color: #2ecc71;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .tips {
+      border-left: 3px solid #2ecc71;
+      padding-left: 15px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Your Subscription is Active</h1>
+  </div>
+  <div class="content">
+    <p>Hi {{name}},</p>
+    
+    <div class="success-checkmark">✓</div>
+    
+    <p>Great news! Your Resume Matcher Pro subscription is now active. Thank you for your payment of <strong>{{currency}}{{amount}}</strong>.</p>
+    
+    <div class="receipt">
+      <h3>Payment Receipt</h3>
+      <p><strong>Amount:</strong> {{currency}}{{amount}}</p>
+      <p><strong>Date:</strong> {{currentDate}}</p>
+      <p><strong>Next billing date:</strong> {{nextBillingDate}}</p>
+    </div>
+    
+    <p>You now have full access to all our premium features:</p>
+    
+    <ul>
+      <li>Unlimited job tracking</li>
+      <li>Advanced ATS optimization</li>
+      <li>All premium resume templates</li>
+      <li>Priority email support</li>
+      <li>Resume revision history</li>
+    </ul>
+    
+    <div class="tips">
+      <h3>Pro Tips to Get Started</h3>
+      <ul>
+        <li>Update your resume with our ATS optimizer</li>
+        <li>Set job alerts to get notified about new opportunities</li>
+        <li>Track your applications in the dashboard</li>
+        <li>Use our AI tools to improve your cover letters</li>
+      </ul>
+    </div>
+    
+    <p>Ready to take your job search to the next level? Click below to go to your dashboard:</p>
+    
+    <p style="text-align: center;">
+      <a href="{{appUrl}}/dashboard" class="button">Go to Dashboard</a>
+    </p>
+    
+    <p>If you have any questions about your subscription or need help with any features, our support team is here to help. Just reply to this email!</p>
+    
+    <p>Best regards,<br>
+    The Resume Matcher Team</p>
+  </div>
+  <div class="footer">
+    <p>© {{currentYear}} Resume Matcher. All rights reserved.</p>
+    <p>
+      <a href="{{appUrl}}/settings/billing">Manage Subscription</a> |
+      <a href="{{appUrl}}/settings">Account Settings</a> |
+      <a href="{{appUrl}}/privacy">Privacy Policy</a>
+    </p>
+  </div>
+</body>
+</html>

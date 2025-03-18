@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UserRound } from "lucide-react";
+import { CreditCard, UserRound } from "lucide-react";
 import { signOut } from "@/auth";
 import Link from "next/link";
 import { currentUser } from "@/lib/auth";
@@ -63,6 +63,12 @@ async function AuthNav() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
+            <Link href="/settings/billing">
+              <CreditCard className="mr-2 h-4 w-4" />
+              Billing & Subscription
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <Link href="/settings">
               Settings
               <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
@@ -90,8 +96,8 @@ async function AuthNav() {
 
 export default function Navbar() {
   return (
-    <nav className=" bg-gray-100 shadow-sm">
-      <div className="container ">
+    <nav className="bg-gray-100 shadow-sm">
+      <div className="container">
         <div className="flex gap-x-4 items-center justify-between">
           <div className="flex gap-10">
             <Link href="/templates">Resume Templates</Link>

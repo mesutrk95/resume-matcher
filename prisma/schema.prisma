@@ -49,6 +49,7 @@ model User {
   resumeTemplate        ResumeTemplate[]
   job                   Job[]
   JobResume             JobResume[]
+  Subscription          Subscription?
 }
 
 model VerificationToken {
@@ -138,4 +139,29 @@ model JobResume {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  PAST_DUE
+  TRIALING
+  UNPAID
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  userId             String             @unique
+  customerId         String?
+  subscriptionId     String?
+  priceId            String?
+  status             SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  cancelAtPeriodEnd  Boolean            @default(false)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
