@@ -261,7 +261,7 @@ export function CurrentSubscription({
                 variant="outline"
                 size="sm"
                 className="mt-2 bg-amber-100 hover:bg-amber-200 border-amber-300"
-                onClick={handleRedirectToPortal}
+                onClick={() => handleRedirectToPortal()}
               >
                 Update Payment Method
               </Button>
@@ -319,7 +319,7 @@ export function CurrentSubscription({
               variant="outline"
               size="sm"
               className="ml-auto"
-              onClick={handleRedirectToPortal}
+              onClick={() => handleRedirectToPortal()}
               loading={isRedirectingToPortal}
             >
               <span className="mr-1">Manage Billing</span>
@@ -347,7 +347,7 @@ export function CurrentSubscription({
                   variant="outline"
                   size="sm"
                   className="ml-auto"
-                  onClick={handleRedirectToPortal}
+                  onClick={() => handleRedirectToPortal()}
                   loading={isRedirectingToPortal}
                 >
                   <span className="mr-1">Change Plan</span>
@@ -421,7 +421,7 @@ export function CurrentSubscription({
 
         <Button
           variant="outline"
-          onClick={handleRedirectToPortal}
+          onClick={() => handleRedirectToPortal()}
           disabled={isRedirectingToPortal}
         >
           View Billing History

@@ -1,4 +1,3 @@
-// hooks/useSubscription.ts
 'use client';
 
 import {
@@ -6,12 +5,12 @@ import {
   getUserSubscription,
   cancelUserSubscription,
   reactivateUserSubscription,
-  createCustomerPortalSession,
   SubscriptionInterval,
 } from '@/actions/subscription';
 import { Subscription } from '@prisma/client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'sonner';
+import axios from 'axios';
 
 export function useSubscription() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
@@ -21,23 +20,42 @@ export function useSubscription() {
   const [isReactivating, setIsReactivating] = useState(false);
   const [isRedirectingToPortal, setIsRedirectingToPortal] = useState(false);
 
-  // Fetch subscription data
+  // Use refs to track fetch status to prevent duplicate requests
+  const hasFetchedRef = useRef(false);
+  const fetchPromiseRef = useRef<Promise<Subscription | null> | null>(null);
+
+  // Fetch subscription data with caching
   const fetchSubscription = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const data = await getUserSubscription();
-      setSubscription(data);
-      return data;
-    } catch (error: any) {
-      console.error('Error fetching subscription:', error);
-      if (error.message !== 'User not authenticated') {
-        // Don't show toast for auth errors as those are expected when not logged in
-        toast.error(error.message || 'Failed to fetch subscription');
-      }
-      return null;
-    } finally {
-      setIsLoading(false);
+    // If we're already fetching, return the existing promise
+    if (fetchPromiseRef.current) {
+      return fetchPromiseRef.current;
     }
+
+    setIsLoading(true);
+
+    const fetchPromise = new Promise<Subscription | null>(async resolve => {
+      try {
+        const data = await getUserSubscription();
+        setSubscription(data);
+        resolve(data);
+      } catch (error: any) {
+        console.error('Error fetching subscription:', error);
+        if (error.message !== 'User not authenticated') {
+          // Don't show toast for auth errors as those are expected when not logged in
+          toast.error(error.message || 'Failed to fetch subscription');
+        }
+        resolve(null);
+      } finally {
+        setIsLoading(false);
+        // Clear the promise reference after fetching
+        fetchPromiseRef.current = null;
+        hasFetchedRef.current = true;
+      }
+    });
+
+    // Store the promise reference
+    fetchPromiseRef.current = fetchPromise;
+    return fetchPromise;
   }, []);
 
   // Handle subscription creation
@@ -117,14 +135,16 @@ export function useSubscription() {
     }
   };
 
-  // Handle redirection to Stripe's customer portal
-  const handleRedirectToPortal = async () => {
+  // Handle redirection to Stripe's customer portal using our new API
+  const handleRedirectToPortal = async (returnUrl?: string) => {
     setIsRedirectingToPortal(true);
     try {
-      const portalUrl = await createCustomerPortalSession();
+      const response = await axios.post('/api/subscription/portal', {
+        returnUrl: returnUrl || `${window.location.origin}/settings/billing`,
+      });
 
-      if (portalUrl) {
-        window.location.href = portalUrl;
+      if (response.data?.url) {
+        window.location.href = response.data.url;
         return true;
       } else {
         toast.error('Failed to create portal session');
@@ -132,16 +152,22 @@ export function useSubscription() {
       }
     } catch (error: any) {
       console.error('Error creating portal session:', error);
-      toast.error(error.message || 'Failed to create portal session');
+      toast.error(
+        error.response?.data?.error ||
+          error.message ||
+          'Failed to create portal session',
+      );
       return false;
     } finally {
       setIsRedirectingToPortal(false);
     }
   };
 
-  // Initialize by fetching subscription
+  // Initialize by fetching subscription if we haven't already fetched it
   useEffect(() => {
-    fetchSubscription();
+    if (!hasFetchedRef.current) {
+      fetchSubscription();
+    }
   }, [fetchSubscription]);
 
   return {
