@@ -1,4 +1,3 @@
-// services/enhanced-subscription.ts
 'use server';
 
 import { db } from '@/lib/db';
@@ -19,6 +18,10 @@ export const createCustomer = async (
   name?: string,
 ) => {
   const stripe = getStripeServer();
+
+  if (!stripe) {
+    throw new Error('Failed to initialize Stripe');
+  }
 
   const customer = await stripe.customers.create({
     email,
@@ -68,6 +71,10 @@ export const createCheckoutSession = async (
 ) => {
   const stripe = getStripeServer();
 
+  if (!stripe) {
+    throw new Error('Failed to initialize Stripe');
+  }
+
   // Get or create customer
   const subscription = await createOrRetrieveCustomer(userId, email, name);
 
@@ -104,53 +111,88 @@ export const createCheckoutSession = async (
 
 // Verify and activate a subscription based on checkout session
 export const verifyAndActivateSubscription = async (sessionId: string) => {
+  if (!sessionId) {
+    return {
+      success: false,
+      error: 'No session ID provided',
+    };
+  }
+
   const stripe = getStripeServer();
-  const session = await stripe.checkout.sessions.retrieve(sessionId, {
-    expand: ['subscription', 'customer'],
-  });
 
-  // Check if session was successful
-  if (session.status !== 'complete') {
+  if (!stripe) {
     return {
       success: false,
-      error: 'Payment not completed',
+      error: 'Failed to initialize Stripe',
     };
   }
 
-  const customerId = session.customer as string;
-  const subscriptionId = session.subscription as string;
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ['subscription', 'customer'],
+    });
 
-  // Get the subscription details
-  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    // Check if session was successful
+    if (session.status !== 'complete') {
+      return {
+        success: false,
+        error: 'Payment not completed',
+      };
+    }
 
-  // Get user from metadata
-  const userId = session.metadata?.userId;
-  if (!userId) {
+    const customerId = session.customer as string;
+    const subscriptionId = session.subscription as string;
+
+    if (!subscriptionId) {
+      return {
+        success: false,
+        error: 'No subscription found in the session',
+      };
+    }
+
+    // Get the subscription details
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+    // Get user from metadata
+    const userId = session.metadata?.userId;
+    if (!userId) {
+      return {
+        success: false,
+        error: 'User ID not found',
+      };
+    }
+
+    // Update subscription in database
+    await updateSubscriptionInDatabase(
+      userId,
+      subscription.id,
+      subscription.items.data[0].price.id,
+      mapStripeStatusToDBStatus(subscription.status),
+      new Date(subscription.current_period_start * 1000),
+      new Date(subscription.current_period_end * 1000),
+      subscription.cancel_at_period_end,
+    );
+
+    return {
+      success: true,
+      subscriptionId: subscription.id,
+      status: subscription.status,
+    };
+  } catch (error: any) {
+    console.error('Error verifying subscription:', error);
     return {
       success: false,
-      error: 'User ID not found',
+      error: error.message || 'Failed to verify subscription',
     };
   }
-
-  // Update subscription in database
-  await updateSubscriptionInDatabase(
-    userId,
-    subscription.id,
-    subscription.items.data[0].price.id,
-    mapStripeStatusToDBStatus(subscription.status),
-    new Date(subscription.current_period_start * 1000),
-    new Date(subscription.current_period_end * 1000),
-  );
-
-  return {
-    success: true,
-    subscriptionId: subscription.id,
-    status: subscription.status,
-  };
 };
 
 // Cancel a subscription
 export const cancelSubscription = async (userId: string) => {
+  if (!userId) {
+    throw new Error('User ID is required');
+  }
+
   const subscription = await getSubscriptionByUserId(userId);
 
   if (!subscription?.subscriptionId) {
@@ -159,22 +201,35 @@ export const cancelSubscription = async (userId: string) => {
 
   const stripe = getStripeServer();
 
-  // Cancel at period end
-  await stripe.subscriptions.update(subscription.subscriptionId, {
-    cancel_at_period_end: true,
-  });
+  if (!stripe) {
+    throw new Error('Failed to initialize Stripe');
+  }
 
-  // Update database
-  return db.subscription.update({
-    where: { userId },
-    data: {
-      cancelAtPeriodEnd: true,
-    },
-  });
+  try {
+    // Cancel at period end
+    await stripe.subscriptions.update(subscription.subscriptionId, {
+      cancel_at_period_end: true,
+    });
+
+    // Update database
+    return db.subscription.update({
+      where: { userId },
+      data: {
+        cancelAtPeriodEnd: true,
+      },
+    });
+  } catch (error: any) {
+    console.error('Error canceling subscription:', error);
+    throw new Error(`Failed to cancel subscription: ${error.message}`);
+  }
 };
 
 // Reactivate a subscription that was set to cancel
 export const reactivateSubscription = async (userId: string) => {
+  if (!userId) {
+    throw new Error('User ID is required');
+  }
+
   const subscription = await getSubscriptionByUserId(userId);
 
   if (!subscription?.subscriptionId) {
@@ -183,18 +238,27 @@ export const reactivateSubscription = async (userId: string) => {
 
   const stripe = getStripeServer();
 
-  // Cancel the cancellation
-  await stripe.subscriptions.update(subscription.subscriptionId, {
-    cancel_at_period_end: false,
-  });
+  if (!stripe) {
+    throw new Error('Failed to initialize Stripe');
+  }
 
-  // Update database
-  return db.subscription.update({
-    where: { userId },
-    data: {
-      cancelAtPeriodEnd: false,
-    },
-  });
+  try {
+    // Cancel the cancellation
+    await stripe.subscriptions.update(subscription.subscriptionId, {
+      cancel_at_period_end: false,
+    });
+
+    // Update database
+    return db.subscription.update({
+      where: { userId },
+      data: {
+        cancelAtPeriodEnd: false,
+      },
+    });
+  } catch (error: any) {
+    console.error('Error reactivating subscription:', error);
+    throw new Error(`Failed to reactivate subscription: ${error.message}`);
+  }
 };
 
 // Update subscription in database
@@ -205,21 +269,46 @@ export const updateSubscriptionInDatabase = async (
   status: SubscriptionStatus,
   currentPeriodStart: Date,
   currentPeriodEnd: Date,
+  cancelAtPeriodEnd?: boolean,
 ) => {
-  return db.subscription.update({
-    where: { userId },
-    data: {
-      subscriptionId,
-      priceId,
-      status,
-      currentPeriodStart,
-      currentPeriodEnd,
-    },
-  });
+  if (!userId) {
+    throw new Error('User ID is required');
+  }
+
+  try {
+    return db.subscription.upsert({
+      where: { userId },
+      update: {
+        subscriptionId,
+        priceId,
+        status,
+        currentPeriodStart,
+        currentPeriodEnd,
+        ...(cancelAtPeriodEnd !== undefined && { cancelAtPeriodEnd }),
+        updatedAt: new Date(),
+      },
+      create: {
+        userId,
+        subscriptionId,
+        priceId,
+        status,
+        currentPeriodStart,
+        currentPeriodEnd,
+        cancelAtPeriodEnd: cancelAtPeriodEnd || false,
+      },
+    });
+  } catch (error) {
+    console.error(`Error updating subscription in database:`, error);
+    throw new Error('Failed to update subscription in database');
+  }
 };
 
 // Create a billing portal session
 export const getPortalSession = async (userId: string) => {
+  if (!userId) {
+    throw new Error('User ID is required');
+  }
+
   const subscription = await getSubscriptionByUserId(userId);
 
   if (!subscription?.customerId) {
@@ -228,12 +317,23 @@ export const getPortalSession = async (userId: string) => {
 
   const stripe = getStripeServer();
 
-  const session = await stripe.billingPortal.sessions.create({
-    customer: subscription.customerId,
-    return_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing`,
-  });
+  if (!stripe) {
+    throw new Error('Failed to initialize Stripe');
+  }
 
-  return session;
+  try {
+    const session = await stripe.billingPortal.sessions.create({
+      customer: subscription.customerId,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing`,
+    });
+
+    return session;
+  } catch (error: any) {
+    console.error('Error creating billing portal session:', error);
+    throw new Error(
+      `Failed to create billing portal session: ${error.message}`,
+    );
+  }
 };
 
 // Helper to map Stripe subscription status to database status

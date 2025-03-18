@@ -23,7 +23,7 @@ export function useStripeSessionCheck() {
 
   useEffect(() => {
     // If there's a session_id in the URL, we need to verify it
-    if (sessionId && successParam === 'true') {
+    if (sessionId && successParam === 'true' && !checkResult.checked) {
       setIsChecking(true);
 
       const checkSession = async () => {
@@ -73,7 +73,7 @@ export function useStripeSessionCheck() {
 
       checkSession();
     }
-  }, [sessionId, successParam, router]);
+  }, [sessionId, successParam, router, checkResult.checked]);
 
   return {
     isChecking,

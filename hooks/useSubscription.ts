@@ -1,3 +1,4 @@
+// hooks/useSubscription.ts
 'use client';
 
 import {
@@ -9,7 +10,7 @@ import {
   SubscriptionInterval,
 } from '@/actions/subscription';
 import { Subscription } from '@prisma/client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
 export function useSubscription() {
@@ -21,7 +22,7 @@ export function useSubscription() {
   const [isRedirectingToPortal, setIsRedirectingToPortal] = useState(false);
 
   // Fetch subscription data
-  const fetchSubscription = async () => {
+  const fetchSubscription = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await getUserSubscription();
@@ -29,12 +30,15 @@ export function useSubscription() {
       return data;
     } catch (error: any) {
       console.error('Error fetching subscription:', error);
-      toast.error(error.message || 'Failed to fetch subscription');
+      if (error.message !== 'User not authenticated') {
+        // Don't show toast for auth errors as those are expected when not logged in
+        toast.error(error.message || 'Failed to fetch subscription');
+      }
       return null;
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   // Handle subscription creation
   const handleSubscribe = async (interval: SubscriptionInterval) => {
@@ -138,7 +142,7 @@ export function useSubscription() {
   // Initialize by fetching subscription
   useEffect(() => {
     fetchSubscription();
-  }, []);
+  }, [fetchSubscription]);
 
   return {
     subscription,

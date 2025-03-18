@@ -1,4 +1,7 @@
-import { Button } from "@/components/ui/button";
+// app/_components/navbar.tsx
+'use client';
+
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,18 +11,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CreditCard, UserRound } from "lucide-react";
-import { signOut } from "@/auth";
-import Link from "next/link";
-import { currentUser } from "@/lib/auth";
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { CreditCard, UserRound } from 'lucide-react';
+import Link from 'next/link';
+import { currentUser } from '@/lib/auth';
+import { SubscriptionStatusIndicator } from '@/components/subscription/subscription-status-indicator';
 
-async function AuthNav() {
-  const user = await currentUser();
-
-  if (!user) return;
-
+function AuthNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,12 +27,12 @@ async function AuthNav() {
           className="pr-4 rounded-none h-fit flex gap-x-2 focus-visible:ring-offset-0"
         >
           <Avatar>
-            <AvatarImage src={user.image ?? ""} />
+            <AvatarImage src="/placeholder-avatar.jpg" />
             <AvatarFallback>
               <UserRound />
             </AvatarFallback>
           </Avatar>
-          <p>{user.name}</p>
+          <p>User</p>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
@@ -42,15 +41,15 @@ async function AuthNav() {
         <DropdownMenuGroup>
           <DropdownMenuItem className="flex flex-col gap-y-2 py-4">
             <Avatar className="w-24 h-24">
-              <AvatarImage src={user.image ?? ""} />
+              <AvatarImage src="/placeholder-avatar.jpg" />
               <AvatarFallback>
                 <UserRound size={40} />
               </AvatarFallback>
             </Avatar>
             <div className="text-center">
-              <h3 className="text-lg font-semibold">{user.name}</h3>
-              <p className="text-sm">{user.email}</p>
-              <p className="text-sm">{user.role}</p>
+              <h3 className="text-lg font-semibold">User Name</h3>
+              <p className="text-sm">user@example.com</p>
+              <p className="text-sm">Role</p>
             </div>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -78,8 +77,8 @@ async function AuthNav() {
         <DropdownMenuSeparator />
         <form
           action={async () => {
-            "use server";
-            await signOut();
+            const { handleSignOut } = await import('@/actions/signout');
+            await handleSignOut();
           }}
         >
           <DropdownMenuItem asChild>
@@ -104,7 +103,10 @@ export default function Navbar() {
             <Link href="/jobs">Jobs</Link>
             <Link href="/resumes">Resumes</Link>
           </div>
-          <AuthNav />
+          <div className="flex items-center gap-4">
+            <SubscriptionStatusIndicator />
+            <AuthNav />
+          </div>
         </div>
       </div>
     </nav>

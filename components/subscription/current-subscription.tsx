@@ -31,6 +31,8 @@ import {
   CalendarIcon,
   ClockIcon,
   CheckCircle2,
+  RefreshCw,
+  Package,
 } from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
 
@@ -78,6 +80,14 @@ export function CurrentSubscription({
 
   // Helper to get status display
   const getStatusDisplay = () => {
+    if (!currentSubscription) {
+      return {
+        label: 'No Subscription',
+        description: 'You do not have an active subscription',
+        variant: 'destructive' as BadgeVariant,
+      };
+    }
+
     if (currentSubscription.cancelAtPeriodEnd) {
       return {
         label: 'Canceling',
@@ -128,6 +138,52 @@ export function CurrentSubscription({
     }
   };
 
+  // Helper to get the subscription plan name
+  const getPlanName = () => {
+    const priceId = currentSubscription?.priceId;
+    if (!priceId) return 'Standard Plan';
+
+    // Extract plan type from price ID (assuming naming convention in Stripe)
+    if (priceId.includes('weekly')) return 'Weekly Plan';
+    if (priceId.includes('monthly')) return 'Monthly Plan';
+    if (priceId.includes('quarterly')) return 'Quarterly Plan';
+    if (priceId.includes('biannual')) return '6-Month Plan';
+    if (priceId.includes('yearly')) return 'Annual Plan';
+
+    return 'Standard Plan';
+  };
+
+  // If no subscription exists
+  if (!currentSubscription) {
+    return (
+      <Card className="w-full">
+        <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50">
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>No Subscription</CardTitle>
+              <CardDescription>
+                You don&apos;t have an active subscription
+              </CardDescription>
+            </div>
+            <Badge variant="destructive">Not Subscribed</Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6 text-center">
+          <p className="mb-6">
+            Subscribe to access premium features and boost your job search
+            success.
+          </p>
+          <Button
+            onClick={() => document.getElementById('plans-tab')?.click()}
+            className="mt-2"
+          >
+            View Subscription Plans
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const statusInfo = getStatusDisplay();
   const daysRemaining = calculateDaysRemaining(
     currentSubscription.currentPeriodEnd,
@@ -148,6 +204,21 @@ export function CurrentSubscription({
       </CardHeader>
 
       <CardContent className="space-y-6 pt-6">
+        {/* Plan info section */}
+        <div className="flex justify-between items-center bg-white p-4 rounded-md border">
+          <div className="flex items-center gap-3">
+            <Package className="h-10 w-10 text-primary" />
+            <div>
+              <h3 className="font-bold text-lg">{getPlanName()}</h3>
+              <p className="text-sm text-muted-foreground">
+                {currentSubscription.status === SubscriptionStatus.TRIALING
+                  ? 'Trial subscription with full access to all features'
+                  : 'Full access to all premium features'}
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Status section */}
         <div className="flex items-center justify-between">
           <div>
@@ -223,6 +294,9 @@ export function CurrentSubscription({
                   <p className="text-xs text-muted-foreground">
                     {currentSubscription.cancelAtPeriodEnd
                       ? 'Will not renew automatically'
+                      : currentSubscription.status ===
+                        SubscriptionStatus.TRIALING
+                      ? 'Will convert to paid subscription'
                       : 'Will renew automatically'}
                   </p>
                 </div>
@@ -253,6 +327,35 @@ export function CurrentSubscription({
             </LoadingButton>
           </div>
         </div>
+
+        {/* Change plan section for active subscriptions */}
+        {(currentSubscription.status === SubscriptionStatus.ACTIVE ||
+          currentSubscription.status === SubscriptionStatus.TRIALING) &&
+          !currentSubscription.cancelAtPeriodEnd && (
+            <div className="rounded-md border p-4 bg-white">
+              <div className="flex items-center gap-4">
+                <RefreshCw className="h-8 w-8 text-muted-foreground" />
+                <div>
+                  <p className="text-sm font-medium">
+                    Change Subscription Plan
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Upgrade, downgrade or switch billing cycle
+                  </p>
+                </div>
+                <LoadingButton
+                  variant="outline"
+                  size="sm"
+                  className="ml-auto"
+                  onClick={handleRedirectToPortal}
+                  loading={isRedirectingToPortal}
+                >
+                  <span className="mr-1">Change Plan</span>
+                  <ExternalLink className="h-3 w-3" />
+                </LoadingButton>
+              </div>
+            </div>
+          )}
       </CardContent>
 
       <CardFooter className="flex justify-between border-t p-4 bg-gray-50 dark:bg-gray-900">

@@ -11,6 +11,9 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useStripeSessionCheck } from '@/hooks/useStripeSessionCheck';
+import { Skeleton } from '@/components/ui/skeleton';
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 // Define types for Stripe price and product data
 interface StripePrice {
@@ -141,11 +144,12 @@ export default function BillingPage() {
   if (isLoadingSubscription || isChecking) {
     return (
       <div className="max-w-4xl mx-auto py-8">
-        <div className="flex flex-col items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mb-4"></div>
-          <p className="text-muted-foreground">
-            Loading subscription information...
-          </p>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+          <Skeleton className="h-[400px] w-full" />
         </div>
       </div>
     );
@@ -153,25 +157,36 @@ export default function BillingPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-8">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold tracking-tight mb-2">
+          Subscription Management
+        </h1>
+        <p className="text-muted-foreground">
+          Manage your subscription, payment methods, and billing information
+        </p>
+      </div>
+
       {pricingData.error && (
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded mb-6">
-          <p>{pricingData.error}</p>
-        </div>
+        <Alert variant="default" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Warning</AlertTitle>
+          <AlertDescription>{pricingData.error}</AlertDescription>
+        </Alert>
       )}
 
-      <Tabs
-        defaultValue={
-          subscription && subscription.subscriptionId ? 'current' : 'plans'
-        }
-      >
-        <TabsList className="mb-6">
-          {subscription && subscription.subscriptionId && (
-            <TabsTrigger value="current">Current Subscription</TabsTrigger>
+      <Tabs defaultValue={subscription ? 'current' : 'plans'} className="mt-8">
+        <TabsList className="grid grid-cols-2 w-[400px] mb-6">
+          {subscription && (
+            <TabsTrigger id="current-tab" value="current">
+              Current Subscription
+            </TabsTrigger>
           )}
-          <TabsTrigger value="plans">Subscription Plans</TabsTrigger>
+          <TabsTrigger id="plans-tab" value="plans">
+            Subscription Plans
+          </TabsTrigger>
         </TabsList>
 
-        {subscription && subscription.subscriptionId && (
+        {subscription && (
           <TabsContent value="current" className="space-y-6">
             <CurrentSubscription subscription={subscription} />
           </TabsContent>
