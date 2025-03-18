@@ -5,8 +5,7 @@ import { db } from "@/lib/db";
 import { JobResume } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { DEFAULT_RESUME_CONTENT } from "./constants";
-import { convertResumeObjectToString } from "@/utils/job-matching";
-import { ResumeContent } from "@/types/resume";
+import { ResumeAnalyzeResults } from "@/types/resume";
 import { getAIJsonResponse } from "@/lib/ai";
 
 export const findJobResume = async (id: string) => {
@@ -96,6 +95,9 @@ export const analyzeResumeScore = async (
       job: true,
     },
   });
+
+  if (!jobResume) throw new Error("Resume not found.");
+
   let content = `Job Description: \n${jobResume?.job.title}\n${jobResume?.job.description}`;
 
   // content += `\n\nMy Resume Content: \n${convertResumeObjectToString(
@@ -123,10 +125,19 @@ export const analyzeResumeScore = async (
   };
 
   const results = await Promise.all([getScore(), getImprovementNotes()]);
-  const result = { ...results[0].result, notes: results[1].result };
-  return {
-    result,
-    // prompts: results.map((r) => r.prompt),
-    // contents: results.map((r) => r.content),
-  };
+
+  const newAnalyzeResults = {
+    ...((jobResume?.analyzeResults as ResumeAnalyzeResults) || {}),
+    ...results[0].result,
+    notes: results[1].result,
+  } as ResumeAnalyzeResults;
+
+  await db.jobResume.update({
+    where: { id: jobResumeId },
+    data: {
+      analyzeResults: newAnalyzeResults,
+    },
+  });
+
+  return newAnalyzeResults;
 };

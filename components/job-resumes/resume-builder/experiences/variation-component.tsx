@@ -67,6 +67,7 @@ export function VariationComponent({
   };
 
   const score = scores?.[variation.id];
+  // console.log('here', scores);
 
   return (
     <div ref={setNodeRef} style={style} className={`bg-white z-10`}>
@@ -104,12 +105,13 @@ export function VariationComponent({
                     rows={5}
                   />
                 ) : (
-                  <p
+                  <div
                     className={`text-sm ${
                       !variation.enabled ? "text-muted-foreground" : ""
                     }`}
                   >
-                    {variation.content}
+                    <p>{variation.content}</p>
+
                     {score && (
                       <>
                         {/* <div className="ml-2 inline-flex">
@@ -132,7 +134,7 @@ export function VariationComponent({
                         </div>
                       </>
                     )}
-                  </p>
+                  </div>
                 )}
 
                 {/* {isPrimary && (

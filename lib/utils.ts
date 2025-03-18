@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { sign, verify, type SignOptions, type Secret } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { Response, ResponseWithMessage } from "@/types";
+import crypto from "crypto";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -37,7 +38,10 @@ export function setTokenExpiration(exp: number = 60 * 60) {
  * @return The token generated
  */
 
-export function signJwt(payload: Record<string, unknown>, options?: SignOptions) {
+export function signJwt(
+  payload: Record<string, unknown>,
+  options?: SignOptions
+) {
   return sign(payload, process.env.JWT_SECRET as Secret, {
     ...options,
     algorithm: "HS256",
@@ -61,11 +65,25 @@ export const verifyJwtToken = <T extends object>(token: string) => {
 
 // Overload for response status in server action
 export function response(response: ResponseWithMessage): Response;
-export function response<T extends Record<string, unknown>>(response: Response<T>): Response<T>;
+export function response<T extends Record<string, unknown>>(
+  response: Response<T>
+): Response<T>;
 export function response<T extends object>(response: T): T {
   return response;
 }
 
 export function capitalizeText(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+export function hashCode(s: string) {
+  return s.split("").reduce(function (a, b) {
+    a = (a << 5) - a + b.charCodeAt(0);
+    return a & a;
+  }, 0);
+}
+
+export function hashString(str: string, length = 64) {
+  const hash = crypto.createHash("sha256").update(str).digest("hex");
+  return hash.substring(0, length);
 }

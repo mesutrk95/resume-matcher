@@ -8,6 +8,7 @@ import {
 } from "@react-pdf/renderer";
 import { SeperateList } from "../shared/seperate-list";
 import { ResumeContent } from "@/types/resume";
+import React from "react";
 
 // Register fonts (optional but recommended for professional CVs)
 Font.register({
@@ -168,8 +169,8 @@ export const ResumeDocument = ({ resume }: { resume: ResumeContent }) => (
           .filter((e) => e.enabled)
           .map((experience, index) => (
             // <View key={index} style={styles.experience}>
-            <>
-              <View key={index} style={styles.experience} wrap={false}>
+            <React.Fragment key={experience.id}>
+              <View style={styles.experience} wrap={false}>
                 <Text style={styles.jobTitle}>
                   {experience.companyName}
                   {/* <SeperateList
@@ -202,7 +203,7 @@ export const ResumeDocument = ({ resume }: { resume: ResumeContent }) => (
                       </Text>
                     ));
                 })}
-            </>
+            </React.Fragment>
             // </View>
           ))}
       </View>
@@ -214,14 +215,14 @@ export const ResumeDocument = ({ resume }: { resume: ResumeContent }) => (
           .filter((prj) => prj.enabled)
           .map((prj, index) => (
             // <View key={index} style={styles.project}>
-            <>
+            <React.Fragment key={prj.id}>
               <Text style={styles.jobTitle}>{prj.name}</Text>
               <Text style={styles.date}>
                 {prj.startDate} - {prj.endDate}
               </Text>
               <Text style={styles.link}>{prj.link}</Text>
               <Text style={styles.description}>{prj.content}</Text>
-            </>
+            </React.Fragment>
             // </View>
           ))}
       </View>
@@ -232,7 +233,7 @@ export const ResumeDocument = ({ resume }: { resume: ResumeContent }) => (
         {resume.educations
           .filter((edu) => edu.enabled)
           .map((edu, index) => (
-            <View key={index} style={styles.experience}>
+            <View key={edu.id} style={styles.experience}>
               <Text style={styles.jobTitle}>{edu.degree}</Text>
               <Text style={styles.company}>
                 <SeperateList data={[edu.institution, edu.location]} />
