@@ -1,13 +1,10 @@
 'use client';
 
-import {
-  createSubscription,
-  SubscriptionInterval,
-} from '@/actions/subscription';
+import { useSubscription } from '@/hooks/useSubscription';
+import { SubscriptionInterval } from '@/actions/subscription';
 import { Button } from '@/components/ui/button';
 import { Subscription, SubscriptionStatus } from '@prisma/client';
 import { useState } from 'react';
-import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import {
   Card,
@@ -29,15 +26,6 @@ import {
 } from 'lucide-react';
 import { Badge } from '../ui/badge';
 
-// Define pricing information
-interface PriceInfo {
-  weekly: number;
-  monthly: number;
-  quarterly: number;
-  biannual: number;
-  yearly: number;
-}
-
 // Features offered by the subscription
 interface Feature {
   name: string;
@@ -47,7 +35,7 @@ interface Feature {
 }
 
 // Default prices in case API fails
-const DEFAULT_PRICES: PriceInfo = {
+const DEFAULT_PRICES = {
   weekly: 4.99,
   monthly: 12.99,
   quarterly: 29.99,
@@ -110,34 +98,12 @@ export function SubscriptionPlans({
 }: SubscriptionPlansProps) {
   // Use provided pricing data or fall back to defaults
   const PRICES = pricingData || DEFAULT_PRICES;
+
   // Current selected billing interval
   const [interval, setInterval] = useState<SubscriptionInterval>('monthly');
-  // Loading state for subscription action
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Handle subscription creation
-  const handleSubscribe = async () => {
-    setIsLoading(true);
-
-    try {
-      const response = await createSubscription(interval);
-
-      if (!response.success) {
-        toast.error(response.error || 'Failed to create subscription');
-        return;
-      }
-
-      if (response.url) {
-        window.location.href = response.url;
-      } else {
-        toast.error('No checkout URL returned');
-      }
-    } catch (error: any) {
-      toast.error(error.message || 'An error occurred. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Use our subscription hook
+  const { handleSubscribe, isSubscribing } = useSubscription();
 
   // Calculate discount percentage compared to weekly pricing
   const calculateDiscount = (selectedInterval: SubscriptionInterval) => {
@@ -300,9 +266,9 @@ export function SubscriptionPlans({
             ) : (
               <LoadingButton
                 className="w-full"
-                onClick={handleSubscribe}
-                loading={isLoading}
-                disabled={isLoading || isLoadingPrices}
+                onClick={() => handleSubscribe(interval)}
+                loading={isSubscribing}
+                disabled={isSubscribing || isLoadingPrices}
               >
                 {isLoadingPrices ? 'Loading...' : 'Start Free Trial'}
               </LoadingButton>

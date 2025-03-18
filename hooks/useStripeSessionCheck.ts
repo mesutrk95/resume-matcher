@@ -1,7 +1,8 @@
-// hooks/useStripeSessionCheck.ts
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { verifySubscriptionFromSession } from '@/actions/subscription';
+import { verifySubscriptionFromSession } from '@/actions/subscription/session';
 import { toast } from 'sonner';
 
 export function useStripeSessionCheck() {

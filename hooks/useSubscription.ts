@@ -1,16 +1,18 @@
 'use client';
 
+import { getUserSubscription } from '@/actions/subscription/customer';
 import {
   createSubscription,
-  getUserSubscription,
+  createCustomerPortalSession,
+} from '@/actions/subscription/session';
+import { SubscriptionInterval } from '@/actions/subscription';
+import {
   cancelUserSubscription,
   reactivateUserSubscription,
-  SubscriptionInterval,
-} from '@/actions/subscription';
+} from '@/actions/subscription/status';
 import { Subscription } from '@prisma/client';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
-import axios from 'axios';
 
 export function useSubscription() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
@@ -20,42 +22,23 @@ export function useSubscription() {
   const [isReactivating, setIsReactivating] = useState(false);
   const [isRedirectingToPortal, setIsRedirectingToPortal] = useState(false);
 
-  // Use refs to track fetch status to prevent duplicate requests
-  const hasFetchedRef = useRef(false);
-  const fetchPromiseRef = useRef<Promise<Subscription | null> | null>(null);
-
-  // Fetch subscription data with caching
+  // Fetch subscription data
   const fetchSubscription = useCallback(async () => {
-    // If we're already fetching, return the existing promise
-    if (fetchPromiseRef.current) {
-      return fetchPromiseRef.current;
-    }
-
-    setIsLoading(true);
-
-    const fetchPromise = new Promise<Subscription | null>(async resolve => {
-      try {
-        const data = await getUserSubscription();
-        setSubscription(data);
-        resolve(data);
-      } catch (error: any) {
-        console.error('Error fetching subscription:', error);
-        if (error.message !== 'User not authenticated') {
-          // Don't show toast for auth errors as those are expected when not logged in
-          toast.error(error.message || 'Failed to fetch subscription');
-        }
-        resolve(null);
-      } finally {
-        setIsLoading(false);
-        // Clear the promise reference after fetching
-        fetchPromiseRef.current = null;
-        hasFetchedRef.current = true;
+    try {
+      setIsLoading(true);
+      const data = await getUserSubscription();
+      setSubscription(data);
+      return data;
+    } catch (error: any) {
+      console.error('Error fetching subscription:', error);
+      if (error.message !== 'User not authenticated') {
+        // Don't show toast for auth errors as those are expected when not logged in
+        toast.error(error.message || 'Failed to fetch subscription');
       }
-    });
-
-    // Store the promise reference
-    fetchPromiseRef.current = fetchPromise;
-    return fetchPromise;
+      return null;
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   // Handle subscription creation
@@ -135,39 +118,31 @@ export function useSubscription() {
     }
   };
 
-  // Handle redirection to Stripe's customer portal using our new API
+  // Handle redirection to Stripe's customer portal
   const handleRedirectToPortal = async (returnUrl?: string) => {
     setIsRedirectingToPortal(true);
     try {
-      const response = await axios.post('/api/subscription/portal', {
-        returnUrl: returnUrl || `${window.location.origin}/settings/billing`,
-      });
+      const response = await createCustomerPortalSession(returnUrl);
 
-      if (response.data?.url) {
-        window.location.href = response.data.url;
+      if (response.success && response.url) {
+        window.location.href = response.url;
         return true;
       } else {
-        toast.error('Failed to create portal session');
+        toast.error(response.error || 'Failed to create portal session');
         return false;
       }
     } catch (error: any) {
       console.error('Error creating portal session:', error);
-      toast.error(
-        error.response?.data?.error ||
-          error.message ||
-          'Failed to create portal session',
-      );
+      toast.error(error.message || 'Failed to create portal session');
       return false;
     } finally {
       setIsRedirectingToPortal(false);
     }
   };
 
-  // Initialize by fetching subscription if we haven't already fetched it
+  // Initialize by fetching subscription
   useEffect(() => {
-    if (!hasFetchedRef.current) {
-      fetchSubscription();
-    }
+    fetchSubscription();
   }, [fetchSubscription]);
 
   return {

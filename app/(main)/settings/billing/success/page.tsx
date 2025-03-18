@@ -1,7 +1,6 @@
-// app/(main)/settings/billing/success/page.tsx
 'use client';
 
-import { verifySubscriptionFromSession } from '@/actions/subscription';
+import { verifySubscriptionFromSession } from '@/actions/subscription/session';
 import { Button } from '@/components/ui/button';
 import {
   Card,

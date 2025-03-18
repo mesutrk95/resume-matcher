@@ -1,10 +1,10 @@
-// app/(main)/settings/billing/page.tsx
 'use client';
 
 import { CurrentSubscription } from '@/components/subscription/current-subscription';
 import { SubscriptionPlans } from '@/components/subscription/subscription-plans';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSubscription } from '@/hooks/useSubscription';
+import { usePricing } from '@/hooks/usePricing';
 import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
@@ -12,7 +12,6 @@ import { useStripeSessionCheck } from '@/hooks/useStripeSessionCheck';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { usePricing } from '@/hooks/usePricing';
 
 export default function BillingPage() {
   const {
