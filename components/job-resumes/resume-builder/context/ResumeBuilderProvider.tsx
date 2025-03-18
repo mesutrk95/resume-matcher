@@ -3,11 +3,11 @@ import React, { createContext, useState } from "react";
 
 export type IResumeTemplateEditor = {
   scores:
-    | Record<string, { score: number; matched_keywords: string[] }>
+    | Record<string, ResumeItemScoreAnalyze>
     | undefined;
   setScores: React.Dispatch<
     React.SetStateAction<
-      Record<string, { score: number; matched_keywords: string[] }> | undefined
+    Record<string, ResumeItemScoreAnalyze> | undefined
     >
   >;
 };
