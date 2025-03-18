@@ -13,12 +13,6 @@ import { withErrorHandling } from "./with-error-handling";
 import cheerio from "cheerio";
 import axios from "axios";
 import moment from "moment";
-import {
-  ResumeAnalyzeResults,
-  ResumeContent,
-  ResumeItemScoreAnalyze,
-} from "@/types/resume";
-import { hashString } from "@/lib/utils";
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {
@@ -167,117 +161,6 @@ export const analyzeJobByAI = async (jobId: string) => {
   revalidatePath(`/jobs/${jobId}`);
 
   return analyzeResults;
-};
-
-const analyzeResumeExperiencesScores = async (
-  analyzeResults: JobAnalyzeResult,
-  content: string
-) => {
-  const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, you need to give a score (on a scale from 0 to 1) to each variation or project item based on how well it matches the job description, give me the best matches in this format [{ "id" : "variation_id", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
-
-  const generatedContent = await getAIJsonResponse(prompt, [
-    content +
-      "\n" +
-      `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
-  ]);
-
-  return generatedContent;
-};
-
-const analyzeResumeProjectsScores = async (
-  analyzeResults: JobAnalyzeResult,
-  content: string
-) => {
-  const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, you need to give a score (on a scale from 0 to 1) to each project item based on how well it matches the job description, give me the best matches in this format [{ "id" : "project_..", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
-
-  const generatedContent = await getAIJsonResponse(prompt, [
-    content +
-      "\n" +
-      `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
-  ]);
-
-  return generatedContent;
-};
-
-export const analyzeResumeItemsScores = async (jobResumeId: string) => {
-  const user = await currentUser();
-
-  const jobResume = await db.jobResume.findUnique({
-    where: {
-      id: jobResumeId,
-      userId: user?.id,
-    },
-    include: {
-      job: true,
-    },
-  });
-
-  if (!jobResume) {
-    throw new Error("Job Resume not found");
-  }
-
-  const resumeAnalyzeResults = jobResume.analyzeResults as ResumeAnalyzeResults;
-  const oldItemsScore = resumeAnalyzeResults.itemsScore;
-
-  const resume = jobResume?.content as ResumeContent;
-  let variations = resume.experiences
-    .map((experience) => experience.items.map((i) => i.variations).flat())
-    .flat()
-    .map((v) => ({ ...v, hash: hashString(v.content, 8) }));
-
-  // concat with project items
-  variations = [
-    ...variations,
-    ...resume.projects.map((p) => ({
-      enabled: p.enabled,
-      id: p.id,
-      content: p.content,
-      hash: hashString(p.content, 8),
-    })),
-  ];
-
-  variations = variations.filter((v) => oldItemsScore?.[v.id]?.hash !== v.hash);
-  if (variations.length === 0) return resumeAnalyzeResults;
-
-  let jobAnalyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
-  if (!jobAnalyzeResults?.summary) {
-    jobAnalyzeResults = (await analyzeJobByAI(jobResume.jobId))!;
-  }
-
-  const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
-  const resp = await analyzeResumeExperiencesScores(jobAnalyzeResults, content);
-
-  const scores = resp.result as ResumeItemScoreAnalyze[];
-  const scoresMap = scores.reduce(
-    (acc, curr) => ({
-      ...acc,
-      [curr.id]: {
-        ...curr,
-        hash: hashString(
-          variations.find((v) => curr.id === v.id)?.content || "",
-          8
-        ),
-      },
-    }),
-    {}
-  );
-
-  const newAnalyzeResults = {
-    ...resumeAnalyzeResults,
-    itemsScore: {
-      ...resumeAnalyzeResults.itemsScore,
-      ...scoresMap,
-    },
-  } as ResumeAnalyzeResults;
-
-  await db.jobResume.update({
-    where: { id: jobResumeId },
-    data: {
-      analyzeResults: newAnalyzeResults,
-    },
-  });
-
-  return newAnalyzeResults;
 };
 
 export const extractJobDescriptionFromUrl = async (url: string) => {
