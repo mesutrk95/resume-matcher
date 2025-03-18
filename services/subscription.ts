@@ -1,13 +1,18 @@
+// services/enhanced-subscription.ts
+'use server';
+
 import { db } from '@/lib/db';
 import { getStripeServer } from '@/lib/stripe';
 import { SubscriptionStatus } from '@prisma/client';
 
-export const getSubscriptionByUserId = (userId: string) => {
+// Get the subscription for a user
+export const getSubscriptionByUserId = async (userId: string) => {
   return db.subscription.findUnique({
     where: { userId },
   });
 };
 
+// Create a new customer in Stripe
 export const createCustomer = async (
   userId: string,
   email: string,
@@ -39,6 +44,7 @@ export const createCustomer = async (
   return subscription;
 };
 
+// Create or get existing customer
 export const createOrRetrieveCustomer = async (
   userId: string,
   email: string,
@@ -53,6 +59,7 @@ export const createOrRetrieveCustomer = async (
   return await createCustomer(userId, email, name);
 };
 
+// Create a new checkout session for subscription
 export const createCheckoutSession = async (
   userId: string,
   email: string,
@@ -85,7 +92,7 @@ export const createCheckoutSession = async (
         userId,
       },
     },
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing?canceled=true`,
     metadata: {
       userId,
@@ -95,6 +102,54 @@ export const createCheckoutSession = async (
   return session;
 };
 
+// Verify and activate a subscription based on checkout session
+export const verifyAndActivateSubscription = async (sessionId: string) => {
+  const stripe = getStripeServer();
+  const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    expand: ['subscription', 'customer'],
+  });
+
+  // Check if session was successful
+  if (session.status !== 'complete') {
+    return {
+      success: false,
+      error: 'Payment not completed',
+    };
+  }
+
+  const customerId = session.customer as string;
+  const subscriptionId = session.subscription as string;
+
+  // Get the subscription details
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+  // Get user from metadata
+  const userId = session.metadata?.userId;
+  if (!userId) {
+    return {
+      success: false,
+      error: 'User ID not found',
+    };
+  }
+
+  // Update subscription in database
+  await updateSubscriptionInDatabase(
+    userId,
+    subscription.id,
+    subscription.items.data[0].price.id,
+    mapStripeStatusToDBStatus(subscription.status),
+    new Date(subscription.current_period_start * 1000),
+    new Date(subscription.current_period_end * 1000),
+  );
+
+  return {
+    success: true,
+    subscriptionId: subscription.id,
+    status: subscription.status,
+  };
+};
+
+// Cancel a subscription
 export const cancelSubscription = async (userId: string) => {
   const subscription = await getSubscriptionByUserId(userId);
 
@@ -118,6 +173,7 @@ export const cancelSubscription = async (userId: string) => {
   });
 };
 
+// Reactivate a subscription that was set to cancel
 export const reactivateSubscription = async (userId: string) => {
   const subscription = await getSubscriptionByUserId(userId);
 
@@ -141,6 +197,7 @@ export const reactivateSubscription = async (userId: string) => {
   });
 };
 
+// Update subscription in database
 export const updateSubscriptionInDatabase = async (
   userId: string,
   subscriptionId: string,
@@ -161,6 +218,7 @@ export const updateSubscriptionInDatabase = async (
   });
 };
 
+// Create a billing portal session
 export const getPortalSession = async (userId: string) => {
   const subscription = await getSubscriptionByUserId(userId);
 
@@ -177,3 +235,25 @@ export const getPortalSession = async (userId: string) => {
 
   return session;
 };
+
+// Helper to map Stripe subscription status to database status
+function mapStripeStatusToDBStatus(stripeStatus: string): SubscriptionStatus {
+  switch (stripeStatus) {
+    case 'active':
+      return SubscriptionStatus.ACTIVE;
+    case 'canceled':
+      return SubscriptionStatus.CANCELED;
+    case 'incomplete':
+      return SubscriptionStatus.INCOMPLETE;
+    case 'incomplete_expired':
+      return SubscriptionStatus.INCOMPLETE_EXPIRED;
+    case 'past_due':
+      return SubscriptionStatus.PAST_DUE;
+    case 'trialing':
+      return SubscriptionStatus.TRIALING;
+    case 'unpaid':
+      return SubscriptionStatus.UNPAID;
+    default:
+      return SubscriptionStatus.ACTIVE;
+  }
+}

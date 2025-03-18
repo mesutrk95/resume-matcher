@@ -10,13 +10,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Subscription, SubscriptionStatus } from '@prisma/client';
-import {
-  cancelUserSubscription,
-  reactivateUserSubscription,
-  createCustomerPortalSession,
-} from '@/actions/subscription';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { format } from 'date-fns';
+import { Badge } from '../ui/badge';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,10 +23,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '../ui/alert-dialog';
-import { format } from 'date-fns';
-import { Badge } from '../ui/badge';
-import { CreditCard, ExternalLink, AlertTriangle } from 'lucide-react';
 import { LoadingButton } from '../ui/loading-button';
+import {
+  CreditCard,
+  ExternalLink,
+  AlertTriangle,
+  CalendarIcon,
+  ClockIcon,
+  CheckCircle2,
+} from 'lucide-react';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface CurrentSubscriptionProps {
   subscription: Subscription;
@@ -41,89 +42,66 @@ interface CurrentSubscriptionProps {
 type BadgeVariant = 'default' | 'destructive' | 'outline' | 'secondary';
 
 export function CurrentSubscription({
-  subscription,
+  subscription: initialSubscription,
 }: CurrentSubscriptionProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isCanceling, setIsCanceling] = useState(false);
-  const [isReactivating, setIsReactivating] = useState(false);
+  // Use the subscription hook for enhanced functionality
+  const {
+    subscription,
+    isCanceling,
+    isReactivating,
+    isRedirectingToPortal,
+    handleCancelSubscription,
+    handleReactivateSubscription,
+    handleRedirectToPortal,
+  } = useSubscription();
 
+  // Use the hook's subscription state if available, otherwise use prop
+  const currentSubscription = subscription || initialSubscription;
+
+  // Format date display
   const formatDate = (date: Date | null | undefined) => {
     if (!date) return 'N/A';
     return format(new Date(date), 'MMMM d, yyyy');
   };
 
-  const handleManageBilling = async () => {
-    setIsLoading(true);
-    try {
-      const url = await createCustomerPortalSession();
-      window.location.href = url;
-    } catch (error) {
-      toast.error('An error occurred. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Calculate days remaining in current period
+  const calculateDaysRemaining = (endDate: Date | null | undefined) => {
+    if (!endDate) return 0;
 
-  const handleCancelSubscription = async () => {
-    setIsCanceling(true);
-    try {
-      const response = await cancelUserSubscription();
-      if (response.success) {
-        toast.success(response.message);
-        window.location.reload();
-      } else {
-        toast.error(response.error?.message || 'Failed to cancel subscription');
-      }
-    } catch (error) {
-      toast.error('An error occurred. Please try again.');
-    } finally {
-      setIsCanceling(false);
-    }
-  };
+    const end = new Date(endDate);
+    const today = new Date();
+    const diffTime = end.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  const handleReactivateSubscription = async () => {
-    setIsReactivating(true);
-    try {
-      const response = await reactivateUserSubscription();
-      if (response.success) {
-        toast.success(response.message);
-        window.location.reload();
-      } else {
-        toast.error(
-          response.error?.message || 'Failed to reactivate subscription',
-        );
-      }
-    } catch (error) {
-      toast.error('An error occurred. Please try again.');
-    } finally {
-      setIsReactivating(false);
-    }
+    return diffDays > 0 ? diffDays : 0;
   };
 
   // Helper to get status display
   const getStatusDisplay = () => {
-    if (subscription.cancelAtPeriodEnd) {
+    if (currentSubscription.cancelAtPeriodEnd) {
       return {
         label: 'Canceling',
         description: `Your subscription will end on ${formatDate(
-          subscription.currentPeriodEnd,
+          currentSubscription.currentPeriodEnd,
         )}`,
-        variant: 'secondary' as BadgeVariant, // Changed from warning
+        variant: 'secondary' as BadgeVariant,
       };
     }
 
-    switch (subscription.status) {
+    switch (currentSubscription.status) {
       case SubscriptionStatus.ACTIVE:
         return {
           label: 'Active',
-          description: `Renews on ${formatDate(subscription.currentPeriodEnd)}`,
-          variant: 'default' as BadgeVariant, // Changed from success
+          description: `Renews on ${formatDate(
+            currentSubscription.currentPeriodEnd,
+          )}`,
+          variant: 'default' as BadgeVariant,
         };
       case SubscriptionStatus.TRIALING:
         return {
           label: 'Trial',
           description: `Trial ends on ${formatDate(
-            subscription.currentPeriodEnd,
+            currentSubscription.currentPeriodEnd,
           )}`,
           variant: 'outline' as BadgeVariant,
         };
@@ -131,7 +109,7 @@ export function CurrentSubscription({
         return {
           label: 'Canceled',
           description: `Access until ${formatDate(
-            subscription.currentPeriodEnd,
+            currentSubscription.currentPeriodEnd,
           )}`,
           variant: 'destructive' as BadgeVariant,
         };
@@ -143,7 +121,7 @@ export function CurrentSubscription({
         };
       default:
         return {
-          label: subscription.status,
+          label: currentSubscription.status,
           description: '',
           variant: 'secondary' as BadgeVariant,
         };
@@ -151,42 +129,110 @@ export function CurrentSubscription({
   };
 
   const statusInfo = getStatusDisplay();
+  const daysRemaining = calculateDaysRemaining(
+    currentSubscription.currentPeriodEnd,
+  );
 
   return (
     <Card className="w-full">
-      <CardHeader>
+      <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-950 dark:to-blue-950">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>Your Subscription</CardTitle>
             <CardDescription>Manage your subscription settings</CardDescription>
           </div>
-          <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
+          <Badge variant={statusInfo.variant} className="capitalize">
+            {statusInfo.label}
+          </Badge>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <h3 className="text-sm font-medium">Status</h3>
-          <p className="text-sm text-muted-foreground">
-            {statusInfo.description}
-          </p>
+
+      <CardContent className="space-y-6 pt-6">
+        {/* Status section */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-medium">Status</h3>
+            <p className="text-sm text-muted-foreground">
+              {statusInfo.description}
+            </p>
+          </div>
+
+          {daysRemaining > 0 && (
+            <div
+              className={`flex items-center px-4 py-2 rounded-md 
+              ${
+                currentSubscription.cancelAtPeriodEnd
+                  ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                  : 'bg-blue-50 text-blue-700 border border-blue-200'
+              }`}
+            >
+              <ClockIcon className="h-4 w-4 mr-2" />
+              <span className="text-sm font-medium">
+                {daysRemaining} {daysRemaining === 1 ? 'day' : 'days'} remaining
+              </span>
+            </div>
+          )}
         </div>
 
-        {subscription.status === SubscriptionStatus.PAST_DUE && (
-          <div className="flex items-start p-3 bg-amber-50 border border-amber-200 rounded-md">
-            <AlertTriangle className="h-5 w-5 text-amber-500 mr-2 mt-0.5" />
+        {/* Alert for past due status */}
+        {currentSubscription.status === SubscriptionStatus.PAST_DUE && (
+          <div className="flex items-start p-4 bg-amber-50 border border-amber-200 rounded-md">
+            <AlertTriangle className="h-5 w-5 text-amber-500 mr-3 mt-0.5" />
             <div>
               <h4 className="text-sm font-medium text-amber-800">
                 Payment Failed
               </h4>
-              <p className="text-xs text-amber-700">
+              <p className="text-sm text-amber-700">
                 Your last payment attempt failed. Please update your payment
                 method to continue your subscription.
               </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-2 bg-amber-100 hover:bg-amber-200 border-amber-300"
+                onClick={handleRedirectToPortal}
+              >
+                Update Payment Method
+              </Button>
             </div>
           </div>
         )}
 
-        <div className="rounded-md border p-4">
+        {/* Billing details section */}
+        <div>
+          <h3 className="text-sm font-medium mb-2">Subscription Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="rounded-md border p-4 bg-white">
+              <div className="flex items-center gap-3">
+                <CalendarIcon className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="text-sm font-medium">Current Period</p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatDate(currentSubscription.currentPeriodStart)} to{' '}
+                    {formatDate(currentSubscription.currentPeriodEnd)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-md border p-4 bg-white">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="text-sm font-medium">Renewal Status</p>
+                  <p className="text-xs text-muted-foreground">
+                    {currentSubscription.cancelAtPeriodEnd
+                      ? 'Will not renew automatically'
+                      : 'Will renew automatically'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Billing management section */}
+        <div className="rounded-md border p-4 bg-white">
           <div className="flex items-center gap-4">
             <CreditCard className="h-8 w-8 text-muted-foreground" />
             <div>
@@ -199,8 +245,8 @@ export function CurrentSubscription({
               variant="outline"
               size="sm"
               className="ml-auto"
-              onClick={handleManageBilling}
-              loading={isLoading}
+              onClick={handleRedirectToPortal}
+              loading={isRedirectingToPortal}
             >
               <span className="mr-1">Manage Billing</span>
               <ExternalLink className="h-3 w-3" />
@@ -208,8 +254,9 @@ export function CurrentSubscription({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between border-t p-4">
-        {subscription.cancelAtPeriodEnd ? (
+
+      <CardFooter className="flex justify-between border-t p-4 bg-gray-50 dark:bg-gray-900">
+        {currentSubscription.cancelAtPeriodEnd ? (
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline">Resume Subscription</Button>
@@ -236,8 +283,8 @@ export function CurrentSubscription({
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        ) : subscription.status === SubscriptionStatus.ACTIVE ||
-          subscription.status === SubscriptionStatus.TRIALING ? (
+        ) : currentSubscription.status === SubscriptionStatus.ACTIVE ||
+          currentSubscription.status === SubscriptionStatus.TRIALING ? (
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="outline">Cancel Subscription</Button>
@@ -265,7 +312,17 @@ export function CurrentSubscription({
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        ) : null}
+        ) : (
+          <div></div> // Empty div as fallback for other states
+        )}
+
+        <Button
+          variant="outline"
+          onClick={handleRedirectToPortal}
+          disabled={isRedirectingToPortal}
+        >
+          View Billing History
+        </Button>
       </CardFooter>
     </Card>
   );
