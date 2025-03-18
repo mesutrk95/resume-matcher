@@ -1,5 +1,5 @@
-import { JobKeyword } from "@/types/job";
-import { ResumeContent, Variation } from "@/types/resume";
+import { JobKeyword } from '@/types/job';
+import { ResumeContent, Variation } from '@/types/resume';
 
 function findDuplicates(arr: string[]): { keyword: string; repeats: number }[] {
   const counts = arr.reduce<Record<string, number>>((acc, item) => {
@@ -13,70 +13,39 @@ function findDuplicates(arr: string[]): { keyword: string; repeats: number }[] {
   }));
 }
 
-function extractKeywords(jobDescription: string) {
-  // Simple keyword extraction (split by space and filter out common words)
-  const commonWords = new Set([
-    "the",
-    "and",
-    "of",
-    "in",
-    "to",
-    "a",
-    "with",
-    "for",
-    "on",
-    "at",
-    "are",
-    "you",
-    "from",
-    "our",
-    "has",
-    "that",
-    "we",
-    "need",
-  ]);
-
-  return findDuplicates(
-    jobDescription
-      .toLowerCase()
-      .split(/\W+/)
-      .filter((word) => word.length > 2 && !commonWords.has(word))
-  );
-}
-
 function scoreVariation(variation: Variation, keywords: JobKeyword[]): number {
   if (!variation) return 0;
   const contentWords = variation.content
     .toLowerCase()
     .split(/\W+/)
-    .map((w) => w.toLowerCase());
+    .map(w => w.toLowerCase());
 
-  return keywords.filter((word) =>
-    contentWords.includes(word.keyword.toLowerCase())
+  return keywords.filter(word =>
+    contentWords.includes(word.keyword.toLowerCase()),
   ).length;
 }
 
 function selectBestVariations(
   resume: ResumeContent,
-  keywords: JobKeyword[]
+  keywords: JobKeyword[],
 ): ResumeContent {
   let scores: any = {};
   const selectedResume: ResumeContent = {
     ...resume,
     experiences: resume.experiences.map((experience, index) => {
-      const items = experience.items.map((item) => {
+      const items = experience.items.map(item => {
         const bestVariation = item.variations.reduce(
           (best, variation) => {
             const score = scoreVariation(variation, keywords);
-            scores[item.id + "-" + variation.id] = score;
+            scores[item.id + '-' + variation.id] = score;
             return score > best.score ? { variation, score } : best;
           },
           {
             variation: item.variations[0],
             score: scoreVariation(item.variations[0], keywords),
-          }
+          },
         );
-        item.variations.forEach((variation) => {
+        item.variations.forEach(variation => {
           variation.enabled = false;
         });
         if (bestVariation.variation) {
@@ -107,7 +76,7 @@ function selectBestVariations(
 
 export const constructFinalResume = (
   templateContent: ResumeContent,
-  keywords: JobKeyword[]
+  keywords: JobKeyword[],
 ) => {
   // const keywords = extractKeywords(jobDescription);
   // setKeywords(keywords);
@@ -118,40 +87,40 @@ export const constructFinalResume = (
 };
 
 export const convertResumeObjectToString = (resume: ResumeContent) => {
-  let content = "";
+  let content = '';
 
-  const title = resume.titles.find((t) => t.enabled)?.content;
+  const title = resume.titles.find(t => t.enabled)?.content;
   if (title) {
-    content += title + "\n";
+    content += title + '\n';
   }
 
-  const summary = resume.summaries.find((t) => t.enabled)?.content;
+  const summary = resume.summaries.find(t => t.enabled)?.content;
   if (summary) {
-    content += summary + "\n";
+    content += summary + '\n';
   }
 
   content += `Experiences\n`;
-  resume.experiences.forEach((exp) => {
+  resume.experiences.forEach(exp => {
     if (!exp.enabled) return;
-    exp.items.forEach((item) => {
-      const variation = item.variations.find((v) => v.enabled);
+    exp.items.forEach(item => {
+      const variation = item.variations.find(v => v.enabled);
       if (variation?.content) content += `- ${variation.content}\n`;
     });
   });
-  resume.projects.forEach((prj) => {
+  resume.projects.forEach(prj => {
     if (!prj.enabled) return;
     content += `${prj?.content}\n`;
   });
 
-  const edu = resume.educations.find((e) => e.enabled);
+  const edu = resume.educations.find(e => e.enabled);
   if (edu) {
     content += `Education\n${edu.degree} • ${edu.institution} • ${edu.content} \n`;
   }
   if (edu) {
     content += `Skills\n${resume.skills
-      .filter((e) => e.enabled)
-      .map((s) => s.content)
-      .join(", ")} \n`;
+      .filter(e => e.enabled)
+      .map(s => s.content)
+      .join(', ')} \n`;
   }
   return content;
 };

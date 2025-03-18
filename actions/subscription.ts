@@ -2,6 +2,7 @@
 'use server';
 
 import { currentUser } from '@/lib/auth';
+import { UnauthorizedException } from '@/lib/exceptions';
 import { response } from '@/lib/utils';
 import {
   cancelSubscription,
@@ -34,10 +35,7 @@ export const createSubscription = async (interval: SubscriptionInterval) => {
   const user = await currentUser();
 
   if (!user || !user.id || !user.email) {
-    return {
-      success: false,
-      error: 'User not authenticated',
-    };
+    throw new UnauthorizedException('User not authenticated');
   }
 
   const priceId = PRICE_MAPPING[interval];
