@@ -3,19 +3,16 @@
 import { LoadingButton } from "@/components/ui/loading-button";
 import { constructFinalResume } from "@/utils/job-matching";
 import {
+  ResumeAnalyzeResults,
   ResumeContent,
   ResumeItemScoreAnalyze,
-  ResumeOverallScoreAnalyze,
 } from "@/types/resume";
 import React, { useState, useTransition } from "react";
 import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
 import { Job, JobResume } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import {
-  analyzeResumeExperiencesScores,
-  analyzeResumeProjectsScores,
-} from "@/actions/job";
+import { analyzeResumeItemsScores } from "@/actions/job";
 import { JobAnalyzeResult } from "@/types/job";
 import { useParams } from "next/navigation";
 import { analyzeResumeScore, updateJobResume } from "@/actions/job-resume";
@@ -34,6 +31,8 @@ import {
 import { updateResumeTemplateContent } from "@/actions/resume-template";
 import { CheckCircle, CircleX, LucideCheck, LucideX } from "lucide-react";
 import { JobPostPreview } from "@/components/jobs/job-post-preview";
+import { BlobProvider } from "@react-pdf/renderer";
+import { ResumeDocument } from "@/components/job-resumes/resume-document";
 // import { useLayout } from "@/app/context/LayoutProvider";
 
 // const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
@@ -166,7 +165,9 @@ export const JobMatcher = ({
 }) => {
   const { id: jobResumeId } = useParams();
   const [resume, setResume] = useState<ResumeContent>(initialResume);
-  const [scores, setScores] = useState<ResumeItemScoreAnalyze[]>();
+  const [resumeAnalyzeData, setResumeAnalyzeData] = useState<
+    ResumeAnalyzeResults | undefined
+  >(jobResume.analyzeResults as ResumeAnalyzeResults);
   const [job, setJob] = useState<Job>(initialJob);
 
   const jobAnalyzeResults = job.analyzeResults as JobAnalyzeResult;
@@ -176,37 +177,10 @@ export const JobMatcher = ({
   const handleAnalyzeScores = async () => {
     startAnalyzeScoresTransition(async () => {
       try {
-        const result = await Promise.all([
-          ...resume.experiences.map((experience) => {
-            const content = experience.items
-              .map(
-                (item, index) =>
-                  `Experience Item ${index + 1}\n` +
-                  item.variations
-                    .map((v) => `${v.id} - ${v.content}`)
-                    .join("\n")
-              )
-              .flat()
-              .join("\n");
-            return analyzeResumeExperiencesScores(
-              jobResumeId as string,
-              content
-            );
-          }),
-          analyzeResumeProjectsScores(
-            jobResumeId as string,
-            resume.projects
-              .map((prj) => `(${prj.id}) ${prj.content}`)
-              .join("\n")
-          ),
-        ]);
-
-        const scores = result
-          .map((r) => r.result)
-          .flat() as ResumeItemScoreAnalyze[];
-        setScores(scores);
-        console.log(scores);
-        toast.success("Analyze rate and scores are successfully done!");
+        const results = await analyzeResumeItemsScores(jobResumeId as string);
+        setResumeAnalyzeData(results);
+        console.log(results);
+        toast.success("Analyze resume rates and scores are successfully done!");
       } catch (error) {
         toast.error("Failed to analyze scores.");
       }
@@ -226,26 +200,23 @@ export const JobMatcher = ({
     });
   };
 
-  // useEffect(() => {
-  //   if (!jobAnalyzeResults?.keywords) return;
-  //   const fr = constructFinalResume(initialResume, jobAnalyzeResults?.keywords);
-  //   if (!fr) {
-  //     toast.error("Keywords are not extracted, please first analyze keywords.");
-  //     return;
-  //   }
-  //   setResume(fr);
-  // }, [jobAnalyzeResults?.keywords, initialResume]);
-
-  const [resumeScore, setResumeScore] =
-    useState<ResumeOverallScoreAnalyze | null>();
   const [isRatingResume, startRatingResumeTransition] = useTransition();
-  const handleResumeScore = () => {
+  const handleResumeScore = (resumePdfBlob: Blob) => {
     startRatingResumeTransition(async () => {
       try {
-        const score = await analyzeResumeScore(jobResume.id);
-        console.log(score);
-        setResumeScore(score.result);
-      } catch (error) {}
+        const file = new File([resumePdfBlob], "resume.pdf", {
+          type: "application/pdf",
+        });
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const analyzeResults = await analyzeResumeScore(formData, jobResume.id);
+        setResumeAnalyzeData(analyzeResults);
+        console.log(analyzeResults);
+        toast.success("Successfully analyzed resume score!");
+      } catch (error) {
+        toast.error("Failed to analyze resume score.");
+      }
     });
   };
 
@@ -254,7 +225,7 @@ export const JobMatcher = ({
       <div className="grid grid-cols-2 gap-5">
         <div>
           <Tabs defaultValue="builder" className=" ">
-            <TabsList className="grid w-full grid-cols-3  " variant={"outline"}>
+            <TabsList className="grid w-full grid-cols-3" variant={"outline"}>
               <TabsTrigger value="builder" variant={"outline"}>
                 Resume Builder
               </TabsTrigger>
@@ -334,7 +305,7 @@ export const JobMatcher = ({
               {resume && (
                 <ResumeBuilder
                   data={resume}
-                  resumeItemsScore={scores}
+                  resumeAnalyzeData={resumeAnalyzeData}
                   onUpdate={async (tmp) => {
                     setResume(tmp);
                     try {
@@ -357,26 +328,36 @@ export const JobMatcher = ({
               />
             </TabsContent>
             <TabsContent className="" value="score">
-              <LoadingButton
-                onClick={handleResumeScore}
-                loading={isRatingResume}
-                loadingText="Thinking ..."
-              >
-                Rate Resume!
-              </LoadingButton>
+              <BlobProvider document={<ResumeDocument resume={resume} />}>
+                {({ blob, url, loading, error }) => {
+                  // if (error) {
+                  //   return <div>Error: {error}</div>;
+                  // }
+
+                  return (
+                    <LoadingButton
+                      onClick={() => handleResumeScore(blob!)}
+                      loading={loading || isRatingResume}
+                      loadingText="Thinking ..."
+                    >
+                      Rate Resume!
+                    </LoadingButton>
+                  );
+                }}
+              </BlobProvider>
               {/* <CircleX className="text-red-500" /> Missed Keywords{" "} */}
-              {resumeScore && (
+              {resumeAnalyzeData?.missed_keywords && (
                 <div className="flex flex-col gap-5 mt-10">
                   <h3 className="text-xl font-bold">
-                    Rate: {resumeScore.score}%
+                    Rate: {resumeAnalyzeData.score}%
                   </h3>
                   <div className="flex flex-col gap-2">
                     <h3 className="text-lg font-bold flex items-center gap-2">
                       <CircleX className="text-red-500" size={18} />
-                      Missed Keywords ({resumeScore.missed_keywords.length})
+                      Missed Keywords ({resumeAnalyzeData.missed_keywords.length})
                     </h3>
                     <div className="flex flex-wrap gap-1">
-                      {resumeScore.missed_keywords.map((k) => (
+                      {resumeAnalyzeData.missed_keywords.map((k) => (
                         <span
                           key={k}
                           className="px-2 py-1 text-sm bg-slate-200 rounded-full"
@@ -389,10 +370,10 @@ export const JobMatcher = ({
                   <div className="flex flex-col gap-2">
                     <h3 className="text-lg font-bold flex items-center gap-2">
                       <CheckCircle className="text-green-500" size={18} />
-                      Matched Keywords ({resumeScore.matched_keywords.length})
+                      Matched Keywords ({resumeAnalyzeData.matched_keywords.length})
                     </h3>
                     <div className="flex flex-wrap gap-1">
-                      {resumeScore.matched_keywords.map((k) => (
+                      {resumeAnalyzeData.matched_keywords.map((k) => (
                         <span
                           key={k}
                           className="px-2 py-1 text-sm bg-slate-200 rounded-full"
@@ -402,13 +383,13 @@ export const JobMatcher = ({
                       ))}
                     </div>
                   </div>
-                  {resumeScore.notes.length && (
+                  {resumeAnalyzeData.notes?.length > 0 && (
                     <div className="flex flex-col gap-2">
                       <h3 className="text-lg font-bold flex items-center gap-2">
-                        Notes ({resumeScore.notes.length})
+                        Notes ({resumeAnalyzeData.notes.length})
                       </h3>
                       <div className="flex flex-col gap-4">
-                        {resumeScore.notes.map((n, index) => (
+                        {resumeAnalyzeData.notes.map((n, index) => (
                           <div className="flex flex-col gap-2" key={n.title}>
                             <h4 className=" font-bold">
                               {index + 1}. {n.title}

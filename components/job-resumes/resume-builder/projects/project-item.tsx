@@ -70,11 +70,11 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
       name: editForm.name,
       content: editForm.content,
       link: editForm.link,
-      startDate: startDate ? format(startDate, "yyyy/MM") : project.startDate,
+      startDate: startDate ? format(startDate, "MM/yyyy") : project.startDate,
       endDate: isPresent
         ? "Present"
         : endDate
-        ? format(endDate, "yyyy/MM")
+        ? format(endDate, "MM/yyyy")
         : project.endDate,
     });
     setIsEditing(false);

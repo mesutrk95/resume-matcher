@@ -55,12 +55,12 @@ export function YearMonthPicker({
 
   const handleMonthChange = (month: string) => {
     const newDate = setMonth(date || new Date(), months.indexOf(month));
-    setDate(format(newDate, "yyyy/MM"));
+    setDate(format(newDate, "MM/yyyy"));
   };
 
   const handleYearChange = (year: string) => {
     const newDate = setYear(date || new Date(), parseInt(year));
-    setDate(format(newDate, "yyyy/MM"));
+    setDate(format(newDate, "MM/yyyy"));
   };
 
   return (
@@ -75,7 +75,7 @@ export function YearMonthPicker({
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? (
-            <Moment format="yyyy/MM" date={date} utc />
+            <Moment format="MM/yyyy" date={date} utc />
           ) : (
             <span>Pick a date</span>
           )}

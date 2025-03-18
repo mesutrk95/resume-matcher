@@ -13,6 +13,12 @@ import { withErrorHandling } from "./with-error-handling";
 import cheerio from "cheerio";
 import axios from "axios";
 import moment from "moment";
+import {
+  ResumeAnalyzeResults,
+  ResumeContent,
+  ResumeItemScoreAnalyze,
+} from "@/types/resume";
+import { hashString } from "@/lib/utils";
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {
@@ -158,40 +164,16 @@ export const analyzeJobByAI = async (jobId: string) => {
     },
   });
 
-  revalidatePath(`/jobs/${jobId}`)
+  revalidatePath(`/jobs/${jobId}`);
 
   return analyzeResults;
 };
 
-export const analyzeResumeExperiencesScores = async (
-  jobResumeId: string,
+const analyzeResumeExperiencesScores = async (
+  analyzeResults: JobAnalyzeResult,
   content: string
 ) => {
-  const user = await currentUser();
-  const jobResume = await db.jobResume.findUnique({
-    where: {
-      id: jobResumeId,
-      userId: user?.id,
-    },
-    include: {
-      job: true,
-    },
-  });
-
-  if (!jobResume) {
-    throw new Error("Job Resume not found");
-  }
-
-  let analyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
-  if (!analyzeResults) {
-    analyzeResults = (await analyzeJobByAI(jobResume.jobId))!;
-  }
-
   const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, an experience has items, and each item has variations, you need to give a score (on a scale from 0 to 1) to each variation based on how well it matches the job description, in an experience item only one variation can be selected, give me the best matches in this format [{ "id" : "variation_id", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
-
-  //   const keywords = analyzeResults.keywords
-  //     .map((k) => `${k.keyword} (${k.level})`)
-  //     .join(",");
 
   const generatedContent = await getAIJsonResponse(prompt, [
     content +
@@ -202,11 +184,24 @@ export const analyzeResumeExperiencesScores = async (
   return generatedContent;
 };
 
-export const analyzeResumeProjectsScores = async (
-  jobResumeId: string,
+const analyzeResumeProjectsScores = async (
+  analyzeResults: JobAnalyzeResult,
   content: string
 ) => {
+  const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, you need to give a score (on a scale from 0 to 1) to each project item based on how well it matches the job description, give me the best matches in this format [{ "id" : "project_..", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
+
+  const generatedContent = await getAIJsonResponse(prompt, [
+    content +
+      "\n" +
+      `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
+  ]);
+
+  return generatedContent;
+};
+
+export const analyzeResumeItemsScores = async (jobResumeId: string) => {
   const user = await currentUser();
+
   const jobResume = await db.jobResume.findUnique({
     where: {
       id: jobResumeId,
@@ -221,24 +216,62 @@ export const analyzeResumeProjectsScores = async (
     throw new Error("Job Resume not found");
   }
 
-  let analyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
-  if (!analyzeResults) {
-    analyzeResults = (await analyzeJobByAI(jobResume.jobId))!;
+  const resumeAnalyzeResults = jobResume.analyzeResults as ResumeAnalyzeResults;
+  const oldItemsScore = resumeAnalyzeResults.itemsScore;
+
+  const resume = jobResume?.content as ResumeContent;
+  let variations = resume.experiences
+    .map((experience) =>
+      experience.items
+        .map((i) =>
+          i.variations.map((v) => ({ ...v, hash: hashString(v.content, 8) }))
+        )
+        .flat()
+    )
+    .flat();
+
+  variations = variations.filter((v) => oldItemsScore?.[v.id]?.hash !== v.hash);
+  if (variations.length === 0) return resumeAnalyzeResults;
+
+  let jobAnalyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
+  if (!jobAnalyzeResults?.summary) {
+    jobAnalyzeResults = (await analyzeJobByAI(jobResume.jobId))!;
   }
 
-  const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, you need to give a score (on a scale from 0 to 1) to each project item based on how well it matches the job description, give me the best matches in this format [{ "id" : "project_..", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
+  const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
+  const resp = await analyzeResumeExperiencesScores(jobAnalyzeResults, content);
 
-  //   const keywords = analyzeResults.keywords
-  //     .map((k) => `${k.keyword} (${k.level})`)
-  //     .join(",");
+  const scores = resp.result as ResumeItemScoreAnalyze[];
+  const scoresMap = scores.reduce(
+    (acc, curr) => ({
+      ...acc,
+      [curr.id]: {
+        ...curr,
+        hash: hashString(
+          variations.find((v) => curr.id === v.id)?.content || "",
+          8
+        ),
+      },
+    }),
+    {}
+  );
 
-  const generatedContent = await getAIJsonResponse(prompt, [
-    content +
-      "\n" +
-      `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
-  ]);
+  const newAnalyzeResults = {
+    ...resumeAnalyzeResults,
+    itemsScore: {
+      ...resumeAnalyzeResults.itemsScore,
+      ...scoresMap,
+    },
+  } as ResumeAnalyzeResults;
 
-  return generatedContent;
+  await db.jobResume.update({
+    where: { id: jobResumeId },
+    data: {
+      analyzeResults: newAnalyzeResults,
+    },
+  });
+
+  return newAnalyzeResults;
 };
 
 export const extractJobDescriptionFromUrl = async (url: string) => {
@@ -257,8 +290,10 @@ export const extractJobDescriptionFromUrl = async (url: string) => {
     "\n",
     ""
   );
-  
-  const prompt = `Extract the following details from the given text, with this keys "description", "companyName", "location" , "title", "postedDate".keep the description in html format and make sure postedDate is in correct date format (YYYY/MM/DD HH:mm) (now: ${moment().format('YYYY/MM/DD HH:mm')}). Ensure the response is in a valid JSON format with no extra text:\n ${jd}`;
+
+  const prompt = `Extract the following details from the given text, with this keys "description", "companyName", "location" , "title", "postedDate".keep the description in html format and make sure postedDate is in correct date format (YYYY/MM/DD HH:mm) (now: ${moment().format(
+    "YYYY/MM/DD HH:mm"
+  )}). Ensure the response is in a valid JSON format with no extra text:\n ${jd}`;
 
   const result = await getAIJsonResponse(prompt);
   return result;

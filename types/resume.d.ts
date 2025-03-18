@@ -87,15 +87,17 @@ export type ResumeContent = {
   contactInfo: ResumeContactInfo;
 };
 
-export type ResumeOverallScoreAnalyze = {
+export type ResumeItemScoreAnalyze = {
+  id: string;
+  score: number;
+  matched_keywords: string[];
+  hash?: string;
+};
+
+export type ResumeAnalyzeResults = {
+  itemsScore?: Record<string, ResumeItemScoreAnalyze>;
   missed_keywords: string[];
   matched_keywords: string[];
   notes: { title: string; improvement: string; text: string }[];
   score: number;
-};
-
-export type ResumeItemScoreAnalyze = {
-  id?: string;
-  score: number;
-  matched_keywords: string[];
 };

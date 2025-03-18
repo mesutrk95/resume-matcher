@@ -34,11 +34,11 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
         name,
         content,
         link,
-        startDate: format(startDate, "yyyy/MM"),
+        startDate: format(startDate, "MM/yyyy"),
         endDate: isPresent
           ? "Present"
           : endDate
-          ? format(endDate, "yyyy/MM")
+          ? format(endDate, "MM/yyyy")
           : "",
       });
     }

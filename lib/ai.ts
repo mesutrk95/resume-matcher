@@ -1,19 +1,19 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import OpenAI from "openai";
 
-export const getAIJsonResponse = async (prompt: string, content?: string[]) => {
+export const getAIJsonResponse = async (prompt: string, content?: (string | Buffer)[]) => {
   const response = await getGeminiResponse(prompt, content);
   const result = parseJson(response);
 
   return { ...result, prompt, content };
 };
-export const getAIHtmlResponse = async (prompt: string, content?: string[]) => {
-  const response = await getGeminiResponse(prompt, content); 
+export const getAIHtmlResponse = async (prompt: string, content?: (string | Buffer)[]) => {
+  const response = await getGeminiResponse(prompt, content);
   const result = parseHtml(response);
   return { ...result, prompt, content };
 };
 
-const getDeepSeekResponse = async (prompt: string, contents?: string[]) => {
+const getDeepSeekResponse = async (prompt: string, contents?: (string | Buffer)[]) => {
   const openai = new OpenAI({
     baseURL: "https://api.deepseek.com",
     apiKey: process.env.DEEPSEEK_API_KEY,
@@ -30,12 +30,25 @@ const getDeepSeekResponse = async (prompt: string, contents?: string[]) => {
   return msg;
 };
 
-const getGeminiResponse = async (prompt: string, contents?: string[]) => {
+const getGeminiResponse = async (
+  prompt: string,
+  contents?: (string | Buffer)[]
+) => {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
   const generatedContent = await model.generateContent([
     prompt,
-    ...(contents?.map((c) => ({ text: c })) || []),
+    ...(contents?.map((c) =>
+      typeof c === "string"
+        ? { text: c }
+        : {
+            inlineData: {
+              data: c.toString("base64"),
+              mimeType: "application/pdf",
+            },
+          }
+    ) || []),
   ]);
   const msg = generatedContent.response.text();
   return msg;
