@@ -173,7 +173,7 @@ const analyzeResumeExperiencesScores = async (
   analyzeResults: JobAnalyzeResult,
   content: string
 ) => {
-  const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, an experience has items, and each item has variations, you need to give a score (on a scale from 0 to 1) to each variation based on how well it matches the job description, in an experience item only one variation can be selected, give me the best matches in this format [{ "id" : "variation_id", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
+  const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, you need to give a score (on a scale from 0 to 1) to each variation or project item based on how well it matches the job description, give me the best matches in this format [{ "id" : "variation_id", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
 
   const generatedContent = await getAIJsonResponse(prompt, [
     content +
@@ -221,14 +221,20 @@ export const analyzeResumeItemsScores = async (jobResumeId: string) => {
 
   const resume = jobResume?.content as ResumeContent;
   let variations = resume.experiences
-    .map((experience) =>
-      experience.items
-        .map((i) =>
-          i.variations.map((v) => ({ ...v, hash: hashString(v.content, 8) }))
-        )
-        .flat()
-    )
-    .flat();
+    .map((experience) => experience.items.map((i) => i.variations).flat())
+    .flat()
+    .map((v) => ({ ...v, hash: hashString(v.content, 8) }));
+
+  // concat with project items
+  variations = [
+    ...variations,
+    ...resume.projects.map((p) => ({
+      enabled: p.enabled,
+      id: p.id,
+      content: p.content,
+      hash: hashString(p.content, 8),
+    })),
+  ];
 
   variations = variations.filter((v) => oldItemsScore?.[v.id]?.hash !== v.hash);
   if (variations.length === 0) return resumeAnalyzeResults;
