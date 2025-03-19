@@ -87,3 +87,9 @@ export function hashString(str: string, length = 64) {
   const hash = crypto.createHash("sha256").update(str).digest("hex");
   return hash.substring(0, length);
 }
+
+export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
+  return Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, i) =>
+      array.slice(i * chunkSize, i * chunkSize + chunkSize)
+  );
+}

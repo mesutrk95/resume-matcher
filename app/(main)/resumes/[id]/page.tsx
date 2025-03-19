@@ -40,7 +40,7 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">
-        Edit Resume for {jobResume.job.title}
+        Edit {jobResume.name} Resume
       </h1>
 
       <JobMatcher

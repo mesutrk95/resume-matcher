@@ -35,6 +35,7 @@ import { CheckCircle, CircleX, LucideCheck, LucideX } from "lucide-react";
 import { JobPostPreview } from "@/components/jobs/job-post-preview";
 import { BlobProvider } from "@react-pdf/renderer";
 import { ResumeDocument } from "@/components/job-resumes/resume-document";
+// import { CustomPromptDialog } from "./CustomPromptDialog";
 // import { useLayout } from "@/app/context/LayoutProvider";
 
 // const ResumePreview = ({ resume }: { resume: ResumeContent }) => {
@@ -176,7 +177,7 @@ export const JobMatcher = ({
 
   const [isSyncingToTemplate, startSyncToTemplateTransition] = useTransition();
   const [isAnalyzingScores, startAnalyzeScoresTransition] = useTransition();
-  const handleAnalyzeScores = async () => {
+  const handleAnalyzeScores = async (forceRefresh: boolean) => {
     startAnalyzeScoresTransition(async () => {
       try {
         const results = await analyzeResumeItemsScores(jobResumeId as string);
@@ -240,14 +241,22 @@ export const JobMatcher = ({
             </TabsList>
             <TabsContent className="pt-0" value="builder">
               <div className="mb-4 flex flex-col gap-4">
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <LoadingButton
                     variant={"outline"}
-                    onClick={handleAnalyzeScores}
+                    onClick={() => handleAnalyzeScores(false)}
                     loading={isAnalyzingScores}
                     loadingText="Thinking ..."
                   >
                     Analyze Scores
+                  </LoadingButton>
+                  <LoadingButton
+                    variant={"outline"}
+                    onClick={() => handleAnalyzeScores(true)}
+                    loading={isAnalyzingScores}
+                    loadingText="Thinking ..."
+                  >
+                    Clean & Analyze Scores
                   </LoadingButton>
 
                   <LoadingButton
@@ -347,6 +356,9 @@ export const JobMatcher = ({
                   );
                 }}
               </BlobProvider>
+
+              {/* <CustomPromptDialog /> */}
+              
               {/* <CircleX className="text-red-500" /> Missed Keywords{" "} */}
               {resumeAnalyzeData?.missed_keywords && (
                 <div className="flex flex-col gap-5 mt-10">

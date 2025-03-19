@@ -41,8 +41,13 @@ import Moment from "react-moment";
 import MultipleSelector, { Option } from "../ui/multiple-select";
 import { capitalizeText } from "@/lib/utils";
 
+type JobItem = Omit<
+  Job,
+  "analyzeResults" | "description" | "userId" | "moreDetails"
+>;
+
 interface JobsDataTableProps {
-  data: Job[];
+  data: JobItem[];
   pageCount: number;
   currentPage: number;
   pageSize: number;
@@ -67,7 +72,10 @@ export function JobsDataTable({
   const [search, setSearch] = useState(searchQuery);
 
   const [selectedStatuses, setSelectedStatuses] = useState<Option[]>(
-    statusFilter.map((s) => ({ value: s, label: getJobStatusLabel(s as JobStatus) }))
+    statusFilter.map((s) => ({
+      value: s,
+      label: getJobStatusLabel(s as JobStatus),
+    }))
   );
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
@@ -111,7 +119,7 @@ export function JobsDataTable({
     }
   };
 
-  const handleUpdateStatus = async (job: Job, status: JobStatus) => {
+  const handleUpdateStatus = async (job: JobItem, status: JobStatus) => {
     updateJobStatus(job.id, status);
   };
 

@@ -51,9 +51,8 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
     : {};
 
   // Prepare status filter
-  const statusFilter = statuses.length > 0
-    ? { status: { in: statuses as JobStatus[] } }
-    : {};
+  const statusFilter =
+    statuses.length > 0 ? { status: { in: statuses as JobStatus[] } } : {};
 
   // Get jobs with filters, pagination and sorting
   const jobs = await db.job.findMany({
@@ -61,6 +60,16 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
       userId: user?.id,
       ...searchFilter,
       ...statusFilter,
+    },
+    select: {
+      id: true,
+      title: true,
+      companyName: true,
+      location: true,
+      createdAt: true,
+      postedAt: true,
+      status: true,
+      url: true,
     },
     orderBy: {
       createdAt: "desc",
