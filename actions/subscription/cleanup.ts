@@ -17,17 +17,14 @@ export const cleanupAbandonedSubscriptions = async (userId: string) => {
 
   if (!subscription) return null;
 
-  // If we have a customerId but no subscriptionId, this might be an abandoned checkout
   if (subscription.customerId && !subscription.subscriptionId) {
     try {
-      // Check if customer has any active subscriptions
       const subscriptions = await stripe.subscriptions.list({
         customer: subscription.customerId,
         status: 'all',
       });
 
       if (subscriptions.data.length === 0) {
-        // If no subscriptions found, update the local status
         await db.subscription.update({
           where: { userId },
           data: {
@@ -35,7 +32,6 @@ export const cleanupAbandonedSubscriptions = async (userId: string) => {
           },
         });
       } else {
-        // Found subscriptions, update with the latest one
         const latestSubscription = subscriptions.data[0];
         await db.subscription.update({
           where: { userId },
