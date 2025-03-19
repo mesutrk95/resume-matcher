@@ -30,8 +30,13 @@ import {
 } from "../ui/alert-dialog";
 import Moment from "react-moment";
 
+type JobResumeList = Omit<
+  JobResume & { job: Pick<Job, "companyName"> },
+  "analyzeResults" | "content" | "jobId" | "userId" | "baseResumeTemplateId"
+>[];
+
 interface JobResumesDataTableProps {
-  data: (JobResume & { job: Job })[];
+  data: JobResumeList;
   pageCount: number;
   currentPage: number;
   pageSize: number;
@@ -69,15 +74,14 @@ export function JobResumesDataTable({
 
   const handleDeleteJobResume = async (id: string) => {
     startDeletingTransition(async () => {
-      try { 
+      try {
         await deleteJobResume(id);
         toast.success("Job resume deleted successfully");
         router.refresh();
       } catch (error) {
         toast.error(error?.toString() || "Something went wrong");
-      }  
-
-    })
+      }
+    });
   };
 
   return (
@@ -127,10 +131,18 @@ export function JobResumesDataTable({
                   </TableCell>
                   <TableCell>{jobResume.job.companyName}</TableCell>
                   <TableCell>
-                    <Moment date={jobResume.createdAt} format="MMM d, yyyy HH:mm" utc />
+                    <Moment
+                      date={jobResume.createdAt}
+                      format="MMM d, yyyy HH:mm"
+                      utc
+                    />
                   </TableCell>
                   <TableCell>
-                    <Moment date={jobResume.updatedAt} format="MMM d, yyyy HH:mm" utc />
+                    <Moment
+                      date={jobResume.updatedAt}
+                      format="MMM d, yyyy HH:mm"
+                      utc
+                    />
                   </TableCell>
                   <TableCell className="flex gap-2">
                     {/* Delete Confirmation Dialog */}
@@ -165,11 +177,7 @@ export function JobResumesDataTable({
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-                    <Button
-                      asChild
-                      variant={"outline"}
-                      disabled={isDeleting}
-                    >
+                    <Button asChild variant={"outline"} disabled={isDeleting}>
                       <Link href={`/resumes/${jobResume.id}`}>
                         <Edit className="h-4 w-4" />
                       </Link>

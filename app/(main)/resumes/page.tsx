@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
 import { JobResumesDataTable } from "@/components/job-resumes/resumes-data-table";
-import { Prisma } from "@prisma/client";
+import { Job, JobResume, Prisma } from "@prisma/client";
 import { Metadata } from "next";
 
 interface ResumesPageProps {
@@ -39,8 +39,17 @@ export default async function ResumesPage({ searchParams }: ResumesPageProps) {
       userId: user?.id,
       ...searchFilter,
     },
-    include: {
-      job: true,
+    select: {
+      id: true,
+      name: true,
+      createdAt: true,
+      updatedAt: true,
+      job: {
+        select: {
+          id: true,
+          companyName: true,
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",

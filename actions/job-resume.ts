@@ -5,10 +5,14 @@ import { db } from "@/lib/db";
 import { JobResume } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { DEFAULT_RESUME_CONTENT } from "./constants";
-import { ResumeAnalyzeResults, ResumeContent, ResumeItemScoreAnalyze } from "@/types/resume";
+import {
+  ResumeAnalyzeResults,
+  ResumeContent,
+  ResumeItemScoreAnalyze,
+} from "@/types/resume";
 import { getAIJsonResponse } from "@/lib/ai";
 import { JobAnalyzeResult } from "@/types/job";
-import { hashString } from "@/lib/utils";
+import { chunkArray, hashString } from "@/lib/utils";
 import { analyzeJobByAI } from "./job";
 
 export const findJobResume = async (id: string) => {
@@ -149,12 +153,19 @@ const analyzeResumeExperiencesScores = async (
   analyzeResults: JobAnalyzeResult,
   content: string
 ) => {
-  const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, you need to give a score (on a scale from 0 to 1) to each variation or project item based on how well it matches the job description, give me the best matches in this format [{ "id" : "variation_id", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
+  const prompt = `I'm trying to find the best matches of my experiences based on the job description to ensure they pass ATS easily. For each variation or project item, you need to:
+  
+1. Assign a score (on a scale from 0 to 1) based on how many relevant keywords from the job description are present in the item. The score does not require a full match with all JD keywords, but rather reflects the relevance of the item to the JD.
+  2. Provide a list of exact words or phrases (matched_keywords) that appear in both the item and the job description. Only include words or phrases that are an exact match.
+  
+  Return the results in the following format:
+  [{ "id": "variation_id", "score": 0.55, "matched_keywords": ["exact_word1", "exact_word2", ...] }, ...] 
+  `;
 
   const generatedContent = await getAIJsonResponse(prompt, [
-    content +
-      "\n" +
-      `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
+    `## Job description summary: ${analyzeResults.summary}\n ## My Resume Items\n` +
+      content +
+      "\n Ensure the response is in a valid JSON format with no extra text! Make sure all the variations have score.",
   ]);
 
   return generatedContent;
@@ -175,7 +186,10 @@ const analyzeResumeProjectsScores = async (
   return generatedContent;
 };
 
-export const analyzeResumeItemsScores = async (jobResumeId: string) => {
+export const analyzeResumeItemsScores = async (
+  jobResumeId: string,
+  forceCheckAll?: boolean
+) => {
   const user = await currentUser();
 
   const jobResume = await db.jobResume.findUnique({
@@ -212,7 +226,10 @@ export const analyzeResumeItemsScores = async (jobResumeId: string) => {
     })),
   ];
 
-  variations = variations.filter((v) => oldItemsScore?.[v.id]?.hash !== v.hash);
+  variations = forceCheckAll
+    ? variations
+    : variations.filter((v) => oldItemsScore?.[v.id]?.hash !== v.hash);
+
   if (variations.length === 0) return resumeAnalyzeResults;
 
   let jobAnalyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
@@ -220,10 +237,29 @@ export const analyzeResumeItemsScores = async (jobResumeId: string) => {
     jobAnalyzeResults = (await analyzeJobByAI(jobResume.jobId))!;
   }
 
-  const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
-  const resp = await analyzeResumeExperiencesScores(jobAnalyzeResults, content);
+  // const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
 
-  const scores = resp.result as ResumeItemScoreAnalyze[];
+  const chunks = chunkArray(variations, 10);
+  console.log(chunks, chunks.length);
+
+  const results = await Promise.all(
+    chunks.map((items) =>
+      analyzeResumeExperiencesScores(
+        jobAnalyzeResults,
+        items.map((v) => `${v.id} - ${v.content}`).join("\n")
+      )
+    )
+  );
+  const scores = results
+    .map((res) => res.result as ResumeItemScoreAnalyze[])
+    .flat();
+
+  // const resp = await analyzeResumeExperiencesScores(
+  //   jobAnalyzeResults,
+  //   variations.map((v) => `${v.id} - ${v.content}`).join("\n")
+  // );
+
+  // const scores = allItems ;
   const scoresMap = scores.reduce(
     (acc, curr) => ({
       ...acc,
@@ -254,4 +290,22 @@ export const analyzeResumeItemsScores = async (jobResumeId: string) => {
   });
 
   return newAnalyzeResults;
+};
+
+export const suggestProfessionalSummery = async (jobResumeId: string) => {
+  const user = await currentUser();
+
+  const jobResume = await db.jobResume.findUnique({
+    where: {
+      id: jobResumeId,
+      userId: user?.id,
+    },
+    include: {
+      job: true,
+    },
+  });
+
+  if (!jobResume) {
+    throw new Error("Job Resume not found");
+  }
 };
