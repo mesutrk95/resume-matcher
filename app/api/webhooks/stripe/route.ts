@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { getStripeServer } from '@/lib/stripe';
-import { updateSubscriptionInDatabase } from '@/services/subscription';
+import { updateSubscriptionInDatabase } from '@/actions/subscription/utils';
 import { SubscriptionStatus } from '@prisma/client';
 import { db } from '@/lib/db';
 import Stripe from 'stripe';

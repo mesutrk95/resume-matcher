@@ -3,7 +3,6 @@
 import { db } from '@/lib/db';
 import { SubscriptionStatus } from '@prisma/client';
 
-// Update subscription in database
 export const updateSubscriptionInDatabase = async (
   userId: string,
   subscriptionId: string,
@@ -45,5 +44,17 @@ export const updateSubscriptionInDatabase = async (
   } catch (error) {
     console.error(`Error updating subscription in database:`, error);
     throw new Error('Failed to update subscription in database');
+  }
+};
+
+export const getCustomerById = async (customerId: string) => {
+  try {
+    const stripe = (await import('@/lib/stripe')).getStripeServer();
+    if (!stripe) throw new Error('Stripe not initialized');
+
+    return await stripe.customers.retrieve(customerId);
+  } catch (error) {
+    console.error('Error retrieving customer:', error);
+    throw error;
   }
 };
