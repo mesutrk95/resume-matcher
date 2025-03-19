@@ -3,12 +3,20 @@
 import { currentUser } from '@/lib/auth';
 import { getStripeServer } from '@/lib/stripe';
 import { createOrRetrieveCustomer, getSubscriptionByUserId } from './customer';
-import { PRICE_MAPPING, SubscriptionInterval } from './index';
+import {
+  PRICE_MAPPING,
+  SubscriptionInterval,
+  TRIAL_PERIOD_DAYS,
+} from './index';
 import { updateSubscriptionInDatabase } from './utils';
 import { mapStripeStatusToDBStatus } from './constants';
+import { db } from '@/lib/db';
 
 // Create a new subscription
-export const createSubscription = async (interval: SubscriptionInterval) => {
+export const createSubscription = async (
+  interval: SubscriptionInterval,
+  withCardDetails: boolean = true,
+) => {
   const user = await currentUser();
 
   if (!user || !user.id || !user.email) {
@@ -32,6 +40,7 @@ export const createSubscription = async (interval: SubscriptionInterval) => {
       user.id,
       user.email,
       priceId,
+      withCardDetails,
       user.name || undefined,
     );
 
@@ -54,6 +63,7 @@ export const createCheckoutSession = async (
   userId: string,
   email: string,
   priceId: string,
+  withCardDetails: boolean = true,
   name?: string,
 ) => {
   const stripe = getStripeServer();
@@ -69,10 +79,12 @@ export const createCheckoutSession = async (
     throw new Error('Could not create or retrieve customer');
   }
 
-  // Create checkout session
-  const session = await stripe.checkout.sessions.create({
+  // Check if user has had previous subscriptions
+  const hasHadPreviousSubscription = await hasUserHadSubscription(userId);
+
+  // Create checkout session configuration
+  const sessionConfig: any = {
     customer: subscription.customerId,
-    payment_method_types: ['card'],
     line_items: [
       {
         price: priceId,
@@ -80,20 +92,62 @@ export const createCheckoutSession = async (
       },
     ],
     mode: 'subscription',
-    subscription_data: {
-      trial_period_days: 3, // 3-day trial
-      metadata: {
-        userId,
-      },
-    },
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing?canceled=true`,
     metadata: {
       userId,
     },
+  };
+
+  // Only add payment_method_types if card details are required
+  if (withCardDetails) {
+    sessionConfig.payment_method_types = ['card'];
+  }
+
+  // Only add trial period if it's the user's first subscription
+  if (!hasHadPreviousSubscription) {
+    sessionConfig.subscription_data = {
+      trial_period_days: TRIAL_PERIOD_DAYS,
+      metadata: {
+        userId,
+        isFirstSubscription: 'true',
+      },
+    };
+  } else {
+    sessionConfig.subscription_data = {
+      metadata: {
+        userId,
+        isFirstSubscription: 'false',
+      },
+    };
+  }
+
+  // Create the session
+  const session = await stripe.checkout.sessions.create(sessionConfig);
+  return session;
+};
+
+// Helper function to check if user has had previous subscriptions
+async function hasUserHadSubscription(userId: string): Promise<boolean> {
+  const count = await db.subscription.count({
+    where: {
+      userId,
+      subscriptionId: { not: null }, // Only count subscriptions that have a Stripe subscription ID
+    },
   });
 
-  return session;
+  return count > 0;
+}
+
+// Get user subscription history (implementation in customer.ts)
+export const getUserSubscriptionHistory = async (userId: string) => {
+  return db.subscription.findMany({
+    where: {
+      userId,
+      subscriptionId: { not: null }, // Only retrieve records with a Stripe subscription ID
+    },
+    orderBy: { createdAt: 'desc' },
+  });
 };
 
 export const verifySubscriptionFromSession = async (sessionId: string) => {

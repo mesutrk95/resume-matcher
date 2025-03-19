@@ -1,5 +1,6 @@
-// Helper to map Stripe subscription status to database status
 import { SubscriptionStatus } from '@prisma/client';
+
+export const TRIAL_PERIOD_DAYS = 3;
 
 export function mapStripeStatusToDBStatus(
   stripeStatus: string,
@@ -24,7 +25,6 @@ export function mapStripeStatusToDBStatus(
   }
 }
 
-// Export the subscription interval type
 export type SubscriptionInterval =
   | 'weekly'
   | 'monthly'
@@ -32,7 +32,6 @@ export type SubscriptionInterval =
   | 'biannual'
   | 'yearly';
 
-// Map subscription intervals to Stripe price IDs
 export const PRICE_MAPPING: Record<SubscriptionInterval, string | undefined> = {
   weekly: process.env.STRIPE_BASIC_PRICE_WEEKLY,
   monthly: process.env.STRIPE_BASIC_PRICE_MONTHLY,

@@ -74,6 +74,17 @@ export const getSubscriptionByUserId = async (userId: string) => {
   });
 };
 
+// Get subscription history for a user
+export const getUserSubscriptionHistory = async (userId: string) => {
+  return db.subscription.findMany({
+    where: {
+      userId,
+      subscriptionId: { not: null }, // Only retrieve records with a Stripe subscription ID
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+};
+
 // Create a new customer in Stripe
 export const createCustomer = async (
   userId: string,

@@ -12,6 +12,7 @@ export const updateSubscriptionInDatabase = async (
   currentPeriodStart: Date,
   currentPeriodEnd: Date,
   cancelAtPeriodEnd?: boolean,
+  metadata?: Record<string, string>,
 ) => {
   if (!userId) {
     throw new Error('User ID is required');
@@ -27,6 +28,7 @@ export const updateSubscriptionInDatabase = async (
         currentPeriodStart,
         currentPeriodEnd,
         ...(cancelAtPeriodEnd !== undefined && { cancelAtPeriodEnd }),
+        ...(metadata && { metadata }),
         updatedAt: new Date(),
       },
       create: {
@@ -37,6 +39,7 @@ export const updateSubscriptionInDatabase = async (
         currentPeriodStart,
         currentPeriodEnd,
         cancelAtPeriodEnd: cancelAtPeriodEnd || false,
+        metadata: metadata || {},
       },
     });
   } catch (error) {
