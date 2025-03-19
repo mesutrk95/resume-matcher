@@ -38,10 +38,8 @@ const colors = {
   debug: 'blue',
 };
 
-// Add colors to winston
 winston.addColors(colors);
 
-// Define the format for console logs
 const consoleFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   winston.format.colorize({ all: true }),

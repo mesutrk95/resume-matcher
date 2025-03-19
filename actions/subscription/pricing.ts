@@ -2,6 +2,36 @@
 
 import { getStripeServer } from '@/lib/stripe';
 
+// Helper function to convert Stripe object to plain object
+function stripeMethods(obj: any): any {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+
+  // Handle primitive values
+  if (typeof obj !== 'object') {
+    return obj;
+  }
+
+  // Handle arrays
+  if (Array.isArray(obj)) {
+    return obj.map(stripeMethods);
+  }
+
+  // Handle plain objects, strip methods and convert to plain objects
+  const plainObject: Record<string, any> = {};
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      // Skip functions and inherit properties
+      if (typeof obj[key] !== 'function') {
+        plainObject[key] = stripeMethods(obj[key]);
+      }
+    }
+  }
+
+  return plainObject;
+}
+
 // Get subscription pricing data
 export const getSubscriptionPrices = async () => {
   try {
@@ -49,9 +79,12 @@ export const getSubscriptionPrices = async () => {
       formattedPrices[intervalKey] = price.unit_amount / 100;
     });
 
+    // Convert product to a plain object to avoid passing methods to client components
+    const plainProduct = stripeMethods(product);
+
     return {
       success: true,
-      product,
+      product: plainProduct,
       prices: formattedPrices,
     };
   } catch (error: any) {
