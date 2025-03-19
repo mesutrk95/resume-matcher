@@ -149,6 +149,7 @@ export function SubscriptionPlans({
   // Check if user already has an active subscription
   const hasActiveSubscription =
     currentSubscription &&
+    currentSubscription.subscriptionId && // Added this check
     (currentSubscription.status === SubscriptionStatus.ACTIVE ||
       currentSubscription.status === SubscriptionStatus.TRIALING);
 

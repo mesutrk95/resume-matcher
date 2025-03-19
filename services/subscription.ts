@@ -94,12 +94,12 @@ export const createCheckoutSession = async (
     ],
     mode: 'subscription',
     subscription_data: {
-      trial_period_days: 3, // 3-day trial
+      trial_period_days: 3,
       metadata: {
         userId,
       },
     },
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing/success?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing/success?session_id={CHECKOUT_SESSION_ID}&success=true`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing?canceled=true`,
     metadata: {
       userId,

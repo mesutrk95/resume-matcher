@@ -27,6 +27,17 @@ export function useSubscription() {
     try {
       setIsLoading(true);
       const data = await getUserSubscription();
+
+      // If we have a subscription with customerId but no subscriptionId, it might be abandoned
+      if (data?.customerId && !data?.subscriptionId) {
+        const { cleanupAbandonedSubscriptions } = await import(
+          '@/actions/subscription/cleanup'
+        );
+        const cleanedData = await cleanupAbandonedSubscriptions(data.userId);
+        setSubscription(cleanedData);
+        return cleanedData;
+      }
+
       setSubscription(data);
       return data;
     } catch (error: any) {

@@ -4,6 +4,8 @@ import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { getStripeServer } from '@/lib/stripe';
 import { SubscriptionStatus } from '@prisma/client';
+import { mapStripeStatusToDBStatus } from './constants';
+import { updateSubscriptionInDatabase } from './utils';
 
 // Get current user subscription
 export const getUserSubscription = async () => {
@@ -13,7 +15,55 @@ export const getUserSubscription = async () => {
     return null;
   }
 
+  // Get local subscription data
   const subscription = await getSubscriptionByUserId(user.id);
+
+  // If we have a subscription with a subscriptionId, validate with Stripe
+  if (subscription?.subscriptionId) {
+    try {
+      const stripe = getStripeServer();
+
+      // Make sure subscriptionId is a string
+      const subscriptionId = String(subscription.subscriptionId);
+
+      const stripeSubscription = await stripe.subscriptions.retrieve(
+        subscriptionId,
+      );
+
+      // If the subscription status doesn't match what we have, update it
+      if (
+        mapStripeStatusToDBStatus(stripeSubscription.status) !==
+        subscription.status
+      ) {
+        await updateSubscriptionInDatabase(
+          user.id,
+          subscriptionId,
+          subscription.priceId || stripeSubscription.items.data[0].price.id,
+          mapStripeStatusToDBStatus(stripeSubscription.status),
+          new Date(stripeSubscription.current_period_start * 1000),
+          new Date(stripeSubscription.current_period_end * 1000),
+          stripeSubscription.cancel_at_period_end,
+        );
+
+        // Return the updated record
+        return await getSubscriptionByUserId(user.id);
+      }
+    } catch (error) {
+      console.error('Error validating subscription with Stripe:', error);
+      // If the subscription doesn't exist in Stripe, remove the subscriptionId
+      if ((error as any).statusCode && (error as any).statusCode === 404) {
+        await db.subscription.update({
+          where: { userId: user.id },
+          data: {
+            subscriptionId: null,
+            status: SubscriptionStatus.CANCELED,
+          },
+        });
+        return await getSubscriptionByUserId(user.id);
+      }
+    }
+  }
+
   return subscription;
 };
 

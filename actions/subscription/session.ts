@@ -96,7 +96,6 @@ export const createCheckoutSession = async (
   return session;
 };
 
-// Verify and activate a subscription based on checkout session
 export const verifySubscriptionFromSession = async (sessionId: string) => {
   if (!sessionId) {
     return {
@@ -127,8 +126,22 @@ export const verifySubscriptionFromSession = async (sessionId: string) => {
       };
     }
 
-    const customerId = session.customer as string;
-    const subscriptionId = session.subscription as string;
+    // This is the problematic part - session.subscription might be an object instead of a string
+    let subscriptionId;
+    if (typeof session.subscription === 'string') {
+      subscriptionId = session.subscription;
+    } else if (
+      session.subscription &&
+      typeof session.subscription === 'object' &&
+      'id' in session.subscription
+    ) {
+      subscriptionId = session.subscription.id;
+    } else {
+      return {
+        success: false,
+        error: 'Invalid subscription data in session',
+      };
+    }
 
     if (!subscriptionId) {
       return {
@@ -137,9 +150,10 @@ export const verifySubscriptionFromSession = async (sessionId: string) => {
       };
     }
 
-    // Get the subscription details
+    // Now get the subscription details using the extracted ID
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
+    // The rest of your code...
     // Get user from metadata
     const userId = session.metadata?.userId;
     if (!userId) {
