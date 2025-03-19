@@ -3,7 +3,9 @@ import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
 // import QueryProvider from "./QueryProvider";
-import NextTopLoader from 'nextjs-toploader';
+import NextTopLoader from "nextjs-toploader";
+import { SubscriptionProvider } from "@/providers/SubscriptionProvider";
+import { Subscription } from "@prisma/client";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,9 +27,12 @@ export default async function RootLayout({
       <body className={inter.className}>
         <NextTopLoader />
         {/* <QueryProvider> */}
-          <Toaster position="bottom-left" richColors theme="light" />
+        <Toaster position="bottom-left" richColors theme="light" />
+
+        <SubscriptionProvider subscription={{} as Subscription}>
           {children}
-          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        </SubscriptionProvider>
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         {/* </QueryProvider> */}
       </body>
     </html>

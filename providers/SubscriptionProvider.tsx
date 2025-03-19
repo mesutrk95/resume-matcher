@@ -1,3 +1,5 @@
+"use client";
+
 import { Subscription } from "@prisma/client";
 import React, { createContext, useContext } from "react";
 
