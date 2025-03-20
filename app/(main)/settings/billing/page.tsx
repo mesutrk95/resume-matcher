@@ -3,15 +3,15 @@
 import { CurrentSubscription } from '@/components/subscription/current-subscription';
 import { SubscriptionPlans } from '@/components/subscription/subscription-plans';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSubscription } from '@/hooks/useSubscription';
-import { usePricing } from '@/hooks/usePricing';
+import { useSubscription } from '@/providers/SubscriptionProvider';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useStripeSessionCheck } from '@/hooks/useStripeSessionCheck';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { getSubscriptionPrices } from '@/actions/subscription/pricing';
 
 export default function BillingPage() {
   const {
@@ -19,15 +19,58 @@ export default function BillingPage() {
     isLoading: isLoadingSubscription,
     fetchSubscription,
   } = useSubscription();
+  const [isLoadingPrices, setIsLoadingPrices] = useState(true);
+  const [pricingData, setPricingData] = useState<{
+    prices: Record<string, number>;
+    product: any | null;
+    error: string | null;
+  }>({
+    prices: {},
+    product: null,
+    error: null,
+  });
 
-  const pricingData = usePricing();
-
+  // Check Stripe session using the existing hook (keeping as requested)
   const { isChecking, checkResult } = useStripeSessionCheck();
 
   // Get URL parameters
   const searchParams = useSearchParams();
   const success = searchParams.get('success');
   const canceled = searchParams.get('canceled');
+
+  // Load pricing data on component mount
+  useEffect(() => {
+    const loadPricingData = async () => {
+      try {
+        setIsLoadingPrices(true);
+        const result = await getSubscriptionPrices();
+
+        if (result.success) {
+          setPricingData({
+            prices: result.prices || {},
+            product: result.product || null,
+            error: null,
+          });
+        } else {
+          setPricingData({
+            prices: {},
+            product: null,
+            error: result.error || 'Failed to load pricing data.',
+          });
+        }
+      } catch (error: any) {
+        setPricingData({
+          prices: {},
+          product: null,
+          error: error.message || 'An unexpected error occurred.',
+        });
+      } finally {
+        setIsLoadingPrices(false);
+      }
+    };
+
+    loadPricingData();
+  }, []);
 
   // Show toast messages based on URL parameters
   useEffect(() => {
@@ -101,7 +144,7 @@ export default function BillingPage() {
             currentSubscription={subscription}
             pricingData={pricingData.prices}
             productInfo={pricingData.product}
-            isLoadingPrices={pricingData.isLoading}
+            isLoadingPrices={isLoadingPrices}
           />
         </TabsContent>
       </Tabs>

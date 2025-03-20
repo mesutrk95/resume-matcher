@@ -1,6 +1,6 @@
 'use client';
 
-import { useSubscription } from '@/hooks/useSubscription';
+import { useSubscription } from '@/providers/SubscriptionProvider';
 import { SubscriptionStatus } from '@prisma/client';
 import { AlertCircle, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';

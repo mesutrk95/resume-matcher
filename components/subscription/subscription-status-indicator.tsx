@@ -1,10 +1,8 @@
-// components/subscription/subscription-status-indicator.tsx
 'use client';
 
-import { useSubscription } from '@/hooks/useSubscription';
+import { useSubscription } from '@/providers/SubscriptionProvider';
 import { SubscriptionStatus } from '@prisma/client';
-import { formatDistanceToNow } from 'date-fns';
-import { Badge } from '../ui/badge';
+import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 import { Sparkles } from 'lucide-react';
 

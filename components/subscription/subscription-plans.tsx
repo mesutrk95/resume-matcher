@@ -1,6 +1,6 @@
 'use client';
 
-import { useSubscription } from '@/hooks/useSubscription';
+import { useSubscription } from '@/providers/SubscriptionProvider';
 import { SubscriptionInterval } from '@/actions/subscription';
 import { Button } from '@/components/ui/button';
 import { Subscription, SubscriptionStatus } from '@prisma/client';
@@ -102,7 +102,7 @@ export function SubscriptionPlans({
   // Current selected billing interval
   const [interval, setInterval] = useState<SubscriptionInterval>('monthly');
 
-  // Use our subscription hook
+  // Use our subscription provider
   const { handleSubscribe, isSubscribing } = useSubscription();
 
   // Calculate discount percentage compared to weekly pricing
