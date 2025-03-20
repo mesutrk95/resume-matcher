@@ -7,11 +7,11 @@ import { useSubscription } from '@/providers/SubscriptionProvider';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { useStripeSessionCheck } from '@/hooks/useStripeSessionCheck';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { getSubscriptionPrices } from '@/actions/subscription/pricing';
+import { verifySubscriptionFromSession } from '@/actions/subscription/session';
 
 export default function BillingPage() {
   const {
@@ -20,6 +20,7 @@ export default function BillingPage() {
     fetchSubscription,
   } = useSubscription();
   const [isLoadingPrices, setIsLoadingPrices] = useState(true);
+  const [isVerifyingSession, setIsVerifyingSession] = useState(false);
   const [pricingData, setPricingData] = useState<{
     prices: Record<string, number>;
     product: any | null;
@@ -30,13 +31,54 @@ export default function BillingPage() {
     error: null,
   });
 
-  // Check Stripe session using the existing hook (keeping as requested)
-  const { isChecking, checkResult } = useStripeSessionCheck();
-
   // Get URL parameters
   const searchParams = useSearchParams();
   const success = searchParams.get('success');
   const canceled = searchParams.get('canceled');
+  const sessionId = searchParams.get('session_id');
+
+  // Combined useEffect for URL parameters, session verification, and toast messages
+  useEffect(() => {
+    // Handle URL parameters and show relevant toasts
+    if (sessionId && success === 'true') {
+      // Session ID is present - verify the session
+      const checkSession = async () => {
+        try {
+          setIsVerifyingSession(true);
+          const result = await verifySubscriptionFromSession(sessionId);
+
+          if (result.success) {
+            // Clean up URL parameters
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+
+            toast.success('Subscription activated successfully!');
+
+            // Reload subscription data
+            fetchSubscription();
+          } else {
+            toast.error(result.error || 'Failed to verify subscription');
+          }
+        } catch (error: any) {
+          toast.error(error.message || 'An unexpected error occurred');
+        } finally {
+          setIsVerifyingSession(false);
+        }
+      };
+
+      checkSession();
+    } else if (success && !sessionId) {
+      // Success parameter without session ID
+      toast.success('Your subscription is being processed...');
+    } else if (canceled) {
+      // Canceled parameter is present
+      toast.info('Subscription checkout was canceled');
+
+      // Clean up URL parameters after showing toast
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, [sessionId, success, canceled, fetchSubscription]);
 
   // Load pricing data on component mount
   useEffect(() => {
@@ -72,23 +114,8 @@ export default function BillingPage() {
     loadPricingData();
   }, []);
 
-  // Show toast messages based on URL parameters
-  useEffect(() => {
-    if (success && !checkResult.checked) {
-      toast.success('Your subscription is being processed...');
-    }
-    if (canceled) {
-      toast.info('Subscription checkout was canceled');
-    }
-
-    // If the session check completed successfully, refresh subscription data
-    if (checkResult.checked && checkResult.success) {
-      fetchSubscription();
-    }
-  }, [success, canceled, checkResult, fetchSubscription]);
-
   // Loading indicator
-  if (isLoadingSubscription || isChecking) {
+  if (isLoadingSubscription || isVerifyingSession) {
     return (
       <div className="max-w-4xl mx-auto py-8">
         <div className="space-y-4">
