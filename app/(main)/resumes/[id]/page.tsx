@@ -38,16 +38,10 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
   const content = jobResume?.content as ResumeContent;
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">
-        Edit {jobResume.name} Resume
-      </h1>
-
-      <JobMatcher
-        jobResume={jobResume}
-        initialResume={content}
-        initialJob={jobResume.job}
-      ></JobMatcher>
-    </div>
+    <JobMatcher
+      jobResume={jobResume}
+      initialResume={content}
+      initialJob={jobResume.job}
+    ></JobMatcher>
   );
 }
