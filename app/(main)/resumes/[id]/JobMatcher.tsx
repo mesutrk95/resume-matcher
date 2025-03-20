@@ -19,13 +19,17 @@ import {
 import CVPreview from "@/components/job-resumes/resume-pdf-preview";
 import { updateResumeTemplateContent } from "@/actions/resume-template";
 import {
+  BotMessageSquare,
   Briefcase,
+  BriefcaseBusiness,
   CheckCheck,
   CheckCircle,
   CircleX,
   Ellipsis,
+  Gauge,
   LucideCheck,
   LucideX,
+  NotebookPen,
   RefreshCw,
   Trash,
 } from "lucide-react";
@@ -41,6 +45,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/shared/confirm-dialog";
+import { ChatInterface } from "@/components/chat";
 
 export const JobMatcher = ({
   jobResume,
@@ -165,13 +170,6 @@ export const JobMatcher = ({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuItem
-                      disabled={isDeleting}
-                      onClick={handleDeleteJobResume}
-                    >
-                      <Trash size={14} />
-                      Delete Resume
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
                       disabled={isAnalyzingScores}
                       onClick={() => handleAnalyzeScores(false)}
                     >
@@ -216,6 +214,13 @@ export const JobMatcher = ({
                         Sync to Template
                       </DropdownMenuItem>
                     )}
+                    <DropdownMenuItem
+                      disabled={isDeleting}
+                      onClick={handleDeleteJobResume}
+                    >
+                      <Trash size={14} />
+                      Delete Resume
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -223,13 +228,20 @@ export const JobMatcher = ({
             <div>
               <TabsList className=" " variant={"bottomline"}>
                 <TabsTrigger value="builder" variant={"bottomline"}>
+                  <NotebookPen className="me-2" size={18} />
                   Resume Builder
                 </TabsTrigger>
                 <TabsTrigger value="jd" variant={"bottomline"}>
+                  <BriefcaseBusiness className="me-2" size={18} />
                   Job Description
                 </TabsTrigger>
                 <TabsTrigger value="score" variant={"bottomline"}>
+                  <Gauge className="me-2" size={18} />
                   Resume Score
+                </TabsTrigger>
+                <TabsTrigger value="chat" variant={"bottomline"}>
+                  <BotMessageSquare className="me-2" size={18} />
+                  Ask AI
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -369,9 +381,15 @@ export const JobMatcher = ({
                   </div>
                 )}
               </TabsContent>
+              <TabsContent className="h-full mt-0 py-5" value="chat">
+                <ChatInterface />
+              </TabsContent>
             </div>
             <div className="col-span-5 overflow-auto h-full">
+              <div className="p-5 h-full w-full">
               <CVPreview data={resume} jobResume={jobResume} />
+
+              </div>
             </div>
           </div>
         </div>
