@@ -3,15 +3,15 @@
 import { CurrentSubscription } from '@/components/subscription/current-subscription';
 import { SubscriptionPlans } from '@/components/subscription/subscription-plans';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSubscription } from '@/hooks/useSubscription';
-import { usePricing } from '@/hooks/usePricing';
+import { useSubscription } from '@/providers/SubscriptionProvider';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { useStripeSessionCheck } from '@/hooks/useStripeSessionCheck';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { getSubscriptionPrices } from '@/actions/subscription/pricing';
+import { verifySubscriptionFromSession } from '@/actions/subscription/session';
 
 export default function BillingPage() {
   const {
@@ -19,33 +19,103 @@ export default function BillingPage() {
     isLoading: isLoadingSubscription,
     fetchSubscription,
   } = useSubscription();
-
-  const pricingData = usePricing();
-
-  const { isChecking, checkResult } = useStripeSessionCheck();
+  const [isLoadingPrices, setIsLoadingPrices] = useState(true);
+  const [isVerifyingSession, setIsVerifyingSession] = useState(false);
+  const [pricingData, setPricingData] = useState<{
+    prices: Record<string, number>;
+    product: any | null;
+    error: string | null;
+  }>({
+    prices: {},
+    product: null,
+    error: null,
+  });
 
   // Get URL parameters
   const searchParams = useSearchParams();
   const success = searchParams.get('success');
   const canceled = searchParams.get('canceled');
+  const sessionId = searchParams.get('session_id');
 
-  // Show toast messages based on URL parameters
+  // Combined useEffect for URL parameters, session verification, and toast messages
   useEffect(() => {
-    if (success && !checkResult.checked) {
-      toast.success('Your subscription is being processed...');
-    }
-    if (canceled) {
-      toast.info('Subscription checkout was canceled');
-    }
+    // Handle URL parameters and show relevant toasts
+    if (sessionId && success === 'true') {
+      // Session ID is present - verify the session
+      const checkSession = async () => {
+        try {
+          setIsVerifyingSession(true);
+          const result = await verifySubscriptionFromSession(sessionId);
 
-    // If the session check completed successfully, refresh subscription data
-    if (checkResult.checked && checkResult.success) {
-      fetchSubscription();
+          if (result.success) {
+            // Clean up URL parameters
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+
+            toast.success('Subscription activated successfully!');
+
+            // Reload subscription data
+            fetchSubscription();
+          } else {
+            toast.error(result.error || 'Failed to verify subscription');
+          }
+        } catch (error: any) {
+          toast.error(error.message || 'An unexpected error occurred');
+        } finally {
+          setIsVerifyingSession(false);
+        }
+      };
+
+      checkSession();
+    } else if (success && !sessionId) {
+      // Success parameter without session ID
+      toast.success('Your subscription is being processed...');
+    } else if (canceled) {
+      // Canceled parameter is present
+      toast.info('Subscription checkout was canceled');
+
+      // Clean up URL parameters after showing toast
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
     }
-  }, [success, canceled, checkResult, fetchSubscription]);
+  }, [sessionId, success, canceled, fetchSubscription]);
+
+  // Load pricing data on component mount
+  useEffect(() => {
+    const loadPricingData = async () => {
+      try {
+        setIsLoadingPrices(true);
+        const result = await getSubscriptionPrices();
+
+        if (result.success) {
+          setPricingData({
+            prices: result.prices || {},
+            product: result.product || null,
+            error: null,
+          });
+        } else {
+          setPricingData({
+            prices: {},
+            product: null,
+            error: result.error || 'Failed to load pricing data.',
+          });
+        }
+      } catch (error: any) {
+        setPricingData({
+          prices: {},
+          product: null,
+          error: error.message || 'An unexpected error occurred.',
+        });
+      } finally {
+        setIsLoadingPrices(false);
+      }
+    };
+
+    loadPricingData();
+  }, []);
 
   // Loading indicator
-  if (isLoadingSubscription || isChecking) {
+  if (isLoadingSubscription || isVerifyingSession) {
     return (
       <div className="max-w-4xl mx-auto py-8">
         <div className="space-y-4">
@@ -101,7 +171,7 @@ export default function BillingPage() {
             currentSubscription={subscription}
             pricingData={pricingData.prices}
             productInfo={pricingData.product}
-            isLoadingPrices={pricingData.isLoading}
+            isLoadingPrices={isLoadingPrices}
           />
         </TabsContent>
       </Tabs>

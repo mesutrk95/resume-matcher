@@ -34,7 +34,7 @@ import {
   RefreshCw,
   Package,
 } from 'lucide-react';
-import { useSubscription } from '@/hooks/useSubscription';
+import { useSubscription } from '@/providers/SubscriptionProvider';
 
 interface CurrentSubscriptionProps {
   subscription: Subscription;
@@ -46,7 +46,7 @@ type BadgeVariant = 'default' | 'destructive' | 'outline' | 'secondary';
 export function CurrentSubscription({
   subscription: initialSubscription,
 }: CurrentSubscriptionProps) {
-  // Use the subscription hook for enhanced functionality
+  // Use the subscription provider for enhanced functionality
   const {
     subscription,
     isCanceling,
