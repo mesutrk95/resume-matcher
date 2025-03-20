@@ -6,11 +6,20 @@ import { useMemo, useTransition } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { JobDescriptionPreview } from "./job-description-preview";
 import Moment from "react-moment";
-import { Briefcase, LucideExternalLink } from "lucide-react";
+import { Briefcase, Ellipsis, LucideExternalLink, Trash } from "lucide-react";
 import { LoadingButton } from "../ui/loading-button";
-import { analyzeJobByAI } from "@/actions/job";
+import { analyzeJobByAI, deleteJob } from "@/actions/job";
 import { toast } from "sonner";
 import { ContentPlaceholder } from "@/app/_components/content-placeholder";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { confirmDelete } from "../shared/delete-confirm-dialog";
+import { useRouter } from "next/navigation";
 
 const KeywordBadge = ({ keyword }: { keyword: JobKeyword }) => {
   return (
@@ -23,13 +32,30 @@ const KeywordBadge = ({ keyword }: { keyword: JobKeyword }) => {
   );
 };
 
-const RequireAnalyzeAlert = () => {
+const RequireAnalyzeAlert = ({
+  isAnalyzingJob,
+  onAnalyzeJob,
+}: {
+  onAnalyzeJob: () => void;
+  isAnalyzingJob: boolean;
+}) => {
   return (
     <div className="py-10 text-sm text-center">
       <h3 className="text-xl font-bold">Job is not analyzed yet!</h3>
       <span className="text-muted-foreground">
         Please analyze the job first
       </span>
+      <div className="mt-2">
+        <LoadingButton
+          variant={"outline"}
+          onClick={onAnalyzeJob}
+          loading={isAnalyzingJob}
+          loadingText="Analyzing ..."
+        >
+          <Briefcase size={16} />
+          Analyze Job
+        </LoadingButton>
+      </div>
     </div>
   );
 };
@@ -42,6 +68,8 @@ export const JobPostPreview = ({
   onJobUpdated?: (j: Job) => void;
 }) => {
   const [isAnalyzingJob, startJobAnalyzeTransition] = useTransition();
+  const [isDeletingJob, startDeletingJob] = useTransition();
+  const router = useRouter();
   const handleAnalyzeJob = async () => {
     startJobAnalyzeTransition(async () => {
       try {
@@ -50,12 +78,27 @@ export const JobPostPreview = ({
         toast.success("Job analyzed successfully.");
         onJobUpdated?.({
           ...job,
-          analyzeResults: result,
+          analyzeResults: result.analyzeResults,
         });
       } catch (error) {
         toast.error("Failed to analyze job.");
       }
     });
+  };
+  const handleDeleteJob = async () => {
+    if (await confirmDelete({
+      title: `Delete Job Confirmation`
+    })) {
+      startDeletingJob(async () => {
+        try {
+          await deleteJob(job.id);
+          toast.success("Job deleted successfully.");
+          router.push("/jobs");
+        } catch (error) {
+          toast.error("Failed to delete job.");
+        }
+      });
+    }
   };
 
   const jobKeywords = useMemo(() => {
@@ -78,9 +121,12 @@ export const JobPostPreview = ({
         <div>
           <h3 className="text-xl font-bold">{job.title}</h3>
           <p className="text-sm text-muted-foreground">
-            {job.companyName} - {job.location} - Posted at{" "}
+            {job.companyName}
+
+            {job.location && <> - {job.location}</>}
             {job.postedAt && (
               <>
+                - Posted at{" "}
                 <Moment format="YYYY/MM/DD" date={job.postedAt} utc />
                 (<Moment date={job.postedAt} fromNow utc />)
               </>
@@ -92,20 +138,35 @@ export const JobPostPreview = ({
               className="inline-flex items-center text-sm gap-1 text-muted-foreground mt-1"
               target="_blank"
             >
-              Job post Link
+              {job.url}
               <LucideExternalLink size={14} />
             </a>
           )}
         </div>
-        <LoadingButton
-          variant={"outline"}
-          onClick={handleAnalyzeJob}
-          loading={isAnalyzingJob}
-          loadingText="Thinking ..."
-        >
-          <Briefcase size={16} />
-          Analyze Job
-        </LoadingButton>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              <Ellipsis />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuItem
+              onClick={handleDeleteJob}
+              disabled={isDeletingJob}
+              
+            >
+              <Trash size={16} />
+              Delete Job
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={handleAnalyzeJob}
+              disabled={isAnalyzingJob}
+            >
+              <Briefcase size={16} />
+              {!isAnalyzingJob ? "Analyze Job" : "Analyzing Job ..."}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <Tabs defaultValue="jd" className=" ">
         <TabsList className="grid w-full grid-cols-3" variant={"outline"}>
@@ -125,7 +186,12 @@ export const JobPostPreview = ({
         <TabsContent className="px-2" value="keywords">
           <ContentPlaceholder
             show={!jobKeywords}
-            placeholder={<RequireAnalyzeAlert />}
+            placeholder={
+              <RequireAnalyzeAlert
+                onAnalyzeJob={handleAnalyzeJob}
+                isAnalyzingJob={isAnalyzingJob}
+              />
+            }
           >
             <div className="grid grid-cols-3 gap-2">
               <div className="flex flex-col gap-1">
@@ -173,7 +239,12 @@ export const JobPostPreview = ({
         <TabsContent className="px-2" value="summary">
           <ContentPlaceholder
             show={!jobKeywords}
-            placeholder={<RequireAnalyzeAlert />}
+            placeholder={
+              <RequireAnalyzeAlert
+                onAnalyzeJob={handleAnalyzeJob}
+                isAnalyzingJob={isAnalyzingJob}
+              />
+            }
           >
             <div
               className="jd-preview text-sm"

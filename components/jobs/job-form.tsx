@@ -77,10 +77,9 @@ export const JobForm = ({ initialData }: JobFormProps) => {
         data?.location && form.setValue("location", data?.location);
         data?.title && form.setValue("title", data?.title);
         data?.postedDate && form.setValue("postedAt", data?.postedDate);
-        
       } catch (error) {
         console.log(error);
-        
+
         // toast.error(error.error || "Something went wrong.")
       }
     });
@@ -170,9 +169,14 @@ export const JobForm = ({ initialData }: JobFormProps) => {
           </div>
 
           {/* Submit Button */}
-          <Button type="submit" disabled={isPending} className=" ">
+          <LoadingButton
+            variant={"default"}
+            type="submit"
+            loading={isPending}
+            loadingText={isEditing ? "Updating Job ..." : "Creating Job ..."}
+          >
             {isEditing ? "Update Job" : "Create Job"}
-          </Button>
+          </LoadingButton>
         </form>
       </Form>
     </div>

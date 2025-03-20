@@ -137,6 +137,18 @@ export const analyzeJobByAI = async (jobId: string) => {
     throw new Error("Job not found");
   }
 
+  // await db.job.update({
+  //   where: {
+  //     id: jobId,
+  //   },
+  //   data: {
+  //     analyzeResults: {
+  //       ...(job.analyzeResults || {}) as JobAnalyzeResult,
+  //       status: 'pending'
+  //     },
+  //   },
+  // });
+
   const results = await Promise.all([
     analyzeJobKeywords(job),
     analyzeJobSummary(job),
@@ -160,7 +172,7 @@ export const analyzeJobByAI = async (jobId: string) => {
 
   revalidatePath(`/jobs/${jobId}`);
 
-  return analyzeResults;
+  return { status: "done", analyzeResults };
 };
 
 export const extractJobDescriptionFromUrl = async (url: string) => {

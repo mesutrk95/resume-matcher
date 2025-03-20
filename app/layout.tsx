@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
-// import QueryProvider from "./QueryProvider";
 import NextTopLoader from "nextjs-toploader";
 import { SubscriptionProvider } from "@/providers/SubscriptionProvider";
 import { Subscription } from "@prisma/client";
@@ -26,14 +25,10 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <NextTopLoader />
-        {/* <QueryProvider> */}
         <Toaster position="bottom-left" richColors theme="light" />
-
         <SubscriptionProvider subscription={{} as Subscription}>
           {children}
         </SubscriptionProvider>
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-        {/* </QueryProvider> */}
       </body>
     </html>
   );

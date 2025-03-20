@@ -234,7 +234,7 @@ export const analyzeResumeItemsScores = async (
 
   let jobAnalyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
   if (!jobAnalyzeResults?.summary) {
-    jobAnalyzeResults = (await analyzeJobByAI(jobResume.jobId))!;
+    jobAnalyzeResults = (await analyzeJobByAI(jobResume.jobId)).analyzeResults!;
   }
 
   // const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
