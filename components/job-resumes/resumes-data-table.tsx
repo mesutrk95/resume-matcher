@@ -18,7 +18,7 @@ import { Job, JobResume } from "@prisma/client";
 import { deleteJobResume } from "@/actions/job-resume"; // Assuming you have an action to delete a job resume
 import { toast } from "sonner";
 import Moment from "react-moment";
-import { confirmDelete } from "../shared/delete-confirm-dialog";
+import { confirmDialog } from "../shared/confirm-dialog";
 
 type JobResumeItem = Omit<
   JobResume & { job: Pick<Job, "companyName"> },
@@ -64,7 +64,7 @@ export function JobResumesDataTable({
 
   const handleDeleteJobResume = async (jobResume: JobResumeItem) => {
     if (
-      !(await confirmDelete({
+      !(await confirmDialog({
         title: "Are you absolutely sure!?",
         description: `You are deleting the resume "${jobResume.name}" at "${jobResume.job.companyName}".`,
       }))

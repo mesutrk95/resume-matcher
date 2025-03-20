@@ -68,6 +68,7 @@ export const updateJobResume = async (resume: JobResume) => {
     data: {
       name: resume.name,
       content: resume.content || DEFAULT_RESUME_CONTENT,
+      updatedAt: new Date()
     },
   });
 

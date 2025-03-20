@@ -1,9 +1,8 @@
-import React from "react";
 import { ResumeContent } from "@/types/resume";
-import { Button } from "../ui/button";
 import { JobResume } from "@prisma/client";
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { PDFViewer } from "@react-pdf/renderer";
 import { ResumeDocument } from "./resume-document";
+import { useEffect, useState } from "react";
 
 // CV Preview Component with Download Button
 const CVPreview = ({
@@ -14,9 +13,9 @@ const CVPreview = ({
   jobResume: JobResume;
 }) => {
   // For client-side rendering only
-  const [isClient, setIsClient] = React.useState(false);
+  const [isClient, setIsClient] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsClient(true);
   }, []);
 

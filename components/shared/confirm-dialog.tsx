@@ -17,14 +17,14 @@ export interface Props {
   confirmText?: string;
 }
 
-const DeleteConfirmDialog: ConfirmDialog<Props, boolean> = ({
+const AlertConfirmDialog: ConfirmDialog<Props, boolean> = ({
   show,
   proceed,
   dismiss,
   cancel,
   title = "Are you absolutely sure?",
   description = "This action cannot be undone.",
-  confirmText = "Yes, Delete!",
+  confirmText = "Yes!",
 }) => {
   return (
     <AlertDialog open={show} onOpenChange={dismiss}>
@@ -45,7 +45,7 @@ const DeleteConfirmDialog: ConfirmDialog<Props, boolean> = ({
 };
 
 // Create the confirmation function
-const ConfirmComponent = confirmable(DeleteConfirmDialog);
+const ConfirmComponent = confirmable(AlertConfirmDialog);
 
-export const confirmDelete = createConfirmation(ConfirmComponent);
+export const confirmDialog = createConfirmation(ConfirmComponent);
 export default ConfirmComponent;

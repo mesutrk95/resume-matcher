@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { confirmDelete } from "../shared/delete-confirm-dialog";
+import { confirmDialog } from "../shared/confirm-dialog";
 import { useRouter } from "next/navigation";
 
 const KeywordBadge = ({ keyword }: { keyword: JobKeyword }) => {
@@ -86,7 +86,7 @@ export const JobPostPreview = ({
     });
   };
   const handleDeleteJob = async () => {
-    if (await confirmDelete({
+    if (await confirmDialog({
       title: `Delete Job Confirmation`
     })) {
       startDeletingJob(async () => {

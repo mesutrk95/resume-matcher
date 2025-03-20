@@ -40,7 +40,7 @@ import { toast } from "sonner";
 import Moment from "react-moment";
 import MultipleSelector, { Option } from "../ui/multiple-select";
 import { capitalizeText } from "@/lib/utils";
-import { confirmDelete } from "../shared/delete-confirm-dialog";
+import { confirmDialog } from "../shared/confirm-dialog";
 
 type JobItem = Omit<
   Job,
@@ -103,7 +103,7 @@ export function JobsDataTable({
 
   const handleDeleteJob = async (item: JobItem) => {
     if (
-      await confirmDelete({
+      await confirmDialog({
         title: "Are you absolutely sure?!",
         description: `You are deleting the job "${item.title}" at "${item.companyName}".`
       })

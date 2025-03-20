@@ -18,7 +18,7 @@ import { ResumeTemplate } from "@prisma/client";
 import { deleteResumeTemplate } from "@/actions/resume-template";
 import { toast } from "sonner";
 import Moment from "react-moment";
-import { confirmDelete } from "../shared/delete-confirm-dialog";
+import { confirmDialog } from "../shared/confirm-dialog";
 
 interface ResumeTemplatesDateTableProps {
   data: ResumeTemplate[];
@@ -59,7 +59,7 @@ export function ResumeTemplatesDateTable({
 
   const handleDeleteTemplate = async (template: ResumeTemplate) => {
     if (
-      await confirmDelete({
+      await confirmDialog({
         title: "Are you absolutely sure!?",
         description: `You are deleting the "${template.name}" template.`,
       })

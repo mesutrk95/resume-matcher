@@ -17,17 +17,6 @@ import {
   updateJobResume,
 } from "@/actions/job-resume";
 import CVPreview from "@/components/job-resumes/resume-pdf-preview";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { updateResumeTemplateContent } from "@/actions/resume-template";
 import {
   Briefcase,
@@ -37,10 +26,11 @@ import {
   Ellipsis,
   LucideCheck,
   LucideX,
+  RefreshCw,
   Trash,
 } from "lucide-react";
 import { JobPostPreview } from "@/components/jobs/job-post-preview";
-import { BlobProvider, PDFViewer } from "@react-pdf/renderer";
+import { BlobProvider } from "@react-pdf/renderer";
 import { ResumeDocument } from "@/components/job-resumes/resume-document";
 import Moment from "react-moment";
 import {
@@ -50,7 +40,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { confirmDelete } from "@/components/shared/delete-confirm-dialog";
+import { confirmDialog } from "@/components/shared/confirm-dialog";
 
 export const JobMatcher = ({
   jobResume,
@@ -86,7 +76,16 @@ export const JobMatcher = ({
       }
     });
   };
-  const handleSyncToTemplate = () => {
+  const handleSyncToTemplate = async () => {
+    if (
+      !(await confirmDialog({
+        confirmText: "Yes, Sync It!",
+        title: "Are you absolutely sure!?",
+        description: `By confirming this action, your resume template will be updated with the details from this job resume.`,
+      }))
+    )
+      return;
+
     startSyncToTemplateTransition(async () => {
       try {
         await updateResumeTemplateContent(
@@ -122,7 +121,7 @@ export const JobMatcher = ({
 
   const handleDeleteJobResume = async () => {
     if (
-      !(await confirmDelete({
+      !(await confirmDialog({
         title: "Are you absolutely sure!?",
         description: `You are deleting the resume "${jobResume.name}".`,
       }))
@@ -133,7 +132,7 @@ export const JobMatcher = ({
       try {
         await deleteJobResume(jobResume.id);
         toast.success("Job resume deleted successfully");
-        router.push("resumes");
+        router.push("/resumes");
       } catch (error) {
         toast.error(error?.toString() || "Something went wrong");
       }
@@ -207,40 +206,18 @@ export const JobMatcher = ({
                       <CheckCheck size={14} />
                       Auto-choose by keywords
                     </DropdownMenuItem>
+
+                    {jobResume.baseResumeTemplateId && (
+                      <DropdownMenuItem
+                        disabled={isSyncingToTemplate}
+                        onClick={handleSyncToTemplate}
+                      >
+                        <RefreshCw size={14} />
+                        Sync to Template
+                      </DropdownMenuItem>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
-
-                {jobResume.baseResumeTemplateId && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <LoadingButton
-                        loading={isSyncingToTemplate}
-                        loadingText="Saving to template ..."
-                        variant={"outline"}
-                      >
-                        Sync to Template
-                      </LoadingButton>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently
-                          syncs and saves this job resume content to the resume
-                          template.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleSyncToTemplate}>
-                          Yes, Sync!
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
               </div>
             </div>
             <div>
