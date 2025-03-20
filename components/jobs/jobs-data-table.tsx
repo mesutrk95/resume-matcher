@@ -40,6 +40,7 @@ import { toast } from "sonner";
 import Moment from "react-moment";
 import MultipleSelector, { Option } from "../ui/multiple-select";
 import { capitalizeText } from "@/lib/utils";
+import { confirmDelete } from "../shared/delete-confirm-dialog";
 
 type JobItem = Omit<
   Job,
@@ -100,22 +101,29 @@ export function JobsDataTable({
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const handleDeleteJob = async (id: string) => {
-    try {
-      setIsDeleting(id);
-      const result = await deleteJob(id);
+  const handleDeleteJob = async (item: JobItem) => {
+    if (
+      await confirmDelete({
+        title: "Are you absolutely sure?!",
+        description: `You are deleting the job "${item.title}" at "${item.companyName}".`
+      })
+    ) {
+      try {
+        setIsDeleting(item.id);
+        const result = await deleteJob(item.id);
 
-      if (!result.success) {
-        toast.error(result.error || "Failed to delete job");
-        return;
+        if (!result.success) {
+          toast.error(result.error || "Failed to delete job");
+          return;
+        }
+
+        toast.success("Job deleted successfully");
+        router.refresh();
+      } catch (error) {
+        toast.error("Something went wrong");
+      } finally {
+        setIsDeleting(null);
       }
-
-      toast.success("Job deleted successfully");
-      router.refresh();
-    } catch (error) {
-      toast.error("Something went wrong");
-    } finally {
-      setIsDeleting(null);
     }
   };
 
@@ -249,7 +257,7 @@ export function JobsDataTable({
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuItem
-                          onClick={() => handleDeleteJob(job.id)}
+                          onClick={() => handleDeleteJob(job)}
                           disabled={isDeleting === job.id}
                           className="text-destructive focus:text-destructive"
                         >

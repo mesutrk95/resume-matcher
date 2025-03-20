@@ -17,17 +17,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { ResumeTemplate } from "@prisma/client";
 import { deleteResumeTemplate } from "@/actions/resume-template";
 import { toast } from "sonner";
-import { AlertDialog, AlertDialogTrigger } from "@radix-ui/react-alert-dialog";
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../ui/alert-dialog";
 import Moment from "react-moment";
+import { confirmDelete } from "../shared/delete-confirm-dialog";
 
 interface ResumeTemplatesDateTableProps {
   data: ResumeTemplate[];
@@ -66,17 +57,23 @@ export function ResumeTemplatesDateTable({
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const handleDeleteTemplate = async (id: string) => {
-    try {
-      setIsDeleting(id);
-      await deleteResumeTemplate(id);
-      toast.success("Template deleted successfully");
-      router.refresh();
-    } catch (error) {
-      toast.error("Something went wrong");
-    } finally {
-      setIsDeleting(null);
-    }
+  const handleDeleteTemplate = async (template: ResumeTemplate) => {
+    if (
+      await confirmDelete({
+        title: "Are you absolutely sure!?",
+        description: `You are deleting the "${template.name}" template.`,
+      })
+    )
+      try {
+        setIsDeleting(template.id);
+        await deleteResumeTemplate(template.id);
+        toast.success("Template deleted successfully");
+        router.refresh();
+      } catch (error) {
+        toast.error("Something went wrong");
+      } finally {
+        setIsDeleting(null);
+      }
   };
 
   return (
@@ -141,39 +138,16 @@ export function ResumeTemplatesDateTable({
                   </TableCell>
                   <TableCell className="flex gap-2">
                     {/* Delete Confirmation Dialog */}
+                    <Button
+                      variant={"outline"}
+                      disabled={isDeleting === template.id}
+                      className="text-destructive focus:text-destructive"
+                      onClick={() => handleDeleteTemplate(template)}
+                    >
+                      <Trash className=" h-4 w-4" />
+                      {/* Delete */}
+                    </Button>
 
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          disabled={isDeleting === template.id}
-                          className="text-destructive focus:text-destructive"
-                        >
-                          <Trash className=" h-4 w-4" />
-                          {/* Delete */}
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>
-                            Are you absolutely sure?
-                          </AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. This will permanently
-                            delete the resume and remove your data from our
-                            servers.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDeleteTemplate(template.id)}
-                          >
-                            Yes, Delete!
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
                     <Button
                       asChild
                       variant={"outline"}

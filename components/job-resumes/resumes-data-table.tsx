@@ -12,31 +12,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronLeft, ChevronRight, Edit, Search, Trash } from "lucide-react";
-import { format } from "date-fns";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { Job, JobResume } from "@prisma/client";
 import { deleteJobResume } from "@/actions/job-resume"; // Assuming you have an action to delete a job resume
 import { toast } from "sonner";
-import { AlertDialog, AlertDialogTrigger } from "@radix-ui/react-alert-dialog";
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../ui/alert-dialog";
 import Moment from "react-moment";
+import { confirmDelete } from "../shared/delete-confirm-dialog";
 
-type JobResumeList = Omit<
+type JobResumeItem = Omit<
   JobResume & { job: Pick<Job, "companyName"> },
   "analyzeResults" | "content" | "jobId" | "userId" | "baseResumeTemplateId"
->[];
+>;
 
 interface JobResumesDataTableProps {
-  data: JobResumeList;
+  data: JobResumeItem[];
   pageCount: number;
   currentPage: number;
   pageSize: number;
@@ -72,10 +62,18 @@ export function JobResumesDataTable({
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const handleDeleteJobResume = async (id: string) => {
+  const handleDeleteJobResume = async (jobResume: JobResumeItem) => {
+    if (
+      !(await confirmDelete({
+        title: "Are you absolutely sure!?",
+        description: `You are deleting the resume "${jobResume.name}" at "${jobResume.job.companyName}".`,
+      }))
+    )
+      return;
+
     startDeletingTransition(async () => {
       try {
-        await deleteJobResume(id);
+        await deleteJobResume(jobResume.id);
         toast.success("Job resume deleted successfully");
         router.refresh();
       } catch (error) {
@@ -145,38 +143,14 @@ export function JobResumesDataTable({
                     />
                   </TableCell>
                   <TableCell className="flex gap-2">
-                    {/* Delete Confirmation Dialog */}
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          disabled={isDeleting}
-                          className="text-destructive focus:text-destructive"
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>
-                            Are you absolutely sure?
-                          </AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. This will permanently
-                            delete the job resume and remove your data from our
-                            servers.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDeleteJobResume(jobResume.id)}
-                          >
-                            Yes, Delete!
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <Button
+                      variant={"outline"}
+                      disabled={isDeleting}
+                      className="text-destructive focus:text-destructive"
+                      onClick={() => handleDeleteJobResume(jobResume)}
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
                     <Button asChild variant={"outline"} disabled={isDeleting}>
                       <Link href={`/resumes/${jobResume.id}`}>
                         <Edit className="h-4 w-4" />
