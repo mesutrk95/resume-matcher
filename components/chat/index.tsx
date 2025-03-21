@@ -35,20 +35,13 @@ export function ChatInterface({
   jobResume: JobResume;
   resume: ResumeContent;
 }) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      content: "Hello! How can I assist you today?",
-      role: "assistant",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [shareResume, setShareResume] = useState(true);
   const [shareJD, setShareJD] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -56,6 +49,30 @@ export function ChatInterface({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const addMessage = (message: Message) => {
+    setMessages((prev) => {
+      const msgs = [...prev, message];
+      localStorage.setItem("ai-conversation-" + jobResume.id, JSON.stringify(msgs));
+      return msgs;
+    });
+  };
+
+  useEffect(() => {
+    const chatsStr = localStorage.getItem("ai-conversation-" + jobResume.id);
+
+    if (chatsStr) {
+      const messages = JSON.parse(chatsStr) as Message[];
+      setMessages(messages.slice(0, 30));
+    } else {
+      addMessage({
+        id: "1",
+        content: "Hello! How can I assist you today?",
+        role: "assistant",
+        timestamp: new Date(),
+      });
+    }
+  }, []);
 
   const handleSendMessage = async (pdfBlob: Blob | null) => {
     if (!inputValue.trim()) return;
@@ -68,7 +85,7 @@ export function ChatInterface({
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    addMessage(userMessage);
     setInputValue("");
     setIsLoading(true);
 
@@ -94,7 +111,7 @@ export function ChatInterface({
       role: "assistant",
       timestamp: new Date(),
     };
-    setMessages((prev) => [...prev, aiMessage]);
+    addMessage(aiMessage);
     setIsLoading(false);
   };
 
@@ -125,7 +142,7 @@ export function ChatInterface({
           <Label htmlFor="share-resume">Share Job Description</Label>
         </div>
       </CardHeader>
-      <CardContent className="flex-auto h-0 pt-6 p-2">
+      <CardContent className="flex-auto h-0 pt-6 px-2 py-0">
         <ScrollArea className="h-full pr-4">
           <div className="flex flex-col space-y-4">
             {messages.map((message) => (

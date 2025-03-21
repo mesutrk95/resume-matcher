@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+import Moment from "react-moment"
 
 type Message = {
   id: string
@@ -21,10 +22,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
       >
         <div className="text-sm" dangerouslySetInnerHTML={{ __html: message.content || '' }} />
         <p className="mt-1 text-xs opacity-50">
-          {message.timestamp.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          <Moment date={message.timestamp} format="HH:mm MMM DD"/>
         </p>
       </div>
     </div>
