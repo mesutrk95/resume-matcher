@@ -382,7 +382,7 @@ export const JobMatcher = ({
                 )}
               </TabsContent>
               <TabsContent className="h-full mt-0 py-5" value="chat">
-                <ChatInterface />
+                <ChatInterface jobResume={jobResume} resume={resume} />
               </TabsContent>
             </div>
             <div className="col-span-5 overflow-auto h-full">

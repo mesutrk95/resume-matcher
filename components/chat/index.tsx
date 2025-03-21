@@ -15,6 +15,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ChatMessage } from "./chat-message";
+import { askCustomQuestionFromAI } from "@/actions/job-resume";
+import { JobResume } from "@prisma/client";
+import { ResumeContent } from "@/types/resume";
+import { BlobProvider } from "@react-pdf/renderer";
+import { ResumeDocument } from "../job-resumes/resume-document";
 
 type Message = {
   id: string;
@@ -23,7 +28,13 @@ type Message = {
   timestamp: Date;
 };
 
-export function ChatInterface() {
+export function ChatInterface({
+  jobResume,
+  resume,
+}: {
+  jobResume: JobResume;
+  resume: ResumeContent;
+}) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -34,9 +45,10 @@ export function ChatInterface() {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [shareResume, setShareResume] = useState(false);
+  const [shareResume, setShareResume] = useState(true);
+  const [shareJD, setShareJD] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -45,7 +57,7 @@ export function ChatInterface() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = async (pdfBlob: Blob | null) => {
     if (!inputValue.trim()) return;
 
     // Add user message
@@ -60,41 +72,57 @@ export function ChatInterface() {
     setInputValue("");
     setIsLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const resumeContext = shareResume
-        ? " I can see you've shared your resume with me. I'll take that into consideration."
-        : "";
+    let formData;
+    if (shareResume && pdfBlob) {
+      const file = new File([pdfBlob], "resume.pdf", {
+        type: "application/pdf",
+      });
+      formData = new FormData();
+      formData.append("file", file);
+    }
 
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: `Thanks for your message!${resumeContext} This is a simulated response. In a real implementation, this would be connected to an AI service.`,
-        role: "assistant",
-        timestamp: new Date(),
-      };
+    const resp = await askCustomQuestionFromAI(
+      jobResume.id,
+      inputValue,
+      shareJD,
+      formData
+    );
 
-      setMessages((prev) => [...prev, aiMessage]);
-      setIsLoading(false);
-    }, 1000);
+    const aiMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      content: resp.result,
+      role: "assistant",
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, aiMessage]);
+    setIsLoading(false);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent, blob: Blob | null) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSendMessage();
+      handleSendMessage(blob);
     }
   };
 
   return (
     <Card className="w-full h-full flex flex-col justify-stretch">
-      <CardHeader className="shrink-0 flex flex-row items-center justify-between space-y-0 p-4">
+      <CardHeader className="shrink-0 flex flex-row items-center gap-5 space-y-0 p-4">
         <div className="flex items-center space-x-2">
           <Switch
             id="share-resume"
             checked={shareResume}
             onCheckedChange={setShareResume}
           />
-          <Label htmlFor="share-resume">Share Resume PDF</Label>
+          <Label htmlFor="share-resume">Share My Resume</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="share-resume"
+            checked={shareJD}
+            onCheckedChange={setShareJD}
+          />
+          <Label htmlFor="share-resume">Share Job Description</Label>
         </div>
       </CardHeader>
       <CardContent className="flex-auto h-0 pt-6 p-2">
@@ -116,21 +144,33 @@ export function ChatInterface() {
       </CardContent>
       <CardFooter className="shrink-0 p-4 flex flex-col gap-3">
         <div className="flex w-full items-center space-x-2">
-          <Input
-            placeholder="Type your message..."
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isLoading}
-            className="flex-1"
-          />
-          <Button
-            size="icon"
-            onClick={handleSendMessage}
-            disabled={isLoading || !inputValue.trim()}
-          >
-            <Send className="h-4 w-4" />
-          </Button>
+          <BlobProvider document={<ResumeDocument resume={resume} />}>
+            {({ blob, url, loading, error }) => {
+              // if (error) {
+              //   return <div>Error: {error}</div>;
+              // }
+
+              return (
+                <>
+                  <Input
+                    placeholder="Type your message..."
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(e, blob)}
+                    disabled={isLoading}
+                    className="flex-1"
+                  />
+                  <Button
+                    size="icon"
+                    onClick={() => handleSendMessage(blob)}
+                    disabled={isLoading || !inputValue.trim()}
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </>
+              );
+            }}
+          </BlobProvider>
         </div>
         {/* <div className="flex items-center space-x-2 self-end">
           <Switch

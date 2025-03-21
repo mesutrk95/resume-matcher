@@ -19,8 +19,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
       <div
         className={cn("max-w-[80%] rounded-lg px-4 py-2", isUser ? "bg-primary text-primary-foreground" : "bg-muted")}
       >
-        <p className="text-sm">{message.content}</p>
-        <p className="mt-1 text-xs opacity-70">
+        <div className="text-sm" dangerouslySetInnerHTML={{ __html: message.content || '' }} />
+        <p className="mt-1 text-xs opacity-50">
           {message.timestamp.toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",

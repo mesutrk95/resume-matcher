@@ -10,7 +10,7 @@ import {
   ResumeContent,
   ResumeItemScoreAnalyze,
 } from "@/types/resume";
-import { getAIJsonResponse } from "@/lib/ai";
+import { getAIHtmlResponse, getAIJsonResponse } from "@/lib/ai";
 import { JobAnalyzeResult } from "@/types/job";
 import { chunkArray, hashString } from "@/lib/utils";
 import { analyzeJobByAI } from "./job";
@@ -68,7 +68,7 @@ export const updateJobResume = async (resume: JobResume) => {
     data: {
       name: resume.name,
       content: resume.content || DEFAULT_RESUME_CONTENT,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     },
   });
 
@@ -241,7 +241,6 @@ export const analyzeResumeItemsScores = async (
   // const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
 
   const chunks = chunkArray(variations, 10);
-  console.log(chunks, chunks.length);
 
   const results = await Promise.all(
     chunks.map((items) =>
@@ -293,7 +292,20 @@ export const analyzeResumeItemsScores = async (
   return newAnalyzeResults;
 };
 
-export const suggestProfessionalSummery = async (jobResumeId: string) => {
+export const askCustomQuestionFromAI = async (
+  jobResumeId: string,
+  question: string,
+  shareJobDescription: boolean,
+  formData?: FormData | null
+) => {
+  let pdfBuffer = null;
+  if (formData) {
+    const file = formData.get("file") as File;
+
+    const bytes = await file.arrayBuffer();
+    pdfBuffer = Buffer.from(bytes);
+  }
+
   const user = await currentUser();
 
   const jobResume = await db.jobResume.findUnique({
@@ -301,12 +313,29 @@ export const suggestProfessionalSummery = async (jobResumeId: string) => {
       id: jobResumeId,
       userId: user?.id,
     },
-    include: {
-      job: true,
+    select: {
+      job: {
+        select: {
+          description: true,
+          companyName: true,
+        },
+      },
     },
   });
 
   if (!jobResume) {
     throw new Error("Job Resume not found");
   }
+  const content: (string | Buffer)[] = [question];
+  pdfBuffer && content.push(pdfBuffer);
+  shareJobDescription &&
+    jobResume.job.description &&
+    content.push(
+      `Company: ${jobResume.job.companyName}\n${jobResume.job.description}`
+    );
+
+  return getAIHtmlResponse(
+    "Your role is to answer the question based on my resume and context you have currently. give me your message in html format and feel free to use font-bold class and <br/> tag for new line. I wanna show the html output in a message bubble.",
+    content
+  );
 };
