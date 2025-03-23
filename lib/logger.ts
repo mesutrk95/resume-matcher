@@ -1,7 +1,6 @@
 import winston from 'winston';
 import 'winston-daily-rotate-file';
 import fs from 'fs';
-
 // Get configuration from environment variables
 const env = process.env.NODE_ENV || 'development';
 const configuredLogLevel =
@@ -40,20 +39,37 @@ const colors = {
 
 winston.addColors(colors);
 
+// We don't try to get request ID from headers automatically anymore
+// since it can cause issues in middleware
+
+// Add request ID to the logger format
+const logFormat = winston.format.printf(
+  ({ level, message, timestamp, requestId, ...metadata }) => {
+    // Use provided requestId or use 'no-req-id'
+    const reqId = requestId || 'no-req-id';
+
+    // Build the log message
+    let logMessage = `${timestamp} [${reqId}] ${level}: ${message}`;
+
+    // Add metadata if it exists and is not empty
+    if (metadata && Object.keys(metadata).length > 0) {
+      logMessage += ` ${JSON.stringify(metadata)}`;
+    }
+
+    return logMessage;
+  },
+);
+
 const consoleFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   winston.format.colorize({ all: true }),
-  winston.format.printf(
-    info => `${info.timestamp} ${info.level}: ${info.message}`,
-  ),
+  logFormat,
 );
 
 // Define the format for file logs
 const fileFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
-  winston.format.printf(
-    info => `${info.timestamp} ${info.level}: ${info.message}`,
-  ),
+  logFormat,
 );
 
 // Define transports based on environment
@@ -93,17 +109,6 @@ const getTransports = () => {
     );
   }
 
-  // In production, we could add other transports later (like database logging)
-  // if (env === 'production') {
-  //   // Add database logging example:
-  //   // transports.push(new winston.transports.MongoDB({
-  //   //   db: process.env.MONGODB_URI,
-  //   //   options: { useNewUrlParser: true, useUnifiedTopology: true },
-  //   //   collection: 'logs',
-  //   //   level: 'error',
-  //   // }));
-  // }
-
   return transports;
 };
 
@@ -114,4 +119,21 @@ const Logger = winston.createLogger({
   transports: getTransports(),
 });
 
+// Helper functions to make it easier to include request ID
+const createLoggerWithRequestId = (requestId: string) => {
+  return {
+    debug: (message: string, meta: object = {}) =>
+      Logger.debug(message, { requestId, ...meta }),
+    info: (message: string, meta: object = {}) =>
+      Logger.info(message, { requestId, ...meta }),
+    warn: (message: string, meta: object = {}) =>
+      Logger.warn(message, { requestId, ...meta }),
+    error: (message: string, meta: object = {}) =>
+      Logger.error(message, { requestId, ...meta }),
+    http: (message: string, meta: object = {}) =>
+      Logger.http(message, { requestId, ...meta }),
+  };
+};
+
 export default Logger;
+export { createLoggerWithRequestId };

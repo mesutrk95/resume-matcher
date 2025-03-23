@@ -12,8 +12,16 @@ import { HttpException, InternalServerErrorException } from '@/lib/exceptions';
 
 export const { auth } = NextAuth(authConfig);
 
+// Create a global store for the request context
+const REQUEST_ID_HEADER = 'X-Request-ID';
+
 export default async function middleware(req: NextRequest) {
   try {
+    const requestId = generateRequestId();
+
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.set(REQUEST_ID_HEADER, requestId);
+
     const { nextUrl } = req;
     const session = await auth();
     const isLoggedIn = !!session;
@@ -37,9 +45,20 @@ export default async function middleware(req: NextRequest) {
       return Response.redirect(new URL('/login', nextUrl));
     }
 
-    return null;
+    // Continue with the request but with the added requestId header
+    const response = NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
+
+    // Also add requestId to response headers
+    response.headers.set(REQUEST_ID_HEADER, requestId);
+
+    return response;
   } catch (error) {
     const isDev = process.env.NODE_ENV === 'development';
+    const requestId = req.headers.get(REQUEST_ID_HEADER) || generateRequestId();
 
     // Handle HTTP exceptions
     if (error instanceof HttpException) {
@@ -48,11 +67,15 @@ export default async function middleware(req: NextRequest) {
           success: false,
           message: error.message,
           statusCode: error.statusCode,
+          requestId,
           ...(isDev && { stack: error.stack }),
         }),
         {
           status: error.statusCode,
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            [REQUEST_ID_HEADER]: requestId,
+          },
         },
       );
     }
@@ -60,18 +83,21 @@ export default async function middleware(req: NextRequest) {
     const internalError = new InternalServerErrorException(
       error instanceof Error ? error.message : 'An unexpected error occurred',
     );
-    const stack = isDev && error instanceof Error ? error.stack : undefined;
 
     return new NextResponse(
       JSON.stringify({
         success: false,
         message: internalError.message,
         statusCode: internalError.statusCode,
-        stack,
+        requestId,
+        stack: isDev && error instanceof Error ? error.stack : undefined,
       }),
       {
         status: internalError.statusCode,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          [REQUEST_ID_HEADER]: requestId,
+        },
       },
     );
   }
@@ -81,3 +107,15 @@ export default async function middleware(req: NextRequest) {
 export const config = {
   matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
 };
+
+function generateRequestId(): string {
+  let id = '';
+
+  id += Date.now().toString(36);
+
+  while (id.length < 32) {
+    id += Math.random().toString(36).substring(2);
+  }
+
+  return id.slice(0, 32);
+}
