@@ -111,10 +111,16 @@ export function ExperienceItem({
   const handleSaveNewItem = (description: string) => {
     const newItem: ExperienceItemType = {
       id: `item_${randomNDigits()}`,
-      description,
+      description: "",
       enabled: true,
       skills: [],
-      variations: [],
+      variations: [
+        {
+          id: `var_${randomNDigits()}`,
+          content: description,
+          enabled: true,
+        },
+      ],
     };
 
     onUpdate({
@@ -173,10 +179,7 @@ export function ExperienceItem({
   return (
     <div ref={setNodeRef} style={style} className="mb-4">
       <Accordion type="single" collapsible className="w-full">
-        <AccordionItem
-          value={experience.id}
-          className="border rounded-lg  "
-        >
+        <AccordionItem value={experience.id} className="border rounded-lg  ">
           <div className="flex items-center mx-1 px-4 py-2 sticky top-0 bg-white rounded-lg">
             <div
               className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground"
@@ -203,14 +206,14 @@ export function ExperienceItem({
                       companyName: e.target.value,
                     }))
                   }
-                  placeholder="Company" 
+                  placeholder="Company"
                 />
                 <Input
                   value={editForm.role}
                   onChange={(e) =>
                     setEditForm((prev) => ({ ...prev, role: e.target.value }))
                   }
-                  placeholder="Role" 
+                  placeholder="Role"
                 />
                 <Input
                   value={editForm.startDate}
