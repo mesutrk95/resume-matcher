@@ -37,7 +37,7 @@ export default function SubscriptionSuccessPage() {
         if (result.success) {
           setSuccess(true);
         } else {
-          setError(result.error || 'Failed to verify subscription');
+          setError('Failed to verify subscription');
         }
       } catch (err) {
         setError('An unexpected error occurred');
