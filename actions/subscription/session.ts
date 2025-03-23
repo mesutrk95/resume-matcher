@@ -11,8 +11,14 @@ import {
 import { updateSubscriptionInDatabase } from './utils';
 import { mapStripeStatusToDBStatus } from './constants';
 import { db } from '@/lib/db';
+import {
+  BadRequestException,
+  UnauthorizedException,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@/lib/exceptions';
+import Logger from '@/lib/logger';
 
-// Create a new subscription
 export const createSubscription = async (
   interval: SubscriptionInterval,
   withCardDetails: boolean = true,
@@ -20,42 +26,28 @@ export const createSubscription = async (
   const user = await currentUser();
 
   if (!user || !user.id || !user.email) {
-    return {
-      success: false,
-      error: 'User not authenticated',
-    };
+    throw new UnauthorizedException('User not authenticated');
   }
 
   const priceId = PRICE_MAPPING[interval];
 
   if (!priceId) {
-    return {
-      success: false,
-      error: 'Invalid subscription interval',
-    };
+    throw new BadRequestException('Invalid subscription interval');
   }
 
-  try {
-    const session = await createCheckoutSession(
-      user.id,
-      user.email,
-      priceId,
-      withCardDetails,
-      user.name || undefined,
-    );
+  const session = await createCheckoutSession(
+    user.id,
+    user.email,
+    priceId,
+    withCardDetails,
+    user.name || undefined,
+  );
 
-    return {
-      success: true,
-      sessionId: session.id,
-      url: session.url!,
-    };
-  } catch (error: any) {
-    console.error('Error creating subscription:', error);
-    return {
-      success: false,
-      error: error.message || 'Failed to create subscription',
-    };
-  }
+  return {
+    success: true,
+    sessionId: session.id,
+    url: session.url!,
+  };
 };
 
 // Create a new checkout session for subscription
@@ -67,22 +59,20 @@ export const createCheckoutSession = async (
   name?: string,
 ) => {
   const stripe = getStripeServer();
-
   if (!stripe) {
-    throw new Error('Failed to initialize Stripe');
+    throw new InternalServerErrorException('Failed to initialize Stripe');
   }
 
-  // Get or create customer
   const subscription = await createOrRetrieveCustomer(userId, email, name);
 
   if (!subscription?.customerId) {
-    throw new Error('Could not create or retrieve customer');
+    throw new InternalServerErrorException(
+      'Could not create or retrieve customer',
+    );
   }
 
-  // Check if user has had previous subscriptions
   const hasHadPreviousSubscription = await hasUserHadSubscription(userId);
 
-  // Create checkout session configuration
   const sessionConfig: any = {
     customer: subscription.customerId,
     line_items: [
@@ -99,12 +89,10 @@ export const createCheckoutSession = async (
     },
   };
 
-  // Only add payment_method_types if card details are required
   if (withCardDetails) {
     sessionConfig.payment_method_types = ['card'];
   }
 
-  // Only add trial period if it's the user's first subscription
   if (!hasHadPreviousSubscription) {
     sessionConfig.subscription_data = {
       trial_period_days: TRIAL_PERIOD_DAYS,
@@ -122,12 +110,17 @@ export const createCheckoutSession = async (
     };
   }
 
-  // Create the session
-  const session = await stripe.checkout.sessions.create(sessionConfig);
-  return session;
+  try {
+    return await stripe.checkout.sessions.create(sessionConfig);
+  } catch (error: any) {
+    Logger.error('Failed to create checkout session', {
+      userId,
+      error: error.message,
+    });
+    throw new InternalServerErrorException('Failed to create checkout session');
+  }
 };
 
-// Helper function to check if user has had previous subscriptions
 async function hasUserHadSubscription(userId: string): Promise<boolean> {
   const count = await db.subscription.count({
     where: {
@@ -139,12 +132,15 @@ async function hasUserHadSubscription(userId: string): Promise<boolean> {
   return count > 0;
 }
 
-// Get user subscription history (implementation in customer.ts)
 export const getUserSubscriptionHistory = async (userId: string) => {
+  if (!userId) {
+    throw new BadRequestException('User ID is required');
+  }
+
   return db.subscription.findMany({
     where: {
       userId,
-      subscriptionId: { not: null }, // Only retrieve records with a Stripe subscription ID
+      subscriptionId: { not: null },
     },
     orderBy: { createdAt: 'desc' },
   });
@@ -152,131 +148,110 @@ export const getUserSubscriptionHistory = async (userId: string) => {
 
 export const verifySubscriptionFromSession = async (sessionId: string) => {
   if (!sessionId) {
-    return {
-      success: false,
-      error: 'No session ID provided',
-    };
+    throw new BadRequestException('No session ID provided');
   }
 
   const stripe = getStripeServer();
-
   if (!stripe) {
-    return {
-      success: false,
-      error: 'Failed to initialize Stripe',
-    };
+    throw new InternalServerErrorException('Failed to initialize Stripe');
   }
 
+  let session;
   try {
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    session = await stripe.checkout.sessions.retrieve(sessionId, {
       expand: ['subscription', 'customer'],
     });
-
-    // Check if session was successful
-    if (session.status !== 'complete') {
-      return {
-        success: false,
-        error: 'Payment not completed',
-      };
-    }
-
-    // This is the problematic part - session.subscription might be an object instead of a string
-    let subscriptionId;
-    if (typeof session.subscription === 'string') {
-      subscriptionId = session.subscription;
-    } else if (
-      session.subscription &&
-      typeof session.subscription === 'object' &&
-      'id' in session.subscription
-    ) {
-      subscriptionId = session.subscription.id;
-    } else {
-      return {
-        success: false,
-        error: 'Invalid subscription data in session',
-      };
-    }
-
-    if (!subscriptionId) {
-      return {
-        success: false,
-        error: 'No subscription found in the session',
-      };
-    }
-
-    // Now get the subscription details using the extracted ID
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-
-    // The rest of your code...
-    // Get user from metadata
-    const userId = session.metadata?.userId;
-    if (!userId) {
-      return {
-        success: false,
-        error: 'User ID not found',
-      };
-    }
-
-    // Update subscription in database
-    await updateSubscriptionInDatabase(
-      userId,
-      subscription.id,
-      subscription.items.data[0].price.id,
-      mapStripeStatusToDBStatus(subscription.status),
-      new Date(subscription.current_period_start * 1000),
-      new Date(subscription.current_period_end * 1000),
-      subscription.cancel_at_period_end,
-    );
-
-    return {
-      success: true,
-      subscriptionId: subscription.id,
-      status: subscription.status,
-    };
   } catch (error: any) {
-    console.error('Error verifying subscription:', error);
-    return {
-      success: false,
-      error: error.message || 'Failed to verify subscription',
-    };
+    Logger.error('Error retrieving checkout session', {
+      sessionId,
+      error: error.message,
+    });
+    throw new InternalServerErrorException(
+      'Failed to retrieve checkout session',
+    );
   }
+
+  if (session.status !== 'complete') {
+    throw new BadRequestException('Payment not completed');
+  }
+
+  let subscriptionId;
+  if (typeof session.subscription === 'string') {
+    subscriptionId = session.subscription;
+  } else if (
+    session.subscription &&
+    typeof session.subscription === 'object' &&
+    'id' in session.subscription
+  ) {
+    subscriptionId = session.subscription.id;
+  } else {
+    throw new BadRequestException('Invalid subscription data in session');
+  }
+
+  if (!subscriptionId) {
+    throw new NotFoundException('No subscription found in the session');
+  }
+
+  let subscription;
+  try {
+    subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  } catch (error: any) {
+    Logger.error('Error retrieving subscription', {
+      subscriptionId,
+      error: error.message,
+    });
+    throw new InternalServerErrorException('Failed to retrieve subscription');
+  }
+
+  const userId = session.metadata?.userId;
+  if (!userId) {
+    throw new BadRequestException('User ID not found');
+  }
+
+  await updateSubscriptionInDatabase(
+    userId,
+    subscription.id,
+    subscription.items.data[0].price.id,
+    mapStripeStatusToDBStatus(subscription.status),
+    new Date(subscription.current_period_start * 1000),
+    new Date(subscription.current_period_end * 1000),
+    subscription.cancel_at_period_end,
+  );
+
+  return {
+    success: true,
+    subscriptionId: subscription.id,
+    status: subscription.status,
+  };
 };
 
-// Create a billing portal session
 export const createCustomerPortalSession = async (returnUrl?: string) => {
   const user = await currentUser();
-
   if (!user || !user.id) {
-    throw new Error('User not authenticated');
+    throw new UnauthorizedException('User not authenticated');
   }
 
   const subscription = await getSubscriptionByUserId(user.id);
-
   if (!subscription?.customerId) {
-    throw new Error('No customer found for this user');
+    throw new NotFoundException('No customer found for this user');
   }
 
   const stripe = getStripeServer();
-
   if (!stripe) {
-    throw new Error('Failed to initialize Stripe');
+    throw new InternalServerErrorException('Failed to initialize Stripe');
+  }
+
+  let configId;
+  try {
+    configId = await getOrCreatePortalConfiguration(stripe);
+  } catch (error: any) {
+    Logger.error('Error with portal configuration', { error: error.message });
+    throw new InternalServerErrorException(
+      'Failed to set up portal configuration',
+    );
   }
 
   try {
-    // Get or create portal configuration
-    let configId;
-    try {
-      configId = await getOrCreatePortalConfiguration(stripe);
-    } catch (configError) {
-      console.error('Error with portal configuration:', configError);
-      throw new Error(
-        `Failed to set up portal configuration: ${
-          (configError as Error).message
-        }`,
-      );
-    }
-
-    // Create portal session with configuration
     const session = await stripe.billingPortal.sessions.create({
       customer: subscription.customerId,
       return_url:
@@ -289,102 +264,90 @@ export const createCustomerPortalSession = async (returnUrl?: string) => {
       url: session.url,
     };
   } catch (error: any) {
-    console.error('Error creating billing portal session:', error);
-    return {
-      success: false,
-      error: error.message || 'Failed to create billing portal session',
-    };
+    Logger.error('Error creating billing portal session', {
+      error: error.message,
+    });
+    throw new InternalServerErrorException(
+      'Failed to create billing portal session',
+    );
   }
 };
 
-// Helper function to get or create portal configuration
 async function getOrCreatePortalConfiguration(stripe: any) {
   const configVersion = process.env.PORTAL_CONFIG_VERSION || 'v1';
   const configName = 'resume-matcher-portal-config';
 
-  try {
-    // List all configurations
-    const configsResponse = await stripe.billingPortal.configurations.list({
-      limit: 100,
-    });
+  const configsResponse = await stripe.billingPortal.configurations.list({
+    limit: 100,
+  });
 
-    // Check if our configuration already exists
-    for (const config of configsResponse.data) {
-      if (config.metadata && config.metadata.version === configVersion) {
-        console.log('Found existing portal configuration:', config.id);
-        return config.id;
-      }
+  for (const config of configsResponse.data) {
+    if (config.metadata && config.metadata.version === configVersion) {
+      return config.id;
     }
+  }
 
-    console.log('Creating new portal configuration...');
-
-    // Create new configuration
-    const newConfig = await stripe.billingPortal.configurations.create({
-      business_profile: {
-        headline: 'Manage your subscription',
-        privacy_policy_url:
-          process.env.PRIVACY_POLICY_URL ||
-          `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
-        terms_of_service_url:
-          process.env.TERMS_OF_SERVICE_URL ||
-          `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
+  const newConfig = await stripe.billingPortal.configurations.create({
+    business_profile: {
+      headline: 'Manage your subscription',
+      privacy_policy_url:
+        process.env.PRIVACY_POLICY_URL ||
+        `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
+      terms_of_service_url:
+        process.env.TERMS_OF_SERVICE_URL ||
+        `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
+    },
+    features: {
+      customer_update: {
+        allowed_updates: ['email', 'address', 'phone', 'name', 'tax_id'],
+        enabled: true,
       },
-      features: {
-        customer_update: {
-          allowed_updates: ['email', 'address', 'phone', 'name', 'tax_id'],
+      invoice_history: {
+        enabled: true,
+      },
+      payment_method_update: {
+        enabled: true,
+      },
+      subscription_cancel: {
+        enabled: true,
+        mode: 'at_period_end',
+        cancellation_reason: {
           enabled: true,
-        },
-        invoice_history: {
-          enabled: true,
-        },
-        payment_method_update: {
-          enabled: true,
-        },
-        subscription_cancel: {
-          enabled: true,
-          mode: 'at_period_end',
-          cancellation_reason: {
-            enabled: true,
-            options: [
-              'too_expensive',
-              'missing_features',
-              'switched_service',
-              'unused',
-              'customer_service',
-              'too_complex',
-              'low_quality',
-              'other',
-            ],
-          },
-        },
-        subscription_update: {
-          enabled: true,
-          default_allowed_updates: ['promotion_code', 'price'],
-          proration_behavior: 'create_prorations',
-          products: [
-            {
-              product: process.env.STRIPE_BASIC_PRODUCT_ID,
-              prices: [
-                process.env.STRIPE_BASIC_PRICE_WEEKLY,
-                process.env.STRIPE_BASIC_PRICE_MONTHLY,
-                process.env.STRIPE_BASIC_PRICE_QUARTERLY,
-                process.env.STRIPE_BASIC_PRICE_YEARLY,
-                process.env.STRIPE_BASIC_PRICE_BIANNUAL,
-              ].filter(Boolean),
-            },
+          options: [
+            'too_expensive',
+            'missing_features',
+            'switched_service',
+            'unused',
+            'customer_service',
+            'too_complex',
+            'low_quality',
+            'other',
           ],
         },
       },
-      metadata: {
-        version: configVersion,
-        name: configName,
+      subscription_update: {
+        enabled: true,
+        default_allowed_updates: ['promotion_code', 'price'],
+        proration_behavior: 'create_prorations',
+        products: [
+          {
+            product: process.env.STRIPE_BASIC_PRODUCT_ID,
+            prices: [
+              process.env.STRIPE_BASIC_PRICE_WEEKLY,
+              process.env.STRIPE_BASIC_PRICE_MONTHLY,
+              process.env.STRIPE_BASIC_PRICE_QUARTERLY,
+              process.env.STRIPE_BASIC_PRICE_YEARLY,
+              process.env.STRIPE_BASIC_PRICE_BIANNUAL,
+            ].filter(Boolean),
+          },
+        ],
       },
-    });
+    },
+    metadata: {
+      version: configVersion,
+      name: configName,
+    },
+  });
 
-    console.log('Created new portal configuration:', newConfig.id);
-    return newConfig.id;
-  } catch (error) {
-    console.error('Error managing portal configuration:', error);
-    throw error;
-  }
+  return newConfig.id;
 }

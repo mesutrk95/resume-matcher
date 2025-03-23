@@ -2,6 +2,11 @@
 
 import { db } from '@/lib/db';
 import { SubscriptionStatus } from '@prisma/client';
+import {
+  BadRequestException,
+  InternalServerErrorException,
+} from '@/lib/exceptions';
+import Logger from '@/lib/logger';
 
 export const updateSubscriptionInDatabase = async (
   userId: string,
@@ -13,11 +18,15 @@ export const updateSubscriptionInDatabase = async (
   cancelAtPeriodEnd?: boolean,
 ) => {
   if (!userId) {
-    throw new Error('User ID is required');
+    throw new BadRequestException('User ID is required');
+  }
+
+  if (!subscriptionId) {
+    throw new BadRequestException('Subscription ID is required');
   }
 
   try {
-    return db.subscription.upsert({
+    return await db.subscription.upsert({
       where: { userId },
       update: {
         subscriptionId,
@@ -38,20 +47,37 @@ export const updateSubscriptionInDatabase = async (
         cancelAtPeriodEnd: cancelAtPeriodEnd || false,
       },
     });
-  } catch (error) {
-    console.error(`Error updating subscription in database:`, error);
-    throw new Error('Failed to update subscription in database');
+  } catch (error: any) {
+    Logger.error('Failed to update subscription in database', {
+      userId,
+      subscriptionId,
+      error: error.message,
+    });
+    throw new InternalServerErrorException(
+      'Failed to update subscription in database',
+    );
   }
 };
 
 export const getCustomerById = async (customerId: string) => {
-  try {
-    const stripe = (await import('@/lib/stripe')).getStripeServer();
-    if (!stripe) throw new Error('Stripe not initialized');
+  if (!customerId) {
+    throw new BadRequestException('Customer ID is required');
+  }
 
+  const stripe = (await import('@/lib/stripe')).getStripeServer();
+  if (!stripe) {
+    throw new InternalServerErrorException('Stripe not initialized');
+  }
+
+  try {
     return await stripe.customers.retrieve(customerId);
-  } catch (error) {
-    console.error('Error retrieving customer:', error);
-    throw error;
+  } catch (error: any) {
+    Logger.error('Error retrieving customer', {
+      customerId,
+      error: error.message,
+    });
+    throw new InternalServerErrorException(
+      `Failed to retrieve customer: ${error.message}`,
+    );
   }
 };
