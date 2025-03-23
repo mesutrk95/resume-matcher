@@ -104,12 +104,12 @@ export const JobPostPreview = ({
   const jobKeywords = useMemo(() => {
     try {
       const results = job.analyzeResults as { keywords: JobKeyword[] };
-      return results?.keywords?.reduce((acc, keyword) => {
+      return results?.keywords?.reduce<Record<JobKeywordType, JobKeyword[]>>((acc, keyword) => {
         const ks = acc[keyword.skill] || [];
         ks.push(keyword);
         acc[keyword.skill] = ks;
         return acc;
-      }, {} as Record<JobKeywordType, JobKeyword[]>);
+      }, {});
     } catch (error) {
       return null;
     }

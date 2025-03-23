@@ -34,6 +34,9 @@ import {
 
 import { ItemList } from "./item-list";
 import { AddItemForm } from "./add-item-form";
+import { randomNDigits } from "@/lib/utils";
+import clsx from "clsx";
+import { SeperateList } from "@/components/shared/seperate-list";
 
 type ExperienceItemProps = {
   experience: Experience;
@@ -46,6 +49,7 @@ export function ExperienceItem({
   onUpdate,
   onDelete,
 }: ExperienceItemProps) {
+  const [isOpen, setIsOpen] = useState("");
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: experience.id });
 
@@ -109,10 +113,17 @@ export function ExperienceItem({
 
   const handleSaveNewItem = (description: string) => {
     const newItem: ExperienceItemType = {
-      id: `item${Date.now()}`,
-      description,
+      id: `item_${randomNDigits()}`,
+      description: "",
       enabled: true,
-      variations: [],
+      skills: [],
+      variations: [
+        {
+          id: `var_${randomNDigits()}`,
+          content: description,
+          enabled: true,
+        },
+      ],
     };
 
     onUpdate({
@@ -170,12 +181,20 @@ export function ExperienceItem({
 
   return (
     <div ref={setNodeRef} style={style} className="mb-4">
-      <Accordion type="single" collapsible className="w-full">
-        <AccordionItem
-          value={experience.id}
-          className="border rounded-lg  "
-        >
-          <div className="flex items-center mx-1 px-4 py-2 sticky top-0 bg-white rounded-lg">
+      <Accordion
+        type="single"
+        collapsible
+        className="w-full"
+        value={isOpen}
+        onValueChange={setIsOpen}
+      >
+        <AccordionItem value={experience.id} className="border rounded-lg">
+          <div
+            className={clsx(
+              "flex items-center px-4 py-0 sticky top-0 bg-white shadow-stuck ",
+              isOpen ? "border-b rounded-t-xl mb-2" : "rounded-xl"
+            )}
+          >
             <div
               className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground"
               {...attributes}
@@ -201,14 +220,14 @@ export function ExperienceItem({
                       companyName: e.target.value,
                     }))
                   }
-                  placeholder="Company" 
+                  placeholder="Company"
                 />
                 <Input
                   value={editForm.role}
                   onChange={(e) =>
                     setEditForm((prev) => ({ ...prev, role: e.target.value }))
                   }
-                  placeholder="Role" 
+                  placeholder="Role"
                 />
                 <Input
                   value={editForm.startDate}
@@ -253,7 +272,7 @@ export function ExperienceItem({
               </div>
             )}
 
-            <AccordionTrigger className="flex-1 hover:no-underline">
+            <AccordionTrigger className="flex-1 hover:no-underline py-3">
               <div className="flex flex-col items-start text-left">
                 {!isEditing && (
                   <>
@@ -265,8 +284,14 @@ export function ExperienceItem({
                       {experience.companyName}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {experience.role} • {experience.startDate} -{" "}
-                      {experience.endDate}
+                      <SeperateList
+                        data={[
+                          experience.role,
+                          experience.startDate,
+                          experience.endDate,
+                        ]}
+                        by=" • "
+                      />
                     </div>
                   </>
                 )}
@@ -336,7 +361,7 @@ export function ExperienceItem({
               {!addingItem && (
                 <Button size="sm" variant="default" onClick={handleAddItem}>
                   <Plus className="h-4 w-4 mr-1" />
-                  Add Item
+                  Add Experience
                 </Button>
               )}
             </div>

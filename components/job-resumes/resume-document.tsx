@@ -115,133 +115,144 @@ const styles = StyleSheet.create({
 });
 
 // CV Document Component
-export const ResumeDocument = ({ resume }: { resume: ResumeContent }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      {/* Header / Personal Info */}
-      <View style={styles.header}>
-        <Text style={styles.title}>
-          {resume.titles.find((t) => t.enabled)?.content}
-        </Text>
-        <Text style={styles.name}>
-          <SeperateList
-            data={[resume.contactInfo.firstName, resume.contactInfo.lastName]}
-            by=" "
-          />
-        </Text>
-        <Text style={styles.contactInfo}>
-          <SeperateList
-            data={[
-              resume.contactInfo.country,
-              resume.contactInfo.email,
-              resume.contactInfo.phone,
-              resume.contactInfo.linkedIn,
-              resume.contactInfo.github,
-              resume.contactInfo.website,
-            ]}
-          />
-        </Text>
-      </View>
+export const ResumeDocument = ({
+  resume,
+  showIdentifiers,
+}: {
+  resume: ResumeContent;
+  showIdentifiers?: boolean;
+}) => {
+  const summary = resume.summaries.find((s) => s.enabled);
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        {/* Header / Personal Info */}
+        <View style={styles.header}>
+          <Text style={styles.title}>
+            {resume.titles.find((t) => t.enabled)?.content}
+          </Text>
+          <Text style={styles.name}>
+            <SeperateList
+              data={[resume.contactInfo.firstName, resume.contactInfo.lastName]}
+              by=" "
+            />
+          </Text>
+          <Text style={styles.contactInfo}>
+            <SeperateList
+              data={[
+                resume.contactInfo.country,
+                resume.contactInfo.email,
+                resume.contactInfo.phone,
+                resume.contactInfo.linkedIn,
+                resume.contactInfo.github,
+                resume.contactInfo.website,
+              ]}
+            />
+          </Text>
+        </View>
 
-      {/* Summary */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Professional Summary</Text>
-        <Text style={styles.description}>
-          {resume.summaries.find((s) => s.enabled)?.content}
-        </Text>
-      </View>
+        {/* Summary */}
+        {summary && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Professional Summary</Text>
+            <Text style={styles.description}>{showIdentifiers && <>[{summary.id}]</>} {summary.content}</Text>
+          </View>
+        )}
 
-      {/* Skills */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Skills</Text>
-        <Text style={styles.skills}>
-          {resume.skills
-            .filter((s) => s.enabled)
-            .map((s) => s.content)
-            .join(", ")}
-        </Text>
-      </View>
+        {/* Skills */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Skills</Text>
+          <Text style={styles.skills}>
+            {resume.skills
+              .filter((s) => s.enabled)
+              .map((s) => s.content)
+              .join(", ")}
+          </Text>
+        </View>
 
-      {/* Experience */}
-      <View style={styles.section} wrap>
-        <Text style={styles.sectionTitle}>Experiences</Text>
-        {resume.experiences
-          .filter((e) => e.enabled)
-          .map((experience, index) => (
-            // <View key={index} style={styles.experience}>
-            <React.Fragment key={experience.id}>
-              <View style={styles.experience} wrap={false}>
-                <Text style={styles.jobTitle}>
-                  {experience.companyName}
-                  {/* <SeperateList
+        {/* Experience */}
+        <View style={styles.section} wrap>
+          <Text style={styles.sectionTitle}>Experiences</Text>
+          {resume.experiences
+            .filter((e) => e.enabled)
+            .map((experience, index) => (
+              // <View key={index} style={styles.experience}>
+              <React.Fragment key={experience.id}>
+                <View style={styles.experience} wrap={false}>
+                  <Text style={styles.jobTitle}>
+                    {experience.companyName}
+                    {/* <SeperateList
                       data={[experience.role, experience.companyName]}
                     /> */}
-                </Text>
-                <Text style={styles.role}>{experience.role} </Text>
+                  </Text>
+                  <Text style={styles.role}>{experience.role} </Text>
+                  <Text style={styles.date}>
+                    <SeperateList
+                      data={[
+                        experience.location,
+                        experience.type,
+                        `${experience.startDate} - ${experience.endDate}`,
+                      ]}
+                    />
+                  </Text>
+                </View>
+                {experience.items
+                  .filter((e) => e.enabled)
+                  .map((item) => {
+                    return item.variations
+                      .filter((v) => v.enabled)
+                      .map((variation) => (
+                        <Text
+                          style={styles.experienceItem}
+                          // className="text-sm"
+                          key={item.id + variation.id}
+                        >
+                          {"\u2022 "}{" "}
+                          {showIdentifiers && <>[{variation.id}] </>}{" "}
+                          {variation.content}
+                        </Text>
+                      ));
+                  })}
+              </React.Fragment>
+              // </View>
+            ))}
+        </View>
+
+        {/* Projects */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Projects</Text>
+          {resume.projects
+            .filter((prj) => prj.enabled)
+            .map((prj, index) => (
+              // <View key={index} style={styles.project}>
+              <React.Fragment key={prj.id}>
+                <Text style={styles.jobTitle}>{prj.name}</Text>
                 <Text style={styles.date}>
-                  <SeperateList
-                    data={[
-                      experience.location,
-                      experience.type,
-                      `${experience.startDate} - ${experience.endDate}`,
-                    ]}
-                  />
+                  {prj.startDate} - {prj.endDate}
                 </Text>
+                <Text style={styles.link}>{prj.link}</Text>
+                <Text style={styles.description}>{showIdentifiers && <>[{prj.id}]</>} {prj.content}</Text>
+              </React.Fragment>
+              // </View>
+            ))}
+        </View>
+
+        {/* Education */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Education</Text>
+          {resume.educations
+            .filter((edu) => edu.enabled)
+            .map((edu, index) => (
+              <View key={edu.id} style={styles.experience}>
+                <Text style={styles.jobTitle}>{edu.degree}</Text>
+                <Text style={styles.company}>
+                  <SeperateList data={[edu.institution, edu.location]} />
+                </Text>
+                <Text style={styles.date}>Graduated: {edu.endDate}</Text>
               </View>
-              {experience.items
-                .filter((e) => e.enabled)
-                .map((item) => {
-                  return item.variations
-                    .filter((v) => v.enabled)
-                    .map((variation) => (
-                      <Text
-                        style={styles.experienceItem}
-                        // className="text-sm"
-                        key={item.id + variation.id}
-                      >
-                        {"\u2022 " + variation.content}
-                      </Text>
-                    ));
-                })}
-            </React.Fragment>
-            // </View>
-          ))}
-      </View>
-
-      {/* Projects */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Projects</Text>
-        {resume.projects
-          .filter((prj) => prj.enabled)
-          .map((prj, index) => (
-            // <View key={index} style={styles.project}>
-            <React.Fragment key={prj.id}>
-              <Text style={styles.jobTitle}>{prj.name}</Text>
-              <Text style={styles.date}>
-                {prj.startDate} - {prj.endDate}
-              </Text>
-              <Text style={styles.link}>{prj.link}</Text>
-              <Text style={styles.description}>{prj.content}</Text>
-            </React.Fragment>
-            // </View>
-          ))}
-      </View>
-
-      {/* Education */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Education</Text>
-        {resume.educations
-          .filter((edu) => edu.enabled)
-          .map((edu, index) => (
-            <View key={edu.id} style={styles.experience}>
-              <Text style={styles.jobTitle}>{edu.degree}</Text>
-              <Text style={styles.company}>
-                <SeperateList data={[edu.institution, edu.location]} />
-              </Text>
-              <Text style={styles.date}>Graduated: {edu.endDate}</Text>
-            </View>
-          ))}
-      </View>
-    </Page>
-  </Document>
-);
+            ))}
+        </View>
+      </Page>
+    </Document>
+  );
+};

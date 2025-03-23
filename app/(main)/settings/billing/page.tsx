@@ -57,7 +57,7 @@ export default function BillingPage() {
             // Reload subscription data
             fetchSubscription();
           } else {
-            toast.error(result.error || 'Failed to verify subscription');
+            toast.error('Failed to verify subscription');
           }
         } catch (error: any) {
           toast.error(error.message || 'An unexpected error occurred');
@@ -97,7 +97,7 @@ export default function BillingPage() {
           setPricingData({
             prices: {},
             product: null,
-            error: result.error || 'Failed to load pricing data.',
+            error: 'Failed to load pricing data.',
           });
         }
       } catch (error: any) {

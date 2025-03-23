@@ -21,6 +21,8 @@ import {
 } from "@dnd-kit/sortable";
 import { AddSummaryForm } from "./add-summary-form";
 import { SummaryList } from "./summary-list";
+import { randomNDigits } from "@/lib/utils";
+import { ResumeBuilderCard } from "../resume-builder-card";
 
 type SummariesSectionProps = {
   resume: ResumeContent;
@@ -44,7 +46,7 @@ export function SummariesSection({ resume, onUpdate }: SummariesSectionProps) {
 
   const handleSaveNewSummary = (content: string) => {
     const newSummary: ResumeProfessionalSummary = {
-      id: `summary${Date.now()}`,
+      id: `summary_${randomNDigits()}`,
       content,
       enabled: false,
     };
@@ -94,39 +96,35 @@ export function SummariesSection({ resume, onUpdate }: SummariesSectionProps) {
   };
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Professional Summaries</CardTitle>
-        <Button onClick={handleAddSummary} disabled={addingSummary}>
-          <Plus className="h-4 w-4 mr-1" />
-          Add Summary
-        </Button>
-      </CardHeader>
-      <div className="p-6 pt-0">
-        {addingSummary && (
-          <AddSummaryForm
-            onSave={handleSaveNewSummary}
-            onCancel={handleCancelAddSummary}
-          />
-        )}
+    <ResumeBuilderCard
+      onAdd={handleAddSummary}
+      isAdding={addingSummary}
+      title="Professional Summaries"
+      addButtonText="Add Summary"
+    >
+      {addingSummary && (
+        <AddSummaryForm
+          onSave={handleSaveNewSummary}
+          onCancel={handleCancelAddSummary}
+        />
+      )}
 
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={resume.summaries.map((summary) => summary.id)}
+          strategy={verticalListSortingStrategy}
         >
-          <SortableContext
-            items={resume.summaries.map((summary) => summary.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <SummaryList
-              summaries={resume.summaries}
-              onUpdate={handleUpdateSummary}
-              onDelete={handleDeleteSummary}
-            />
-          </SortableContext>
-        </DndContext>
-      </div>
-    </Card>
+          <SummaryList
+            summaries={resume.summaries}
+            onUpdate={handleUpdateSummary}
+            onDelete={handleDeleteSummary}
+          />
+        </SortableContext>
+      </DndContext>
+    </ResumeBuilderCard>
   );
 }

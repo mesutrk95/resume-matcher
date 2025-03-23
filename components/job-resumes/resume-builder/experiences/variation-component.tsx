@@ -8,8 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useResumeBuilder } from "../context/useResumeBuilder";
-import { MatchPercentageIndicator } from "../match-percentage-indicator";
+import { VariationMatchingScores } from "./variation-matching-scores";
 
 type VariationComponentProps = {
   experienceId: string;
@@ -34,7 +33,6 @@ export function VariationComponent({
     transition,
   };
 
-  const { scores } = useResumeBuilder();
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     content: variation.content,
@@ -66,12 +64,9 @@ export function VariationComponent({
     });
   };
 
-  const score = scores?.[variation.id];
-  // console.log('here', scores);
-
   return (
     <div ref={setNodeRef} style={style} className={`bg-white z-10`}>
-      <div className={`p-2 bg-muted/30 border-b`}>
+      <div className={`p-2 border-b`}>
         <div className="flex items-start">
           <div
             className=" mr-2 mt-1 cursor-grab text-muted-foreground hover:text-foreground"
@@ -112,28 +107,7 @@ export function VariationComponent({
                   >
                     <p>{variation.content}</p>
 
-                    {score && (
-                      <>
-                        {/* <div className="ml-2 inline-flex">
-                          <PercentageIndicator
-                            value={(score?.score || 0) * 100}
-                          />
-                        </div> */}
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          <MatchPercentageIndicator
-                            value={(score?.score || 0) * 100}
-                          />
-                          {score?.matched_keywords?.map((k) => (
-                            <span
-                              key={k}
-                              className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs"
-                            >
-                              {k}
-                            </span>
-                          ))}
-                        </div>
-                      </>
-                    )}
+                    <VariationMatchingScores variation={variation} />
                   </div>
                 )}
 

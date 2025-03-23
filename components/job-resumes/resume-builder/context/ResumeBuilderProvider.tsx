@@ -10,6 +10,7 @@ export type IResumeTemplateEditor = {
     Record<string, ResumeItemScoreAnalyze> | undefined
     >
   >;
+  cards: boolean
 };
 
 export const ResumeBuilderContext = createContext<IResumeTemplateEditor>(
@@ -24,7 +25,7 @@ export const ResumeBuilderProvider = ({
   const [scores, setScores] = useState<Record<string, ResumeItemScoreAnalyze>>();
 
   return (
-    <ResumeBuilderContext.Provider value={{ setScores, scores }}>
+    <ResumeBuilderContext.Provider value={{ setScores, scores, cards: false }}>
       {children}
     </ResumeBuilderContext.Provider>
   );

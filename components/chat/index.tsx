@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState, useRef, useEffect } from "react";
-import { Send } from "lucide-react";
+import { Send, MessageSquare, Eraser } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -16,8 +16,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ChatMessage } from "./chat-message";
 import { askCustomQuestionFromAI } from "@/actions/job-resume";
-import { JobResume } from "@prisma/client";
-import { ResumeContent } from "@/types/resume";
+import type { JobResume } from "@prisma/client";
+import type { ResumeContent } from "@/types/resume";
 import { BlobProvider } from "@react-pdf/renderer";
 import { ResumeDocument } from "../job-resumes/resume-document";
 
@@ -27,6 +27,23 @@ type Message = {
   role: "user" | "assistant";
   timestamp: Date;
 };
+
+// Predefined questions
+const PREDEFINED_QUESTIONS = [
+  "Why do you think you are the best fit for this job?",
+  "What did you do in the past that you can proud yourself",
+  "What were the last hard moments and how did you handle them",
+  "What are your key strengths for this position?",
+  "How does your experience align with this role?",
+  "Give me a cover letter",
+];
+
+const INITIAL_MESSAGE = {
+  id: "1",
+  content: "Hello! How can I assist you today?",
+  role: "assistant",
+  timestamp: new Date(),
+} as Message;
 
 export function ChatInterface({
   jobResume,
@@ -53,7 +70,10 @@ export function ChatInterface({
   const addMessage = (message: Message) => {
     setMessages((prev) => {
       const msgs = [...prev, message];
-      localStorage.setItem("ai-conversation-" + jobResume.id, JSON.stringify(msgs));
+      localStorage.setItem(
+        "ai-conversation-" + jobResume.id,
+        JSON.stringify(msgs)
+      );
       return msgs;
     });
   };
@@ -65,28 +85,33 @@ export function ChatInterface({
       const messages = JSON.parse(chatsStr) as Message[];
       setMessages(messages.slice(0, 30));
     } else {
-      addMessage({
-        id: "1",
-        content: "Hello! How can I assist you today?",
-        role: "assistant",
-        timestamp: new Date(),
-      });
+      addMessage(INITIAL_MESSAGE);
     }
   }, []);
 
-  const handleSendMessage = async (pdfBlob: Blob | null) => {
-    if (!inputValue.trim()) return;
+  // Check if chat is just starting (only has the initial greeting)
+  const isChatStarting =
+    messages.length <= 1 &&
+    messages[0]?.role === "assistant" &&
+    messages[0]?.content === "Hello! How can I assist you today?";
+
+  const handleSendMessage = async (
+    pdfBlob: Blob | null,
+    customQuestion?: string
+  ) => {
+    const questionToSend = customQuestion || inputValue;
+    if (!questionToSend.trim()) return;
 
     // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: inputValue,
+      content: questionToSend,
       role: "user",
       timestamp: new Date(),
     };
 
     addMessage(userMessage);
-    setInputValue("");
+    if (!customQuestion) setInputValue("");
     setIsLoading(true);
 
     let formData;
@@ -100,7 +125,7 @@ export function ChatInterface({
 
     const resp = await askCustomQuestionFromAI(
       jobResume.id,
-      inputValue,
+      questionToSend,
       shareJD,
       formData
     );
@@ -122,9 +147,17 @@ export function ChatInterface({
     }
   };
 
+  const handlePredefinedQuestion = (question: string, blob: Blob | null) => {
+    handleSendMessage(blob, question);
+  };
+  const clearChat = () => {
+    localStorage.removeItem("ai-conversation-" + jobResume.id);
+    setMessages([INITIAL_MESSAGE]);
+  };
+
   return (
     <Card className="w-full h-full flex flex-col justify-stretch">
-      <CardHeader className="shrink-0 flex flex-row items-center gap-5 space-y-0 p-4">
+      <CardHeader className="shrink-0 flex flex-row items-center gap-5 space-y-0 p-4 border-b">
         <div className="flex items-center space-x-2">
           <Switch
             id="share-resume"
@@ -135,16 +168,16 @@ export function ChatInterface({
         </div>
         <div className="flex items-center space-x-2">
           <Switch
-            id="share-resume"
+            id="share-jd"
             checked={shareJD}
             onCheckedChange={setShareJD}
           />
-          <Label htmlFor="share-resume">Share Job Description</Label>
+          <Label htmlFor="share-jd">Share Job Description</Label>
         </div>
       </CardHeader>
       <CardContent className="flex-auto h-0 pt-6 px-2 py-0">
         <ScrollArea className="h-full pr-4">
-          <div className="flex flex-col space-y-4">
+          <div className="flex flex-col space-y-4 py-4">
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
             ))}
@@ -159,49 +192,54 @@ export function ChatInterface({
           </div>
         </ScrollArea>
       </CardContent>
-      <CardFooter className="shrink-0 p-4 flex flex-col gap-3">
-        <div className="flex w-full items-center space-x-2">
-          <BlobProvider document={<ResumeDocument resume={resume} />}>
-            {({ blob, url, loading, error }) => {
-              // if (error) {
-              //   return <div>Error: {error}</div>;
-              // }
-
-              return (
-                <>
-                  <Input
-                    placeholder="Type your message..."
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e, blob)}
-                    disabled={isLoading}
-                    className="flex-1"
-                  />
-                  <Button
-                    size="icon"
-                    onClick={() => handleSendMessage(blob)}
-                    disabled={isLoading || !inputValue.trim()}
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </>
-              );
-            }}
-          </BlobProvider>
-        </div>
-        {/* <div className="flex items-center space-x-2 self-end">
-          <Switch
-            id="share-resume"
-            checked={shareResume}
-            onCheckedChange={setShareResume}
-          />
-          <Label
-            htmlFor="share-resume"
-            className="text-sm text-muted-foreground"
-          >
-            Share Resume PDF
-          </Label>
-        </div> */}
+      <CardFooter className="shrink-0 p-4 flex flex-col border-t">
+        <BlobProvider document={<ResumeDocument resume={resume} />}>
+          {({ blob, url, loading, error }) => (
+            <>
+              {isChatStarting && (
+                <div className="w-full mb-3">
+                  <h3 className="text-sm font-medium mb-4 text-muted-foreground">
+                    Popular questions to get started:
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {PREDEFINED_QUESTIONS.map((question, index) => (
+                      <Button
+                        key={index}
+                        variant="outline"
+                        className="justify-start h-auto py-3 px-4 text-left text-xs"
+                        onClick={() => handlePredefinedQuestion(question, blob)}
+                        disabled={isLoading}
+                      >
+                        <MessageSquare className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="truncate">{question}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="flex w-full items-center space-x-2">
+                <Button size="icon" variant={"outline"} onClick={clearChat}>
+                  <Eraser className="h-4 w-4" />
+                </Button>
+                <Input
+                  placeholder="Type your message..."
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, blob)}
+                  disabled={isLoading}
+                  className="flex-1"
+                />
+                <Button
+                  size="icon"
+                  onClick={() => handleSendMessage(blob)}
+                  disabled={isLoading || !inputValue.trim()}
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            </>
+          )}
+        </BlobProvider>
       </CardFooter>
     </Card>
   );

@@ -2,7 +2,11 @@
 
 import { LoadingButton } from "@/components/ui/loading-button";
 import { constructFinalResume } from "@/utils/job-matching";
-import { ResumeAnalyzeResults, ResumeContent } from "@/types/resume";
+import {
+  ResumeAnalyzedImprovementNote,
+  ResumeAnalyzeResults,
+  ResumeContent,
+} from "@/types/resume";
 import React, { useState, useTransition } from "react";
 import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
 import { Job, JobResume } from "@prisma/client";
@@ -32,6 +36,7 @@ import {
   NotebookPen,
   RefreshCw,
   Trash,
+  WandSparkles,
 } from "lucide-react";
 import { JobPostPreview } from "@/components/jobs/job-post-preview";
 import { BlobProvider } from "@react-pdf/renderer";
@@ -46,6 +51,97 @@ import {
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/shared/confirm-dialog";
 import { ChatInterface } from "@/components/chat";
+import { findVariation, resumeSkillsToString } from "@/lib/resume-content";
+import { Textarea } from "@/components/ui/textarea";
+import { randomNDigits } from "@/lib/utils";
+
+const ImprovementNote = ({
+  index,
+  note,
+  resume,
+}: {
+  index: number;
+  note: ResumeAnalyzedImprovementNote;
+  resume: ResumeContent;
+}) => {
+  const variation = findVariation(resume, note.action.id);
+  const applyAction = () => {
+    if (note.action.id === "skills") {
+      const newSkills = note.action.content
+        .split(",")
+        .map((s) => s.toLowerCase().trim());
+      const resumeSkills = new Set(
+        resume.skills.map((s) =>
+          s.content
+            .trim()
+            .replace(/\u200B/g, "")
+            .toLowerCase()
+        )
+      );
+
+      const diff = newSkills.filter((rs) => !resumeSkills.has(rs));
+      console.log(diff, newSkills, resumeSkills);
+
+      // const newSkill = {
+      //       id: `skill_${randomNDigits()}`,
+      //       content: skillName.trim(),
+      //       category,
+      //       enabled: true,
+      //     }
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-2" key={note.title}>
+      <h4 className=" font-bold">
+        {index + 1}. {note.title}
+      </h4>
+      {note.text && (
+        <div className="flex ">
+          <div>
+            <LucideX className="text-red-500" size={18} />
+          </div>
+          <p
+            className="px-2 text-sm  "
+            dangerouslySetInnerHTML={{ __html: note.text }}
+          ></p>
+        </div>
+      )}
+      {note.improvement && (
+        <div className="flex ">
+          <div>
+            <LucideCheck className="text-green-500" size={18} />
+          </div>
+          <p
+            className="px-2 text-sm  "
+            dangerouslySetInnerHTML={{
+              __html: note.improvement,
+            }}
+          ></p>
+        </div>
+      )}
+      {note.action && (
+        <div className="flex flex-col gap-2 border rounded p-3 text-sm">
+          <h5 className="font-bold capitalize">{note.action.type} Action</h5>
+          {variation && (
+            <p className="border p-2 rounded">{variation.content}</p>
+          )}
+          {note.action.id === "skills" && (
+            <p className="border p-2 rounded">{resumeSkillsToString(resume)}</p>
+          )}
+          <Textarea>{note.action.content}</Textarea>
+          {/* <p className="border p-2">{note.action.content}</p> */}
+          <div>
+            <Button className="mt-2 text-sm" size={"sm"} onClick={applyAction}>
+              <WandSparkles size={16} />
+              Apply It!
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export const JobMatcher = ({
   jobResume,
@@ -277,7 +373,9 @@ export const JobMatcher = ({
                 />
               </TabsContent>
               <TabsContent className="" value="score">
-                <BlobProvider document={<ResumeDocument resume={resume} />}>
+                <BlobProvider
+                  document={<ResumeDocument resume={resume} showIdentifiers />}
+                >
                   {({ blob, url, loading, error }) => {
                     // if (error) {
                     //   return <div>Error: {error}</div>;
@@ -340,40 +438,16 @@ export const JobMatcher = ({
                     {resumeAnalyzeData.notes?.length > 0 && (
                       <div className="flex flex-col gap-2">
                         <h3 className="text-lg font-bold flex items-center gap-2">
-                          Notes ({resumeAnalyzeData.notes.length})
+                          Improvement Notes ({resumeAnalyzeData.notes.length})
                         </h3>
                         <div className="flex flex-col gap-4">
-                          {resumeAnalyzeData.notes.map((n, index) => (
-                            <div className="flex flex-col gap-2" key={n.title}>
-                              <h4 className=" font-bold">
-                                {index + 1}. {n.title}
-                              </h4>
-                              <div className="flex ">
-                                <div>
-                                  <LucideX className="text-red-500" size={18} />
-                                </div>
-                                <p
-                                  className="px-2 text-sm  "
-                                  dangerouslySetInnerHTML={{ __html: n.text }}
-                                ></p>
-                              </div>
-                              {n.improvement && (
-                                <div className="flex ">
-                                  <div>
-                                    <LucideCheck
-                                      className="text-green-500"
-                                      size={18}
-                                    />
-                                  </div>
-                                  <p
-                                    className="px-2 text-sm  "
-                                    dangerouslySetInnerHTML={{
-                                      __html: n.improvement,
-                                    }}
-                                  ></p>
-                                </div>
-                              )}
-                            </div>
+                          {resumeAnalyzeData.notes.map((note, index) => (
+                            <ImprovementNote
+                              key={note.title}
+                              index={index}
+                              resume={resume}
+                              note={note}
+                            />
                           ))}
                         </div>
                       </div>
@@ -387,8 +461,7 @@ export const JobMatcher = ({
             </div>
             <div className="col-span-5 overflow-auto h-full">
               <div className="p-5 h-full w-full">
-              <CVPreview data={resume} jobResume={jobResume} />
-
+                <CVPreview data={resume} jobResume={jobResume} />
               </div>
             </div>
           </div>

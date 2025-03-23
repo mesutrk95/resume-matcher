@@ -22,6 +22,8 @@ import {
 
 import { ProjectList } from "./project-list";
 import { AddProjectForm } from "./add-project-form";
+import { randomNDigits } from "@/lib/utils";
+import { ResumeBuilderCard } from "../resume-builder-card";
 
 type ProjectsSectionProps = {
   resume: ResumeContent;
@@ -51,7 +53,7 @@ export function ProjectsSection({ resume, onUpdate }: ProjectsSectionProps) {
     link: string;
   }) => {
     const newProject: ResumeProject = {
-      id: `project${Date.now()}`,
+      id: `project_${randomNDigits()}`,
       name: project.name,
       content: project.content,
       startDate: project.startDate,
@@ -96,39 +98,35 @@ export function ProjectsSection({ resume, onUpdate }: ProjectsSectionProps) {
   };
 
   return (
-    <Card className="">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Projects</CardTitle>
-        <Button onClick={handleAddProject} disabled={addingProject}>
-          <Plus className="h-4 w-4 mr-1" />
-          Add Project
-        </Button>
-      </CardHeader>
-      <div className="p-6 pt-0">
-        {addingProject && (
-          <AddProjectForm
-            onSave={handleSaveNewProject}
-            onCancel={handleCancelAddProject}
-          />
-        )}
+    <ResumeBuilderCard
+      onAdd={handleAddProject}
+      isAdding={addingProject}
+      title="Projects"
+      addButtonText="Add Project"
+    >
+      {addingProject && (
+        <AddProjectForm
+          onSave={handleSaveNewProject}
+          onCancel={handleCancelAddProject}
+        />
+      )}
 
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={resume.projects.map((project) => project.id)}
+          strategy={verticalListSortingStrategy}
         >
-          <SortableContext
-            items={resume.projects.map((project) => project.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <ProjectList
-              resume={resume}
-              onUpdate={handleUpdateProject}
-              onDelete={handleDeleteProject}
-            />
-          </SortableContext>
-        </DndContext>
-      </div>
-    </Card>
+          <ProjectList
+            resume={resume}
+            onUpdate={handleUpdateProject}
+            onDelete={handleDeleteProject}
+          />
+        </SortableContext>
+      </DndContext>
+    </ResumeBuilderCard>
   );
 }

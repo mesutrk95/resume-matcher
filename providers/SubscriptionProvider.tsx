@@ -101,7 +101,7 @@ export const SubscriptionProvider = ({
       const response = await createSubscription(interval);
 
       if (!response.success) {
-        toast.error(response.error || 'Failed to create subscription');
+        toast.error('Failed to create subscription');
         return null;
       }
 
@@ -181,7 +181,7 @@ export const SubscriptionProvider = ({
         window.location.href = response.url;
         return true;
       } else {
-        toast.error(response.error || 'Failed to create portal session');
+        toast.error('Failed to create portal session');
         return false;
       }
     } catch (error: any) {
