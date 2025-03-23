@@ -86,6 +86,11 @@ export type ResumeContent = {
   projects: ResumeProject[];
   contactInfo: ResumeContactInfo;
   version?: number;
+  languages: any[],
+  certifications: any[],
+  awards: any[],
+  interests: any[],
+  references: any[],
 };
 
 export type ResumeItemScoreAnalyze = {
