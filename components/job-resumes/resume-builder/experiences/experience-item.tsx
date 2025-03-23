@@ -191,7 +191,7 @@ export function ExperienceItem({
         <AccordionItem value={experience.id} className="border rounded-lg">
           <div
             className={clsx(
-              "flex items-center px-4 py-0 sticky top-0 bg-white shadow-stuck ",
+              "flex items-center mx-[2px] px-4 py-0 sticky top-0 bg-white",
               isOpen ? "border-b rounded-t-xl mb-2" : "rounded-xl"
             )}
           >

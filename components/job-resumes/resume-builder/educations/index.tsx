@@ -23,16 +23,12 @@ import { AddEducationForm } from "./add-education-form";
 import { EducationList } from "./education-list";
 import { randomNDigits } from "@/lib/utils";
 import { ResumeBuilderCard } from "../resume-builder-card";
+import { useResumeBuilder } from "../context/useResumeBuilder";
 
-type EducationsSectionProps = {
-  resume: ResumeContent;
-  onUpdate: (educations: ResumeEducation[]) => void;
-};
+type EducationsSectionProps = {};
 
-export function EducationsSection({
-  resume,
-  onUpdate,
-}: EducationsSectionProps) {
+export function EducationsSection({}: EducationsSectionProps) {
+  const { resume, saveResume } = useResumeBuilder();
   const [addingEducation, setAddingEducation] = useState(false);
 
   // DnD sensors
@@ -66,7 +62,7 @@ export function EducationsSection({
       enabled: true,
     };
 
-    onUpdate([...resume.educations, newEducation]);
+    saveResume({ ...resume, educations: [...resume.educations, newEducation] });
     setAddingEducation(false);
   };
 
@@ -75,17 +71,21 @@ export function EducationsSection({
   };
 
   const handleUpdateEducation = (updatedEducation: ResumeEducation) => {
-    onUpdate(
-      resume.educations.map((education) =>
+    saveResume({
+      ...resume,
+      educations: resume.educations.map((education) =>
         education.id === updatedEducation.id ? updatedEducation : education
-      )
-    );
+      ),
+    });
   };
 
   const handleDeleteEducation = (educationId: string) => {
-    onUpdate(
-      resume.educations.filter((education) => education.id !== educationId)
-    );
+    saveResume({
+      ...resume,
+      educations: resume.educations.filter(
+        (education) => education.id !== educationId
+      ),
+    });
   };
 
   const handleDragEnd = (event: any) => {
@@ -98,8 +98,10 @@ export function EducationsSection({
       const newIndex = resume.educations.findIndex(
         (education) => education.id === over.id
       );
-
-      onUpdate(arrayMove(resume.educations, oldIndex, newIndex));
+      saveResume({
+        ...resume,
+        educations: arrayMove(resume.educations, oldIndex, newIndex),
+      });
     }
   };
 

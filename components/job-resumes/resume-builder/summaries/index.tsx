@@ -23,13 +23,12 @@ import { AddSummaryForm } from "./add-summary-form";
 import { SummaryList } from "./summary-list";
 import { randomNDigits } from "@/lib/utils";
 import { ResumeBuilderCard } from "../resume-builder-card";
+import { useResumeBuilder } from "../context/useResumeBuilder";
 
-type SummariesSectionProps = {
-  resume: ResumeContent;
-  onUpdate: (summaries: ResumeProfessionalSummary[]) => void;
-};
+type SummariesSectionProps = {};
 
-export function SummariesSection({ resume, onUpdate }: SummariesSectionProps) {
+export function SummariesSection({}: SummariesSectionProps) {
+  const { resume, saveResume } = useResumeBuilder();
   const [addingSummary, setAddingSummary] = useState(false);
 
   // DnD sensors
@@ -51,7 +50,7 @@ export function SummariesSection({ resume, onUpdate }: SummariesSectionProps) {
       enabled: false,
     };
 
-    onUpdate([...resume.summaries, newSummary]);
+    saveResume({ ...resume, summaries: [...resume.summaries, newSummary] });
     setAddingSummary(false);
   };
 
@@ -69,15 +68,19 @@ export function SummariesSection({ resume, onUpdate }: SummariesSectionProps) {
       );
     }
 
-    onUpdate(
-      summaries.map((summary) =>
+    saveResume({
+      ...resume,
+      summaries: summaries.map((summary) =>
         summary.id === updatedSummary.id ? updatedSummary : summary
-      )
-    );
+      ),
+    });
   };
 
   const handleDeleteSummary = (summaryId: string) => {
-    onUpdate(resume.summaries.filter((summary) => summary.id !== summaryId));
+    saveResume({
+      ...resume,
+      summaries: resume.summaries.filter((summary) => summary.id !== summaryId),
+    });
   };
 
   const handleDragEnd = (event: any) => {
@@ -91,7 +94,10 @@ export function SummariesSection({ resume, onUpdate }: SummariesSectionProps) {
         (summary) => summary.id === over.id
       );
 
-      onUpdate(arrayMove(resume.summaries, oldIndex, newIndex));
+      saveResume({
+        ...resume,
+        summaries: arrayMove(resume.summaries, oldIndex, newIndex),
+      });
     }
   };
 

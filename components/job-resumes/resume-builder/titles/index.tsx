@@ -23,13 +23,12 @@ import { AddTitleForm } from "./add-title-form";
 import { TitleList } from "./title-list";
 import { randomNDigits } from "@/lib/utils";
 import { ResumeBuilderCard } from "../resume-builder-card";
+import { useResumeBuilder } from "../context/useResumeBuilder";
 
-type TitlesSectionProps = {
-  resume: ResumeContent;
-  onUpdate: (titles: ResumeTargetTitle[]) => void;
-};
+type TitlesSectionProps = {};
 
-export function TitlesSection({ resume, onUpdate }: TitlesSectionProps) {
+export function TitlesSection({}: TitlesSectionProps) {
+  const { resume, saveResume } = useResumeBuilder();
   const [addingTitle, setAddingTitle] = useState(false);
   const titles = resume.titles;
   // DnD sensors
@@ -51,7 +50,7 @@ export function TitlesSection({ resume, onUpdate }: TitlesSectionProps) {
       enabled: true,
     };
 
-    onUpdate([...titles, newTitle]);
+    saveResume({ ...resume, titles: [...titles, newTitle] });
     setAddingTitle(false);
   };
 
@@ -60,15 +59,19 @@ export function TitlesSection({ resume, onUpdate }: TitlesSectionProps) {
   };
 
   const handleUpdateTitle = (updatedTitle: ResumeTargetTitle) => {
-    onUpdate(
-      titles.map((title) =>
+    saveResume({
+      ...resume,
+      titles: titles.map((title) =>
         title.id === updatedTitle.id ? updatedTitle : title
-      )
-    );
+      ),
+    });
   };
 
   const handleDeleteTitle = (titleId: string) => {
-    onUpdate(titles.filter((title) => title.id !== titleId));
+    saveResume({
+      ...resume,
+      titles: titles.filter((title) => title.id !== titleId),
+    });
   };
 
   const handleDragEnd = (event: any) => {
@@ -78,7 +81,10 @@ export function TitlesSection({ resume, onUpdate }: TitlesSectionProps) {
       const oldIndex = titles.findIndex((title) => title.id === active.id);
       const newIndex = titles.findIndex((title) => title.id === over.id);
 
-      onUpdate(arrayMove(titles, oldIndex, newIndex));
+      saveResume({
+        ...resume,
+        titles: arrayMove(titles, oldIndex, newIndex),
+      });
     }
   };
 

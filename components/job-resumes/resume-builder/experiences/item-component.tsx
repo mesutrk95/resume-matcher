@@ -99,6 +99,19 @@ export function ItemComponent({
     setAddingVariation(true);
   };
 
+  const handleSaveVariation = () => {
+    onUpdate({
+      ...item,
+      variations: [
+        {
+          ...item.variations[0],
+          content: variationEditForm.description,
+        },
+      ],
+    });
+    setIsEditing(false);
+  };
+
   const handleSaveNewVariation = (content: string) => {
     const newVariations: Variation[] = content
       .split("\n")
@@ -170,7 +183,7 @@ export function ItemComponent({
         <div className="flex-1 border rounded-md p-2 pb-0">
           <div className="flex items-start">
             <div className="flex-1">
-              <div className="flex justify-between items-start mb-3">
+              <div className="flex justify-between items-start mb-3 flex-wrap">
                 {isEditing ? (
                   <Textarea
                     value={variationEditForm.description}
@@ -221,7 +234,7 @@ export function ItemComponent({
                       >
                         <X className="h-4 w-4" />
                       </Button>
-                      <Button size="sm" onClick={handleSave}>
+                      <Button size="sm" onClick={handleSaveVariation}>
                         <Save className="h-4 w-4" />
                       </Button>
                     </>

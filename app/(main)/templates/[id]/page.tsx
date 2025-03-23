@@ -1,5 +1,6 @@
 import { updateResumeTemplate } from "@/actions/resume-template";
 import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
+import { ResumeBuilderProvider } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
 import { ImportExportBar } from "@/components/resume-templates/import-export-bar";
 import { ResumeTemplateForm } from "@/components/resume-templates/resume-template-form";
 import { db } from "@/lib/db";
@@ -25,9 +26,9 @@ export default async function TemplateBuilderPage({
   return (
     <>
       <ResumeTemplateForm template={resumeTemplate} />
-      <ResumeBuilder
-        data={content}
-        onUpdate={async (resumeContent) => {
+      <ResumeBuilderProvider
+        initialResume={content}
+        onUpdated={async (resumeContent: ResumeContent) => {
           "use server";
 
           await updateResumeTemplate({
@@ -35,7 +36,9 @@ export default async function TemplateBuilderPage({
             content: resumeContent,
           });
         }}
-      />
+      >
+        <ResumeBuilder />
+      </ResumeBuilderProvider>
 
       <ImportExportBar resumeTemplate={resumeTemplate} />
     </>

@@ -28,13 +28,12 @@ import { AddSkillsDialog } from "./add-skills-dialog";
 import { AddCategoryDialog } from "./add-category-dialog";
 import { randomNDigits } from "@/lib/utils";
 import { ResumeBuilderCard } from "../resume-builder-card";
+import { useResumeBuilder } from "../context/useResumeBuilder";
 
-type SkillsSectionProps = {
-  resume: ResumeContent;
-  onUpdate: (skills: ResumeSkill[]) => void;
-};
+type SkillsSectionProps = {};
 
-export function SkillsSection({ resume, onUpdate }: SkillsSectionProps) {
+export function SkillsSection({}: SkillsSectionProps) {
+  const { resume, saveResume } = useResumeBuilder();
   const [addingSkills, setAddingSkills] = useState(false);
   const [addingCategory, setAddingCategory] = useState(false);
   const [sortAscending, setSortAscending] = useState(true);
@@ -65,7 +64,7 @@ export function SkillsSection({ resume, onUpdate }: SkillsSectionProps) {
       enabled: true,
     }));
 
-    onUpdate([...skills, ...skillsToAdd]);
+    saveResume({ ...resume, skills: [...skills, ...skillsToAdd] });
     setAddingSkills(false);
   };
 
@@ -75,15 +74,19 @@ export function SkillsSection({ resume, onUpdate }: SkillsSectionProps) {
   };
 
   const handleUpdateSkill = (updatedSkill: ResumeSkill) => {
-    onUpdate(
-      skills.map((skill) =>
+    saveResume({
+      ...resume,
+      skills: skills.map((skill) =>
         skill.id === updatedSkill.id ? updatedSkill : skill
-      )
-    );
+      ),
+    });
   };
 
   const handleDeleteSkill = (skillId: string) => {
-    onUpdate(skills.filter((skill) => skill.id !== skillId));
+    saveResume({
+      ...resume,
+      skills: skills.filter((skill) => skill.id !== skillId),
+    });
   };
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -106,11 +109,12 @@ export function SkillsSection({ resume, onUpdate }: SkillsSectionProps) {
       const draggedSkill = skills.find((s) => s.id === active.id);
 
       if (draggedSkill && draggedSkill.category !== newCategory) {
-        onUpdate(
-          skills.map((skill) =>
+        saveResume({
+          ...resume,
+          skills: skills.map((skill) =>
             skill.id === active.id ? { ...skill, category: newCategory } : skill
-          )
-        );
+          ),
+        });
       }
       return;
     }
@@ -120,7 +124,10 @@ export function SkillsSection({ resume, onUpdate }: SkillsSectionProps) {
       const oldIndex = skills.findIndex((skill) => skill.id === active.id);
       const newIndex = skills.findIndex((skill) => skill.id === over.id);
 
-      onUpdate(arrayMove(skills, oldIndex, newIndex));
+      saveResume({
+        ...resume,
+        skills: arrayMove(skills, oldIndex, newIndex),
+      });
     }
   };
 
@@ -130,14 +137,23 @@ export function SkillsSection({ resume, onUpdate }: SkillsSectionProps) {
       return sortAscending ? comparison : -comparison;
     });
     setSortAscending(!sortAscending);
-    onUpdate(sortedSkills);
+    saveResume({
+      ...resume,
+      skills: sortedSkills,
+    });
   };
 
   const handleSelectAll = () => {
-    onUpdate(skills.map((s) => ({ ...s, enabled: true })));
+    saveResume({
+      ...resume,
+      skills: skills.map((s) => ({ ...s, enabled: true })),
+    });
   };
   const handleDeselectAll = () => {
-    onUpdate(skills.map((s) => ({ ...s, enabled: false })));
+    saveResume({
+      ...resume,
+      skills: skills.map((s) => ({ ...s, enabled: false })),
+    });
   };
 
   return (

@@ -24,13 +24,12 @@ import { ProjectList } from "./project-list";
 import { AddProjectForm } from "./add-project-form";
 import { randomNDigits } from "@/lib/utils";
 import { ResumeBuilderCard } from "../resume-builder-card";
+import { useResumeBuilder } from "../context/useResumeBuilder";
 
-type ProjectsSectionProps = {
-  resume: ResumeContent;
-  onUpdate: (projects: ResumeProject[]) => void;
-};
+type ProjectsSectionProps = {};
 
-export function ProjectsSection({ resume, onUpdate }: ProjectsSectionProps) {
+export function ProjectsSection({}: ProjectsSectionProps) {
+  const { resume, saveResume } = useResumeBuilder();
   const [addingProject, setAddingProject] = useState(false);
 
   // DnD sensors
@@ -62,7 +61,7 @@ export function ProjectsSection({ resume, onUpdate }: ProjectsSectionProps) {
       enabled: true,
     };
 
-    onUpdate([...resume.projects, newProject]);
+    saveResume({ ...resume, projects: [...resume.projects, newProject] });
     setAddingProject(false);
   };
 
@@ -71,15 +70,19 @@ export function ProjectsSection({ resume, onUpdate }: ProjectsSectionProps) {
   };
 
   const handleUpdateProject = (updatedProject: ResumeProject) => {
-    onUpdate(
-      resume.projects.map((project) =>
+    saveResume({
+      ...resume,
+      projects: resume.projects.map((project) =>
         project.id === updatedProject.id ? updatedProject : project
-      )
-    );
+      ),
+    });
   };
 
   const handleDeleteProject = (projectId: string) => {
-    onUpdate(resume.projects.filter((project) => project.id !== projectId));
+    saveResume({
+      ...resume,
+      projects: resume.projects.filter((project) => project.id !== projectId),
+    });
   };
 
   const handleDragEnd = (event: any) => {
@@ -93,7 +96,10 @@ export function ProjectsSection({ resume, onUpdate }: ProjectsSectionProps) {
         (project) => project.id === over.id
       );
 
-      onUpdate(arrayMove(resume.projects, oldIndex, newIndex));
+      saveResume({
+        ...resume,
+        projects: arrayMove(resume.projects, oldIndex, newIndex),
+      });
     }
   };
 

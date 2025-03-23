@@ -29,10 +29,11 @@ export const resumeExperiencesToString = (
   return content;
 };
 export const resumeSkillsToString = (resume: ResumeContent) => {
-  return `Skills\n${resume.skills
+  return resume.skills
     .filter((e) => e.enabled)
     .map((s) => s.content)
-    .join(", ")} \n`;
+    .join(", ")
+    .replace(/\u200B/g, "");
 };
 
 export const convertResumeObjectToString = (
@@ -63,7 +64,7 @@ export const convertResumeObjectToString = (
   if (edu) {
     content += `Education\n${edu.degree} • ${edu.institution} • ${edu.content} \n`;
   }
-  content += resumeSkillsToString(resume);
+  content += "Skills: " + resumeSkillsToString(resume) + "\n";
   return content;
 };
 

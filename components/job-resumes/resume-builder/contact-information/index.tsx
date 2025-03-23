@@ -9,21 +9,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Edit, Save, X } from "lucide-react";
 import { ResumeBuilderCard } from "../resume-builder-card";
+import { useResumeBuilder } from "../context/useResumeBuilder";
 
-type ContactInfoSectionProps = {
-  resume: ResumeContent;
-  onUpdate: (contactInfo: ResumeContactInfo) => void;
-};
+type ContactInfoSectionProps = {};
 
-export function ContactInfoSection({
-  resume,
-  onUpdate,
-}: ContactInfoSectionProps) {
+export function ContactInfoSection({}: ContactInfoSectionProps) {
+  const { resume, saveResume } = useResumeBuilder();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<ResumeContactInfo>(
     resume.contactInfo
   );
-  // console.log(resume.contactInfo);
 
   const handleEdit = () => {
     setFormData(resume.contactInfo);
@@ -31,9 +26,7 @@ export function ContactInfoSection({
   };
 
   const handleSave = () => {
-    console.log(formData);
-
-    onUpdate(formData);
+    saveResume({ ...resume, contactInfo: formData });
     setIsEditing(false);
   };
 

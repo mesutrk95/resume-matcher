@@ -18,19 +18,14 @@ import { ExperienceList } from "./experience-list";
 import { Experience, ResumeContent } from "@/types/resume";
 import { useState } from "react";
 import { AddExperienceForm } from "./add-experience-form";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { randomNDigits } from "@/lib/utils";
 import { ResumeBuilderCard } from "../resume-builder-card";
+import { useResumeBuilder } from "../context/useResumeBuilder";
 
-type ExperiencesSectionProps = {
-  resume: ResumeContent;
-  onUpdate: (experiences: Experience[]) => void;
-};
+type ExperiencesSectionProps = {};
 
-export function ExperiencesSection({
-  resume,
-  onUpdate,
-}: ExperiencesSectionProps) {
+export function ExperiencesSection({}: ExperiencesSectionProps) {
+  const { resume, saveResume } = useResumeBuilder();
   // DnD sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -55,7 +50,10 @@ export function ExperiencesSection({
       items: [],
     };
 
-    onUpdate([...resume.experiences, newExp]);
+    saveResume({
+      ...resume,
+      experiences: [...resume.experiences, newExp],
+    });
 
     setAddingExperience(false);
   };
@@ -75,20 +73,27 @@ export function ExperiencesSection({
         (exp) => exp.id === over.id
       );
       const experiences = arrayMove(resume.experiences, oldIndex, newIndex);
-      onUpdate(experiences);
+      saveResume({
+        ...resume,
+        experiences,
+      });
     }
   };
 
   const handleUpdateExperience = (updatedExperience: Experience) => {
-    onUpdate(
-      resume.experiences.map((exp) =>
+    saveResume({
+      ...resume,
+      experiences: resume.experiences.map((exp) =>
         exp.id === updatedExperience.id ? updatedExperience : exp
-      )
-    );
+      ),
+    });
   };
 
   const handleDeleteExperience = (experienceId: string) => {
-    onUpdate(resume.experiences.filter((exp) => exp.id !== experienceId));
+    saveResume({
+      ...resume,
+      experiences: resume.experiences.filter((exp) => exp.id !== experienceId),
+    });
   };
 
   return (
