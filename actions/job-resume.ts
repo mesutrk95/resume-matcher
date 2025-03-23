@@ -14,6 +14,11 @@ import { getAIHtmlResponse, getAIJsonResponse } from "@/lib/ai";
 import { JobAnalyzeResult } from "@/types/job";
 import { chunkArray, hashString } from "@/lib/utils";
 import { analyzeJobByAI } from "./job";
+import {
+  migrateResumeContent,
+  resumeExperiencesToString,
+  resumeSkillsToString,
+} from "@/lib/resume-content";
 
 export const findJobResume = async (id: string) => {
   const user = await currentUser();
@@ -58,6 +63,7 @@ export const createJobResume = async (
 
 export const updateJobResume = async (resume: JobResume) => {
   const user = await currentUser();
+  const content = resume.content && migrateResumeContent(resume.content as ResumeContent)
 
   // Update job in database
   const updatedJob = await db.jobResume.update({
@@ -67,7 +73,7 @@ export const updateJobResume = async (resume: JobResume) => {
     },
     data: {
       name: resume.name,
-      content: resume.content || DEFAULT_RESUME_CONTENT,
+      content: content || DEFAULT_RESUME_CONTENT,
       updatedAt: new Date(),
     },
   });
@@ -106,38 +112,97 @@ export const analyzeResumeScore = async (
 
   if (!jobResume) throw new Error("Resume not found.");
 
-  let content = `Job Description: \n${jobResume?.job.title}\n${jobResume?.job.description}`;
+  // let content = `Job Description: \n${jobResume?.job.title}\n${jobResume?.job.description}`;
 
   // content += `\n\nMy Resume Content: \n${convertResumeObjectToString(
   //   jobResume?.content as ResumeContent
   // )}`
 
-  const getImprovementNotes = async () => {
-    const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, address top 10 notes and imporvments can applied to the resume to make it best to increase the score from ATS viewpoint in html format,
-  you are allowed to use tailwind classes to highlight the texts by bg and text color classes like [bg|text]-[red|green|orange]-[100-500], font-bold, ...
-  give me the details in this format:
-  [
-    { "title": "correct bla bla ...", text: "..." , "improvement": "..."},
-     ...
-  ]
+  const getExperiencesImprovementNotes = async () => {
+    const prompt = `I am building an AI-powered application to generate and optimize resumes. I need the AI to provide detailed suggestions for improving a given resume to ensure it passes Applicant Tracking Systems (ATS) and aligns with a specific job description. The AI should analyze the resume and job description, then provide actionable suggestions in the following format:
 
-  text and improvement should be html formatted text, Ensure the response is in a valid JSON format with no extra text!
-  `;
+[
+    {
+        "title": "Correct [specific issue or area for improvement]",
+        "text": "Source text in resume",
+        "improvement": "AI suggestion text, highlight keys using Tailwind CSS classes by [bg|text]-[red|green|orange]-[100-500], font-bold, etc.",
+        "action": {
+            "id": "var_....",
+            "type": "update" | "create",
+            "content": "pure and complete suggested new text without formatting"
+        }
+    },
+    ...
+]
 
-    return getAIJsonResponse(prompt, [pdfBuffer, content]);
+The AI should:
+1. Analyze the provided resume and job description.
+2. Identify areas for improvement, such as adding/removing technologies, optimizing content for ATS, and enhancing readability.
+3. Provide specific suggestions in the requested format, including Tailwind CSS classes for highlighting.
+4. Ensure the suggestions are actionable and directly applicable to the resume.
+
+Here is the resume:
+${resumeExperiencesToString(jobResume.content as ResumeContent, true)}
+Here is the job description:
+${jobResume?.job.title}\n${jobResume?.job.description}
+
+Please provide the best suggestions for improving the resume based on the above requirements.
+Ensure the response is in a valid JSON format with no extra text!`;
+
+    return getAIJsonResponse(prompt, []);
   };
+
+  const getSkillsImprovementNotes = async () => {
+    const prompt = `
+I am building an AI-powered application to optimize resumes. I need the AI to analyze the **skills** section of a given resume and provide the **best skill set** that aligns with a specific job description. The AI should provide actionable suggestion in the following format:
+
+    {
+        "title": "Correct Skill Alignment",
+        "text": "Source text in resume",
+        "improvement": "AI suggestion text, allowed to use Tailwind CSS classes to highlight texts by [bg|text]-[red|green|orange]-[100-500], font-bold, etc.",
+        "action": {
+            "id": "skills",
+            "type": "update",
+            "content": "pure and complete suggested new text"
+        }
+    }
+
+The AI should:
+1. Analyze the provided resume's **skills** section.
+2. Identify missing or irrelevant skills based on the job description.
+3. Provide the **best skill set** that aligns with the job description, including Tailwind CSS classes for highlighting.
+4. Ensure the suggestions are actionable and directly applicable to the resume.
+ 
+Here is the resume's **skills** section:
+${resumeSkillsToString(jobResume.content as ResumeContent)}
+
+Here is the job description:
+${jobResume?.job.title}\n${jobResume?.job.description}
+
+Please provide the best skill set for the resume based on the above requirements.
+Ensure the response is in a valid JSON format with no extra text!`;
+
+    return getAIJsonResponse(prompt, []);
+  };
+
   const getScore = async () => {
-    const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, you need to give a score to the resume content based on how well it matches the job description, for missed_keywords dont need to mention not important ones, give me the details in this format { "score" : 45, "matched_keywords": [...] , "missed_keywords": [...] }, , Ensure the response is in a valid JSON format with no extra text!`;
+    const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, you need to give a score to the resume content based on how well it matches the job description, for missed_keywords dont need to mention not important ones, give me the details in this format { "score" : 45, "matched_keywords": [...] , "missed_keywords": [...] }
+    Job Description: \n${jobResume?.job.title}\n${jobResume?.job.description}
+    Ensure the response is in a valid JSON format with no extra text!`;
 
-    return getAIJsonResponse(prompt, [pdfBuffer, content]);
+    return getAIJsonResponse(prompt, [pdfBuffer]);
   };
 
-  const results = await Promise.all([getScore(), getImprovementNotes()]);
+  const results = await Promise.all([
+    getScore(),
+    getSkillsImprovementNotes(),
+    getExperiencesImprovementNotes(),
+  ]);
 
   const newAnalyzeResults = {
     ...((jobResume?.analyzeResults as ResumeAnalyzeResults) || {}),
     ...results[0].result,
-    notes: results[1].result,
+    notes: [results[1].result, ...results[2].result],
   } as ResumeAnalyzeResults;
 
   await db.jobResume.update({
@@ -335,7 +400,7 @@ export const askCustomQuestionFromAI = async (
     );
 
   return getAIHtmlResponse(
-    "Your role is to answer the question based on my resume and context you have currently. give me your message in html format and feel free to use font-bold class and <br/> tag for new line. I wanna show the html output in a message bubble.",
+    "Your role is to answer the question based on my resume and JD, give ready to user answers. give me your message in html format and feel free to use font-bold class and <br/> tag for new line. I wanna show the html output in a message bubble.",
     content
   );
 };

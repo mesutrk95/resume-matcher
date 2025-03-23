@@ -19,6 +19,7 @@ import { Experience, ResumeContent } from "@/types/resume";
 import { useState } from "react";
 import { AddExperienceForm } from "./add-experience-form";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { randomNDigits } from "@/lib/utils";
 
 type ExperiencesSectionProps = {
   resume: ResumeContent;
@@ -47,7 +48,7 @@ export function ExperiencesSection({
     newExperience: Omit<Experience, "id" | "items" | "enabled">
   ) => {
     const newExp = {
-      id: `exp${Date.now()}`,
+      id: `exp_${randomNDigits()}`,
       ...newExperience,
       enabled: true,
       items: [],

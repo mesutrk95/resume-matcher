@@ -21,6 +21,7 @@ import {
 } from "@dnd-kit/sortable";
 import { AddSummaryForm } from "./add-summary-form";
 import { SummaryList } from "./summary-list";
+import { randomNDigits } from "@/lib/utils";
 
 type SummariesSectionProps = {
   resume: ResumeContent;
@@ -44,7 +45,7 @@ export function SummariesSection({ resume, onUpdate }: SummariesSectionProps) {
 
   const handleSaveNewSummary = (content: string) => {
     const newSummary: ResumeProfessionalSummary = {
-      id: `summary${Date.now()}`,
+      id: `summary_${randomNDigits()}`,
       content,
       enabled: false,
     };

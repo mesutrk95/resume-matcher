@@ -85,6 +85,7 @@ export type ResumeContent = {
   skills: ResumeSkill[];
   projects: ResumeProject[];
   contactInfo: ResumeContactInfo;
+  version?: number;
 };
 
 export type ResumeItemScoreAnalyze = {
@@ -94,10 +95,17 @@ export type ResumeItemScoreAnalyze = {
   hash?: string;
 };
 
+export type ResumeAnalyzedImprovementNote = {
+  title: string;
+  improvement: string;
+  text: string;
+  action: { id: string; type: "update" | "delete" | "create"; content: string };
+};
+
 export type ResumeAnalyzeResults = {
   itemsScore?: Record<string, ResumeItemScoreAnalyze>;
   missed_keywords: string[];
   matched_keywords: string[];
-  notes: { title: string; improvement: string; text: string }[];
+  notes: ResumeAnalyzedImprovementNote[];
   score: number;
 };

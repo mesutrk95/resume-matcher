@@ -34,6 +34,7 @@ import {
 
 import { ItemList } from "./item-list";
 import { AddItemForm } from "./add-item-form";
+import { randomNDigits } from "@/lib/utils";
 
 type ExperienceItemProps = {
   experience: Experience;
@@ -109,7 +110,7 @@ export function ExperienceItem({
 
   const handleSaveNewItem = (description: string) => {
     const newItem: ExperienceItemType = {
-      id: `item${Date.now()}`,
+      id: `item_${randomNDigits()}`,
       description,
       enabled: true,
       variations: [],

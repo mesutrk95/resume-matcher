@@ -21,6 +21,7 @@ import {
 } from "@dnd-kit/sortable";
 import { AddEducationForm } from "./add-education-form";
 import { EducationList } from "./education-list";
+import { randomNDigits } from "@/lib/utils";
 
 type EducationsSectionProps = {
   resume: ResumeContent;
@@ -54,7 +55,7 @@ export function EducationsSection({
     endDate: string;
   }) => {
     const newEducation: ResumeEducation = {
-      id: `edu${Date.now()}`,
+      id: `edu_${randomNDigits()}`,
       degree: education.degree,
       content: education.content,
       location: education.location,

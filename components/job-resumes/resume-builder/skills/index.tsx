@@ -26,6 +26,7 @@ import {
 import { SkillItem } from "./skill-item";
 import { AddSkillsDialog } from "./add-skills-dialog";
 import { AddCategoryDialog } from "./add-category-dialog";
+import { randomNDigits } from "@/lib/utils";
 
 type SkillsSectionProps = {
   resume: ResumeContent;
@@ -57,7 +58,7 @@ export function SkillsSection({ resume, onUpdate }: SkillsSectionProps) {
 
   const handleAddSkills = (newSkills: string[], category: string) => {
     const skillsToAdd = newSkills.map((skillName) => ({
-      id: `skill${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `skill_${randomNDigits()}`,
       content: skillName.trim(),
       category,
       enabled: true,

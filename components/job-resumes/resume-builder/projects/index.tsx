@@ -22,6 +22,7 @@ import {
 
 import { ProjectList } from "./project-list";
 import { AddProjectForm } from "./add-project-form";
+import { randomNDigits } from "@/lib/utils";
 
 type ProjectsSectionProps = {
   resume: ResumeContent;
@@ -51,7 +52,7 @@ export function ProjectsSection({ resume, onUpdate }: ProjectsSectionProps) {
     link: string;
   }) => {
     const newProject: ResumeProject = {
-      id: `project${Date.now()}`,
+      id: `project_${randomNDigits()}`,
       name: project.name,
       content: project.content,
       startDate: project.startDate,

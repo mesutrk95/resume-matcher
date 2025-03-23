@@ -25,6 +25,7 @@ import {
 
 import { VariationList } from "./variation-list";
 import { AddVariationForm } from "./add-variation-form";
+import { randomNDigits } from "@/lib/utils";
 
 type ItemComponentProps = {
   experienceId: string;
@@ -89,8 +90,8 @@ export function ItemComponent({
     const newVariations: Variation[] = content
       .split("\n")
       .filter((item) => item.trim().length > 0)
-      .map((content, index) => ({
-        id: `var${Date.now() + index}`,
+      .map((content) => ({
+        id: `var_${randomNDigits()}`,
         content,
         enabled: true,
       }));
@@ -228,7 +229,6 @@ export function ItemComponent({
 
             {/* Variations */}
             <div className="ml-0  ">
-
               {/* Variations List with Drag and Drop */}
               <DndContext
                 sensors={sensors}

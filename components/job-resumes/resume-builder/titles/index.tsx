@@ -21,6 +21,7 @@ import {
 } from "@dnd-kit/sortable";
 import { AddTitleForm } from "./add-title-form";
 import { TitleList } from "./title-list";
+import { randomNDigits } from "@/lib/utils";
 
 type TitlesSectionProps = {
   resume: ResumeContent;
@@ -44,7 +45,7 @@ export function TitlesSection({ resume, onUpdate }: TitlesSectionProps) {
 
   const handleSaveNewTitle = (content: string) => {
     const newTitle: ResumeTargetTitle = {
-      id: `title${Date.now()}`,
+      id: `title_${randomNDigits()}`,
       content,
       enabled: true,
     };

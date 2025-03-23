@@ -90,6 +90,13 @@ export function hashString(str: string, length = 64) {
 
 export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
   return Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, i) =>
-      array.slice(i * chunkSize, i * chunkSize + chunkSize)
+    array.slice(i * chunkSize, i * chunkSize + chunkSize)
   );
+}
+export function randomNDigits(n?: number) {
+  return Math.random().toString(36).substring(2, 8)
+  // return (
+  //   Math.floor(Math.random() * (9 * Math.pow(10, n || 5))) +
+  //   Math.pow(10, n || 5)
+  // );
 }
