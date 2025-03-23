@@ -1,13 +1,13 @@
+import {
+  jobKeywordTypeSchema,
+  jobKeywordSchema,
+  jobAnalyzeResultSchema,
+} from "@/schemas/job";
 
-export type JobKeywordType = "hard" | "soft" | "none"
+// Infer types from Zod schemas
+type JobKeywordType = z.infer<typeof jobKeywordTypeSchema>; // "hard" | "soft" | "none"
+type JobKeyword = z.infer<typeof jobKeywordSchema>;
+type JobAnalyzeResult = z.infer<typeof jobAnalyzeResultSchema>;
 
-export type JobKeyword = {
-    keyword: string;
-    level: number;
-    skill: JobKeywordType
-}
-
-export type JobAnalyzeResult = {
-    keywords: JobKeyword[]
-    summary: string
-}
+// Export inferred types
+export type { JobKeywordType, JobKeyword, JobAnalyzeResult };

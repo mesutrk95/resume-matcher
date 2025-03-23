@@ -113,6 +113,7 @@ export function ExperienceItem({
       id: `item_${randomNDigits()}`,
       description,
       enabled: true,
+      skills: [],
       variations: [],
     };
 
