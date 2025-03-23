@@ -22,6 +22,7 @@ import {
 import { AddEducationForm } from "./add-education-form";
 import { EducationList } from "./education-list";
 import { randomNDigits } from "@/lib/utils";
+import { ResumeBuilderCard } from "../resume-builder-card";
 
 type EducationsSectionProps = {
   resume: ResumeContent;
@@ -103,39 +104,34 @@ export function EducationsSection({
   };
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Education</CardTitle>
-        <Button onClick={handleAddEducation} disabled={addingEducation}>
-          <Plus className="h-4 w-4 mr-1" />
-          Add Education
-        </Button>
-      </CardHeader>
-      <div className="p-6 pt-0">
-        {addingEducation && (
-          <AddEducationForm
-            onSave={handleSaveNewEducation}
-            onCancel={handleCancelAddEducation}
-          />
-        )}
-
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
+    <ResumeBuilderCard
+      onAdd={handleAddEducation}
+      isAdding={addingEducation}
+      title="Education"
+      addButtonText="Add Education"
+    >
+      {addingEducation && (
+        <AddEducationForm
+          onSave={handleSaveNewEducation}
+          onCancel={handleCancelAddEducation}
+        />
+      )}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={resume.educations.map((education) => education.id)}
+          strategy={verticalListSortingStrategy}
         >
-          <SortableContext
-            items={resume.educations.map((education) => education.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <EducationList
-              resume={resume}
-              onUpdate={handleUpdateEducation}
-              onDelete={handleDeleteEducation}
-            />
-          </SortableContext>
-        </DndContext>
-      </div>
-    </Card>
+          <EducationList
+            resume={resume}
+            onUpdate={handleUpdateEducation}
+            onDelete={handleDeleteEducation}
+          />
+        </SortableContext>
+      </DndContext>
+    </ResumeBuilderCard>
   );
 }

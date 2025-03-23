@@ -22,6 +22,7 @@ import {
 import { AddTitleForm } from "./add-title-form";
 import { TitleList } from "./title-list";
 import { randomNDigits } from "@/lib/utils";
+import { ResumeBuilderCard } from "../resume-builder-card";
 
 type TitlesSectionProps = {
   resume: ResumeContent;
@@ -82,39 +83,35 @@ export function TitlesSection({ resume, onUpdate }: TitlesSectionProps) {
   };
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Target Titles</CardTitle>
-        <Button onClick={handleAddTitle} disabled={addingTitle}>
-          <Plus className="h-4 w-4 mr-1" />
-          Add Title
-        </Button>
-      </CardHeader>
-      <div className="p-6 pt-0">
-        {addingTitle && (
-          <AddTitleForm
-            onSave={handleSaveNewTitle}
-            onCancel={handleCancelAddTitle}
-          />
-        )}
+    <ResumeBuilderCard
+      onAdd={handleAddTitle}
+      isAdding={addingTitle}
+      title="Target Titles"
+      addButtonText="Add Title"
+    >
+      {addingTitle && (
+        <AddTitleForm
+          onSave={handleSaveNewTitle}
+          onCancel={handleCancelAddTitle}
+        />
+      )}
 
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={titles.map((title) => title.id)}
+          strategy={verticalListSortingStrategy}
         >
-          <SortableContext
-            items={titles.map((title) => title.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <TitleList
-              titles={titles}
-              onUpdate={handleUpdateTitle}
-              onDelete={handleDeleteTitle}
-            />
-          </SortableContext>
-        </DndContext>
-      </div>
-    </Card>
+          <TitleList
+            titles={titles}
+            onUpdate={handleUpdateTitle}
+            onDelete={handleDeleteTitle}
+          />
+        </SortableContext>
+      </DndContext>
+    </ResumeBuilderCard>
   );
 }

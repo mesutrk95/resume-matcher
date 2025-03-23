@@ -20,6 +20,7 @@ import { useState } from "react";
 import { AddExperienceForm } from "./add-experience-form";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { randomNDigits } from "@/lib/utils";
+import { ResumeBuilderCard } from "../resume-builder-card";
 
 type ExperiencesSectionProps = {
   resume: ResumeContent;
@@ -91,45 +92,37 @@ export function ExperiencesSection({
   };
 
   return (
-    <Card className="">
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Experiences</CardTitle>
+    <ResumeBuilderCard
+      onAdd={handleAddExperience}
+      isAdding={addingExperience}
+      title="Experiences"
+      addButtonText="Add Experience"
+    >
+      {/* Add Experience Form */}
+      {addingExperience && (
+        <AddExperienceForm
+          onSave={handleSaveNewExperience}
+          onCancel={handleCancelAddExperience}
+        />
+      )}
 
-        {!addingExperience ? (
-          <Button onClick={handleAddExperience}>
-            <Plus className="h-4 w-4 mr-1" />
-            Add Experience
-          </Button>
-        ) : null}
-      </CardHeader>
-
-      <div className="p-6 pt-0">
-        {/* Add Experience Form */}
-        {addingExperience && (
-          <AddExperienceForm
-            onSave={handleSaveNewExperience}
-            onCancel={handleCancelAddExperience}
-          />
-        )}
-
-        {/* Experiences List with Drag and Drop */}
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEndExperiences}
+      {/* Experiences List with Drag and Drop */}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEndExperiences}
+      >
+        <SortableContext
+          items={resume.experiences.map((exp) => exp.id)}
+          strategy={verticalListSortingStrategy}
         >
-          <SortableContext
-            items={resume.experiences.map((exp) => exp.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <ExperienceList
-              experiences={resume.experiences}
-              onUpdate={handleUpdateExperience}
-              onDelete={handleDeleteExperience}
-            />
-          </SortableContext>
-        </DndContext>
-      </div>
-    </Card>
+          <ExperienceList
+            experiences={resume.experiences}
+            onUpdate={handleUpdateExperience}
+            onDelete={handleDeleteExperience}
+          />
+        </SortableContext>
+      </DndContext>
+    </ResumeBuilderCard>
   );
 }

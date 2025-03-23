@@ -27,6 +27,7 @@ import { SkillItem } from "./skill-item";
 import { AddSkillsDialog } from "./add-skills-dialog";
 import { AddCategoryDialog } from "./add-category-dialog";
 import { randomNDigits } from "@/lib/utils";
+import { ResumeBuilderCard } from "../resume-builder-card";
 
 type SkillsSectionProps = {
   resume: ResumeContent;
@@ -140,14 +141,10 @@ export function SkillsSection({ resume, onUpdate }: SkillsSectionProps) {
   };
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Skills</CardTitle>
+    <ResumeBuilderCard
+      title="Skills"
+      buttons={
         <div className="flex items-center gap-2">
-          {/* <Button variant="outline" size="sm" onClick={toggleSort}>
-            <ArrowUpDown className="h-4 w-4 mr-1" />
-            Sort {sortAscending ? "A-Z" : "Z-A"}
-          </Button> */}
           <Button
             variant="outline"
             size="sm"
@@ -168,40 +165,39 @@ export function SkillsSection({ resume, onUpdate }: SkillsSectionProps) {
             Add Skills
           </Button>
         </div>
-      </CardHeader>
-      <div className="p-6 pt-0">
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          <div className="space-y-6">
-            {categories.map((category) => (
-              <CategorySection
-                key={category}
-                category={category}
-                skills={skills.filter((s) => s.category === category)}
+      }
+    >
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="space-y-6">
+          {categories.map((category) => (
+            <CategorySection
+              key={category}
+              category={category}
+              skills={skills.filter((s) => s.category === category)}
+              onUpdate={handleUpdateSkill}
+              onDelete={handleDeleteSkill}
+            />
+          ))}
+        </div>
+
+        <DragOverlay>
+          {activeSkill && (
+            <div className="opacity-80">
+              <SkillItem
+                skill={activeSkill}
                 onUpdate={handleUpdateSkill}
                 onDelete={handleDeleteSkill}
+                isDragging
               />
-            ))}
-          </div>
-
-          <DragOverlay>
-            {activeSkill && (
-              <div className="opacity-80">
-                <SkillItem
-                  skill={activeSkill}
-                  onUpdate={handleUpdateSkill}
-                  onDelete={handleDeleteSkill}
-                  isDragging
-                />
-              </div>
-            )}
-          </DragOverlay>
-        </DndContext>
-      </div>
+            </div>
+          )}
+        </DragOverlay>
+      </DndContext>
 
       <AddSkillsDialog
         open={addingSkills}
@@ -216,7 +212,7 @@ export function SkillsSection({ resume, onUpdate }: SkillsSectionProps) {
         onSave={handleAddCategory}
         existingCategories={categories}
       />
-    </Card>
+    </ResumeBuilderCard>
   );
 }
 
@@ -239,7 +235,9 @@ function CategorySection({
 
   return (
     <div className="space-y-2">
-      <h3 className="text-md font-medium">{category} ({skills.filter(s =>s.enabled).length})</h3>
+      <h3 className="text-md font-medium">
+        {category} ({skills.filter((s) => s.enabled).length})
+      </h3>
       <div
         ref={setNodeRef}
         className={`
