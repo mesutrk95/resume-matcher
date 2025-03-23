@@ -9,6 +9,7 @@ import {
 } from '@/routes';
 import { NextRequest, NextResponse } from 'next/server';
 import { HttpException, InternalServerErrorException } from '@/lib/exceptions';
+import { runWithRequestContext } from '@/lib/request-context';
 
 export const { auth } = NextAuth(authConfig);
 
@@ -16,62 +17,86 @@ export const { auth } = NextAuth(authConfig);
 const REQUEST_ID_HEADER = 'X-Request-ID';
 
 export default async function middleware(req: NextRequest) {
-  try {
-    const requestId = generateRequestId();
+  // Generate a request ID
+  const requestId = generateRequestId();
 
-    const requestHeaders = new Headers(req.headers);
-    requestHeaders.set(REQUEST_ID_HEADER, requestId);
+  // Use the request context mechanism
+  return runWithRequestContext(requestId, async () => {
+    try {
+      const requestHeaders = new Headers(req.headers);
+      requestHeaders.set(REQUEST_ID_HEADER, requestId);
 
-    const { nextUrl } = req;
-    const session = await auth();
-    const isLoggedIn = !!session;
+      const { nextUrl } = req;
+      const session = await auth();
+      const isLoggedIn = !!session;
 
-    const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-    if (isApiAuthRoute) {
-      return null;
-    }
-
-    const isPublicRoutes = publicRoutes.includes(nextUrl.pathname);
-    const isAuthRoutes = authRoutes.includes(nextUrl.pathname);
-
-    if (isAuthRoutes) {
-      if (isLoggedIn) {
-        return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+      const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
+      if (isApiAuthRoute) {
+        return null;
       }
-      return null;
-    }
 
-    if (!isLoggedIn && !isPublicRoutes) {
-      return Response.redirect(new URL('/login', nextUrl));
-    }
+      const isPublicRoutes = publicRoutes.includes(nextUrl.pathname);
+      const isAuthRoutes = authRoutes.includes(nextUrl.pathname);
 
-    // Continue with the request but with the added requestId header
-    const response = NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
+      if (isAuthRoutes) {
+        if (isLoggedIn) {
+          return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
+        }
+        return null;
+      }
 
-    // Also add requestId to response headers
-    response.headers.set(REQUEST_ID_HEADER, requestId);
+      if (!isLoggedIn && !isPublicRoutes) {
+        return Response.redirect(new URL('/login', nextUrl));
+      }
 
-    return response;
-  } catch (error) {
-    const isDev = process.env.NODE_ENV === 'development';
-    const requestId = req.headers.get(REQUEST_ID_HEADER) || generateRequestId();
+      // Continue with the request but with the added requestId header
+      const response = NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
 
-    // Handle HTTP exceptions
-    if (error instanceof HttpException) {
+      // Also add requestId to response headers
+      response.headers.set(REQUEST_ID_HEADER, requestId);
+
+      return response;
+    } catch (error) {
+      const isDev = process.env.NODE_ENV === 'development';
+
+      // Handle HTTP exceptions
+      if (error instanceof HttpException) {
+        return new NextResponse(
+          JSON.stringify({
+            success: false,
+            message: error.message,
+            statusCode: error.statusCode,
+            requestId,
+            ...(isDev && { stack: error.stack }),
+          }),
+          {
+            status: error.statusCode,
+            headers: {
+              'Content-Type': 'application/json',
+              [REQUEST_ID_HEADER]: requestId,
+            },
+          },
+        );
+      }
+
+      const internalError = new InternalServerErrorException(
+        error instanceof Error ? error.message : 'An unexpected error occurred',
+      );
+
       return new NextResponse(
         JSON.stringify({
           success: false,
-          message: error.message,
-          statusCode: error.statusCode,
+          message: internalError.message,
+          statusCode: internalError.statusCode,
           requestId,
-          ...(isDev && { stack: error.stack }),
+          stack: isDev && error instanceof Error ? error.stack : undefined,
         }),
         {
-          status: error.statusCode,
+          status: internalError.statusCode,
           headers: {
             'Content-Type': 'application/json',
             [REQUEST_ID_HEADER]: requestId,
@@ -79,28 +104,7 @@ export default async function middleware(req: NextRequest) {
         },
       );
     }
-
-    const internalError = new InternalServerErrorException(
-      error instanceof Error ? error.message : 'An unexpected error occurred',
-    );
-
-    return new NextResponse(
-      JSON.stringify({
-        success: false,
-        message: internalError.message,
-        statusCode: internalError.statusCode,
-        requestId,
-        stack: isDev && error instanceof Error ? error.stack : undefined,
-      }),
-      {
-        status: internalError.statusCode,
-        headers: {
-          'Content-Type': 'application/json',
-          [REQUEST_ID_HEADER]: requestId,
-        },
-      },
-    );
-  }
+  });
 }
 
 // Optionally, don't invoke Middleware on some paths

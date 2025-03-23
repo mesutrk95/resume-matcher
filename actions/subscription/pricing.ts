@@ -33,7 +33,6 @@ function stripeMethods(obj: any): any {
 }
 
 export const getSubscriptionPrices = async () => {
-  Logger.info('Fetching subscription prices');
   const stripe = getStripeServer();
   if (!stripe) {
     throw new InternalServerErrorException('Failed to initialize Stripe');

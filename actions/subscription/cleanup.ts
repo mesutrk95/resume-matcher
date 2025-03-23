@@ -26,8 +26,6 @@ export const cleanupAbandonedSubscriptions = async (userId: string) => {
   if (!subscription) return null;
 
   if (subscription.customerId && !subscription.subscriptionId) {
-    const requestId = `cleanup-${userId.substring(0, 6)}`;
-
     // Get subscriptions from Stripe
     const subscriptions = await stripe.subscriptions.list({
       customer: subscription.customerId,

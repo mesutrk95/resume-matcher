@@ -1,6 +1,8 @@
 import winston from 'winston';
 import 'winston-daily-rotate-file';
 import fs from 'fs';
+import { getCurrentRequestId } from './request-context';
+
 // Get configuration from environment variables
 const env = process.env.NODE_ENV || 'development';
 const configuredLogLevel =
@@ -39,14 +41,11 @@ const colors = {
 
 winston.addColors(colors);
 
-// We don't try to get request ID from headers automatically anymore
-// since it can cause issues in middleware
-
-// Add request ID to the logger format
+// Add request ID automatically to the logger format
 const logFormat = winston.format.printf(
-  ({ level, message, timestamp, requestId, ...metadata }) => {
-    // Use provided requestId or use 'no-req-id'
-    const reqId = requestId || 'no-req-id';
+  ({ level, message, timestamp, ...metadata }) => {
+    // Get requestId from AsyncLocalStorage context
+    const reqId = getCurrentRequestId();
 
     // Build the log message
     let logMessage = `${timestamp} [${reqId}] ${level}: ${message}`;
@@ -119,21 +118,5 @@ const Logger = winston.createLogger({
   transports: getTransports(),
 });
 
-// Helper functions to make it easier to include request ID
-const createLoggerWithRequestId = (requestId: string) => {
-  return {
-    debug: (message: string, meta: object = {}) =>
-      Logger.debug(message, { requestId, ...meta }),
-    info: (message: string, meta: object = {}) =>
-      Logger.info(message, { requestId, ...meta }),
-    warn: (message: string, meta: object = {}) =>
-      Logger.warn(message, { requestId, ...meta }),
-    error: (message: string, meta: object = {}) =>
-      Logger.error(message, { requestId, ...meta }),
-    http: (message: string, meta: object = {}) =>
-      Logger.http(message, { requestId, ...meta }),
-  };
-};
-
+// No need for helper functions with requestId since we automatically get it now
 export default Logger;
-export { createLoggerWithRequestId };
