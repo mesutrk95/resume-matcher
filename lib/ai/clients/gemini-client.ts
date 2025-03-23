@@ -1,11 +1,9 @@
-// lib/ai/clients/gemini-client.ts
-import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import {
   AIModelClient,
   AIRequestOptions,
   AIResponse,
   ContentItem,
-  TokenUsage,
 } from '../types';
 
 export class GeminiClient implements AIModelClient {

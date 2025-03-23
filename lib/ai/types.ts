@@ -23,13 +23,6 @@ export interface AIResponse {
 
 export type ContentType = 'text' | 'image' | 'pdf' | 'audio' | 'video';
 
-export interface ContentItem {
-  type: ContentType;
-  data: string | Buffer;
-  mimeType?: string;
-}
-
-// Base interface that all AI model clients must implement
 export interface AIModelClient {
   generateContent(
     prompt: string,
@@ -45,5 +38,43 @@ export interface AIModelClient {
     maxTokens: number;
     costPer1KInputTokens: number;
     costPer1KOutputTokens: number;
+  };
+}
+
+export type ResponseFormat = 'text' | 'json' | 'html';
+
+export interface ContentItem {
+  type: ContentType;
+  data: string | Buffer;
+  mimeType?: string;
+}
+
+export interface ValidationResult {
+  valid: boolean;
+  errors?: string[];
+}
+
+export type Validator<T> = (data: T) => ValidationResult;
+
+export interface AIRequestModel<TResponse = any> {
+  prompt: string;
+  responseFormat: ResponseFormat;
+  contents?: ContentItem[];
+
+  responseValidator?: Validator<TResponse>;
+
+  options?: {
+    maxTokens?: number;
+    temperature?: number;
+    topP?: number;
+    stopSequences?: string[];
+    timeout?: number;
+    provider?: string;
+    model?: string;
+  };
+
+  context?: {
+    userId?: string;
+    requestId?: string;
   };
 }
