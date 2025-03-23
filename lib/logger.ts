@@ -1,6 +1,7 @@
 import winston from 'winston';
 import 'winston-daily-rotate-file';
 import fs from 'fs';
+import { getCurrentRequestId } from './request-context';
 
 // Get configuration from environment variables
 const env = process.env.NODE_ENV || 'development';
@@ -40,20 +41,34 @@ const colors = {
 
 winston.addColors(colors);
 
+// Add request ID automatically to the logger format
+const logFormat = winston.format.printf(
+  ({ level, message, timestamp, ...metadata }) => {
+    // Get requestId from AsyncLocalStorage context
+    const reqId = getCurrentRequestId();
+
+    // Build the log message
+    let logMessage = `${timestamp} [${reqId}] ${level}: ${message}`;
+
+    // Add metadata if it exists and is not empty
+    if (metadata && Object.keys(metadata).length > 0) {
+      logMessage += ` ${JSON.stringify(metadata)}`;
+    }
+
+    return logMessage;
+  },
+);
+
 const consoleFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   winston.format.colorize({ all: true }),
-  winston.format.printf(
-    info => `${info.timestamp} ${info.level}: ${info.message}`,
-  ),
+  logFormat,
 );
 
 // Define the format for file logs
 const fileFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
-  winston.format.printf(
-    info => `${info.timestamp} ${info.level}: ${info.message}`,
-  ),
+  logFormat,
 );
 
 // Define transports based on environment
@@ -93,17 +108,6 @@ const getTransports = () => {
     );
   }
 
-  // In production, we could add other transports later (like database logging)
-  // if (env === 'production') {
-  //   // Add database logging example:
-  //   // transports.push(new winston.transports.MongoDB({
-  //   //   db: process.env.MONGODB_URI,
-  //   //   options: { useNewUrlParser: true, useUnifiedTopology: true },
-  //   //   collection: 'logs',
-  //   //   level: 'error',
-  //   // }));
-  // }
-
   return transports;
 };
 
@@ -114,4 +118,5 @@ const Logger = winston.createLogger({
   transports: getTransports(),
 });
 
+// No need for helper functions with requestId since we automatically get it now
 export default Logger;

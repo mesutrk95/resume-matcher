@@ -5,20 +5,19 @@ import { db } from '@/lib/db';
 import { getStripeServer } from '@/lib/stripe';
 import { response } from '@/lib/utils';
 import { getSubscriptionByUserId } from './customer';
+import {
+  BadRequestException,
+  UnauthorizedException,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@/lib/exceptions';
+import Logger from '@/lib/logger';
 
-// Cancel a subscription
 export const cancelUserSubscription = async () => {
   try {
     const user = await currentUser();
-
     if (!user || !user.id) {
-      return response({
-        success: false,
-        error: {
-          code: 401,
-          message: 'Unauthorized',
-        },
-      });
+      throw new UnauthorizedException('Unauthorized');
     }
 
     await cancelSubscription(user.id);
@@ -30,6 +29,16 @@ export const cancelUserSubscription = async () => {
         'Subscription scheduled for cancellation at the end of the billing period',
     });
   } catch (error: any) {
+    if (error instanceof UnauthorizedException) {
+      return response({
+        success: false,
+        error: {
+          code: 401,
+          message: error.message,
+        },
+      });
+    }
+
     return response({
       success: false,
       error: {
@@ -40,31 +49,26 @@ export const cancelUserSubscription = async () => {
   }
 };
 
-// Helper function to cancel a subscription
 export const cancelSubscription = async (userId: string) => {
   if (!userId) {
-    throw new Error('User ID is required');
+    throw new BadRequestException('User ID is required');
   }
 
   const subscription = await getSubscriptionByUserId(userId);
-
   if (!subscription?.subscriptionId) {
-    throw new Error('No subscription found');
+    throw new NotFoundException('No subscription found');
   }
 
   const stripe = getStripeServer();
-
   if (!stripe) {
-    throw new Error('Failed to initialize Stripe');
+    throw new InternalServerErrorException('Failed to initialize Stripe');
   }
 
   try {
-    // Cancel at period end
     await stripe.subscriptions.update(subscription.subscriptionId, {
       cancel_at_period_end: true,
     });
 
-    // Update database
     return db.subscription.update({
       where: { userId },
       data: {
@@ -72,24 +76,22 @@ export const cancelSubscription = async (userId: string) => {
       },
     });
   } catch (error: any) {
-    console.error('Error canceling subscription:', error);
-    throw new Error(`Failed to cancel subscription: ${error.message}`);
+    Logger.error('Error canceling subscription', {
+      userId,
+      subscriptionId: subscription.subscriptionId,
+      error: error.message,
+    });
+    throw new InternalServerErrorException(
+      `Failed to cancel subscription: ${error.message}`,
+    );
   }
 };
 
-// Reactivate a canceled subscription
 export const reactivateUserSubscription = async () => {
   try {
     const user = await currentUser();
-
     if (!user || !user.id) {
-      return response({
-        success: false,
-        error: {
-          code: 401,
-          message: 'Unauthorized',
-        },
-      });
+      throw new UnauthorizedException('Unauthorized');
     }
 
     await reactivateSubscription(user.id);
@@ -100,6 +102,16 @@ export const reactivateUserSubscription = async () => {
       message: 'Subscription reactivated successfully',
     });
   } catch (error: any) {
+    if (error instanceof UnauthorizedException) {
+      return response({
+        success: false,
+        error: {
+          code: 401,
+          message: error.message,
+        },
+      });
+    }
+
     return response({
       success: false,
       error: {
@@ -110,31 +122,26 @@ export const reactivateUserSubscription = async () => {
   }
 };
 
-// Helper function to reactivate a subscription
 export const reactivateSubscription = async (userId: string) => {
   if (!userId) {
-    throw new Error('User ID is required');
+    throw new BadRequestException('User ID is required');
   }
 
   const subscription = await getSubscriptionByUserId(userId);
-
   if (!subscription?.subscriptionId) {
-    throw new Error('No subscription found');
+    throw new NotFoundException('No subscription found');
   }
 
   const stripe = getStripeServer();
-
   if (!stripe) {
-    throw new Error('Failed to initialize Stripe');
+    throw new InternalServerErrorException('Failed to initialize Stripe');
   }
 
   try {
-    // Cancel the cancellation
     await stripe.subscriptions.update(subscription.subscriptionId, {
       cancel_at_period_end: false,
     });
 
-    // Update database
     return db.subscription.update({
       where: { userId },
       data: {
@@ -142,7 +149,13 @@ export const reactivateSubscription = async (userId: string) => {
       },
     });
   } catch (error: any) {
-    console.error('Error reactivating subscription:', error);
-    throw new Error(`Failed to reactivate subscription: ${error.message}`);
+    Logger.error('Error reactivating subscription', {
+      userId,
+      subscriptionId: subscription.subscriptionId,
+      error: error.message,
+    });
+    throw new InternalServerErrorException(
+      `Failed to reactivate subscription: ${error.message}`,
+    );
   }
 };
