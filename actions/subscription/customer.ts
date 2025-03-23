@@ -48,6 +48,7 @@ export const getUserSubscription = async () => {
         return await getSubscriptionByUserId(user.id);
       }
     } catch (error: any) {
+      Logger.error(`Failed to retrieve subscription ${subscriptionId}`, error);
       if (error.statusCode === 404) {
         await db.subscription.update({
           where: { userId: user.id },
