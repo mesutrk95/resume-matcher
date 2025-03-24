@@ -8,7 +8,7 @@ import {
 } from "@react-pdf/renderer";
 import { SeperateList } from "../shared/seperate-list";
 import { ResumeContent } from "@/types/resume";
-import React from "react";
+import React, { useMemo } from "react";
 
 // Register fonts (optional but recommended for professional CVs)
 Font.register({
@@ -28,100 +28,104 @@ Font.register({
   ],
 });
 
-// Define styles for PDF document
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: "column",
-    backgroundColor: "#FFFFFF",
-    padding: 30,
-    margin: 0,
-    fontFamily: "Open Sans",
-  },
-  section: {
-    marginBottom: 10,
-  },
-  header: {
-    marginBottom: 20,
-  },
-  name: {
-    fontSize: 18,
-    color: "#555555",
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  contactInfo: {
-    fontSize: 10,
-    color: "#333333",
-    marginBottom: 5,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    marginBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#EEEEEE",
-    paddingBottom: 3,
-  },
-  experience: {
-    marginBottom: 0,
-    fontSize: 10,
-  },
-  project: {
-    marginBottom: 5,
-    fontSize: 10,
-  },
-  experienceItem: {
-    marginBottom: 5,
-    marginLeft: 10,
-    fontSize: 10,
-  },
-  jobTitle: {
-    fontSize: 12,
-    marginBottom: 2,
-    fontWeight: "bold",
-  },
-  role: {
-    fontSize: 10,
-    marginBottom: 2,
-    fontWeight: "bold",
-  },
-  company: {
-    fontSize: 12,
-    marginBottom: 3,
-  },
-  date: {
-    fontSize: 10,
-    color: "#555555",
-    marginBottom: 3,
-  },
-  description: {
-    fontSize: 10,
-    lineHeight: 1.5,
-    marginBottom: 10,
-  },
-  skills: {
-    fontSize: 10,
-    lineHeight: 1.5,
-    marginBottom: 10,
-  },
-  link: {
-    fontSize: 10,
-    lineHeight: 1.5,
-  },
-});
-
 // CV Document Component
 export const ResumeDocument = ({
   resume,
-  showIdentifiers,
+  withIdentifiers,
+  skipFont,
 }: {
   resume: ResumeContent;
-  showIdentifiers?: boolean;
+  withIdentifiers?: boolean;
+  skipFont?: boolean;
 }) => {
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        page: {
+          flexDirection: "column",
+          backgroundColor: "#FFFFFF",
+          padding: 30,
+          margin: 0,
+          ...(!skipFont && { fontFamily: "Open Sans" }),
+        },
+        section: {
+          marginBottom: 10,
+        },
+        header: {
+          marginBottom: 20,
+        },
+        name: {
+          fontSize: 18,
+          color: "#555555",
+          marginBottom: 10,
+        },
+        title: {
+          fontSize: 24,
+          fontWeight: "bold",
+          marginBottom: 5,
+        },
+        contactInfo: {
+          fontSize: 10,
+          color: "#333333",
+          marginBottom: 5,
+        },
+        sectionTitle: {
+          fontSize: 14,
+          fontWeight: "bold",
+          marginBottom: 8,
+          borderBottomWidth: 1,
+          borderBottomColor: "#EEEEEE",
+          paddingBottom: 3,
+        },
+        experience: {
+          marginBottom: 0,
+          fontSize: 10,
+        },
+        project: {
+          marginBottom: 5,
+          fontSize: 10,
+        },
+        experienceItem: {
+          marginBottom: 5,
+          marginLeft: 10,
+          fontSize: 10,
+        },
+        jobTitle: {
+          fontSize: 12,
+          marginBottom: 2,
+          fontWeight: "bold",
+        },
+        role: {
+          fontSize: 10,
+          marginBottom: 2,
+          fontWeight: "bold",
+        },
+        company: {
+          fontSize: 12,
+          marginBottom: 3,
+        },
+        date: {
+          fontSize: 10,
+          color: "#555555",
+          marginBottom: 3,
+        },
+        description: {
+          fontSize: 10,
+          lineHeight: 1.5,
+          marginBottom: 10,
+        },
+        skills: {
+          fontSize: 10,
+          lineHeight: 1.5,
+          marginBottom: 10,
+        },
+        link: {
+          fontSize: 10,
+          lineHeight: 1.5,
+        },
+      }),
+    [skipFont]
+  );
   const summary = resume.summaries.find((s) => s.enabled);
   return (
     <Document>
@@ -155,7 +159,9 @@ export const ResumeDocument = ({
         {summary && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Professional Summary</Text>
-            <Text style={styles.description}>{showIdentifiers && <>[{summary.id}]</>} {summary.content}</Text>
+            <Text style={styles.description}>
+              {withIdentifiers && <>[{summary.id}]</>} {summary.content}
+            </Text>
           </View>
         )}
 
@@ -208,7 +214,7 @@ export const ResumeDocument = ({
                           key={item.id + variation.id}
                         >
                           {"\u2022 "}{" "}
-                          {showIdentifiers && <>[{variation.id}] </>}{" "}
+                          {withIdentifiers && <>[{variation.id}] </>}{" "}
                           {variation.content}
                         </Text>
                       ));
@@ -231,7 +237,9 @@ export const ResumeDocument = ({
                   {prj.startDate} - {prj.endDate}
                 </Text>
                 <Text style={styles.link}>{prj.link}</Text>
-                <Text style={styles.description}>{showIdentifiers && <>[{prj.id}]</>} {prj.content}</Text>
+                <Text style={styles.description}>
+                  {withIdentifiers && <>[{prj.id}]</>} {prj.content}
+                </Text>
               </React.Fragment>
               // </View>
             ))}

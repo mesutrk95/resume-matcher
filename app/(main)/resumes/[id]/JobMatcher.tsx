@@ -186,16 +186,14 @@ const ImprovementNote = ({
 
 export const JobMatcher = ({
   jobResume,
-  initialResume,
   initialJob,
 }: {
   jobResume: JobResume;
-  initialResume: ResumeContent;
   initialJob: Job;
 }) => {
   const router = useRouter();
   const { id: jobResumeId } = useParams();
-  const [resume, setResume] = useState<ResumeContent>(initialResume);
+  const { resume, saveResume } = useResumeBuilder();
   const [resumeAnalyzeData, setResumeAnalyzeData] = useState<
     ResumeAnalyzeResults | undefined
   >(jobResume.analyzeResults as ResumeAnalyzeResults);
@@ -281,238 +279,219 @@ export const JobMatcher = ({
     });
   };
 
-  const handleResumeUpdated = async (resume: ResumeContent) => {
-    // console.log("resume updateddddddddd");
-    try {
-      await updateJobResume({ ...jobResume, content: resume });
-    } catch (ex) {
-      toast.error("Something went wrong when saving the resume changes.");
-    }
-  };
-
   return (
-    <ResumeBuilderProvider
-      initialResume={resume}
-      onUpdated={handleResumeUpdated}
-    >
-      <div className="h-[calc(100vh-56px)]">
-        <Tabs
-          defaultValue="builder"
-          className="flex flex-col h-full justify-stretch "
-        >
-          {/* toolbar */}
-          <div className="shrink-0 relative z-1 flex items-center border-b ">
-            <div className="container">
-              <div className="flex justify-between items-center py-2">
-                <div>
-                  <h2 className="text-xl font-bold ">
-                    {jobResume.name} Resume
-                  </h2>
-                  <span className="text-muted-foreground text-xs">
-                    Last updated{" "}
-                    <Moment date={jobResume.updatedAt} utc fromNow />
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline">
-                        <Ellipsis />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                      <DropdownMenuItem
-                        disabled={isAnalyzingScores}
-                        onClick={() => handleAnalyzeScores(false)}
-                      >
-                        <Briefcase size={14} />
-                        Analyze Scores
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        disabled={isAnalyzingScores}
-                        onClick={() => handleAnalyzeScores(true)}
-                      >
-                        <Briefcase size={14} />
-                        Clean & Analyze Scores
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        disabled={isAnalyzingScores}
-                        onClick={() => {
-                          if (!jobAnalyzeResults?.keywords) return;
-                          const fr = constructFinalResume(
-                            initialResume,
-                            jobAnalyzeResults?.keywords
-                          );
-                          if (!fr) {
-                            toast.error(
-                              "Keywords are not extracted, please first analyze keywords."
-                            );
-                            return;
-                          }
-                          setResume(fr);
-                          toast.success("Auto select has been done!");
-                        }}
-                      >
-                        <CheckCheck size={14} />
-                        Auto-choose by keywords
-                      </DropdownMenuItem>
-
-                      {jobResume.baseResumeTemplateId && (
-                        <DropdownMenuItem
-                          disabled={isSyncingToTemplate}
-                          onClick={handleSyncToTemplate}
-                        >
-                          <RefreshCw size={14} />
-                          Sync to Template
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuItem
-                        disabled={isDeleting}
-                        onClick={handleDeleteJobResume}
-                      >
-                        <Trash size={14} />
-                        Delete Resume
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
+    <div className="h-[calc(100vh-56px)]">
+      <Tabs
+        defaultValue="builder"
+        className="flex flex-col h-full justify-stretch "
+      >
+        {/* toolbar */}
+        <div className="shrink-0 relative z-1 flex items-center border-b ">
+          <div className="container">
+            <div className="flex justify-between items-center py-2">
               <div>
-                <TabsList className=" " variant={"bottomline"}>
-                  <TabsTrigger value="builder" variant={"bottomline"}>
-                    <NotebookPen className="me-2" size={18} />
-                    Resume Builder
-                  </TabsTrigger>
-                  <TabsTrigger value="jd" variant={"bottomline"}>
-                    <BriefcaseBusiness className="me-2" size={18} />
-                    Job Description
-                  </TabsTrigger>
-                  <TabsTrigger value="score" variant={"bottomline"}>
-                    <Gauge className="me-2" size={18} />
-                    Resume Score
-                  </TabsTrigger>
-                  <TabsTrigger value="chat" variant={"bottomline"}>
-                    <BotMessageSquare className="me-2" size={18} />
-                    Ask AI
-                  </TabsTrigger>
-                </TabsList>
+                <h2 className="text-xl font-bold ">{jobResume.name} Resume</h2>
+                <span className="text-muted-foreground text-xs">
+                  Last updated <Moment date={jobResume.updatedAt} utc fromNow />
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                      <Ellipsis />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem
+                      disabled={isAnalyzingScores}
+                      onClick={() => handleAnalyzeScores(false)}
+                    >
+                      <Briefcase size={14} />
+                      Analyze Scores
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      disabled={isAnalyzingScores}
+                      onClick={() => handleAnalyzeScores(true)}
+                    >
+                      <Briefcase size={14} />
+                      Clean & Analyze Scores
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      disabled={isAnalyzingScores}
+                      onClick={() => {
+                        if (!jobAnalyzeResults?.keywords) return;
+                        const fr = constructFinalResume(
+                          resume,
+                          jobAnalyzeResults?.keywords
+                        );
+                        if (!fr) {
+                          toast.error(
+                            "Keywords are not extracted, please first analyze keywords."
+                          );
+                          return;
+                        }
+                        saveResume(fr);
+                        toast.success("Auto select has been done!");
+                      }}
+                    >
+                      <CheckCheck size={14} />
+                      Auto-choose by keywords
+                    </DropdownMenuItem>
+
+                    {jobResume.baseResumeTemplateId && (
+                      <DropdownMenuItem
+                        disabled={isSyncingToTemplate}
+                        onClick={handleSyncToTemplate}
+                      >
+                        <RefreshCw size={14} />
+                        Sync to Template
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem
+                      disabled={isDeleting}
+                      onClick={handleDeleteJobResume}
+                    >
+                      <Trash size={14} />
+                      Delete Resume
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
+            <div>
+              <TabsList className=" " variant={"bottomline"}>
+                <TabsTrigger value="builder" variant={"bottomline"}>
+                  <NotebookPen className="me-2" size={18} />
+                  Resume Builder
+                </TabsTrigger>
+                <TabsTrigger value="jd" variant={"bottomline"}>
+                  <BriefcaseBusiness className="me-2" size={18} />
+                  Job Description
+                </TabsTrigger>
+                <TabsTrigger value="score" variant={"bottomline"}>
+                  <Gauge className="me-2" size={18} />
+                  Resume Score
+                </TabsTrigger>
+                <TabsTrigger value="chat" variant={"bottomline"}>
+                  <BotMessageSquare className="me-2" size={18} />
+                  Ask AI
+                </TabsTrigger>
+              </TabsList>
+            </div>
           </div>
-          <div className="flex-auto h-0 overflow-hidden">
-            <div className="grid grid-cols-12 container overflow-hidden h-full relative">
-              <div className="pe-2 col-span-7 overflow-auto h-full">
-                <TabsContent className="pt-0 " value="builder">
-                  {resume && (
-                    <ResumeBuilder resumeAnalyzeData={resumeAnalyzeData} />
-                  )}
-                </TabsContent>
-                <TabsContent className="" value="jd">
-                  <JobPostPreview
-                    job={job}
-                    onJobUpdated={setJob}
-                    // onScoresUpdate={setScores}
-                    // resume={resume}
-                  />
-                </TabsContent>
-                <TabsContent className="" value="score">
-                  <BlobProvider
-                    document={
-                      <ResumeDocument resume={resume} showIdentifiers />
-                    }
-                  >
-                    {({ blob, url, loading, error }) => {
-                      // if (error) {
-                      //   return <div>Error: {error}</div>;
-                      // }
+        </div>
+        <div className="flex-auto h-0 overflow-hidden">
+          <div className="grid grid-cols-12 container overflow-hidden h-full relative">
+            <div className="pe-2 col-span-7 overflow-auto h-full">
+              <TabsContent className="pt-0 " value="builder">
+                {resume && (
+                  <ResumeBuilder resumeAnalyzeData={resumeAnalyzeData} />
+                )}
+              </TabsContent>
+              <TabsContent className="" value="jd">
+                <JobPostPreview
+                  job={job}
+                  onJobUpdated={setJob}
+                  // onScoresUpdate={setScores}
+                  // resume={resume}
+                />
+              </TabsContent>
+              <TabsContent className="" value="score">
+                <BlobProvider
+                  document={<ResumeDocument resume={resume} withIdentifiers />}
+                >
+                  {({ blob, url, loading, error }) => {
+                    // if (error) {
+                    //   return <div>Error: {error}</div>;
+                    // }
 
-                      return (
-                        <LoadingButton
-                          onClick={() => handleResumeScore(blob!)}
-                          loading={loading || isRatingResume}
-                          loadingText="Thinking ..."
-                        >
-                          Rate Resume!
-                        </LoadingButton>
-                      );
-                    }}
-                  </BlobProvider>
+                    return (
+                      <LoadingButton
+                        onClick={() => handleResumeScore(blob!)}
+                        loading={loading || isRatingResume}
+                        loadingText="Thinking ..."
+                      >
+                        Rate Resume!
+                      </LoadingButton>
+                    );
+                  }}
+                </BlobProvider>
 
-                  {/* <CustomPromptDialog /> */}
+                {/* <CustomPromptDialog /> */}
 
-                  {/* <CircleX className="text-red-500" /> Missed Keywords{" "} */}
-                  {resumeAnalyzeData?.missed_keywords && (
-                    <div className="flex flex-col gap-5 mt-10">
-                      <h3 className="text-xl font-bold">
-                        Rate: {resumeAnalyzeData.score}%
+                {/* <CircleX className="text-red-500" /> Missed Keywords{" "} */}
+                {resumeAnalyzeData?.missed_keywords && (
+                  <div className="flex flex-col gap-5 mt-10">
+                    <h3 className="text-xl font-bold">
+                      Rate: {resumeAnalyzeData.score}%
+                    </h3>
+                    <div className="flex flex-col gap-2">
+                      <h3 className="text-lg font-bold flex items-center gap-2">
+                        <CircleX className="text-red-500" size={18} />
+                        Missed Keywords (
+                        {resumeAnalyzeData.missed_keywords.length})
                       </h3>
-                      <div className="flex flex-col gap-2">
-                        <h3 className="text-lg font-bold flex items-center gap-2">
-                          <CircleX className="text-red-500" size={18} />
-                          Missed Keywords (
-                          {resumeAnalyzeData.missed_keywords.length})
-                        </h3>
-                        <div className="flex flex-wrap gap-1">
-                          {resumeAnalyzeData.missed_keywords.map((k) => (
-                            <span
-                              key={k}
-                              className="px-2 py-1 text-sm bg-slate-200 rounded-full"
-                            >
-                              {k}
-                            </span>
-                          ))}
-                        </div>
+                      <div className="flex flex-wrap gap-1">
+                        {resumeAnalyzeData.missed_keywords.map((k) => (
+                          <span
+                            key={k}
+                            className="px-2 py-1 text-sm bg-slate-200 rounded-full"
+                          >
+                            {k}
+                          </span>
+                        ))}
                       </div>
-                      <div className="flex flex-col gap-2">
-                        <h3 className="text-lg font-bold flex items-center gap-2">
-                          <CheckCircle className="text-green-500" size={18} />
-                          Matched Keywords (
-                          {resumeAnalyzeData.matched_keywords.length})
-                        </h3>
-                        <div className="flex flex-wrap gap-1">
-                          {resumeAnalyzeData.matched_keywords.map((k) => (
-                            <span
-                              key={k}
-                              className="px-2 py-1 text-sm bg-slate-200 rounded-full"
-                            >
-                              {k}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      {resumeAnalyzeData.notes?.length > 0 && (
-                        <div className="flex flex-col gap-2">
-                          <h3 className="text-lg font-bold flex items-center gap-2">
-                            Improvement Notes ({resumeAnalyzeData.notes.length})
-                          </h3>
-                          <div className="flex flex-col gap-4">
-                            {resumeAnalyzeData.notes.map((note, index) => (
-                              <ImprovementNote
-                                key={note.title}
-                                index={index}
-                                note={note}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
-                  )}
-                </TabsContent>
-                <TabsContent className="h-full mt-0 py-5" value="chat">
-                  <ChatInterface jobResume={jobResume} resume={resume} />
-                </TabsContent>
-              </div>
-              <div className="col-span-5 overflow-auto h-full">
-                <div className="p-5 h-full w-full">
-                  <CVPreview data={resume} jobResume={jobResume} />
-                </div>
+                    <div className="flex flex-col gap-2">
+                      <h3 className="text-lg font-bold flex items-center gap-2">
+                        <CheckCircle className="text-green-500" size={18} />
+                        Matched Keywords (
+                        {resumeAnalyzeData.matched_keywords.length})
+                      </h3>
+                      <div className="flex flex-wrap gap-1">
+                        {resumeAnalyzeData.matched_keywords.map((k) => (
+                          <span
+                            key={k}
+                            className="px-2 py-1 text-sm bg-slate-200 rounded-full"
+                          >
+                            {k}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    {resumeAnalyzeData.notes?.length > 0 && (
+                      <div className="flex flex-col gap-2">
+                        <h3 className="text-lg font-bold flex items-center gap-2">
+                          Improvement Notes ({resumeAnalyzeData.notes.length})
+                        </h3>
+                        <div className="flex flex-col gap-4">
+                          {resumeAnalyzeData.notes.map((note, index) => (
+                            <ImprovementNote
+                              key={note.title}
+                              index={index}
+                              note={note}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </TabsContent>
+              <TabsContent className="h-full mt-0 py-5" value="chat">
+                <ChatInterface jobResume={jobResume} resume={resume} />
+              </TabsContent>
+            </div>
+            <div className="col-span-5 overflow-auto h-full">
+              <div className="p-5 h-full w-full">
+                <CVPreview data={resume} jobResume={jobResume} />
               </div>
             </div>
           </div>
-        </Tabs>
-      </div>
-    </ResumeBuilderProvider>
+        </div>
+      </Tabs>
+    </div>
   );
 };

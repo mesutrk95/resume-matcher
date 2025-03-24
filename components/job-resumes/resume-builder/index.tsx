@@ -17,7 +17,7 @@ type IPropsType = {
 };
 
 export function ResumeBuilder({ resumeAnalyzeData }: IPropsType) {
-  const { resume, saveResume, setScores } = useResumeBuilder();
+  const { setScores } = useResumeBuilder();
 
   useEffect(() => {
     setScores(resumeAnalyzeData?.itemsScore);

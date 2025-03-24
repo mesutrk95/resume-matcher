@@ -4,6 +4,9 @@ import { currentUser } from "@/lib/auth";
 import { JobMatcher } from "./JobMatcher";
 import { ResumeContent } from "@/types/resume";
 import { Metadata } from "next";
+import { ResumeBuilderProvider } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
+import { updateJobResume } from "@/actions/job-resume";
+import { toast } from "sonner";
 
 interface EditResumePageProps {
   params: {
@@ -38,10 +41,19 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
   const content = jobResume?.content as ResumeContent;
 
   return (
-    <JobMatcher
-      jobResume={jobResume}
+    <ResumeBuilderProvider
       initialResume={content}
-      initialJob={jobResume.job}
-    ></JobMatcher>
+      onUpdated={async (resume) => {
+        "use server";
+        // console.log("resume updateddddddddd");
+        try {
+          await updateJobResume({ ...jobResume, content: resume });
+        } catch (ex) {
+          toast.error("Something went wrong when saving the resume changes.");
+        }
+      }}
+    >
+      <JobMatcher jobResume={jobResume} initialJob={jobResume.job}></JobMatcher>
+    </ResumeBuilderProvider>
   );
 }

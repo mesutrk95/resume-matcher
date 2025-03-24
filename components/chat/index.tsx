@@ -20,13 +20,9 @@ import type { JobResume } from "@prisma/client";
 import type { ResumeContent } from "@/types/resume";
 import { BlobProvider } from "@react-pdf/renderer";
 import { ResumeDocument } from "../job-resumes/resume-document";
-
-type Message = {
-  id: string;
-  content: string;
-  role: "user" | "assistant";
-  timestamp: Date;
-};
+import { toast } from "sonner";
+import { randomNDigits } from "@/lib/utils";
+import { ContentWithMeta } from "./types";
 
 // Predefined questions
 const PREDEFINED_QUESTIONS = [
@@ -40,10 +36,20 @@ const PREDEFINED_QUESTIONS = [
 
 const INITIAL_MESSAGE = {
   id: "1",
-  content: "Hello! How can I assist you today?",
-  role: "assistant",
+  parts: [{ text: "Hello! How can I assist you today?" }],
+  role: "model",
   timestamp: new Date(),
-} as Message;
+} as ContentWithMeta;
+
+const blob2base64 = (pdfBlob: Blob) => {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(pdfBlob);
+
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+};
 
 export function ChatInterface({
   jobResume,
@@ -52,7 +58,7 @@ export function ChatInterface({
   jobResume: JobResume;
   resume: ResumeContent;
 }) {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ContentWithMeta[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [shareResume, setShareResume] = useState(true);
@@ -67,7 +73,7 @@ export function ChatInterface({
     scrollToBottom();
   }, [messages]);
 
-  const addMessage = (message: Message) => {
+  const addMessage = (message: ContentWithMeta) => {
     setMessages((prev) => {
       const msgs = [...prev, message];
       localStorage.setItem(
@@ -82,7 +88,7 @@ export function ChatInterface({
     const chatsStr = localStorage.getItem("ai-conversation-" + jobResume.id);
 
     if (chatsStr) {
-      const messages = JSON.parse(chatsStr) as Message[];
+      const messages = JSON.parse(chatsStr) as ContentWithMeta[];
       setMessages(messages.slice(0, 30));
     } else {
       addMessage(INITIAL_MESSAGE);
@@ -92,51 +98,46 @@ export function ChatInterface({
   // Check if chat is just starting (only has the initial greeting)
   const isChatStarting =
     messages.length <= 1 &&
-    messages[0]?.role === "assistant" &&
-    messages[0]?.content === "Hello! How can I assist you today?";
+    messages[0]?.role === "model" &&
+    messages[0]?.parts?.[0]?.text === "Hello! How can I assist you today?";
 
   const handleSendMessage = async (
     pdfBlob: Blob | null,
     customQuestion?: string
   ) => {
-    const questionToSend = customQuestion || inputValue;
-    if (!questionToSend.trim()) return;
+    try {
+      const questionToSend = customQuestion || inputValue;
+      if (!questionToSend.trim()) return;
 
-    // Add user message
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: questionToSend,
-      role: "user",
-      timestamp: new Date(),
-    };
+      // Add user message
+      const userMessage: ContentWithMeta = {
+        parts: [{ text: questionToSend }],
+        id: randomNDigits(),
+        timestamp: new Date(),
+        role: "user",
+      };
 
-    addMessage(userMessage);
-    if (!customQuestion) setInputValue("");
-    setIsLoading(true);
+      addMessage(userMessage);
+      if (!customQuestion) setInputValue("");
+      setIsLoading(true);
 
-    let formData;
-    if (shareResume && pdfBlob) {
-      const file = new File([pdfBlob], "resume.pdf", {
-        type: "application/pdf",
-      });
-      formData = new FormData();
-      formData.append("file", file);
+      const file = await blob2base64(pdfBlob!);
+      const newMessages = await askCustomQuestionFromAI(
+        jobResume.id,
+        questionToSend,
+        file,
+        shareJD,
+        messages.filter((m) => m.id !== "1")
+      );
+      console.log(newMessages);
+      setMessages(newMessages.updatedHistory);
+      localStorage.setItem(
+        "ai-conversation-" + jobResume.id,
+        JSON.stringify(newMessages.updatedHistory)
+      );
+    } catch (ex) {
+      toast.error(ex?.toString() || "Something went wrong");
     }
-
-    const resp = await askCustomQuestionFromAI(
-      jobResume.id,
-      questionToSend,
-      shareJD,
-      formData
-    );
-
-    const aiMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      content: resp.result,
-      role: "assistant",
-      timestamp: new Date(),
-    };
-    addMessage(aiMessage);
     setIsLoading(false);
   };
 
@@ -178,8 +179,8 @@ export function ChatInterface({
       <CardContent className="flex-auto h-0 pt-6 px-2 py-0">
         <ScrollArea className="h-full pr-4">
           <div className="flex flex-col space-y-4 py-4">
-            {messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
+            {messages.map((message, index) => (
+              <ChatMessage key={index} message={message} />
             ))}
             {isLoading && (
               <div className="flex justify-center">
@@ -193,7 +194,9 @@ export function ChatInterface({
         </ScrollArea>
       </CardContent>
       <CardFooter className="shrink-0 p-4 flex flex-col border-t">
-        <BlobProvider document={<ResumeDocument resume={resume} />}>
+        <BlobProvider
+          document={<ResumeDocument resume={resume} skipFont={true} />}
+        >
           {({ blob, url, loading, error }) => (
             <>
               {isChatStarting && (

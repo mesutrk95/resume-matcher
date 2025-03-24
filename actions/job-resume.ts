@@ -10,7 +10,11 @@ import {
   ResumeContent,
   ResumeItemScoreAnalyze,
 } from "@/types/resume";
-import { getAIHtmlResponse, getAIJsonResponse } from "@/lib/ai";
+import {
+  ContentWithMeta,
+  getAIJsonResponse,
+  getGeminiChatResponse,
+} from "@/lib/ai";
 import { JobAnalyzeResult } from "@/types/job";
 import { chunkArray, hashString } from "@/lib/utils";
 import { analyzeJobByAI } from "./job";
@@ -63,7 +67,8 @@ export const createJobResume = async (
 
 export const updateJobResume = async (resume: JobResume) => {
   const user = await currentUser();
-  const content = resume.content && migrateResumeContent(resume.content as ResumeContent)
+  const content =
+    resume.content && migrateResumeContent(resume.content as ResumeContent);
 
   // Update job in database
   const updatedJob = await db.jobResume.update({
@@ -78,8 +83,8 @@ export const updateJobResume = async (resume: JobResume) => {
     },
   });
 
-  revalidatePath("/resumes");
-  revalidatePath(`/resumes/${resume.id}`);
+  // revalidatePath("/resumes");
+  // revalidatePath(`/resumes/${resume.id}`);
 
   return updatedJob;
 };
@@ -360,17 +365,10 @@ export const analyzeResumeItemsScores = async (
 export const askCustomQuestionFromAI = async (
   jobResumeId: string,
   question: string,
+  pdfFile: string,
   shareJobDescription: boolean,
-  formData?: FormData | null
+  history: ContentWithMeta[] = []
 ) => {
-  let pdfBuffer = null;
-  if (formData) {
-    const file = formData.get("file") as File;
-
-    const bytes = await file.arrayBuffer();
-    pdfBuffer = Buffer.from(bytes);
-  }
-
   const user = await currentUser();
 
   const jobResume = await db.jobResume.findUnique({
@@ -391,16 +389,36 @@ export const askCustomQuestionFromAI = async (
   if (!jobResume) {
     throw new Error("Job Resume not found");
   }
-  const content: (string | Buffer)[] = [question];
-  pdfBuffer && content.push(pdfBuffer);
-  shareJobDescription &&
-    jobResume.job.description &&
-    content.push(
-      `Company: ${jobResume.job.companyName}\n${jobResume.job.description}`
-    );
+  const jd =
+    (shareJobDescription &&
+      jobResume.job.description &&
+      `## Job description: 
+    Company: ${jobResume.job.companyName}
+    ${jobResume.job.description}`) ||
+    "";
 
-  return getAIHtmlResponse(
-    "Your role is to answer the question based on my resume and JD, give ready to user answers. give me your message in html format and feel free to use font-bold class and <br/> tag for new line. I wanna show the html output in a message bubble.",
-    content
+  const messageParts = [
+    { text: question },
+    {
+      inlineData: {
+        data: pdfFile.split(",")[1],
+        mimeType: "application/pdf",
+      },
+    },
+  ];
+
+  const systemInstruction = `Your role is to answer the question based on my resume and JD, give ready to user answers. 
+  ${jd}
+  give me your message in html format and feel free to use font-bold class and br tag for new line. I wanna show the html output in a message bubble.`;
+
+  const instructionSuffix =
+    " Reminder: Respond in HTML format using <br>, <span class='font-bold'>, etc.";
+
+  const result = await getGeminiChatResponse(
+    systemInstruction,
+    messageParts,
+    instructionSuffix,
+    history
   );
+  return result;
 };
