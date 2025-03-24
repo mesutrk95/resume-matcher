@@ -29,7 +29,7 @@ const CVPreview = ({
 
   return (
     <PDFViewer showToolbar={false} className="w-full h-full">
-      <ResumeDocument resume={data} showIdentifiers={false} />
+      <ResumeDocument resume={data} withIdentifiers={false} />
     </PDFViewer>
     // <div className="flex flex-col h-screen gap-4">
     //   <div className="w-full flex-grow ">
