@@ -18,7 +18,6 @@ export function ChatMessage({ message }: ChatMessageProps) {
           isUser ? "bg-primary text-primary-foreground" : "bg-muted"
         )}
       >
-        {/* {JSON.stringify(message)} */}
         {message?.parts?.map((part, index) => (
           <Fragment key={index}>
             {typeof part.text !== "undefined" && (
@@ -30,11 +29,6 @@ export function ChatMessage({ message }: ChatMessageProps) {
                 }}
               />
             )}
-            {/* {typeof part.inlineData !== "undefined" && (
-              <p className="text-primary-foreground">File attached</p>
-            )} */}
-
-            {/* <Markdown>{part.text.replaceAll('```markdown', '').replaceAll('```', '')}</Markdown>  */}
           </Fragment>
         ))}
         <p className="mt-1 text-xs opacity-50">

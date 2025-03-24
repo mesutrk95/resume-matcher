@@ -23,6 +23,7 @@ import { ResumeDocument } from "../job-resumes/resume-document";
 import { toast } from "sonner";
 import { randomNDigits } from "@/lib/utils";
 import { ContentWithMeta } from "./types";
+import ErrorBoundary from "../shared/error-boundary";
 
 // Predefined questions
 const PREDEFINED_QUESTIONS = [
@@ -180,7 +181,12 @@ export function ChatInterface({
         <ScrollArea className="h-full pr-4">
           <div className="flex flex-col space-y-4 py-4">
             {messages.map((message, index) => (
-              <ChatMessage key={index} message={message} />
+              <ErrorBoundary
+                key={message.id + index}
+                fallback={<div>Error! Something went wrong.</div>}
+              >
+                <ChatMessage message={message} />
+              </ErrorBoundary>
             ))}
             {isLoading && (
               <div className="flex justify-center">
