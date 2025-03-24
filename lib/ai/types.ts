@@ -1,4 +1,3 @@
-// lib/ai/types.ts
 export interface AIRequestOptions {
   maxTokens?: number;
   temperature?: number;
