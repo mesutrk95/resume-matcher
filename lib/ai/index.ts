@@ -4,6 +4,9 @@ import {
   ContentItem,
   ResponseFormat,
   AIRequestOptions,
+  ChatHistoryItem,
+  ContentWithMeta,
+  MessagePart,
 } from './types';
 import { GeminiClient } from './clients/gemini-client';
 import { AIServiceManager } from './service-manager';
@@ -60,7 +63,7 @@ Always be precise, factual, and helpful.`;
 export async function getAITextResponse(
   prompt: string,
   contents?: (string | Buffer)[],
-  options?: AIRequestOptions,
+  systemInstructions?: string,
 ): Promise<{
   result: string;
   error?: string;
@@ -74,7 +77,7 @@ export async function getAITextResponse(
       type: typeof c === 'string' ? 'text' : 'pdf',
       data: c,
     })),
-    options,
+    systemInstruction: systemInstructions,
   });
 }
 
@@ -84,7 +87,7 @@ export async function getAITextResponse(
 export async function getAIJsonResponse(
   prompt: string,
   contents?: (string | Buffer)[],
-  options?: AIRequestOptions,
+  systemInstructions?: string,
 ): Promise<{
   result: any;
   error?: string;
@@ -98,7 +101,7 @@ export async function getAIJsonResponse(
       type: typeof c === 'string' ? 'text' : 'pdf',
       data: c,
     })),
-    options,
+    systemInstruction: systemInstructions,
   });
 }
 
@@ -108,7 +111,7 @@ export async function getAIJsonResponse(
 export async function getAIHtmlResponse(
   prompt: string,
   contents?: (string | Buffer)[],
-  options?: AIRequestOptions,
+  systemInstructions?: string,
 ): Promise<{
   result: string;
   error?: string;
@@ -122,7 +125,7 @@ export async function getAIHtmlResponse(
       type: typeof c === 'string' ? 'text' : 'pdf',
       data: c,
     })),
-    options,
+    systemInstruction: systemInstructions,
   });
 }
 
@@ -134,6 +137,7 @@ async function processAIRequest<T>(request: {
   responseFormat: ResponseFormat;
   contents?: ContentItem[];
   options?: AIRequestOptions;
+  systemInstruction?: string;
 }): Promise<{
   result: T;
   error?: string;
@@ -157,6 +161,7 @@ async function processAIRequest<T>(request: {
       responseFormat: request.responseFormat,
       contents: request.contents,
       options: request.options,
+      systemInstruction: request.systemInstruction,
       context: {
         userId,
         requestId,

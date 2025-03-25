@@ -1,3 +1,5 @@
+// lib/ai/types.ts
+
 export interface AIRequestOptions {
   maxTokens?: number;
   temperature?: number;
@@ -29,6 +31,13 @@ export interface AIModelClient {
     options?: AIRequestOptions,
   ): Promise<AIResponse>;
 
+  // Method for chat support
+  generateChatContent(
+    history: ChatHistoryItem[],
+    systemInstruction?: string,
+    options?: AIRequestOptions,
+  ): Promise<AIResponse>;
+
   calculateTokens(text: string): number;
 
   getModelInfo(): {
@@ -55,10 +64,29 @@ export interface ValidationResult {
 
 export type Validator<T> = (data: T) => ValidationResult;
 
+// Define our own Part interface instead of importing from Google
+export interface MessagePart {
+  text?: string;
+  inlineData?: {
+    data: string;
+    mimeType: string;
+  };
+}
+
+export interface ChatHistoryItem {
+  role: 'user' | 'model' | 'system';
+  parts: MessagePart[];
+  id?: string;
+  timestamp?: Date;
+}
+
 export interface AIRequestModel<TResponse = any> {
   prompt: string;
   responseFormat: ResponseFormat;
   contents?: ContentItem[];
+
+  chatHistory?: ChatHistoryItem[];
+  systemInstruction?: string;
 
   responseValidator?: Validator<TResponse>;
 
@@ -77,3 +105,6 @@ export interface AIRequestModel<TResponse = any> {
     requestId?: string;
   };
 }
+
+// Export a type for compatibility with existing code
+export interface ContentWithMeta extends ChatHistoryItem {}
