@@ -54,7 +54,8 @@ export const createJobResume = async (
     data: {
       jobId: jobId,
       baseResumeTemplateId: resumeTemplateId,
-      content: migrateResumeContent(resumeTemplate.content as ResumeContent) || {},
+      content:
+        migrateResumeContent(resumeTemplate.content as ResumeContent) || {},
       name: `${job?.title} at ${job?.companyName}`,
       userId: user?.id!,
     },
@@ -151,7 +152,7 @@ You are an AI-powered resume optimization assistant. Your task is to analyze res
 Please analyze and optimize the following resume to better match the job description and ATS requirements.
 
 **Resume:**
-${resumeExperiencesToString(jobResume.content as ResumeContent, true)}
+${resumeExperiencesToString(jobResume.content as ResumeContent, true, true)}
 
 **Job Description:**
 ${jobResume?.job.title}
@@ -229,20 +230,24 @@ const analyzeResumeExperiencesScores = async (
   analyzeResults: JobAnalyzeResult,
   content: string
 ) => {
-  const prompt = `I'm trying to find the best matches of my experiences based on the job description to ensure they pass ATS easily. For each variation or project item, you need to:
+  const systemInstructions = `I'm trying to find the best matches of my experiences based on the job description to ensure they pass ATS easily. For each variation or project item, you need to:
   
-1. Assign a score (on a scale from 0 to 1) based on how many relevant keywords from the job description are present in the item. The score does not require a full match with all JD keywords, but rather reflects the relevance of the item to the JD.
+  1. Assign a score (on a scale from 0 to 1) that it reflects the relevance of the item to the JD.
   2. Provide a list of exact words or phrases (matched_keywords) that appear in both the item and the job description. Only include words or phrases that are an exact match.
   
   Return the results in the following format:
-  [{ "id": "variation_id", "score": 0.55, "matched_keywords": ["exact_word1", "exact_word2", ...] }, ...] 
-  `;
+  [{ "id": "variation_id", "score": 0.55, "matched_keywords": ["exact_word1", "exact_word2", ...] }, ...]`;
 
-  const generatedContent = await getAIJsonResponse(prompt, [
+  const prompt =
     `## Job description summary: ${analyzeResults.summary}\n ## My Resume Items\n` +
-      content +
-      "\n Ensure the response is in a valid JSON format with no extra text! Make sure all the variations have score.",
-  ]);
+    content +
+    "\n Ensure the response is in a valid JSON format with no extra text! Make sure all the variations have score.";
+
+  const generatedContent = await getAIJsonResponse(
+    prompt,
+    [],
+    systemInstructions
+  );
 
   return generatedContent;
 };

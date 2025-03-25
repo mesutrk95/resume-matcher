@@ -50,8 +50,8 @@ const resumeProjectSchema = z.object({
   name: z.string(),
   link: z.string(),
   content: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   enabled: z.boolean(),
 });
 
@@ -82,8 +82,8 @@ const resumeEducationSchema = z.object({
   id: z.string(),
   content: z.string(),
   enabled: z.boolean(),
-  startDate: z.string(),
-  endDate: z.string(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   institution: z.string(),
   location: z.string(),
   degree: z.string(),

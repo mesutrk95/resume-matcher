@@ -13,12 +13,16 @@ export function findVariation(resume: ResumeContent, varId: string) {
 
 export const resumeExperiencesToString = (
   resume: ResumeContent,
-  withIdentifiers?: boolean
+  withIdentifiers?: boolean,
+  onlyEnabledItems?: boolean
 ) => {
   let content = "";
   resume.experiences.forEach((exp) => {
-    if (!exp.enabled) return;
-    exp.items.forEach((item) => {
+    if (onlyEnabledItems && !exp.enabled) return;
+    const items = onlyEnabledItems
+      ? exp.items.filter((i) => i.enabled)
+      : exp.items;
+    items.forEach((item) => {
       const variation = item.variations.find((v) => v.enabled);
       if (variation?.content)
         content += `${(withIdentifiers && `[${variation.id}]`) || ""} ${
@@ -53,7 +57,7 @@ export const convertResumeObjectToString = (
   }
 
   content += `Experiences\n`;
-  content += resumeExperiencesToString(resume, withIdentifiers);
+  content += resumeExperiencesToString(resume, withIdentifiers, true);
 
   resume.projects.forEach((prj) => {
     if (!prj.enabled) return;

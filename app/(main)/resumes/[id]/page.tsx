@@ -53,7 +53,7 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
         }
       }}
     >
-      <JobMatcher jobResume={jobResume} initialJob={jobResume.job}></JobMatcher>
+      <JobMatcher jobResume={jobResume} job={jobResume.job}></JobMatcher>
     </ResumeBuilderProvider>
   );
 }

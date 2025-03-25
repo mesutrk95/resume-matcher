@@ -32,6 +32,7 @@ const PREDEFINED_QUESTIONS = [
   "What were the last hard moments and how did you handle them",
   "What are your key strengths for this position?",
   "How does your experience align with this role?",
+  "Give me a good professional summary for the resume",
   "Give me a cover letter",
 ];
 

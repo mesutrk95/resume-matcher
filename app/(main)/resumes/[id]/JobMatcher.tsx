@@ -184,10 +184,10 @@ const ImprovementNote = ({
 
 export const JobMatcher = ({
   jobResume,
-  initialJob,
+  job,
 }: {
   jobResume: JobResume;
-  initialJob: Job;
+  job: Job;
 }) => {
   const router = useRouter();
   const { id: jobResumeId } = useParams();
@@ -195,7 +195,7 @@ export const JobMatcher = ({
   const [resumeAnalyzeData, setResumeAnalyzeData] = useState<
     ResumeAnalyzeResults | undefined
   >(jobResume.analyzeResults as ResumeAnalyzeResults);
-  const [job, setJob] = useState<Job>(initialJob);
+  // const [job, setJob] = useState<Job>(initialJob);
 
   const jobAnalyzeResults = job.analyzeResults as JobAnalyzeResult;
 
@@ -277,6 +277,8 @@ export const JobMatcher = ({
       }
     });
   };
+
+  // console.log(resumeExperiencesToString(resume, true, true))
 
   return (
     <div className="h-[calc(100vh-56px)]">
@@ -392,7 +394,7 @@ export const JobMatcher = ({
               <TabsContent className="" value="jd">
                 <JobPostPreview
                   job={job}
-                  onJobUpdated={setJob}
+                  // onJobUpdated={setJob}
                   // onScoresUpdate={setScores}
                   // resume={resume}
                 />
@@ -489,8 +491,8 @@ export const JobMatcher = ({
                 <ChatInterface jobResume={jobResume} resume={resume} />
               </TabsContent>
             </div>
-            <div className="col-span-5 overflow-auto h-full">
-              <div className="p-5 h-full w-full">
+            <div className="col-span-5 overflow-hidden h-full">
+              <div className="p-0 h-full w-full relative">
                 <CVPreview data={resume} jobResume={jobResume} />
               </div>
             </div>
