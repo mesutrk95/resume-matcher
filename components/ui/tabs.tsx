@@ -33,7 +33,7 @@ const tabsTriggerVariants = cva(
 
         outline: "px-3 py-3 text-sm font-medium ring-offset-background transition-all1 data-[state=active]:border-b-2 data-[state=active]:border-black data-[state=active]:text-foreground text-muted-foreground test-start",
 
-        bottomline: "px-3 py-3 text-sm font-medium ring-offset-background transition-all1 data-[state=active]:border-b-2 data-[state=active]:border-black data-[state=active]:text-foreground text-muted-foreground test-start px-10",
+        bottomline: "px-10 py-3 text-sm font-medium ring-offset-background transition-all1 data-[state=active]:border-b-2 data-[state=active]:border-black data-[state=active]:text-foreground text-muted-foreground test-start ",
         // Add more variants here
       },
     },

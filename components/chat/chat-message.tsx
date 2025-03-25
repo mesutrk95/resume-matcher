@@ -14,7 +14,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
     <div className={cn("ps-2 flex", isUser ? "justify-end" : "justify-start")}>
       <div
         className={cn(
-          "max-w-[80%] rounded-lg px-4 py-2",
+          "max-w-[70%] rounded-lg px-4 py-2 text-sm",
           isUser ? "bg-primary text-primary-foreground" : "bg-muted"
         )}
       >

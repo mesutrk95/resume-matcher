@@ -126,6 +126,7 @@ export const ResumeDocument = ({
       }),
     [skipFont]
   );
+
   const summary = resume.summaries.find((s) => s.enabled);
   return (
     <Document>
@@ -160,7 +161,8 @@ export const ResumeDocument = ({
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Professional Summary</Text>
             <Text style={styles.description}>
-              {withIdentifiers && <>[{summary.id}]</>} {summary.content}
+              {withIdentifiers && <>[{summary.id}] </>}
+              {summary.content}
             </Text>
           </View>
         )}
@@ -213,8 +215,7 @@ export const ResumeDocument = ({
                           // className="text-sm"
                           key={item.id + variation.id}
                         >
-                          {"\u2022 "}{" "}
-                          {withIdentifiers && <>[{variation.id}] </>}{" "}
+                          {"\u2022"} {withIdentifiers && <>[{variation.id}] </>}
                           {variation.content}
                         </Text>
                       ));
@@ -238,7 +239,8 @@ export const ResumeDocument = ({
                 </Text>
                 <Text style={styles.link}>{prj.link}</Text>
                 <Text style={styles.description}>
-                  {withIdentifiers && <>[{prj.id}]</>} {prj.content}
+                  {withIdentifiers && <>[{prj.id}] </>}
+                  {prj.content}
                 </Text>
               </React.Fragment>
               // </View>
