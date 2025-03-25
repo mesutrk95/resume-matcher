@@ -7,7 +7,7 @@ import { useResizeObserver } from "usehooks-ts";
 
 const workerSrc =
   process.env.NODE_ENV === "production"
-    ? `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
+    ? `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
     : new URL(
         "pdfjs-dist/build/pdf.worker.min.mjs",
         import.meta.url
