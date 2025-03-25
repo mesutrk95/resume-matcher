@@ -5,6 +5,7 @@ import {
   AIRequestModel,
   ContentItem,
   ResponseFormat,
+  ChatMessage,
 } from './types';
 import Logger from '@/lib/logger';
 import { getCurrentRequestId } from '@/lib/request-context';
@@ -49,6 +50,9 @@ export class AIServiceManager {
     let retryCount = 0;
     let lastError: Error | null = null;
 
+    // Check if this is a chat request
+    const isChatRequest = request.chatHistory && request.chatHistory.length > 0;
+
     // Check usage limits if user ID is provided
     if (userId) {
       const canProceed = await this.usageService.checkAndRecordIntent(
@@ -61,21 +65,32 @@ export class AIServiceManager {
       }
     }
 
-    // Process the prompt
-    const processedPrompt = await this.processPrompt(request);
-
     // Select the client (currently just using default)
     const client = this.getClientForRequest(request);
 
     // Retry loop
     while (retryCount <= this.maxRetries) {
       try {
-        // Call the AI service
-        const response = await client.generateContent(
-          processedPrompt,
-          request.contents,
-          request.options,
-        );
+        let response;
+
+        if (isChatRequest) {
+          // Handle chat request
+          response = await client.generateChatContent(
+            request.chatHistory!,
+            request.systemInstruction,
+            request.options,
+          );
+        } else {
+          // Process the prompt for non-chat requests
+          const processedPrompt = await this.processPrompt(request);
+
+          // Call the AI service with the processed prompt
+          response = await client.generateContent(
+            processedPrompt,
+            request.contents,
+            request.options,
+          );
+        }
 
         // Record actual token usage
         if (userId) {
@@ -161,18 +176,41 @@ export class AIServiceManager {
    * Estimate token usage for a request
    */
   private estimateTokenUsage(request: AIRequestModel<any>): number {
-    // Calculate prompt tokens (simple estimation)
-    let estimatedTokens = this.defaultClient.calculateTokens(request.prompt);
+    let estimatedTokens = 0;
 
-    // Add tokens for each content item that's text
-    if (request.contents) {
-      for (const content of request.contents) {
-        if (content.type === 'text' && typeof content.data === 'string') {
-          estimatedTokens += this.defaultClient.calculateTokens(content.data);
-        } else {
-          // For non-text content, add a fixed estimate
-          // This is very rough and should be refined based on actual usage
-          estimatedTokens += 500;
+    // For chat requests, estimate based on chat history
+    if (request.chatHistory && request.chatHistory.length > 0) {
+      // Add tokens for system instruction if present
+      if (request.systemInstruction) {
+        estimatedTokens += this.defaultClient.calculateTokens(
+          request.systemInstruction,
+        );
+      }
+
+      // Add tokens for each message in the history
+      for (const message of request.chatHistory) {
+        for (const part of message.parts) {
+          if (part.text) {
+            estimatedTokens += this.defaultClient.calculateTokens(part.text);
+          } else if (part.inlineData) {
+            // For non-text parts (like images), add a fixed estimate
+            estimatedTokens += 500;
+          }
+        }
+      }
+    } else {
+      // For regular requests, calculate based on prompt
+      estimatedTokens = this.defaultClient.calculateTokens(request.prompt);
+
+      // Add tokens for each content item
+      if (request.contents) {
+        for (const content of request.contents) {
+          if (content.type === 'text' && typeof content.data === 'string') {
+            estimatedTokens += this.defaultClient.calculateTokens(content.data);
+          } else {
+            // For non-text content, add a fixed estimate
+            estimatedTokens += 500;
+          }
         }
       }
     }

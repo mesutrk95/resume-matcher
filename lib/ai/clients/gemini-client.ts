@@ -4,6 +4,7 @@ import {
   AIRequestOptions,
   AIResponse,
   ContentItem,
+  ChatMessage,
 } from '../types';
 
 export class GeminiClient implements AIModelClient {
@@ -87,6 +88,72 @@ export class GeminiClient implements AIModelClient {
     }
   }
 
+  async generateChatContent(
+    history: ChatMessage[],
+    systemInstruction?: string,
+    options?: AIRequestOptions,
+  ): Promise<AIResponse> {
+    try {
+      const generationConfig = {
+        maxOutputTokens: options?.maxTokens,
+        temperature: options?.temperature,
+        topP: options?.topP,
+        stopSequences: options?.stopSequences,
+      };
+
+      // Get the model with generation config and system instruction
+      const model = this.client.getGenerativeModel({
+        model: this.modelName,
+        generationConfig,
+        systemInstruction,
+      });
+
+      // Format history for Gemini
+      const formattedHistory = history.map(msg => ({
+        role: msg.role,
+        parts: msg.parts,
+      }));
+
+      const chat = model.startChat({
+        history: formattedHistory.slice(0, -1), // All but the last message
+      });
+
+      // Get the latest user message
+      const lastMessage = formattedHistory[formattedHistory.length - 1];
+      const messageParts = lastMessage.parts;
+
+      // Send the message
+      const result = await chat.sendMessage(messageParts);
+      const text = result.response.text();
+
+      // Calculate token usage (approximate)
+      const historyText = history
+        .map(msg => msg.parts.map(part => part.text || '').join(' '))
+        .join(' ');
+
+      const promptTokens = this.calculateTokens(historyText);
+      const completionTokens = this.calculateTokens(text);
+
+      return {
+        content: text,
+        model: this.modelName,
+        tokenUsage: {
+          promptTokens,
+          completionTokens,
+          totalTokens: promptTokens + completionTokens,
+        },
+        finishReason: 'stop',
+      };
+    } catch (error) {
+      console.error('Gemini Chat API error:', error);
+      throw new Error(
+        `Gemini Chat API error: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+    }
+  }
+
   private transformContentItem(item: ContentItem): any {
     switch (item.type) {
       case 'text':
@@ -138,8 +205,8 @@ export class GeminiClient implements AIModelClient {
       provider: 'Google',
       model: this.modelName,
       maxTokens: this.modelName.includes('pro') ? 32768 : 8192,
-      costPer1KInputTokens: 0.00025, // Example rate
-      costPer1KOutputTokens: 0.00125, // Example rate
+      costPer1KInputTokens: 0.00025,
+      costPer1KOutputTokens: 0.00125,
     };
   }
 }

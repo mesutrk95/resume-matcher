@@ -1,3 +1,4 @@
+// lib/ai/types.ts
 export interface AIRequestOptions {
   maxTokens?: number;
   temperature?: number;
@@ -29,6 +30,13 @@ export interface AIModelClient {
     options?: AIRequestOptions,
   ): Promise<AIResponse>;
 
+  // New method for chat support
+  generateChatContent(
+    history: ChatMessage[],
+    systemInstruction?: string,
+    options?: AIRequestOptions,
+  ): Promise<AIResponse>;
+
   calculateTokens(text: string): number;
 
   getModelInfo(): {
@@ -55,10 +63,26 @@ export interface ValidationResult {
 
 export type Validator<T> = (data: T) => ValidationResult;
 
+export interface ChatMessage {
+  role: 'user' | 'model' | 'system';
+  parts: {
+    text?: string;
+    inlineData?: {
+      data: string;
+      mimeType: string;
+    };
+  }[];
+  id?: string;
+  timestamp?: Date;
+}
+
 export interface AIRequestModel<TResponse = any> {
   prompt: string;
   responseFormat: ResponseFormat;
   contents?: ContentItem[];
+
+  chatHistory?: ChatMessage[];
+  systemInstruction?: string;
 
   responseValidator?: Validator<TResponse>;
 

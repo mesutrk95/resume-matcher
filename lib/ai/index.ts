@@ -4,6 +4,7 @@ import {
   ContentItem,
   ResponseFormat,
   AIRequestOptions,
+  ChatMessage,
 } from './types';
 import { GeminiClient } from './clients/gemini-client';
 import { AIServiceManager } from './service-manager';
@@ -13,6 +14,7 @@ import { createStandardResponseProcessors } from './responseProcessors';
 import { getCurrentRequestId } from '@/lib/request-context';
 import { currentUser } from '@/lib/auth';
 import Logger from '@/lib/logger';
+import { randomNDigits } from '@/lib/utils';
 
 // Singleton instance of the AI service manager
 let _serviceManager: AIServiceManager | null = null;
@@ -127,6 +129,77 @@ export async function getAIHtmlResponse(
 }
 
 /**
+ * Helper function to get a chat response from AI
+ */
+export async function getAIChatResponse(
+  history: ChatMessage[],
+  systemInstruction?: string,
+  options?: AIRequestOptions,
+): Promise<{
+  result: string;
+  updatedHistory: ChatMessage[];
+  error?: string;
+}> {
+  try {
+    // Get the service manager
+    const serviceManager = createAIServiceManager();
+
+    // Get current user ID if available (for usage tracking)
+    const user = await currentUser().catch(() => null);
+    const userId = user?.id;
+
+    // Get request ID for tracking
+    const requestId = getCurrentRequestId();
+
+    // Create a dummy prompt for compatibility (not actually used for chat)
+    const dummyPrompt = 'Chat request';
+
+    // Create the request model
+    const requestModel: AIRequestModel<string> = {
+      prompt: dummyPrompt,
+      responseFormat: 'text',
+      chatHistory: history,
+      systemInstruction,
+      options,
+      context: {
+        userId,
+        requestId,
+      },
+    };
+
+    // Execute the request
+    const result = await serviceManager.executeRequest<string>(requestModel);
+
+    // Create updated history with the new response
+    const newModelMessage: ChatMessage = {
+      role: 'model',
+      parts: [{ text: result }],
+      id: randomNDigits().toString(),
+      timestamp: new Date(),
+    };
+
+    const updatedHistory = [...history, newModelMessage];
+
+    // Return successful result with updated history
+    return {
+      result,
+      updatedHistory,
+    };
+  } catch (error) {
+    Logger.error('AI chat request failed', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+
+    // Return error information
+    return {
+      result: '',
+      updatedHistory: history,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+}
+
+/**
  * Process an AI request with error handling
  */
 async function processAIRequest<T>(request: {
@@ -194,3 +267,6 @@ export * from './errors';
 export * from './service-manager';
 export * from './usage-service';
 export * from './clients/gemini-client';
+
+// Export a type for compatibility with existing code
+export interface ContentWithMeta extends ChatMessage {}
