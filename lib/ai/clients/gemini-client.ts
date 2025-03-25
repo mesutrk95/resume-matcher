@@ -1,11 +1,11 @@
-import { GoogleGenerativeAI, Content, Part } from '@google/generative-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import {
   AIModelClient,
   AIRequestOptions,
   AIResponse,
   ContentItem,
   ChatHistoryItem,
-  ChatPart,
+  MessagePart,
 } from '../types';
 import Logger from '@/lib/logger';
 
@@ -39,10 +39,10 @@ export class GeminiClient implements AIModelClient {
       });
 
       // Transform content items to Gemini-specific format
-      const geminiContents: Part[] = [
+      const geminiContents = [
         { text: prompt },
         ...(contents || []).map(item => this.transformContentItem(item)),
-      ].filter(Boolean) as Part[];
+      ].filter(Boolean);
 
       // Create request options with timeout
       const requestOptions = options?.timeout
@@ -111,7 +111,7 @@ export class GeminiClient implements AIModelClient {
       });
 
       // Convert our custom history format to Google's Content format
-      const formattedHistory: Content[] = history.slice(0, -1).map(msg => ({
+      const formattedHistory = history.slice(0, -1).map(msg => ({
         role: msg.role,
         parts: msg.parts.map(part => this.ensureValidPart(part)),
       }));
@@ -168,7 +168,7 @@ export class GeminiClient implements AIModelClient {
   }
 
   // Ensure the part is valid for Google's API
-  private ensureValidPart(part: any): Part {
+  private ensureValidPart(part: MessagePart): any {
     // If it's already a valid Part object with only text or inlineData
     if (
       typeof part === 'object' &&
@@ -176,7 +176,7 @@ export class GeminiClient implements AIModelClient {
         ('inlineData' in part && typeof part.inlineData === 'object')) &&
       Object.keys(part).length <= 1
     ) {
-      return part as Part;
+      return part;
     }
 
     // If it's a string, convert to text part
@@ -205,7 +205,7 @@ export class GeminiClient implements AIModelClient {
     return { text: '' };
   }
 
-  private transformContentItem(item: ContentItem): Part | null {
+  private transformContentItem(item: ContentItem): any | null {
     try {
       switch (item.type) {
         case 'text':

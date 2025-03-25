@@ -1,12 +1,5 @@
-// lib/ai/service-manager.ts
 import { GeminiClient } from './clients/gemini-client';
-import {
-  AIModelClient,
-  AIRequestModel,
-  ContentItem,
-  ResponseFormat,
-  ChatHistoryItem,
-} from './types';
+import { AIModelClient, AIRequestModel, ResponseFormat } from './types';
 import Logger from '@/lib/logger';
 import { getCurrentRequestId } from '@/lib/request-context';
 import { AIUsageService } from './usage-service';
@@ -14,7 +7,6 @@ import { TokenLimitExceededError, AIServiceError } from './errors';
 import { PromptProcessor } from './promptProcessors/base';
 import { ResponseProcessor } from './responseProcessors/base';
 
-// Configuration for the AI Service Manager
 export interface AIServiceManagerConfig {
   maxRetries: number;
   defaultClient?: AIModelClient;
@@ -36,6 +28,7 @@ export class AIServiceManager {
     this.responseProcessors = config.responseProcessors || [];
     this.usageService = config.usageService;
 
+    // Initialize default client but allow it to be overridden for testing
     this.defaultClient =
       config.defaultClient ||
       new GeminiClient(process.env.GEMINI_API_KEY || '', 'gemini-1.5-pro');

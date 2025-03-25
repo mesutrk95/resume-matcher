@@ -1,44 +1,44 @@
-"use client";
+'use client';
 
-import type React from "react";
-import { useState, useRef, useEffect } from "react";
-import { Send, MessageSquare, Eraser } from "lucide-react";
+import type React from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { Send, MessageSquare, Eraser } from 'lucide-react';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { ChatMessage } from "./chat-message";
-import { askCustomQuestionFromAI } from "@/actions/job-resume";
-import type { JobResume } from "@prisma/client";
-import type { ResumeContent } from "@/types/resume";
-import { BlobProvider } from "@react-pdf/renderer";
-import { ResumeDocument } from "../job-resumes/resume-document";
-import { toast } from "sonner";
-import { randomNDigits } from "@/lib/utils";
-import { ContentWithMeta } from "./types";
-import ErrorBoundary from "../shared/error-boundary";
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { ChatMessage } from './chat-message';
+import { askCustomQuestionFromAI } from '@/actions/job-resume';
+import type { JobResume } from '@prisma/client';
+import type { ResumeContent } from '@/types/resume';
+import { BlobProvider } from '@react-pdf/renderer';
+import { ResumeDocument } from '../job-resumes/resume-document';
+import { toast } from 'sonner';
+import { randomNDigits } from '@/lib/utils';
+import { ContentWithMeta } from './types';
+import ErrorBoundary from '../shared/error-boundary';
 
 // Predefined questions
 const PREDEFINED_QUESTIONS = [
-  "Why do you think you are the best fit for this job?",
-  "What did you do in the past that you can proud yourself",
-  "What were the last hard moments and how did you handle them",
-  "What are your key strengths for this position?",
-  "How does your experience align with this role?",
-  "Give me a cover letter",
+  'Why do you think you are the best fit for this job?',
+  'What did you do in the past that you can proud yourself',
+  'What were the last hard moments and how did you handle them',
+  'What are your key strengths for this position?',
+  'How does your experience align with this role?',
+  'Give me a cover letter',
 ];
 
 const INITIAL_MESSAGE = {
-  id: "1",
-  parts: [{ text: "Hello! How can I assist you today?" }],
-  role: "model",
+  id: '1',
+  parts: [{ text: 'Hello! How can I assist you today?' }],
+  role: 'model',
   timestamp: new Date(),
 } as ContentWithMeta;
 
@@ -48,7 +48,7 @@ const blob2base64 = (pdfBlob: Blob) => {
     reader.readAsDataURL(pdfBlob);
 
     reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
+    reader.onerror = error => reject(error);
   });
 };
 
@@ -60,14 +60,14 @@ export function ChatInterface({
   resume: ResumeContent;
 }) {
   const [messages, setMessages] = useState<ContentWithMeta[]>([]);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [shareResume, setShareResume] = useState(true);
   const [shareJD, setShareJD] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -75,18 +75,18 @@ export function ChatInterface({
   }, [messages]);
 
   const addMessage = (message: ContentWithMeta) => {
-    setMessages((prev) => {
+    setMessages(prev => {
       const msgs = [...prev, message];
       localStorage.setItem(
-        "ai-conversation-" + jobResume.id,
-        JSON.stringify(msgs)
+        'ai-conversation-' + jobResume.id,
+        JSON.stringify(msgs),
       );
       return msgs;
     });
   };
 
   useEffect(() => {
-    const chatsStr = localStorage.getItem("ai-conversation-" + jobResume.id);
+    const chatsStr = localStorage.getItem('ai-conversation-' + jobResume.id);
 
     if (chatsStr) {
       const messages = JSON.parse(chatsStr) as ContentWithMeta[];
@@ -99,12 +99,12 @@ export function ChatInterface({
   // Check if chat is just starting (only has the initial greeting)
   const isChatStarting =
     messages.length <= 1 &&
-    messages[0]?.role === "model" &&
-    messages[0]?.parts?.[0]?.text === "Hello! How can I assist you today?";
+    messages[0]?.role === 'model' &&
+    messages[0]?.parts?.[0]?.text === 'Hello! How can I assist you today?';
 
   const handleSendMessage = async (
     pdfBlob: Blob | null,
-    customQuestion?: string
+    customQuestion?: string,
   ) => {
     try {
       const questionToSend = customQuestion || inputValue;
@@ -115,11 +115,11 @@ export function ChatInterface({
         parts: [{ text: questionToSend }],
         id: randomNDigits(),
         timestamp: new Date(),
-        role: "user",
+        role: 'user',
       };
 
       addMessage(userMessage);
-      if (!customQuestion) setInputValue("");
+      if (!customQuestion) setInputValue('');
       setIsLoading(true);
 
       const file = await blob2base64(pdfBlob!);
@@ -128,22 +128,22 @@ export function ChatInterface({
         questionToSend,
         file,
         shareJD,
-        messages.filter((m) => m.id !== "1")
+        messages.filter(m => m.id !== '1'),
       );
       console.log(newMessages);
       setMessages(newMessages.updatedHistory);
       localStorage.setItem(
-        "ai-conversation-" + jobResume.id,
-        JSON.stringify(newMessages.updatedHistory)
+        'ai-conversation-' + jobResume.id,
+        JSON.stringify(newMessages.updatedHistory),
       );
     } catch (ex) {
-      toast.error(ex?.toString() || "Something went wrong");
+      toast.error(ex?.toString() || 'Something went wrong');
     }
     setIsLoading(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent, blob: Blob | null) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage(blob);
     }
@@ -153,7 +153,7 @@ export function ChatInterface({
     handleSendMessage(blob, question);
   };
   const clearChat = () => {
-    localStorage.removeItem("ai-conversation-" + jobResume.id);
+    localStorage.removeItem('ai-conversation-' + jobResume.id);
     setMessages([INITIAL_MESSAGE]);
   };
 
@@ -227,14 +227,14 @@ export function ChatInterface({
                 </div>
               )}
               <div className="flex w-full items-center space-x-2">
-                <Button size="icon" variant={"outline"} onClick={clearChat}>
+                <Button size="icon" variant={'outline'} onClick={clearChat}>
                   <Eraser className="h-4 w-4" />
                 </Button>
                 <Input
                   placeholder="Type your message..."
                   value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(e, blob)}
+                  onChange={e => setInputValue(e.target.value)}
+                  onKeyDown={e => handleKeyDown(e, blob)}
                   disabled={isLoading}
                   className="flex-1"
                 />

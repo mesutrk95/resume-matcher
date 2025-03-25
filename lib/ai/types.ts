@@ -1,5 +1,4 @@
 // lib/ai/types.ts
-import { Part } from '@google/generative-ai';
 
 export interface AIRequestOptions {
   maxTokens?: number;
@@ -32,7 +31,7 @@ export interface AIModelClient {
     options?: AIRequestOptions,
   ): Promise<AIResponse>;
 
-  // New method for chat support
+  // Method for chat support
   generateChatContent(
     history: ChatHistoryItem[],
     systemInstruction?: string,
@@ -65,19 +64,20 @@ export interface ValidationResult {
 
 export type Validator<T> = (data: T) => ValidationResult;
 
-export interface ChatHistoryItem {
-  role: 'user' | 'model' | 'system';
-  parts: Part[];
-  id?: string;
-  timestamp?: Date;
-}
-
-export interface ChatPart {
+// Define our own Part interface instead of importing from Google
+export interface MessagePart {
   text?: string;
   inlineData?: {
     data: string;
     mimeType: string;
   };
+}
+
+export interface ChatHistoryItem {
+  role: 'user' | 'model' | 'system';
+  parts: MessagePart[];
+  id?: string;
+  timestamp?: Date;
 }
 
 export interface AIRequestModel<TResponse = any> {

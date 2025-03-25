@@ -6,6 +6,7 @@ import {
   AIRequestOptions,
   ChatHistoryItem,
   ContentWithMeta,
+  MessagePart,
 } from './types';
 import { GeminiClient } from './clients/gemini-client';
 import { AIServiceManager } from './service-manager';
@@ -15,8 +16,6 @@ import { createStandardResponseProcessors } from './responseProcessors';
 import { getCurrentRequestId } from '@/lib/request-context';
 import { currentUser } from '@/lib/auth';
 import Logger from '@/lib/logger';
-import { randomNDigits } from '@/lib/utils';
-import { Part } from '@google/generative-ai';
 
 // Singleton instance of the AI service manager
 let _serviceManager: AIServiceManager | null = null;
@@ -128,147 +127,6 @@ export async function getAIHtmlResponse(
     })),
     systemInstruction: systemInstructions,
   });
-}
-
-/**
- * Helper function to get a chat response from AI
- */
-export async function getAIChatResponse(
-  history: ChatHistoryItem[],
-  systemInstruction?: string,
-  options?: AIRequestOptions,
-): Promise<{
-  result: string;
-  updatedHistory: ChatHistoryItem[];
-  error?: string;
-}> {
-  try {
-    // Get the service manager
-    const serviceManager = createAIServiceManager();
-
-    // Get current user ID if available (for usage tracking)
-    const user = await currentUser().catch(() => null);
-    const userId = user?.id;
-
-    // Get request ID for tracking
-    const requestId = getCurrentRequestId();
-
-    // Create a dummy prompt for compatibility (not actually used for chat)
-    const dummyPrompt = 'Chat request';
-
-    // Create the request model
-    const requestModel: AIRequestModel<string> = {
-      prompt: dummyPrompt,
-      responseFormat: 'text',
-      chatHistory: history,
-      systemInstruction,
-      options,
-      context: {
-        userId,
-        requestId,
-      },
-    };
-
-    // Execute the request
-    const result = await serviceManager.executeRequest<string>(requestModel);
-
-    // Create updated history with the new response
-    const newModelMessage: ChatHistoryItem = {
-      role: 'model',
-      parts: [{ text: result }],
-      id: randomNDigits().toString(),
-      timestamp: new Date(),
-    };
-
-    const updatedHistory = [...history, newModelMessage];
-
-    // Return successful result with updated history
-    return {
-      result,
-      updatedHistory,
-    };
-  } catch (error) {
-    Logger.error('AI chat request failed', {
-      error: error instanceof Error ? error.message : String(error),
-    });
-
-    // Return error information
-    return {
-      result: '',
-      updatedHistory: history,
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
-}
-
-/**
- * Helper function to get Gemini Chat response
- */
-export async function getGeminiChatResponse(
-  systemInstruction: string,
-  messageParts: Part[],
-  instructionSuffix: string | null,
-  history?: ContentWithMeta[],
-): Promise<{
-  response: string;
-  updatedHistory: ContentWithMeta[];
-}> {
-  try {
-    const genAI = new GeminiClient(
-      process.env.GEMINI_API_KEY || '',
-      'gemini-2.0-flash',
-    );
-
-    // Prepare history without instructions
-    const formattedHistory =
-      history?.map(item => ({
-        role: item.role,
-        parts: item.parts,
-        id: item.id,
-        timestamp: item.timestamp,
-      })) || [];
-
-    // Create a new user message with the current message parts
-    const newUserMessage: ContentWithMeta = {
-      role: 'user',
-      parts: messageParts,
-      id: randomNDigits().toString(),
-      timestamp: new Date(),
-    };
-
-    // For the actual request, include any instruction suffix
-    const partsWithInstruction = [...messageParts];
-    if (instructionSuffix) {
-      partsWithInstruction.push({ text: instructionSuffix });
-    }
-
-    // Send message to the AI
-    const result = await genAI.generateChatContent(
-      [...formattedHistory, { ...newUserMessage, parts: partsWithInstruction }],
-      systemInstruction,
-    );
-
-    const responseText = result.content;
-
-    // Create the model's response message
-    const newModelMessage: ContentWithMeta = {
-      role: 'model',
-      parts: [{ text: responseText }],
-      id: randomNDigits().toString(),
-      timestamp: new Date(),
-    };
-
-    return {
-      response: responseText,
-      updatedHistory: [...(history || []), newUserMessage, newModelMessage],
-    };
-  } catch (error) {
-    Logger.error('Gemini chat request failed', {
-      error: error instanceof Error ? error.message : String(error),
-    });
-
-    throw error;
-  }
 }
 
 /**
