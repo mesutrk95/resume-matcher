@@ -37,19 +37,10 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
     link: project.link,
   });
 
-  // Parse dates from strings to Date objects for the date picker
-  const parseDate = (dateStr: string): string | undefined => {
-    if (dateStr === "Present") return undefined;
-
-    return `${dateStr}/01`;
-  };
-
   const [startDate, setStartDate] = useState<string | undefined>(
-    parseDate(project.startDate)
+    project.startDate
   );
-  const [endDate, setEndDate] = useState<string | undefined>(
-    parseDate(project.endDate)
-  );
+  const [endDate, setEndDate] = useState<string | undefined>(project.endDate);
   const [isPresent, setIsPresent] = useState(project.endDate === "Present");
 
   const handleEdit = () => {
@@ -58,8 +49,8 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
       content: project.content,
       link: project.link,
     });
-    setStartDate(parseDate(project.startDate));
-    setEndDate(parseDate(project.endDate));
+    setStartDate(project.startDate);
+    setEndDate(project.endDate);
     setIsPresent(project.endDate === "Present");
     setIsEditing(true);
   };
@@ -70,12 +61,8 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
       name: editForm.name,
       content: editForm.content,
       link: editForm.link,
-      startDate: startDate ? format(startDate, "MM/yyyy") : project.startDate,
-      endDate: isPresent
-        ? "Present"
-        : endDate
-        ? format(endDate, "MM/yyyy")
-        : project.endDate,
+      startDate,
+      endDate: isPresent ? "Present" : endDate,
     });
     setIsEditing(false);
   };

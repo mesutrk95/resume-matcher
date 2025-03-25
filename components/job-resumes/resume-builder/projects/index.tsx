@@ -47,8 +47,8 @@ export function ProjectsSection({}: ProjectsSectionProps) {
   const handleSaveNewProject = (project: {
     name: string;
     content: string;
-    startDate: string;
-    endDate: string;
+    startDate?: string;
+    endDate?: string;
     link: string;
   }) => {
     const newProject: ResumeProject = {

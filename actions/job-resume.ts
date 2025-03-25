@@ -54,7 +54,7 @@ export const createJobResume = async (
     data: {
       jobId: jobId,
       baseResumeTemplateId: resumeTemplateId,
-      content: resumeTemplate?.content || {},
+      content: migrateResumeContent(resumeTemplate.content as ResumeContent) || {},
       name: `${job?.title} at ${job?.companyName}`,
       userId: user?.id!,
     },

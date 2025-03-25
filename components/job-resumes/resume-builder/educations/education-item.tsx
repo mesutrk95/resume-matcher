@@ -11,6 +11,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { format } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
 import { YearMonthPicker } from "@/components/ui/year-month-picker";
+import { SeperateList } from "@/components/shared/seperate-list";
 
 type EducationItemProps = {
   education: ResumeEducation;
@@ -39,19 +40,10 @@ export function EducationItem({
     institution: education.institution,
   });
 
-  // Parse dates from strings to Date objects for the date picker
-  const parseDate = (dateStr: string): string | undefined => {
-    if (dateStr === "Present") return undefined;
-
-    return `${dateStr}/01`;
-  };
-
   const [startDate, setStartDate] = useState<string | undefined>(
-    parseDate(education.startDate)
+    education.startDate
   );
-  const [endDate, setEndDate] = useState<string | undefined>(
-    parseDate(education.endDate)
-  );
+  const [endDate, setEndDate] = useState<string | undefined>(education.endDate);
 
   const [isPresent, setIsPresent] = useState(education.endDate === "Present");
 
@@ -62,8 +54,8 @@ export function EducationItem({
       location: education.location,
       institution: education.institution,
     });
-    setStartDate(parseDate(education.startDate));
-    setEndDate(parseDate(education.endDate));
+    setStartDate(education.startDate);
+    setEndDate(education.endDate);
     setIsPresent(education.endDate === "Present");
     setIsEditing(true);
   };
@@ -75,12 +67,8 @@ export function EducationItem({
       content: editForm.content,
       location: editForm.location,
       institution: editForm.institution,
-      startDate: startDate ? format(startDate, "MM/yyyy") : education.startDate,
-      endDate: isPresent
-        ? "Present"
-        : endDate
-        ? format(endDate, "MM/yyyy")
-        : education.endDate,
+      startDate: startDate,
+      endDate: isPresent ? "Present" : endDate,
     });
     setIsEditing(false);
   };
@@ -241,8 +229,13 @@ export function EducationItem({
                 {education.content}
               </div>
               <div className="text-sm text-muted-foreground">
-                {education.institution} • {education.location} •{" "}
-                {education.startDate} - {education.endDate}
+                <SeperateList
+                  data={[education.institution, education.location]}
+                />{" "}
+                <SeperateList
+                  data={[education.startDate, education.endDate]}
+                  by=" - "
+                />
               </div>
             </div>
           )}
