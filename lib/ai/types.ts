@@ -1,4 +1,6 @@
 // lib/ai/types.ts
+import { Part } from '@google/generative-ai';
+
 export interface AIRequestOptions {
   maxTokens?: number;
   temperature?: number;
@@ -32,7 +34,7 @@ export interface AIModelClient {
 
   // New method for chat support
   generateChatContent(
-    history: ChatMessage[],
+    history: ChatHistoryItem[],
     systemInstruction?: string,
     options?: AIRequestOptions,
   ): Promise<AIResponse>;
@@ -63,17 +65,19 @@ export interface ValidationResult {
 
 export type Validator<T> = (data: T) => ValidationResult;
 
-export interface ChatMessage {
+export interface ChatHistoryItem {
   role: 'user' | 'model' | 'system';
-  parts: {
-    text?: string;
-    inlineData?: {
-      data: string;
-      mimeType: string;
-    };
-  }[];
+  parts: Part[];
   id?: string;
   timestamp?: Date;
+}
+
+export interface ChatPart {
+  text?: string;
+  inlineData?: {
+    data: string;
+    mimeType: string;
+  };
 }
 
 export interface AIRequestModel<TResponse = any> {
@@ -81,7 +85,7 @@ export interface AIRequestModel<TResponse = any> {
   responseFormat: ResponseFormat;
   contents?: ContentItem[];
 
-  chatHistory?: ChatMessage[];
+  chatHistory?: ChatHistoryItem[];
   systemInstruction?: string;
 
   responseValidator?: Validator<TResponse>;
@@ -101,3 +105,6 @@ export interface AIRequestModel<TResponse = any> {
     requestId?: string;
   };
 }
+
+// Export a type for compatibility with existing code
+export interface ContentWithMeta extends ChatHistoryItem {}

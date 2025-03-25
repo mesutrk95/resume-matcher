@@ -5,7 +5,7 @@ import {
   AIRequestModel,
   ContentItem,
   ResponseFormat,
-  ChatMessage,
+  ChatHistoryItem,
 } from './types';
 import Logger from '@/lib/logger';
 import { getCurrentRequestId } from '@/lib/request-context';
@@ -190,9 +190,9 @@ export class AIServiceManager {
       // Add tokens for each message in the history
       for (const message of request.chatHistory) {
         for (const part of message.parts) {
-          if (part.text) {
+          if ('text' in part && part.text) {
             estimatedTokens += this.defaultClient.calculateTokens(part.text);
-          } else if (part.inlineData) {
+          } else if ('inlineData' in part && part.inlineData) {
             // For non-text parts (like images), add a fixed estimate
             estimatedTokens += 500;
           }

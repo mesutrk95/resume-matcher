@@ -1,11 +1,13 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, Content, Part } from '@google/generative-ai';
 import {
   AIModelClient,
   AIRequestOptions,
   AIResponse,
   ContentItem,
-  ChatMessage,
+  ChatHistoryItem,
+  ChatPart,
 } from '../types';
+import Logger from '@/lib/logger';
 
 export class GeminiClient implements AIModelClient {
   private client: GoogleGenerativeAI;
@@ -37,10 +39,10 @@ export class GeminiClient implements AIModelClient {
       });
 
       // Transform content items to Gemini-specific format
-      const geminiContents = [
+      const geminiContents: Part[] = [
         { text: prompt },
         ...(contents || []).map(item => this.transformContentItem(item)),
-      ];
+      ].filter(Boolean) as Part[];
 
       // Create request options with timeout
       const requestOptions = options?.timeout
@@ -79,7 +81,7 @@ export class GeminiClient implements AIModelClient {
         finishReason: response.promptFeedback?.blockReason || 'stop',
       };
     } catch (error) {
-      console.error('Gemini API error:', error);
+      Logger.error('Gemini API error:', error);
       throw new Error(
         `Gemini API error: ${
           error instanceof Error ? error.message : String(error)
@@ -89,7 +91,7 @@ export class GeminiClient implements AIModelClient {
   }
 
   async generateChatContent(
-    history: ChatMessage[],
+    history: ChatHistoryItem[],
     systemInstruction?: string,
     options?: AIRequestOptions,
   ): Promise<AIResponse> {
@@ -108,19 +110,23 @@ export class GeminiClient implements AIModelClient {
         systemInstruction,
       });
 
-      // Format history for Gemini
-      const formattedHistory = history.map(msg => ({
+      // Convert our custom history format to Google's Content format
+      const formattedHistory: Content[] = history.slice(0, -1).map(msg => ({
         role: msg.role,
-        parts: msg.parts,
+        parts: msg.parts.map(part => this.ensureValidPart(part)),
       }));
 
       const chat = model.startChat({
-        history: formattedHistory.slice(0, -1), // All but the last message
+        history: formattedHistory,
       });
 
       // Get the latest user message
-      const lastMessage = formattedHistory[formattedHistory.length - 1];
-      const messageParts = lastMessage.parts;
+      const lastMessage = history[history.length - 1];
+
+      // Ensure the parts are valid for Google's API
+      const messageParts = lastMessage.parts.map(part =>
+        this.ensureValidPart(part),
+      );
 
       // Send the message
       const result = await chat.sendMessage(messageParts);
@@ -128,7 +134,14 @@ export class GeminiClient implements AIModelClient {
 
       // Calculate token usage (approximate)
       const historyText = history
-        .map(msg => msg.parts.map(part => part.text || '').join(' '))
+        .map(msg =>
+          msg.parts
+            .map(part => {
+              if ('text' in part && part.text) return part.text;
+              return '';
+            })
+            .join(' '),
+        )
         .join(' ');
 
       const promptTokens = this.calculateTokens(historyText);
@@ -145,7 +158,7 @@ export class GeminiClient implements AIModelClient {
         finishReason: 'stop',
       };
     } catch (error) {
-      console.error('Gemini Chat API error:', error);
+      Logger.error('Gemini Chat API error:', error);
       throw new Error(
         `Gemini Chat API error: ${
           error instanceof Error ? error.message : String(error)
@@ -154,29 +167,73 @@ export class GeminiClient implements AIModelClient {
     }
   }
 
-  private transformContentItem(item: ContentItem): any {
-    switch (item.type) {
-      case 'text':
-        return { text: item.data.toString() };
+  // Ensure the part is valid for Google's API
+  private ensureValidPart(part: any): Part {
+    // If it's already a valid Part object with only text or inlineData
+    if (
+      typeof part === 'object' &&
+      (('text' in part && typeof part.text === 'string') ||
+        ('inlineData' in part && typeof part.inlineData === 'object')) &&
+      Object.keys(part).length <= 1
+    ) {
+      return part as Part;
+    }
 
-      case 'image':
-      case 'pdf':
-      case 'audio':
-      case 'video':
-        const data = Buffer.isBuffer(item.data)
-          ? item.data.toString('base64')
-          : item.data;
+    // If it's a string, convert to text part
+    if (typeof part === 'string') {
+      return { text: part };
+    }
 
+    // For our custom format, extract the relevant properties
+    if (typeof part === 'object') {
+      if ('text' in part && part.text) {
+        return { text: part.text };
+      }
+
+      if ('inlineData' in part && part.inlineData) {
         return {
           inlineData: {
-            data,
-            mimeType:
-              item.mimeType || this.getMimeTypeForContentType(item.type),
+            data: part.inlineData.data,
+            mimeType: part.inlineData.mimeType,
           },
         };
+      }
+    }
 
-      default:
-        throw new Error(`Unsupported content type: ${item.type}`);
+    // Fallback
+    Logger.warn('Invalid part format, converting to empty text', { part });
+    return { text: '' };
+  }
+
+  private transformContentItem(item: ContentItem): Part | null {
+    try {
+      switch (item.type) {
+        case 'text':
+          return { text: item.data.toString() };
+
+        case 'image':
+        case 'pdf':
+        case 'audio':
+        case 'video':
+          const data = Buffer.isBuffer(item.data)
+            ? item.data.toString('base64')
+            : item.data;
+
+          return {
+            inlineData: {
+              data: data.toString(),
+              mimeType:
+                item.mimeType || this.getMimeTypeForContentType(item.type),
+            },
+          };
+
+        default:
+          Logger.warn(`Unsupported content type: ${item.type}`);
+          return null;
+      }
+    } catch (error) {
+      Logger.error('Error transforming content item', { error, item });
+      return null;
     }
   }
 
@@ -196,7 +253,6 @@ export class GeminiClient implements AIModelClient {
   }
 
   calculateTokens(text: string): number {
-    // Simple estimation: ~4 characters per token
     return Math.ceil(text.length / 4);
   }
 

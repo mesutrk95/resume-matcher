@@ -4,7 +4,8 @@ import {
   ContentItem,
   ResponseFormat,
   AIRequestOptions,
-  ChatMessage,
+  ChatHistoryItem,
+  ContentWithMeta,
 } from './types';
 import { GeminiClient } from './clients/gemini-client';
 import { AIServiceManager } from './service-manager';
@@ -15,6 +16,7 @@ import { getCurrentRequestId } from '@/lib/request-context';
 import { currentUser } from '@/lib/auth';
 import Logger from '@/lib/logger';
 import { randomNDigits } from '@/lib/utils';
+import { Part } from '@google/generative-ai';
 
 // Singleton instance of the AI service manager
 let _serviceManager: AIServiceManager | null = null;
@@ -62,7 +64,7 @@ Always be precise, factual, and helpful.`;
 export async function getAITextResponse(
   prompt: string,
   contents?: (string | Buffer)[],
-  options?: AIRequestOptions,
+  systemInstructions?: string,
 ): Promise<{
   result: string;
   error?: string;
@@ -76,7 +78,7 @@ export async function getAITextResponse(
       type: typeof c === 'string' ? 'text' : 'pdf',
       data: c,
     })),
-    options,
+    systemInstruction: systemInstructions,
   });
 }
 
@@ -86,7 +88,7 @@ export async function getAITextResponse(
 export async function getAIJsonResponse(
   prompt: string,
   contents?: (string | Buffer)[],
-  options?: AIRequestOptions,
+  systemInstructions?: string,
 ): Promise<{
   result: any;
   error?: string;
@@ -100,7 +102,7 @@ export async function getAIJsonResponse(
       type: typeof c === 'string' ? 'text' : 'pdf',
       data: c,
     })),
-    options,
+    systemInstruction: systemInstructions,
   });
 }
 
@@ -110,7 +112,7 @@ export async function getAIJsonResponse(
 export async function getAIHtmlResponse(
   prompt: string,
   contents?: (string | Buffer)[],
-  options?: AIRequestOptions,
+  systemInstructions?: string,
 ): Promise<{
   result: string;
   error?: string;
@@ -124,7 +126,7 @@ export async function getAIHtmlResponse(
       type: typeof c === 'string' ? 'text' : 'pdf',
       data: c,
     })),
-    options,
+    systemInstruction: systemInstructions,
   });
 }
 
@@ -132,12 +134,12 @@ export async function getAIHtmlResponse(
  * Helper function to get a chat response from AI
  */
 export async function getAIChatResponse(
-  history: ChatMessage[],
+  history: ChatHistoryItem[],
   systemInstruction?: string,
   options?: AIRequestOptions,
 ): Promise<{
   result: string;
-  updatedHistory: ChatMessage[];
+  updatedHistory: ChatHistoryItem[];
   error?: string;
 }> {
   try {
@@ -171,7 +173,7 @@ export async function getAIChatResponse(
     const result = await serviceManager.executeRequest<string>(requestModel);
 
     // Create updated history with the new response
-    const newModelMessage: ChatMessage = {
+    const newModelMessage: ChatHistoryItem = {
       role: 'model',
       parts: [{ text: result }],
       id: randomNDigits().toString(),
@@ -200,6 +202,76 @@ export async function getAIChatResponse(
 }
 
 /**
+ * Helper function to get Gemini Chat response
+ */
+export async function getGeminiChatResponse(
+  systemInstruction: string,
+  messageParts: Part[],
+  instructionSuffix: string | null,
+  history?: ContentWithMeta[],
+): Promise<{
+  response: string;
+  updatedHistory: ContentWithMeta[];
+}> {
+  try {
+    const genAI = new GeminiClient(
+      process.env.GEMINI_API_KEY || '',
+      'gemini-2.0-flash',
+    );
+
+    // Prepare history without instructions
+    const formattedHistory =
+      history?.map(item => ({
+        role: item.role,
+        parts: item.parts,
+        id: item.id,
+        timestamp: item.timestamp,
+      })) || [];
+
+    // Create a new user message with the current message parts
+    const newUserMessage: ContentWithMeta = {
+      role: 'user',
+      parts: messageParts,
+      id: randomNDigits().toString(),
+      timestamp: new Date(),
+    };
+
+    // For the actual request, include any instruction suffix
+    const partsWithInstruction = [...messageParts];
+    if (instructionSuffix) {
+      partsWithInstruction.push({ text: instructionSuffix });
+    }
+
+    // Send message to the AI
+    const result = await genAI.generateChatContent(
+      [...formattedHistory, { ...newUserMessage, parts: partsWithInstruction }],
+      systemInstruction,
+    );
+
+    const responseText = result.content;
+
+    // Create the model's response message
+    const newModelMessage: ContentWithMeta = {
+      role: 'model',
+      parts: [{ text: responseText }],
+      id: randomNDigits().toString(),
+      timestamp: new Date(),
+    };
+
+    return {
+      response: responseText,
+      updatedHistory: [...(history || []), newUserMessage, newModelMessage],
+    };
+  } catch (error) {
+    Logger.error('Gemini chat request failed', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+
+    throw error;
+  }
+}
+
+/**
  * Process an AI request with error handling
  */
 async function processAIRequest<T>(request: {
@@ -207,6 +279,7 @@ async function processAIRequest<T>(request: {
   responseFormat: ResponseFormat;
   contents?: ContentItem[];
   options?: AIRequestOptions;
+  systemInstruction?: string;
 }): Promise<{
   result: T;
   error?: string;
@@ -230,6 +303,7 @@ async function processAIRequest<T>(request: {
       responseFormat: request.responseFormat,
       contents: request.contents,
       options: request.options,
+      systemInstruction: request.systemInstruction,
       context: {
         userId,
         requestId,
@@ -267,6 +341,3 @@ export * from './errors';
 export * from './service-manager';
 export * from './usage-service';
 export * from './clients/gemini-client';
-
-// Export a type for compatibility with existing code
-export interface ContentWithMeta extends ChatMessage {}
