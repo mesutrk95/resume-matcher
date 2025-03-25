@@ -5,10 +5,15 @@ import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import { useResizeObserver } from "usehooks-ts";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
+const workerSrc =
+  process.env.NODE_ENV === "production"
+    ? `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`
+    : new URL(
+        "pdfjs-dist/build/pdf.worker.min.mjs",
+        import.meta.url
+      ).toString();
+
+pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 function PDFViewer({ pdfBlob }: { pdfBlob: Blob | null }) {
   const [numPages, setNumPages] = useState<number | null>(null);

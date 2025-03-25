@@ -21,7 +21,7 @@ type ProjectItemProps = {
 };
 
 export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
-  const { scores } = useResumeBuilder();
+  const { resumeAnalyzeResults } = useResumeBuilder();
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: project.id });
 
@@ -85,7 +85,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
     });
   };
 
-  const score = scores?.[project.id];
+  const score = resumeAnalyzeResults?.itemsScore?.[project.id];
 
   return (
     <div ref={setNodeRef} style={style} className="border rounded-md p-4">
