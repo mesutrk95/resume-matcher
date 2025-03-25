@@ -124,70 +124,75 @@ export const analyzeResumeScore = async (
   // )}`
 
   const getExperiencesImprovementNotes = async () => {
-    const prompt = `I am building an AI-powered application to generate and optimize resumes. I need the AI to provide detailed suggestions for improving a given resume to ensure it passes Applicant Tracking Systems (ATS) and aligns with a specific job description. The AI should analyze the resume and job description, then provide actionable suggestions in the following format:
+    const systemInstructions = `
+You are an AI-powered resume optimization assistant. Your task is to analyze resumes and provide detailed, actionable suggestions to improve ATS compatibility and alignment with a specific job description.
 
-[
+**Response Requirements:**
+- Return suggestions **strictly** in this JSON format (array of objects):
+  [
     {
-        "title": "Correct [specific issue or area for improvement]",
-        "text": "Source text in resume",
-        "improvement": "AI suggestion text, highlight keys using Tailwind CSS classes by [bg|text]-[red|green|orange]-[100-500], font-bold, etc.",
-        "action": {
-            "id": "var_....",
-            "type": "update" | "create",
-            "content": "pure and complete suggested new text without formatting"
-        }
-    },
-    ...
-]
+      "title": "Correct [specific issue/area]",
+      "explanation": "Suggestion text (use Tailwind CSS classes like [bg|text]-[red|green|orange]-[100-500], font-bold, etc.)",
+      "id": "experienceId wrote inside [...]",
+      "action_type": "update" | "create",
+      "action_text": "Plain text suggestion that will be applied to the resume (no formatting)"
+    }
+  ]
+- **No additional commentary or text** outside the JSON.
 
-The AI should:
-1. Analyze the provided resume and job description.
-2. Identify areas for improvement, such as adding/removing technologies, optimizing content for ATS, and enhancing readability.
-3. Provide specific suggestions in the requested format, including Tailwind CSS classes for highlighting.
-4. Ensure the suggestions are actionable and directly applicable to the resume.
+**Instructions:**
+1. **Analyze** the resume and job description thoroughly.
+2. **Identify** ATS optimization opportunities (keywords, structure, readability).
+3. **Suggest** concrete improvements (add/remove technologies, rephrase content) in "action_text".
+4. **Highlight** key changes with Tailwind CSS classes in "explanation".
+5. **Prioritize** suggestions that maximize ATS compatibility and job fit.
+6. **Ensure** all suggestions are actionable and directly applicable.`;
+    const userPrompt = `
+Please analyze and optimize the following resume to better match the job description and ATS requirements.
 
-Here is the resume:
+**Resume:**
 ${resumeExperiencesToString(jobResume.content as ResumeContent, true)}
-Here is the job description:
-${jobResume?.job.title}\n${jobResume?.job.description}
 
-Please provide the best suggestions for improving the resume based on the above requirements.
-Ensure the response is in a valid JSON format with no extra text!`;
+**Job Description:**
+${jobResume?.job.title}
+${jobResume?.job.description}
 
-    return getAIJsonResponse(prompt, []);
+Provide your suggestions in the exact JSON format specified.`;
+
+    return getAIJsonResponse(userPrompt, [], systemInstructions);
   };
 
   const getSkillsImprovementNotes = async () => {
-    const prompt = `
-I am building an AI-powered application to optimize resumes. I need the AI to analyze the **skills** section of a given resume and provide the **best skill set** that aligns with a specific job description. The AI should provide actionable suggestion in the following format:
+    const systemInstructions = `
+You are an AI resume optimization assistant specialized in aligning candidate skills with job descriptions. Your task is to analyze the skills section of a resume and provide the best skill set that matches a specific job description.
 
-    {
-        "title": "Correct Skill Alignment",
-        "text": "Source text in resume",
-        "improvement": "AI suggestion text, allowed to use Tailwind CSS classes to highlight texts by [bg|text]-[red|green|orange]-[100-500], font-bold, etc.",
-        "action": {
-            "id": "skills",
-            "type": "update",
-            "content": "pure and complete suggested new text"
-        }
-    }
+You must provide your response in the exact following JSON format:
 
-The AI should:
-1. Analyze the provided resume's **skills** section.
-2. Identify missing or irrelevant skills based on the job description.
-3. Provide the **best skill set** that aligns with the job description, including Tailwind CSS classes for highlighting.
-4. Ensure the suggestions are actionable and directly applicable to the resume.
- 
-Here is the resume's **skills** section:
-${resumeSkillsToString(jobResume.content as ResumeContent)}
+{
+    "title": "Correct Skill Alignment",
+    "text": "Source text in resume",
+    "improvement": "AI suggestion text, allowed to use Tailwind CSS classes to highlight texts by [bg|text]-[red|green|orange]-[100-500], font-bold, etc.",
+    "id": "skills",
+    "action_type": "update",
+    "action_text": "pure and complete suggested skills list separated by comma"
+}
 
-Here is the job description:
-${jobResume?.job.title}\n${jobResume?.job.description}
+Instructions: 
+1. Provide the best skill set that aligns perfectly with the job description
+2. Use Tailwind CSS classes for highlighting important changes in improvement
+3. Ensure suggestions are actionable and directly applicable
+4. Return ONLY the valid JSON response with no extra text or commentary`;
 
-Please provide the best skill set for the resume based on the above requirements.
-Ensure the response is in a valid JSON format with no extra text!`;
+    const userPrompt = `
+Please analyze and optimize the following resume skills section to better match the job description.
 
-    return getAIJsonResponse(prompt, []);
+Job Description:
+${jobResume?.job.title}
+${jobResume?.job.description}
+
+Provide your optimization suggestion in the required JSON format.`;
+
+    return getAIJsonResponse(userPrompt, [], systemInstructions);
   };
 
   const getScore = async () => {

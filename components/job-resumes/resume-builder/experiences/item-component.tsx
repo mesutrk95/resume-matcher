@@ -174,16 +174,19 @@ export function ItemComponent({
     onUpdate({
       ...item,
       enabled: checked,
-    });
+      ...(item.variations.length === 1 && {
+        variations: [{ ...item.variations[0], enabled: checked }],
+      }),
+    }); 
   };
 
   if (item.variations.length === 1) {
     return (
       <div ref={setNodeRef} style={style} className="mb-3">
-        <div className="flex-1 border rounded-md p-2 pb-0">
-          <div className="flex items-start">
+        <div className="flex-1 border rounded-md p-2 pb-">
+          <div className="flex items-center justify-between">
             <div className="flex-1">
-              <div className="flex justify-between items-start mb-3 flex-wrap">
+              <div className="flex justify-between items-start flex-wrap">
                 {isEditing ? (
                   <Textarea
                     value={variationEditForm.description}
@@ -199,7 +202,7 @@ export function ItemComponent({
                 ) : (
                   <div className="flex items-start">
                     <div
-                      className="mt-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground pl-2"
+                      className="mt-0.5 mr-2 cursor-grab text-muted-foreground hover:text-foreground pl-2"
                       {...attributes}
                       {...listeners}
                     >
@@ -207,9 +210,9 @@ export function ItemComponent({
                     </div>
                     <Checkbox
                       id={`item-${item.id}`}
-                      checked={item.enabled}
+                      checked={item.enabled && item.variations[0].enabled}
                       onCheckedChange={handleToggleEnabled}
-                      className="mr-3 mt-1 "
+                      className="mr-3 mt-0.5"
                     />
                     <div className="flex flex-col">
                       <p
@@ -223,56 +226,51 @@ export function ItemComponent({
                     </div>
                   </div>
                 )}
-
-                <div className="flex gap-2 ml-4">
-                  {isEditing ? (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleCancel}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                      <Button size="sm" onClick={handleSaveVariation}>
-                        <Save className="h-4 w-4" />
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleAddVariation}
-                      >
-                        <CopyPlus className="h-4 w-4" />
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={handleEdit}>
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => onDelete(item.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-              {/* Variations */}
-              <div className="ml-0  ">
-                {/* Add Variation Form */}
-                {addingVariation && (
-                  <AddVariationForm
-                    onSave={handleSaveNewVariation}
-                    onCancel={handleCancelAddVariation}
-                  />
-                )}
               </div>
             </div>
+
+            <div className="flex self-start gap-2 ml-4">
+              {isEditing ? (
+                <>
+                  <Button variant="outline" size="sm" onClick={handleCancel}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" onClick={handleSaveVariation}>
+                    <Save className="h-4 w-4" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAddVariation}
+                  >
+                    <CopyPlus className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleEdit}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => onDelete(item.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
+          {/* Add Variation Form */}
+          {addingVariation && (
+            <div className="ml-0 mt-2 ">
+              <AddVariationForm
+                onSave={handleSaveNewVariation}
+                onCancel={handleCancelAddVariation}
+              />
+            </div>
+          )}
         </div>
       </div>
     );

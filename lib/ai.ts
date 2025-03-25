@@ -9,9 +9,10 @@ export interface ContentWithMeta extends Content {
 
 export const getAIJsonResponse = async (
   prompt: string,
-  content?: (string | Buffer)[]
+  content?: (string | Buffer)[],
+  systemInstructions?: string
 ) => {
-  const response = await getGeminiResponse(prompt, content);
+  const response = await getGeminiResponse(prompt, content, systemInstructions);
   const result = parseJson(response);
 
   return { ...result, prompt, content };
@@ -55,10 +56,14 @@ const getDeepSeekResponse = async (
 
 const getGeminiResponse = async (
   prompt: string,
-  contents?: (string | Buffer)[]
+  contents?: (string | Buffer)[],
+  systemInstruction?: string
 ) => {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({
+    systemInstruction,
+    model: "gemini-2.0-flash",
+  });
 
   const generatedContent = await model.generateContent([
     prompt,
@@ -92,24 +97,25 @@ export const getGeminiChatResponse = async (
   });
 
   // 1. Prepare the history (without any instructions)
-  const geminiHistory = history?.map((item) => ({ 
-    role: item.role, 
-    parts: item.parts 
-  })) || [];
+  const geminiHistory =
+    history?.map((item) => ({
+      role: item.role,
+      parts: item.parts,
+    })) || [];
 
   const chat = model.startChat({ history: geminiHistory });
- 
+
   const messagesWithInstruction = [...messages];
-  if(instructionSuffix){
+  if (instructionSuffix) {
     messagesWithInstruction.push({
-      text: instructionSuffix
-    })
-  } 
+      text: instructionSuffix,
+    });
+  }
 
   // 3. Send message (model sees instruction)
   const result = await chat.sendMessage(messagesWithInstruction);
   console.log("usageMetadata", result.response.usageMetadata);
-  
+
   const responseText = result.response.text();
 
   // 4. Save to history WITHOUT the instruction suffix
