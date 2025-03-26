@@ -1,19 +1,14 @@
 // lib/ai/promptProcessors/index.ts
-export * from './base';
-export * from './textPromptProcessor';
-export * from './jsonPromptProcessor';
-export * from './htmlPromptProcessor';
+export * from '@/lib/ai/promptProcessors/base';
+export * from '@/lib/ai/promptProcessors/textPromptProcessor';
+export * from '@/lib/ai/promptProcessors/jsonPromptProcessor';
+export * from '@/lib/ai/promptProcessors/htmlPromptProcessor';
 
-// Factory method to create a standard set of prompt processors
+import { TextPromptProcessor } from '@/lib/ai/promptProcessors/textPromptProcessor';
+import { JsonPromptProcessor } from '@/lib/ai/promptProcessors/jsonPromptProcessor';
+import { HtmlPromptProcessor } from '@/lib/ai/promptProcessors/htmlPromptProcessor';
+
 export function createStandardPromptProcessors(systemContext: string = '') {
-  // Import all necessary processors
-  const {
-    TextPromptProcessor,
-    JsonPromptProcessor,
-    HtmlPromptProcessor,
-  } = require('./');
-
-  // Return processors in order of precedence (more specific first)
   return [
     new JsonPromptProcessor(systemContext),
     new HtmlPromptProcessor(systemContext),
