@@ -7,8 +7,8 @@ export const VariationMatchingScores = ({
 }: {
   variation: Variation;
 }) => {
-  const { scores } = useResumeBuilder();
-  const score = scores?.[variation.id];
+  const { resumeAnalyzeResults } = useResumeBuilder();
+  const score = resumeAnalyzeResults?.itemsScore?.[variation.id];
   if (!score) return null;
 
   return (

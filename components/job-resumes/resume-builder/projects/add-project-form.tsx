@@ -6,15 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
-import { format } from "date-fns";
 import { YearMonthPicker } from "@/components/ui/year-month-picker";
 
 type AddProjectFormProps = {
   onSave: (project: {
     name: string;
     content: string;
-    startDate: string;
-    endDate: string;
+    startDate?: string;
+    endDate?: string;
     link: string;
   }) => void;
   onCancel: () => void;
@@ -34,21 +33,17 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
         name,
         content,
         link,
-        startDate: format(startDate, "MM/yyyy"),
-        endDate: isPresent
-          ? "Present"
-          : endDate
-          ? format(endDate, "MM/yyyy")
-          : "",
+        startDate: startDate,
+        endDate: isPresent ? "Present" : endDate,
       });
     }
   };
 
   const handlePresentToggle = (checked: boolean) => {
     setIsPresent(checked);
-    if (checked) {
-      setEndDate(undefined);
-    }
+    // if (checked) {
+    //   setEndDate(undefined);
+    // }
   };
 
   return (

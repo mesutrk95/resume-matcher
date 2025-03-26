@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
 import { JobMatcher } from "./JobMatcher";
-import { ResumeContent } from "@/types/resume";
+import { ResumeAnalyzeResults, ResumeContent } from "@/types/resume";
 import { Metadata } from "next";
 import { ResumeBuilderProvider } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
 import { updateJobResume } from "@/actions/job-resume";
@@ -43,6 +43,9 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
   return (
     <ResumeBuilderProvider
       initialResume={content}
+      initialResumeAnalyzeResults={
+        jobResume.analyzeResults as ResumeAnalyzeResults
+      }
       onUpdated={async (resume) => {
         "use server";
         // console.log("resume updateddddddddd");
@@ -53,7 +56,7 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
         }
       }}
     >
-      <JobMatcher jobResume={jobResume} initialJob={jobResume.job}></JobMatcher>
+      <JobMatcher jobResume={jobResume} job={jobResume.job}></JobMatcher>
     </ResumeBuilderProvider>
   );
 }

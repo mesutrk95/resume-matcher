@@ -47,9 +47,9 @@ export function EducationsSection({}: EducationsSectionProps) {
     degree: string;
     content: string;
     location: string;
-    startDate: string;
+    startDate?: string;
     institution: string;
-    endDate: string;
+    endDate?: string;
   }) => {
     const newEducation: ResumeEducation = {
       id: `edu_${randomNDigits()}`,

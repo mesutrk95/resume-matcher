@@ -1,17 +1,16 @@
 "use client";
 
-import { ResumeContent, ResumeItemScoreAnalyze } from "@/types/resume";
+import { ResumeAnalyzeResults, ResumeContent } from "@/types/resume";
 import React, { createContext, useState } from "react";
 
 export type IResumeTemplateEditor = {
-  scores: Record<string, ResumeItemScoreAnalyze> | undefined;
-  setScores: React.Dispatch<
-    React.SetStateAction<Record<string, ResumeItemScoreAnalyze> | undefined>
-  >;
   resume: ResumeContent;
-  // setResume: React.Dispatch<React.SetStateAction<ResumeContent>>;
   saveResume: (resume: ResumeContent) => void;
-  cards: boolean;
+
+  resumeAnalyzeResults?: ResumeAnalyzeResults;
+  setResumeAnalyzeResults: React.Dispatch<
+    React.SetStateAction<ResumeAnalyzeResults | undefined>
+  >;
 };
 
 export const ResumeBuilderContext = createContext<IResumeTemplateEditor>(
@@ -21,15 +20,18 @@ export const ResumeBuilderContext = createContext<IResumeTemplateEditor>(
 export const ResumeBuilderProvider = ({
   children,
   initialResume,
+  initialResumeAnalyzeResults,
   onUpdated,
 }: {
   children: React.ReactNode;
   initialResume: ResumeContent;
+  initialResumeAnalyzeResults?: ResumeAnalyzeResults;
   onUpdated?: (resume: ResumeContent) => void;
 }) => {
-  const [scores, setScores] =
-    useState<Record<string, ResumeItemScoreAnalyze>>();
   const [resume, setResume] = useState<ResumeContent>(initialResume);
+  const [resumeAnalyzeResults, setResumeAnalyzeResults] = useState<
+    ResumeAnalyzeResults | undefined
+  >(initialResumeAnalyzeResults);
 
   const saveResume = (resume: ResumeContent) => {
     setResume(resume);
@@ -38,7 +40,14 @@ export const ResumeBuilderProvider = ({
 
   return (
     <ResumeBuilderContext.Provider
-      value={{ setScores, scores, resume, saveResume, cards: false }}
+      value={{
+        // setScores,
+        // scores,
+        resume,
+        saveResume,
+        resumeAnalyzeResults,
+        setResumeAnalyzeResults,
+      }}
     >
       {children}
     </ResumeBuilderContext.Provider>

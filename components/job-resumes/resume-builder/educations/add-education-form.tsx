@@ -14,8 +14,8 @@ type AddEducationFormProps = {
     content: string;
     location: string;
     institution: string;
-    startDate: string;
-    endDate: string;
+    startDate?: string;
+    endDate?: string;
   }) => void;
   onCancel: () => void;
 };
@@ -36,12 +36,8 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
         content,
         location,
         institution,
-        startDate: formatDate(startDate, "MM/yyyy"),
-        endDate: isPresent
-          ? "Present"
-          : endDate
-          ? formatDate(endDate, "MM/yyyy")
-          : "",
+        startDate: startDate,
+        endDate: isPresent ? "Present" : endDate,
       });
     }
   };

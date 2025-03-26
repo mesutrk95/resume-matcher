@@ -12,17 +12,9 @@ import { SummariesSection } from "./summaries";
 import { TitlesSection } from "./titles";
 import { SkillsSection } from "./skills";
 
-type IPropsType = {
-  resumeAnalyzeData?: ResumeAnalyzeResults;
-};
+type IPropsType = {};
 
-export function ResumeBuilder({ resumeAnalyzeData }: IPropsType) {
-  const { setScores } = useResumeBuilder();
-
-  useEffect(() => {
-    setScores(resumeAnalyzeData?.itemsScore);
-  }, [resumeAnalyzeData?.itemsScore, setScores]);
-
+export function ResumeBuilder({}: IPropsType) {
   return (
     <div className="flex flex-col gap-5">
       <ContactInfoSection />

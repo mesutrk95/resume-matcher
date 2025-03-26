@@ -1,8 +1,11 @@
 import { ResumeContent } from "@/types/resume";
 import { JobResume } from "@prisma/client";
-import { PDFViewer } from "@react-pdf/renderer";
+// import { PDFViewer } from "@react-pdf/renderer";
 import { ResumeDocument } from "./resume-document";
 import { useEffect, useState } from "react";
+import { BlobProvider } from "@react-pdf/renderer";
+import PDFViewer from "./pdf-viewer";
+import { Button } from "../ui/button";
 
 // CV Preview Component with Download Button
 const CVPreview = ({
@@ -28,31 +31,55 @@ const CVPreview = ({
   }
 
   return (
-    <PDFViewer showToolbar={false} className="w-full h-full">
-      <ResumeDocument resume={data} withIdentifiers={false} />
-    </PDFViewer>
-    // <div className="flex flex-col h-screen gap-4">
-    //   <div className="w-full flex-grow ">
-    //     <PDFViewer showToolbar={false} className="w-full h-full">
-    //       <ResumeDocument resume={data} />
-    //     </PDFViewer>
-    //   </div>
-    //   <div className="shrink-0">
-    //     <Button asChild>
-    //       <PDFDownloadLink
-    //         document={<ResumeDocument resume={data} />}
-    //         fileName={`${(
-    //           jobResume.name ||
-    //           data.contactInfo.firstName + " " + data.contactInfo.lastName
-    //         ).replace(/\s+/g, "_")}.pdf`}
-    //       >
-    //         {({ blob, url, loading, error }) =>
-    //           loading ? "Generating PDF..." : "Download PDF"
-    //         }
-    //       </PDFDownloadLink>
-    //     </Button>
-    //   </div>
-    // </div>
+    // <PDFViewer showToolbar={false} className="w-full h-full">
+    //   <ResumeDocument resume={data} withIdentifiers={false} />
+    // </PDFViewer>
+    <BlobProvider
+      document={
+        <ResumeDocument
+          resume={data}
+          withIdentifiers={false}
+          skipFont={false}
+        />
+      }
+    >
+      {({ blob, url, loading, error }) => {
+        // if (error) {
+        //   return <div>Error: {error}</div>;
+        // }
+
+        return (
+          <>
+            <div className="flex justify-center absolute left-0 bottom-1 w-full">
+              <Button
+                className=" z-10"
+                variant="outline"
+                onClick={() => {
+                  if (!blob) return;
+                  const blobUrl = URL.createObjectURL(
+                    new Blob([blob], { type: "application/pdf" })
+                  );
+                  var a = document.createElement("a");
+                  document.body.appendChild(a);
+                  a.style = "display: none";
+
+                  a.href = blobUrl;
+                  a.download = `${(
+                    jobResume.name ||
+                    data.contactInfo.firstName + " " + data.contactInfo.lastName
+                  ).replace(/\s+/g, "_")}.pdf`;
+                  a.click();
+                  window.URL.revokeObjectURL(blobUrl);
+                }}
+              >
+                Download
+              </Button>
+            </div>
+            <PDFViewer pdfBlob={blob} />
+          </>
+        );
+      }}
+    </BlobProvider>
   );
 };
 

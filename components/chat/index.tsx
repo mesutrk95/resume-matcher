@@ -27,12 +27,13 @@ import ErrorBoundary from '../shared/error-boundary';
 
 // Predefined questions
 const PREDEFINED_QUESTIONS = [
-  'Why do you think you are the best fit for this job?',
-  'What did you do in the past that you can proud yourself',
-  'What were the last hard moments and how did you handle them',
-  'What are your key strengths for this position?',
-  'How does your experience align with this role?',
-  'Give me a cover letter',
+  "Why do you think you are the best fit for this job?",
+  "What did you do in the past that you can proud yourself",
+  "What were the last hard moments and how did you handle them",
+  "What are your key strengths for this position?",
+  "How does your experience align with this role?",
+  "Give me a good professional summary for the resume",
+  "Give me a cover letter",
 ];
 
 const INITIAL_MESSAGE = {

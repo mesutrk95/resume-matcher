@@ -1,21 +1,13 @@
 "use client";
 
-import { LoadingButton } from "@/components/ui/loading-button";
-import { constructFinalResume } from "@/utils/job-matching";
-import {
-  ResumeAnalyzedImprovementNote,
-  ResumeAnalyzeResults,
-} from "@/types/resume";
-import React, { useMemo, useState, useTransition } from "react";
+import React, { useTransition } from "react";
 import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
 import { Job, JobResume } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { JobAnalyzeResult } from "@/types/job";
 import { useParams, useRouter } from "next/navigation";
 import {
   analyzeResumeItemsScores,
-  analyzeResumeScore,
   deleteJobResume,
 } from "@/actions/job-resume";
 import CVPreview from "@/components/job-resumes/resume-pdf-preview";
@@ -24,21 +16,13 @@ import {
   BotMessageSquare,
   Briefcase,
   BriefcaseBusiness,
-  CheckCheck,
-  CheckCircle,
-  CircleX,
   Ellipsis,
   Gauge,
-  LucideCheck,
-  LucideX,
   NotebookPen,
   RefreshCw,
   Trash,
-  WandSparkles,
 } from "lucide-react";
 import { JobPostPreview } from "@/components/jobs/job-post-preview";
-import { BlobProvider } from "@react-pdf/renderer";
-import { ResumeDocument } from "@/components/job-resumes/resume-document";
 import Moment from "react-moment";
 import {
   DropdownMenu,
@@ -49,155 +33,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { confirmDialog } from "@/components/shared/confirm-dialog";
 import { ChatInterface } from "@/components/chat";
-import { findVariation, resumeSkillsToString } from "@/lib/resume-content";
-import { Textarea } from "@/components/ui/textarea";
-import { randomNDigits } from "@/lib/utils";
-import { arrayMove } from "@dnd-kit/sortable";
 import { useResumeBuilder } from "@/components/job-resumes/resume-builder/context/useResumeBuilder";
-
-const ImprovementNote = ({
-  index,
-  note,
-}: {
-  index: number;
-  note: ResumeAnalyzedImprovementNote;
-}) => {
-  const { saveResume, resume } = useResumeBuilder();
-  const variation = findVariation(resume, note?.id);
-  const [newContent, setNewContent] = useState(note.action_text);
-
-  const applyAction = () => {
-    if (note.id === "skills") {
-      const newSkills = newContent
-        .split(/,\s*(?![^()]*\))/)
-        .map((s) => s.trim());
-
-      const resumeSkills = new Set(
-        resume.skills.map((s) =>
-          s.content
-            .trim()
-            .replace(/\u200B/g, "")
-            .toLowerCase()
-        )
-      );
-
-      // add missing skills
-      const skillsToAdd = newSkills.filter(
-        (rs) => !resumeSkills.has(rs.toLowerCase())
-      );
-
-      skillsToAdd.forEach((s) => {
-        const newSkill = {
-          id: `skill_${randomNDigits()}`,
-          content: s.trim(),
-          category: "Default",
-          enabled: true,
-        };
-        resume.skills.push(newSkill);
-      });
-
-      let finalList = resume.skills.map((s) => ({ ...s, enabled: false }));
-
-      // sort skills
-      newSkills.forEach((ns, index) => {
-        const oldIndex = finalList.findIndex(
-          (skill) => skill.content.replace(/\u200B/g, "").trim() === ns
-        );
-
-        if (oldIndex !== index)
-          finalList = arrayMove(finalList, oldIndex, index);
-        finalList[index].enabled = true;
-      });
-      saveResume({ ...resume, skills: finalList });
-      toast.success("Resume skills updated!");
-    } else if (variation) {
-      variation.content = newContent;
-      toast.success("Update applied to the resume!");
-      saveResume({ ...resume });
-    }
-  };
-
-  const sourceContent = useMemo(() => {
-    return note.id === "skills"
-      ? resumeSkillsToString(resume)
-      : variation?.content.trim().replace(/\u200B/g, "");
-  }, [resume?.skills, variation]);
-
-  return (
-    <div className="flex flex-col gap-2" key={note.title}>
-      <h4 className=" font-bold">
-        {index + 1}. {note.title}
-      </h4>
-      {/* {note.text && (
-        <div className="flex ">
-          <div>
-            <LucideX className="text-red-500" size={18} />
-          </div>
-          <p
-            className="px-2 text-sm  "
-            dangerouslySetInnerHTML={{ __html: note.text }}
-          ></p>
-        </div>
-      )} */}
-      {note.explanation && (
-        <div className="flex ">
-          {/* <div>
-            <LucideCheck className="text-green-500" size={18} />
-          </div> */}
-          <p
-            className="px-0 text-sm  "
-            dangerouslySetInnerHTML={{
-              __html: note.explanation,
-            }}
-          ></p>
-        </div>
-      )}
-      {note.action_type && note.action_text !== sourceContent && (
-        <div className="flex flex-col gap-2 border rounded p-3 text-sm">
-          <h5 className="font-bold capitalize">{note.action_type} Action</h5>
-          {variation && (
-            <p className="border px-3 py-2 rounded bg-slate-100">
-              {variation.content}
-            </p>
-          )}
-          {note.id === "skills" && (
-            <p className="border  px-3 py-2 rounded bg-slate-100">
-              {resumeSkillsToString(resume)}
-            </p>
-          )}
-          <Textarea
-            onChange={(e) => setNewContent(e.target.value)}
-            value={newContent}
-          />
-          {/* <p className="border p-2">{note.action.content}</p> */}
-          <div>
-            <Button className="text-sm" size={"sm"} onClick={applyAction}>
-              <WandSparkles size={16} />
-              Apply It!
-            </Button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
+import { ResumeScoreTab } from "./ResumeScoreTab";
 
 export const JobMatcher = ({
   jobResume,
-  initialJob,
+  job,
 }: {
   jobResume: JobResume;
-  initialJob: Job;
+  job: Job;
 }) => {
   const router = useRouter();
   const { id: jobResumeId } = useParams();
-  const { resume, saveResume } = useResumeBuilder();
-  const [resumeAnalyzeData, setResumeAnalyzeData] = useState<
-    ResumeAnalyzeResults | undefined
-  >(jobResume.analyzeResults as ResumeAnalyzeResults);
-  const [job, setJob] = useState<Job>(initialJob);
-
-  const jobAnalyzeResults = job.analyzeResults as JobAnalyzeResult;
+  const { resume, setResumeAnalyzeResults } = useResumeBuilder();
 
   const [isDeleting, startDeletingTransition] = useTransition();
   const [isSyncingToTemplate, startSyncToTemplateTransition] = useTransition();
@@ -206,8 +54,11 @@ export const JobMatcher = ({
     startAnalyzeScoresTransition(async () => {
       toast.info("Analyzing resume rates is in progress!");
       try {
-        const results = await analyzeResumeItemsScores(jobResumeId as string, forceRefresh);
-        setResumeAnalyzeData(results);
+        const results = await analyzeResumeItemsScores(
+          jobResumeId as string,
+          forceRefresh
+        );
+        setResumeAnalyzeResults(results);
         console.log(results);
         toast.success("Analyze resume rates and scores are successfully done!");
       } catch (error) {
@@ -237,27 +88,6 @@ export const JobMatcher = ({
       }
     });
   };
-
-  const [isRatingResume, startRatingResumeTransition] = useTransition();
-  const handleResumeScore = (resumePdfBlob: Blob) => {
-    startRatingResumeTransition(async () => {
-      try {
-        const file = new File([resumePdfBlob], "resume.pdf", {
-          type: "application/pdf",
-        });
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const analyzeResults = await analyzeResumeScore(formData, jobResume.id);
-        setResumeAnalyzeData(analyzeResults);
-        console.log(analyzeResults);
-        toast.success("Successfully analyzed resume score!");
-      } catch (error) {
-        toast.error("Failed to analyze resume score.");
-      }
-    });
-  };
-
   const handleDeleteJobResume = async () => {
     if (
       !(await confirmDialog({
@@ -278,7 +108,10 @@ export const JobMatcher = ({
     });
   };
 
+  // console.log(resumeExperiencesToString(resume, true, true))
+
   return (
+    // <PDFBuilderProvider resume={resume}>
     <div className="h-[calc(100vh-56px)]">
       <Tabs
         defaultValue="builder"
@@ -317,27 +150,27 @@ export const JobMatcher = ({
                       <Briefcase size={14} />
                       Clean & Analyze Scores
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      disabled={isAnalyzingScores}
-                      onClick={() => {
-                        if (!jobAnalyzeResults?.keywords) return;
-                        const fr = constructFinalResume(
-                          resume,
-                          jobAnalyzeResults?.keywords
-                        );
-                        if (!fr) {
-                          toast.error(
-                            "Keywords are not extracted, please first analyze keywords."
+                    {/* <DropdownMenuItem
+                        disabled={isAnalyzingScores}
+                        onClick={() => {
+                          if (!jobAnalyzeResults?.keywords) return;
+                          const fr = constructFinalResume(
+                            resume,
+                            jobAnalyzeResults?.keywords
                           );
-                          return;
-                        }
-                        saveResume(fr);
-                        toast.success("Auto select has been done!");
-                      }}
-                    >
-                      <CheckCheck size={14} />
-                      Auto-choose by keywords
-                    </DropdownMenuItem>
+                          if (!fr) {
+                            toast.error(
+                              "Keywords are not extracted, please first analyze keywords."
+                            );
+                            return;
+                          }
+                          saveResume(fr);
+                          toast.success("Auto select has been done!");
+                        }}
+                      >
+                        <CheckCheck size={14} />
+                        Auto-choose by keywords
+                      </DropdownMenuItem> */}
 
                     {jobResume.baseResumeTemplateId && (
                       <DropdownMenuItem
@@ -385,112 +218,20 @@ export const JobMatcher = ({
           <div className="grid grid-cols-12 container overflow-hidden h-full relative">
             <div className="pe-2 col-span-7 overflow-auto h-full">
               <TabsContent className="pt-0 " value="builder">
-                {resume && (
-                  <ResumeBuilder resumeAnalyzeData={resumeAnalyzeData} />
-                )}
+                <ResumeBuilder />
               </TabsContent>
               <TabsContent className="" value="jd">
-                <JobPostPreview
-                  job={job}
-                  onJobUpdated={setJob}
-                  // onScoresUpdate={setScores}
-                  // resume={resume}
-                />
+                <JobPostPreview job={job} />
               </TabsContent>
               <TabsContent className="" value="score">
-                <BlobProvider
-                  document={
-                    <ResumeDocument
-                      resume={resume}
-                      withIdentifiers
-                      skipFont={true}
-                    />
-                  }
-                >
-                  {({ blob, url, loading, error }) => {
-                    // if (error) {
-                    //   return <div>Error: {error}</div>;
-                    // }
-
-                    return (
-                      <LoadingButton
-                        onClick={() => handleResumeScore(blob!)}
-                        loading={loading || isRatingResume}
-                        loadingText="Thinking ..."
-                      >
-                        Rate Resume!
-                      </LoadingButton>
-                    );
-                  }}
-                </BlobProvider>
-
-                {/* <CustomPromptDialog /> */}
-
-                {/* <CircleX className="text-red-500" /> Missed Keywords{" "} */}
-                {resumeAnalyzeData?.missed_keywords && (
-                  <div className="flex flex-col gap-5 mt-10">
-                    <h3 className="text-xl font-bold">
-                      Rate: {resumeAnalyzeData.score}%
-                    </h3>
-                    <div className="flex flex-col gap-2">
-                      <h3 className="text-lg font-bold flex items-center gap-2">
-                        <CircleX className="text-red-500" size={18} />
-                        Missed Keywords (
-                        {resumeAnalyzeData.missed_keywords.length})
-                      </h3>
-                      <div className="flex flex-wrap gap-1">
-                        {resumeAnalyzeData.missed_keywords.map((k) => (
-                          <span
-                            key={k}
-                            className="px-2 py-1 text-sm bg-slate-200 rounded-full"
-                          >
-                            {k}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <h3 className="text-lg font-bold flex items-center gap-2">
-                        <CheckCircle className="text-green-500" size={18} />
-                        Matched Keywords (
-                        {resumeAnalyzeData.matched_keywords.length})
-                      </h3>
-                      <div className="flex flex-wrap gap-1">
-                        {resumeAnalyzeData.matched_keywords.map((k) => (
-                          <span
-                            key={k}
-                            className="px-2 py-1 text-sm bg-slate-200 rounded-full"
-                          >
-                            {k}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    {resumeAnalyzeData.notes?.length > 0 && (
-                      <div className="flex flex-col gap-2 pb-5">
-                        <h3 className="text-lg font-bold flex items-center gap-2">
-                          Improvement Notes ({resumeAnalyzeData.notes.length})
-                        </h3>
-                        <div className="flex flex-col gap-4">
-                          {resumeAnalyzeData.notes.map((note, index) => (
-                            <ImprovementNote
-                              key={note.title}
-                              index={index}
-                              note={note}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
+                <ResumeScoreTab jobResume={jobResume} />
               </TabsContent>
               <TabsContent className="h-full mt-0 py-5" value="chat">
                 <ChatInterface jobResume={jobResume} resume={resume} />
               </TabsContent>
             </div>
-            <div className="col-span-5 overflow-auto h-full">
-              <div className="p-5 h-full w-full">
+            <div className="col-span-5 overflow-hidden h-full">
+              <div className="p-0 h-full w-full relative">
                 <CVPreview data={resume} jobResume={jobResume} />
               </div>
             </div>
@@ -498,5 +239,6 @@ export const JobMatcher = ({
         </div>
       </Tabs>
     </div>
+    // </PDFBuilderProvider>
   );
 };
