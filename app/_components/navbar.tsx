@@ -95,7 +95,7 @@ function AuthNav() {
 
 export default function Navbar() {
   return (
-    <nav className="bg-gray-100 shadow-sm">
+    <nav className="border-b">
       <div className="container">
         <div className="flex gap-x-4 items-center justify-between">
           <div className="flex gap-10">
