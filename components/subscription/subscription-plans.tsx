@@ -146,10 +146,9 @@ export function SubscriptionPlans({
     }).format(price);
   };
 
-  // Check if user already has an active subscription
   const hasActiveSubscription =
     currentSubscription &&
-    currentSubscription.subscriptionId && // Added this check
+    currentSubscription.subscriptionId &&
     (currentSubscription.status === SubscriptionStatus.ACTIVE ||
       currentSubscription.status === SubscriptionStatus.TRIALING);
 

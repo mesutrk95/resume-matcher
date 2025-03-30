@@ -38,7 +38,9 @@ export const createCustomer = async (
     create: {
       userId,
       customerId: customer.id,
-      status: SubscriptionStatus.ACTIVE,
+      status: SubscriptionStatus.INCOMPLETE,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
 

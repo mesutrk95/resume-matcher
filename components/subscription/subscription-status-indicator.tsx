@@ -14,12 +14,15 @@ export function SubscriptionStatusIndicator() {
     return null;
   }
 
-  // No subscription or canceled
-  if (
-    !subscription ||
-    subscription.status === SubscriptionStatus.CANCELED ||
-    subscription.cancelAtPeriodEnd
-  ) {
+  // Check if subscription exists, has a subscriptionId, and has proper status
+  const hasActiveSubscription =
+    subscription &&
+    subscription.subscriptionId &&
+    (subscription.status === SubscriptionStatus.ACTIVE ||
+      subscription.status === SubscriptionStatus.TRIALING);
+
+  // No subscription, canceled, no subscriptionId, or pending
+  if (!hasActiveSubscription) {
     return (
       <Badge
         variant="outline"
@@ -32,7 +35,7 @@ export function SubscriptionStatusIndicator() {
     );
   }
 
-  // User on trial
+  // User on trial with valid subscriptionId
   if (subscription.status === SubscriptionStatus.TRIALING) {
     // Calculate days remaining
     const trialEndDate = subscription.currentPeriodEnd;
@@ -54,7 +57,7 @@ export function SubscriptionStatusIndicator() {
     );
   }
 
-  // Active subscription
+  // Active subscription with valid subscriptionId
   if (subscription.status === SubscriptionStatus.ACTIVE) {
     return (
       <Badge

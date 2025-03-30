@@ -41,7 +41,7 @@ export function TrialBanner() {
           <Button
             variant="outline"
             size="sm"
-            className="text-white border-white hover:bg-indigo-700 hover:text-white"
+            className="bg-white text-indigo-600 border-white hover:bg-indigo-100 hover:text-indigo-800"
             onClick={() => router.push('/settings/billing')}
           >
             Manage Subscription
