@@ -5,13 +5,13 @@ import Handlebars from 'handlebars';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Template cache to avoid reading from disk on every email
 const templateCache: Record<string, HandlebarsTemplateDelegate> = {};
 
-// Load a template, with caching
-async function loadTemplate(templateName: string): Promise<string> {
+async function loadTemplate(
+  templateName: string,
+): Promise<HandlebarsTemplateDelegate> {
   if (templateCache[templateName]) {
-    return templateCache[templateName]({}); // Return rendered template
+    return templateCache[templateName];
   }
 
   try {
@@ -24,22 +24,47 @@ async function loadTemplate(templateName: string): Promise<string> {
     const templateContent = await fs.readFile(filePath, 'utf-8');
     const template = Handlebars.compile(templateContent);
     templateCache[templateName] = template;
-    return template({});
+    return template;
   } catch (error) {
     console.error(`Failed to load email template ${templateName}:`, error);
-    return '';
+    throw new Error(`Failed to load email template: ${templateName}`);
   }
 }
 
-export const sendVerificationEmail = async (email: string, token: string) => {
+export const sendVerificationEmail = async (
+  email: string,
+  token: string,
+  name?: string,
+) => {
   const verifyEmailLink = `${process.env.NEXT_PUBLIC_APP_URL}/verify?token=${token}`;
 
-  await resend.emails.send({
-    from: process.env.EMAIL_FROM as string,
-    to: email,
-    subject: '[Next Dashboard] Action required: Verify your email',
-    html: `<p>Click <a href="${verifyEmailLink}">Here</a> to verify your email.</p>`,
-  });
+  try {
+    const template = await loadTemplate('verification');
+
+    const data = {
+      name: name || email.split('@')[0],
+      verificationLink: verifyEmailLink,
+      appName: 'Resume Matcher',
+      appUrl: process.env.NEXT_PUBLIC_APP_URL,
+      privacyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
+      termsUrl: `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
+      currentYear: new Date().getFullYear(),
+    };
+
+    const html = template(data);
+
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM as string,
+      to: email,
+      subject: 'Verify your email address',
+      html: html,
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to send verification email:', error);
+    return { success: false, error };
+  }
 };
 
 export const sendResetPasswordEmail = async (email: string, token: string) => {
@@ -81,7 +106,7 @@ export const sendSubscriptionWelcomeEmail = async (
       productName: 'Resume Matcher Pro',
     };
 
-    const html = Handlebars.compile(template)(data);
+    const html = template(data);
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
@@ -117,7 +142,7 @@ export const sendTrialEndingEmail = async (
       currentYear: new Date().getFullYear(),
     };
 
-    const html = Handlebars.compile(template)(data);
+    const html = template(data);
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
@@ -158,7 +183,7 @@ export const sendPaymentFailedEmail = async (
       currentYear: new Date().getFullYear(),
     };
 
-    const html = Handlebars.compile(template)(data);
+    const html = template(data);
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
@@ -190,7 +215,7 @@ export const sendSubscriptionCanceledEmail = async (
       currentYear: new Date().getFullYear(),
     };
 
-    const html = Handlebars.compile(template)(data);
+    const html = template(data);
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
@@ -222,7 +247,7 @@ export const sendWinBackEmail = async (
       emailEncoded: encodeURIComponent(email),
     };
 
-    const html = Handlebars.compile(template)(data);
+    const html = template(data);
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,

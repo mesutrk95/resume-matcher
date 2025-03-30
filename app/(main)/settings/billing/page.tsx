@@ -12,6 +12,7 @@ import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { getSubscriptionPrices } from '@/actions/subscription/pricing';
 import { verifySubscriptionFromSession } from '@/actions/subscription/session';
+import { PaymentHistory } from '@/components/subscription/payment-history';
 
 export default function BillingPage() {
   const {
@@ -149,7 +150,7 @@ export default function BillingPage() {
       )}
 
       <Tabs defaultValue={subscription ? 'current' : 'plans'} className="mt-8">
-        <TabsList className="grid grid-cols-2 w-[400px] mb-6">
+        <TabsList className="grid grid-cols-3 w-[600px] mb-6">
           {subscription && (
             <TabsTrigger id="current-tab" value="current">
               Current Subscription
@@ -157,6 +158,9 @@ export default function BillingPage() {
           )}
           <TabsTrigger id="plans-tab" value="plans">
             Subscription Plans
+          </TabsTrigger>
+          <TabsTrigger id="payments-tab" value="payments">
+            Payment History
           </TabsTrigger>
         </TabsList>
 
@@ -173,6 +177,10 @@ export default function BillingPage() {
             productInfo={pricingData.product}
             isLoadingPrices={isLoadingPrices}
           />
+        </TabsContent>
+
+        <TabsContent value="payments">
+          <PaymentHistory />
         </TabsContent>
       </Tabs>
     </div>
