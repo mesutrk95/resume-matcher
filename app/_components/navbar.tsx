@@ -130,7 +130,7 @@ export default function Navbar() {
               <LottieAnimatedIcon icon="/iconly/Shoppingbag.json" /> Jobs
             </Link>
             <Link className="flex items-center gap-1.5" href="/resumes">
-              <LottieAnimatedIcon icon="/iconly/ChatProfile.json" />
+              <LottieAnimatedIcon icon="/iconly/emaildocument1.json" />
               Resumes
             </Link>
           </div>
