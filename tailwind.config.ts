@@ -26,6 +26,9 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        roboto: ['Montserrat', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

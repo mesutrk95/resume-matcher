@@ -1,7 +1,7 @@
 // app/_components/navbar.tsx
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,12 +11,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CreditCard, UserRound } from 'lucide-react';
-import Link from 'next/link';
-import { currentUser } from '@/lib/auth';
-import { SubscriptionStatusIndicator } from '@/components/subscription/subscription-status-indicator';
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { CreditCard, UserRound } from "lucide-react";
+import Link from "next/link";
+import { currentUser } from "@/lib/auth";
+import { SubscriptionStatusIndicator } from "@/components/subscription/subscription-status-indicator";
+import { LottieAnimatedIcon } from "./lottie-animated-icon";
 
 function AuthNav() {
   return (
@@ -32,7 +33,7 @@ function AuthNav() {
               <UserRound />
             </AvatarFallback>
           </Avatar>
-          <p>User</p>
+          {/* <p>User</p> */}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
@@ -77,7 +78,7 @@ function AuthNav() {
         <DropdownMenuSeparator />
         <form
           action={async () => {
-            const { handleSignOut } = await import('@/actions/signout');
+            const { handleSignOut } = await import("@/actions/signout");
             await handleSignOut();
           }}
         >
@@ -93,15 +94,45 @@ function AuthNav() {
   );
 }
 
+function NavItem({
+  link,
+  title,
+  icon,
+}: {
+  link: string;
+  title: string;
+  icon: string;
+}) {
+  return (
+    <Link className="flex items-center gap-1.5" href={link}>
+      <LottieAnimatedIcon icon={icon} /> {title}
+    </Link>
+  );
+}
+
 export default function Navbar() {
   return (
-    <nav className="border-b">
+    //fixed top-0 bg-white w-full z-10
+    <nav className="border-b ">
       <div className="container">
         <div className="flex gap-x-4 items-center justify-between">
-          <div className="flex gap-10">
-            <Link href="/templates">Resume Templates</Link>
-            <Link href="/jobs">Jobs</Link>
-            <Link href="/resumes">Resumes</Link>
+          <div className="flex gap-10 items-center text-sm font-medium">
+            <img src="/logo.svg" className="h-[35px]" />
+            <NavItem
+              icon="/iconly/Inbox.json"
+              title="Resume Templates"
+              link="/templates"
+            />
+            {/* <Link className="flex gap-1" href="/templates">
+              <LottieAnimatedIcon icon="/iconly/Inbox.json" /> Resume Templates
+            </Link> */}
+            <Link className="flex items-center gap-1.5" href="/jobs">
+              <LottieAnimatedIcon icon="/iconly/Shoppingbag.json" /> Jobs
+            </Link>
+            <Link className="flex items-center gap-1.5" href="/resumes">
+              <LottieAnimatedIcon icon="/iconly/ChatProfile.json" />
+              Resumes
+            </Link>
           </div>
           <div className="flex items-center gap-4">
             <SubscriptionStatusIndicator />

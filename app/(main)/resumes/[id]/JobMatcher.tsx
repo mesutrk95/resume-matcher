@@ -119,8 +119,8 @@ export const JobMatcher = ({
       >
         {/* toolbar */}
         <div className="shrink-0 relative z-1 flex items-center border-b ">
-          <div className="container">
-            <div className="flex justify-between items-center py-2">
+          <div className="container ">
+            <div className="flex justify-between items-center py-2  ">
               <div>
                 <h2 className="text-xl font-bold ">{jobResume.name} Resume</h2>
                 <span className="text-muted-foreground text-xs">
@@ -214,9 +214,9 @@ export const JobMatcher = ({
             </div>
           </div>
         </div>
-        <div className="flex-auto h-0 overflow-hidden">
+        <div className="flex-auto h-0 overflow-hidden ">
           <div className="grid grid-cols-12 container overflow-hidden h-full relative">
-            <div className="pe-2 col-span-7 overflow-auto h-full">
+            <div className="pe-2 col-span-7 overflow-auto h-full border-r">
               <TabsContent className="pt-0 " value="builder">
                 <ResumeBuilder />
               </TabsContent>
