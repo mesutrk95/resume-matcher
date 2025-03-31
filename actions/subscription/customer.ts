@@ -18,49 +18,68 @@ export const getUserSubscription = async () => {
 
   const subscription = await getSubscriptionByUserId(user.id);
 
-  if (subscription?.subscriptionId) {
-    const stripe = getStripeServer();
-    if (!stripe) {
-      throw new InternalServerErrorException('Failed to initialize Stripe');
-    }
+  // If there's no subscription or no customer ID, return null
+  if (!subscription || !subscription.customerId) return null;
 
-    const subscriptionId = String(subscription.subscriptionId);
+  // If there's no subscription ID, but there is a customer ID, this means
+  // the subscription process was started but not completed
+  if (!subscription.subscriptionId) {
+    // Update the subscription status to INCOMPLETE to make sure it's correct
+    await db.subscription.update({
+      where: { userId: user.id },
+      data: {
+        status: SubscriptionStatus.INCOMPLETE,
+      },
+    });
 
-    try {
-      const stripeSubscription = await stripe.subscriptions.retrieve(
+    // Return the updated subscription
+    return await getSubscriptionByUserId(user.id);
+  }
+
+  // If there is a subscription ID, check Stripe for the current status
+  const stripe = getStripeServer();
+  if (!stripe) {
+    throw new InternalServerErrorException('Failed to initialize Stripe');
+  }
+
+  const subscriptionId = String(subscription.subscriptionId);
+
+  try {
+    const stripeSubscription = await stripe.subscriptions.retrieve(
+      subscriptionId,
+    );
+
+    // Check if the status in our database matches Stripe
+    if (
+      mapStripeStatusToDBStatus(stripeSubscription.status) !==
+      subscription.status
+    ) {
+      // Update our database to match Stripe's status
+      await updateSubscriptionInDatabase(
+        user.id,
         subscriptionId,
+        subscription.priceId || stripeSubscription.items.data[0].price.id,
+        mapStripeStatusToDBStatus(stripeSubscription.status),
+        new Date(stripeSubscription.current_period_start * 1000),
+        new Date(stripeSubscription.current_period_end * 1000),
+        stripeSubscription.cancel_at_period_end,
       );
 
-      if (
-        mapStripeStatusToDBStatus(stripeSubscription.status) !==
-        subscription.status
-      ) {
-        await updateSubscriptionInDatabase(
-          user.id,
-          subscriptionId,
-          subscription.priceId || stripeSubscription.items.data[0].price.id,
-          mapStripeStatusToDBStatus(stripeSubscription.status),
-          new Date(stripeSubscription.current_period_start * 1000),
-          new Date(stripeSubscription.current_period_end * 1000),
-          stripeSubscription.cancel_at_period_end,
-        );
-
-        return await getSubscriptionByUserId(user.id);
-      }
-    } catch (error: any) {
-      Logger.error(`Failed to retrieve subscription ${subscriptionId}`, error);
-      if (error.statusCode === 404) {
-        await db.subscription.update({
-          where: { userId: user.id },
-          data: {
-            subscriptionId: null,
-            status: SubscriptionStatus.CANCELED,
-          },
-        });
-        return await getSubscriptionByUserId(user.id);
-      }
-      throw error;
+      return await getSubscriptionByUserId(user.id);
     }
+  } catch (error: any) {
+    Logger.error(`Failed to retrieve subscription ${subscriptionId}`, error);
+    if (error.statusCode === 404) {
+      await db.subscription.update({
+        where: { userId: user.id },
+        data: {
+          subscriptionId: null,
+          status: SubscriptionStatus.CANCELED,
+        },
+      });
+      return await getSubscriptionByUserId(user.id);
+    }
+    throw error;
   }
 
   return subscription;

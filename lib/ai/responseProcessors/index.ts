@@ -1,17 +1,13 @@
-export * from './base';
-export * from './textResponseProcessor';
-export * from './jsonResponseProcessor';
-export * from './htmlResponseProcessor';
+export * from '@/lib/ai/responseProcessors/base';
+export * from '@/lib/ai/responseProcessors/textResponseProcessor';
+export * from '@/lib/ai/responseProcessors/jsonResponseProcessor';
+export * from '@/lib/ai/responseProcessors/htmlResponseProcessor';
 
-// Factory method to create a standard set of response processors
+import { JsonResponseProcessor } from '@/lib/ai/responseProcessors/jsonResponseProcessor';
+import { HtmlResponseProcessor } from '@/lib/ai/responseProcessors/htmlResponseProcessor';
+import { TextResponseProcessor } from '@/lib/ai/responseProcessors/textResponseProcessor';
+
 export function createStandardResponseProcessors() {
-  // Import all necessary processors
-  const {
-    JsonResponseProcessor,
-    HtmlResponseProcessor,
-    TextResponseProcessor,
-  } = require('./');
-
   // Return processors in order of precedence (more specific first)
   return [
     new JsonResponseProcessor(),

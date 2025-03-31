@@ -79,11 +79,21 @@ export function CurrentSubscription({
   };
 
   // Helper to get status display
+
   const getStatusDisplay = () => {
     if (!currentSubscription) {
       return {
         label: 'No Subscription',
         description: 'You do not have an active subscription',
+        variant: 'destructive' as BadgeVariant,
+      };
+    }
+
+    // Check if subscription is incomplete (created but not completed checkout)
+    if (!currentSubscription.subscriptionId) {
+      return {
+        label: 'Incomplete',
+        description: 'Your subscription setup is not complete',
         variant: 'destructive' as BadgeVariant,
       };
     }
@@ -127,6 +137,12 @@ export function CurrentSubscription({
         return {
           label: 'Past Due',
           description: 'Payment failed, please update your billing information',
+          variant: 'destructive' as BadgeVariant,
+        };
+      case SubscriptionStatus.INCOMPLETE:
+        return {
+          label: 'Incomplete',
+          description: 'Your subscription setup is not complete',
           variant: 'destructive' as BadgeVariant,
         };
       default:

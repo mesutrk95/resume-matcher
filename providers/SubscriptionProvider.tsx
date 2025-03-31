@@ -64,7 +64,6 @@ export const SubscriptionProvider = ({
   const [isReactivating, setIsReactivating] = useState(false);
   const [isRedirectingToPortal, setIsRedirectingToPortal] = useState(false);
 
-  // Fetch subscription data
   const fetchSubscription = useCallback(async () => {
     try {
       setIsLoading(true);
