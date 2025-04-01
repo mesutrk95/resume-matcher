@@ -20,6 +20,7 @@ import {
 import { Button } from "../ui/button";
 import { confirmDialog } from "../shared/confirm-dialog";
 import { useRouter } from "next/navigation";
+import { Card, CardContent } from "../ui/card";
 
 const KeywordBadge = ({ keyword }: { keyword: JobKeyword }) => {
   return (
@@ -86,9 +87,11 @@ export const JobPostPreview = ({
     });
   };
   const handleDeleteJob = async () => {
-    if (await confirmDialog({
-      title: `Delete Job Confirmation`
-    })) {
+    if (
+      await confirmDialog({
+        title: `Delete Job Confirmation`,
+      })
+    ) {
       startDeletingJob(async () => {
         try {
           await deleteJob(job.id);
@@ -104,12 +107,15 @@ export const JobPostPreview = ({
   const jobKeywords = useMemo(() => {
     try {
       const results = job.analyzeResults as { keywords: JobKeyword[] };
-      return results?.keywords?.reduce<Record<JobKeywordType, JobKeyword[]>>((acc, keyword) => {
-        const ks = acc[keyword.skill] || [];
-        ks.push(keyword);
-        acc[keyword.skill] = ks;
-        return acc;
-      }, {});
+      return results?.keywords?.reduce<Record<JobKeywordType, JobKeyword[]>>(
+        (acc, keyword) => {
+          const ks = acc[keyword.skill] || [];
+          ks.push(keyword);
+          acc[keyword.skill] = ks;
+          return acc;
+        },
+        {}
+      );
     } catch (error) {
       return null;
     }
@@ -153,7 +159,6 @@ export const JobPostPreview = ({
             <DropdownMenuItem
               onClick={handleDeleteJob}
               disabled={isDeletingJob}
-              
             >
               <Trash size={16} />
               Delete Job
@@ -169,7 +174,10 @@ export const JobPostPreview = ({
         </DropdownMenu>
       </div>
       <Tabs defaultValue="jd" className="">
-        <TabsList className="grid w-full grid-cols-3 bg-white" variant={"outline"}>
+        <TabsList
+          className="grid w-full grid-cols-3 bg-white"
+          variant={"outline"}
+        >
           <TabsTrigger value="jd" variant={"outline"}>
             Description
           </TabsTrigger>
@@ -180,30 +188,35 @@ export const JobPostPreview = ({
             Summary
           </TabsTrigger>
         </TabsList>
-        <TabsContent className="px-2" value="jd">
-          <JobDescriptionPreview job={job} />
-        </TabsContent>
-        <TabsContent className="px-2" value="keywords">
-          <ContentPlaceholder
-            show={!jobKeywords}
-            placeholder={
-              <RequireAnalyzeAlert
-                onAnalyzeJob={handleAnalyzeJob}
-                isAnalyzingJob={isAnalyzingJob}
-              />
-            }
-          >
-            <div className="grid grid-cols-3 gap-2">
-              <div className="flex flex-col gap-1">
-                <h4 className="font-bold">Hard Skills</h4>
-                <ul className="  gap-2   ">
-                  {jobKeywords?.["hard"]
-                    ?.sort((k1, k2) => k2.level - k1.level)
-                    .map((keyword) => (
-                      <KeywordBadge keyword={keyword} key={keyword.keyword} />
-                    ))}
+        <Card className="mt-2">
+          <CardContent>
+            <TabsContent className="px-2" value="jd">
+              <JobDescriptionPreview job={job} />
+            </TabsContent>
+            <TabsContent className="px-2" value="keywords">
+              <ContentPlaceholder
+                show={!jobKeywords}
+                placeholder={
+                  <RequireAnalyzeAlert
+                    onAnalyzeJob={handleAnalyzeJob}
+                    isAnalyzingJob={isAnalyzingJob}
+                  />
+                }
+              >
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="flex flex-col gap-1">
+                    <h4 className="font-bold">Hard Skills</h4>
+                    <ul className="  gap-2   ">
+                      {jobKeywords?.["hard"]
+                        ?.sort((k1, k2) => k2.level - k1.level)
+                        .map((keyword) => (
+                          <KeywordBadge
+                            keyword={keyword}
+                            key={keyword.keyword}
+                          />
+                        ))}
 
-                  {/* {(jobKeywords?.["hard"]?.length || 0) > 15 && (
+                      {/* {(jobKeywords?.["hard"]?.length || 0) > 15 && (
                       <li
                         onClick={() => {}}
                         className="py-1 text-sm text-primary"
@@ -211,50 +224,59 @@ export const JobPostPreview = ({
                         Show + {(jobKeywords?.["hard"]?.length || 0) - 15} more
                       </li>
                     )} */}
-                </ul>
-              </div>
-              <div className="flex flex-col gap-1">
-                <h4 className="  font-bold">Soft Skills</h4>
-                <ul className="  gap-2   ">
-                  {jobKeywords?.["soft"]
-                    ?.sort((k1, k2) => k2.level - k1.level)
-                    .map((keyword) => (
-                      <KeywordBadge keyword={keyword} key={keyword.keyword} />
-                    ))}
-                </ul>
-              </div>
-              <div className="flex flex-col gap-1">
-                <h4 className="font-bold">Other</h4>
-                <ul className="gap-2">
-                  {jobKeywords?.["none"]
-                    ?.sort((k1, k2) => k2.level - k1.level)
-                    .map((keyword) => (
-                      <KeywordBadge keyword={keyword} key={keyword.keyword} />
-                    ))}
-                </ul>
-              </div>
-            </div>
-          </ContentPlaceholder>
-        </TabsContent>
-        <TabsContent className="px-2" value="summary">
-          <ContentPlaceholder
-            show={!jobKeywords}
-            placeholder={
-              <RequireAnalyzeAlert
-                onAnalyzeJob={handleAnalyzeJob}
-                isAnalyzingJob={isAnalyzingJob}
-              />
-            }
-          >
-            <div
-              className="jd-preview text-sm"
-              dangerouslySetInnerHTML={{
-                __html:
-                  (job.analyzeResults as { summary: string })?.summary || "",
-              }}
-            ></div>
-          </ContentPlaceholder>
-        </TabsContent>
+                    </ul>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <h4 className="  font-bold">Soft Skills</h4>
+                    <ul className="  gap-2   ">
+                      {jobKeywords?.["soft"]
+                        ?.sort((k1, k2) => k2.level - k1.level)
+                        .map((keyword) => (
+                          <KeywordBadge
+                            keyword={keyword}
+                            key={keyword.keyword}
+                          />
+                        ))}
+                    </ul>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <h4 className="font-bold">Other</h4>
+                    <ul className="gap-2">
+                      {jobKeywords?.["none"]
+                        ?.sort((k1, k2) => k2.level - k1.level)
+                        .map((keyword) => (
+                          <KeywordBadge
+                            keyword={keyword}
+                            key={keyword.keyword}
+                          />
+                        ))}
+                    </ul>
+                  </div>
+                </div>
+              </ContentPlaceholder>
+            </TabsContent>
+            <TabsContent className="px-2" value="summary">
+              <ContentPlaceholder
+                show={!jobKeywords}
+                placeholder={
+                  <RequireAnalyzeAlert
+                    onAnalyzeJob={handleAnalyzeJob}
+                    isAnalyzingJob={isAnalyzingJob}
+                  />
+                }
+              >
+                <div
+                  className="jd-preview text-sm"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      (job.analyzeResults as { summary: string })?.summary ||
+                      "",
+                  }}
+                ></div>
+              </ContentPlaceholder>
+            </TabsContent>
+          </CardContent>
+        </Card>
       </Tabs>
     </>
   );

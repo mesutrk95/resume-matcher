@@ -1,4 +1,3 @@
-// app/_components/navbar.tsx
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -7,25 +6,25 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CreditCard, UserRound } from "lucide-react";
+import { CreditCard, LogOut, Settings2, User2, UserRound } from "lucide-react";
 import Link from "next/link";
-import { currentUser } from "@/lib/auth";
 import { SubscriptionStatusIndicator } from "@/components/subscription/subscription-status-indicator";
 import { LottieAnimatedIcon } from "./lottie-animated-icon";
+import { useUser } from "@/providers/UserProvider";
 
 function AuthNav() {
+  const { user } = useUser();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="pr-4 rounded-none h-fit flex gap-x-2 focus-visible:ring-offset-0"
+          className=" rounded-none h-fit flex gap-x-2 focus-visible:ring-offset-0 px-0"
         >
           <Avatar>
             <AvatarImage src="/placeholder-avatar.jpg" />
@@ -37,8 +36,8 @@ function AuthNav() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator /> */}
         <DropdownMenuGroup>
           <DropdownMenuItem className="flex flex-col gap-y-2 py-4">
             <Avatar className="w-24 h-24">
@@ -48,9 +47,9 @@ function AuthNav() {
               </AvatarFallback>
             </Avatar>
             <div className="text-center">
-              <h3 className="text-lg font-semibold">User Name</h3>
-              <p className="text-sm">user@example.com</p>
-              <p className="text-sm">Role</p>
+              <h3 className="text-lg font-semibold">{user?.name}</h3>
+              <p className="text-sm">{user?.email}</p>
+              {/* <p className="text-sm">Role</p> */}
             </div>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -58,20 +57,22 @@ function AuthNav() {
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link href="/profile">
+              <User2 className="me-1 " />
               Profile
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/settings/billing">
-              <CreditCard className="mr-2 h-4 w-4" />
+              <CreditCard className="me-1 " />
               Billing & Subscription
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/settings">
+              <Settings2 className="me-1 " />
               Settings
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+              {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -83,9 +84,10 @@ function AuthNav() {
           }}
         >
           <DropdownMenuItem asChild>
-            <button type="submit" className="w-full flex justify-between">
+            <button type="submit" className="w-full flex ">
+              <LogOut className="me-1 " />
               Log out
-              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+              {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
             </button>
           </DropdownMenuItem>
         </form>

@@ -120,7 +120,7 @@ export const JobMatcher = ({
 
   return (
     // <PDFBuilderProvider resume={resume}>
-    <div 
+    <div
       style={{
         height: `calc(100vh - ${navbarHeight}px)`,
       }}
