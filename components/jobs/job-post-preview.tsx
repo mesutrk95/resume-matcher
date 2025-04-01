@@ -6,7 +6,13 @@ import { useMemo, useTransition } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { JobDescriptionPreview } from "./job-description-preview";
 import Moment from "react-moment";
-import { Briefcase, Ellipsis, LucideExternalLink, Trash } from "lucide-react";
+import {
+  Briefcase,
+  Edit,
+  Ellipsis,
+  LucideExternalLink,
+  Trash,
+} from "lucide-react";
 import { LoadingButton } from "../ui/loading-button";
 import { analyzeJobByAI, deleteJob } from "@/actions/job";
 import { toast } from "sonner";
@@ -21,6 +27,8 @@ import { Button } from "../ui/button";
 import { confirmDialog } from "../shared/confirm-dialog";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "../ui/card";
+import { JobStatusUpdateForm } from "./job-status-update-form";
+import Link from "next/link";
 
 const KeywordBadge = ({ keyword }: { keyword: JobKeyword }) => {
   return (
@@ -123,7 +131,7 @@ export const JobPostPreview = ({
 
   return (
     <>
-      <div className="flex justify-between mb-5">
+      <div className="flex flex-col justify-between gap-2 mb-2">
         <div>
           <h3 className="text-xl font-bold">{job.title}</h3>
           <p className="text-sm text-muted-foreground">
@@ -149,29 +157,38 @@ export const JobPostPreview = ({
             </a>
           )}
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              <Ellipsis />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem
-              onClick={handleDeleteJob}
-              disabled={isDeletingJob}
-            >
-              <Trash size={16} />
-              Delete Job
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={handleAnalyzeJob}
-              disabled={isAnalyzingJob}
-            >
-              <Briefcase size={16} />
-              {!isAnalyzingJob ? "Analyze Job" : "Analyzing Job ..."}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex gap-2 justify-between">
+          <JobStatusUpdateForm job={job} />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <Ellipsis />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem
+                onClick={handleAnalyzeJob}
+                disabled={isAnalyzingJob}
+              >
+                <Briefcase size={16} />
+                {!isAnalyzingJob ? "Analyze Job" : "Analyzing Job ..."}
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled={isDeletingJob} asChild>
+                <Link href={`/jobs/${job.id}/update`}>
+                  <Edit size={16} />
+                  Edit Job
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={handleDeleteJob}
+                disabled={isDeletingJob}
+              >
+                <Trash size={16} />
+                Delete Job
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
       <Tabs defaultValue="jd" className="">
         <TabsList

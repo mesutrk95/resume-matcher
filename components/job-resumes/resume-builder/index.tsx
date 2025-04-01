@@ -13,7 +13,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ChevronDown, ChevronLeft } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
 import { ReactNode, useState } from "react";
 import clsx from "clsx";
 
@@ -54,7 +54,7 @@ function AccordionElement({
           )}
         >
           {title}
-          {isOpen ? <ChevronDown size={16} /> : <ChevronLeft size={16} />}
+          {isOpen ? <Minus size={16} /> : <Plus size={16} />}
         </div>
       </AccordionTrigger>
       <AccordionContent>{children}</AccordionContent>

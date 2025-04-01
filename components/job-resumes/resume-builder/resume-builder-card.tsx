@@ -27,7 +27,7 @@ export const ResumeBuilderCard = ({
         <div className="my-3 flex justify-end">
           {buttons}
           {typeof isAdding !== "undefined" && !isAdding ? (
-            <Button onClick={onAdd}>
+            <Button variant={'default'} onClick={onAdd}>
               <Plus className="h-4 w-4 mr-1" />
               {addButtonText}
             </Button>
