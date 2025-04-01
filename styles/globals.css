@@ -99,3 +99,27 @@ body,
 .jd-preview p {
   padding-top: 0.5rem;
 }
+
+.navbar-hover-effect .effect-link {
+  overflow: hidden; 
+  position: relative;
+}
+
+.navbar-hover-effect .effect-link span {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.3s;
+}
+
+.navbar-hover-effect .effect-link span::before {
+  position: absolute;
+  top: 100%;
+  content: attr(data-hover);
+  /* font-weight: 700; */
+  transform: translate3d(0, 0, 0);
+}
+
+.navbar-hover-effect .effect-link:hover span,
+.navbar-hover-effect .effect-link:focus span {
+  transform: translateY(-100%);
+}

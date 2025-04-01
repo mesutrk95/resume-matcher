@@ -104,35 +104,38 @@ function NavItem({
   icon: string;
 }) {
   return (
-    <Link className="flex items-center gap-1.5" href={link}>
-      <LottieAnimatedIcon icon={icon} /> {title}
+    <Link className="py-2 px-3" href={link}>
+      <div className="effect-link flex items-center gap-1.5 ">
+        <LottieAnimatedIcon icon={icon} />
+        <span data-hover={title}>{title}</span>
+      </div>
     </Link>
   );
 }
 
 export default function Navbar() {
   return (
-    //fixed top-0 bg-white w-full z-10
-    <nav className="border-b bg-white">
-      <div className="container">
+    <nav className="border-b bg-white top-0 w-full z-10 sticky shadow-sm">
+      <div className="container ">
+        {/* Include the CSS */}
         <div className="flex gap-x-4 items-center justify-between">
-          <div className="flex gap-10 items-center text-sm font-medium">
+          <div className="flex gap-2 items-center text-sm font-medium navbar-hover-effect">
             <img src="/logo.svg" className="h-[35px]" />
             <NavItem
               icon="/iconly/Inbox.json"
               title="Resume Templates"
               link="/templates"
             />
-            {/* <Link className="flex gap-1" href="/templates">
-              <LottieAnimatedIcon icon="/iconly/Inbox.json" /> Resume Templates
-            </Link> */}
-            <Link className="flex items-center gap-1.5" href="/jobs">
-              <LottieAnimatedIcon icon="/iconly/Shoppingbag.json" /> Jobs
-            </Link>
-            <Link className="flex items-center gap-1.5" href="/resumes">
-              <LottieAnimatedIcon icon="/iconly/emaildocument1.json" />
-              Resumes
-            </Link>
+            <NavItem
+              icon="/iconly/Shoppingbag.json"
+              title="Jobs"
+              link="/jobs"
+            />
+            <NavItem
+              icon="/iconly/emaildocument1.json"
+              title="Resumes"
+              link="/resumes"
+            />
           </div>
           <div className="flex items-center gap-4">
             <SubscriptionStatusIndicator />
