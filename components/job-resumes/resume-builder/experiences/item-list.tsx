@@ -12,7 +12,7 @@ type ItemListProps = {
 
 export function ItemList({ experienceId, items, onUpdate, onDelete }: ItemListProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {items.map((item) => (
         <ItemComponent key={item.id} experienceId={experienceId} item={item} onUpdate={onUpdate} onDelete={onDelete} />
       ))}

@@ -63,7 +63,7 @@ export function ItemComponent({
     description: item.description,
   });
   const [variationEditForm, setVariationEditForm] = useState({
-    description: item.variations[0].content,
+    description: item.variations[0]?.content,
   });
 
   const [addingVariation, setAddingVariation] = useState(false);
@@ -182,7 +182,7 @@ export function ItemComponent({
 
   if (item.variations.length === 1) {
     return (
-      <div ref={setNodeRef} style={style} className="mb-3">
+      <div ref={setNodeRef} style={style} className=" ">
         <div className="flex-1 border rounded-md p-2 pb-">
           <div className="flex items-center justify-between">
             <div className="flex-1">
@@ -217,7 +217,7 @@ export function ItemComponent({
                     <div className="flex flex-col">
                       <p
                         className={`font-medium ${
-                          !item.enabled ? "text-muted-foreground" : ""
+                          !(item.enabled && item.variations[0].enabled) ? "text-muted-foreground" : ""
                         }`}
                       >
                         {item.variations[0].content}

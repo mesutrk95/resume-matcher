@@ -19,6 +19,7 @@ import { deleteJobResume } from "@/actions/job-resume"; // Assuming you have an 
 import { toast } from "sonner";
 import Moment from "react-moment";
 import { confirmDialog } from "../shared/confirm-dialog";
+import { LinkableTableCell } from "../ui/linkable-table-cell";
 
 type JobResumeItem = Omit<
   JobResume & { job: Pick<Job, "companyName"> },
@@ -96,8 +97,8 @@ export function JobResumesDataTable({
             onChange={(e) => setSearch(e.target.value)}
             className="w-full"
           />
-          <Button type="submit" size="icon" variant={'outline'}>
-            <Search className="h-4 w-4"  />
+          <Button type="submit" size="icon" variant={"outline"}>
+            <Search className="h-4 w-4" />
           </Button>
         </form>
       </div>
@@ -123,26 +124,29 @@ export function JobResumesDataTable({
             ) : (
               data.map((jobResume) => (
                 <TableRow key={jobResume.id}>
-                  <TableCell className="font-medium">
-                    <Link href={`/resumes/${jobResume.id}`}>
-                      {jobResume.name}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{jobResume.job.companyName}</TableCell>
-                  <TableCell>
+                  <LinkableTableCell
+                    className="font-medium"
+                    href={`/resumes/${jobResume.id}`}
+                  >
+                    {jobResume.name}
+                  </LinkableTableCell>
+                  <LinkableTableCell href={`/resumes/${jobResume.id}`}>
+                    {jobResume.job.companyName}
+                  </LinkableTableCell>
+                  <LinkableTableCell href={`/resumes/${jobResume.id}`}>
                     <Moment
                       date={jobResume.createdAt}
                       format="MMM d, yyyy HH:mm"
                       utc
                     />
-                  </TableCell>
-                  <TableCell>
+                  </LinkableTableCell>
+                  <LinkableTableCell href={`/resumes/${jobResume.id}`}>
                     <Moment
                       date={jobResume.updatedAt}
                       format="MMM d, yyyy HH:mm"
                       utc
                     />
-                  </TableCell>
+                  </LinkableTableCell>
                   <TableCell className="flex gap-2">
                     <Button
                       variant={"outline"}
@@ -180,8 +184,7 @@ export function JobResumesDataTable({
                   (currentPage - 1) * pageSize + data.length
                 )}
               </span>{" "}
-              of <span className="font-medium">{total}</span> job
-              resumes
+              of <span className="font-medium">{total}</span> job resumes
             </>
           )}
         </div>

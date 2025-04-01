@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import Moment from "react-moment";
 import { confirmDialog } from "../shared/confirm-dialog";
 import { CreateNewTemplateForm } from "./create-new-template-button";
+import { LinkableTableCell } from "../ui/linkable-table-cell";
 
 interface ResumeTemplatesDateTableProps {
   data: ResumeTemplate[];
@@ -90,7 +91,7 @@ export function ResumeTemplatesDateTable({
             onChange={(e) => setSearch(e.target.value)}
             className="w-full"
           />
-          <Button type="submit" size="icon" variant={'outline'}>
+          <Button type="submit" size="icon" variant={"outline"}>
             <Search className="h-4 w-4" />
           </Button>
         </form>
@@ -118,26 +119,29 @@ export function ResumeTemplatesDateTable({
             ) : (
               data.map((template) => (
                 <TableRow key={template.id}>
-                  <TableCell className="font-medium">
-                    <Link href={`/templates/${template.id}`}>
-                      {template.name}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{template.description}</TableCell>
-                  <TableCell>
+                  <LinkableTableCell
+                    className="font-medium"
+                    href={`/templates/${template.id}`}
+                  >
+                    {template.name}
+                  </LinkableTableCell>
+                  <LinkableTableCell href={`/templates/${template.id}`}>
+                    {template.description}
+                  </LinkableTableCell>
+                  <LinkableTableCell href={`/templates/${template.id}`}>
                     <Moment
                       date={template.createdAt}
                       format="YYYY/MM/DD HH:mm"
                       utc
                     />
-                  </TableCell>
-                  <TableCell>
+                  </LinkableTableCell>
+                  <LinkableTableCell href={`/templates/${template.id}`}>
                     <Moment
                       date={template.updatedAt}
                       format="YYYY/MM/DD HH:mm"
                       utc
                     />
-                  </TableCell>
+                  </LinkableTableCell>
                   <TableCell className="flex gap-2">
                     {/* Delete Confirmation Dialog */}
                     <Button

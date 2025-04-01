@@ -55,6 +55,7 @@ import {
 import { getJobStatusLabel, JOB_STATUS_CONFIG } from "./utils";
 import clsx from "clsx";
 import { ContentLoading } from "@/app/_components/loading";
+import { LinkableTableCell } from "../ui/linkable-table-cell";
 
 type JobItem = Omit<
   Job,
@@ -249,7 +250,7 @@ export function JobsDataTable({
               onChange={(e) => setSearch(e.target.value)}
               className="w-full"
             />
-            <Button type="submit" size="icon" variant='outline'>
+            <Button type="submit" size="icon" variant="outline">
               <Search className="h-4 w-4" />
             </Button>
           </form>
@@ -289,30 +290,34 @@ export function JobsDataTable({
               ) : (
                 data.map((job) => (
                   <TableRow key={job.id}>
-                    <TableCell className="font-medium">
-                      <Link href={`/jobs/${job.id}`}>
-                        <h6 className="max-w-72 overflow-hidden text-ellipsis block text-nowrap">
-                          {job.title}
-                        </h6>
+                    <LinkableTableCell
+                      className="font-medium"
+                      href={`/jobs/${job.id}`}
+                    >
+                      <h6 className="max-w-72 overflow-hidden text-ellipsis block text-nowrap">
+                        {job.title}
+                      </h6>
 
-                        {job.companyName && (
-                          <span className="text-muted-foreground text-xs">
-                            At {job.companyName}
-                          </span>
-                        )}
-                      </Link>
-                    </TableCell>
+                      {job.companyName && (
+                        <span className="text-muted-foreground text-xs">
+                          At {job.companyName}
+                        </span>
+                      )}
+                    </LinkableTableCell>
                     {/* <TableCell></TableCell> */}
-                    <TableCell className="capitalize">
+                    <LinkableTableCell
+                      className="capitalize"
+                      href={`/jobs/${job.id}`}
+                    >
                       <JobStatusIndicator status={job.status} />
-                    </TableCell>
-                    <TableCell>
+                    </LinkableTableCell>
+                    <LinkableTableCell href={`/jobs/${job.id}`}>
                       <div className="flex gap-1 items-center">
                         <MapPin className="text-muted-foreground" size={14} />
                         {job.location}
                       </div>
-                    </TableCell>
-                    <TableCell>
+                    </LinkableTableCell>
+                    <LinkableTableCell href={`/jobs/${job.id}`}>
                       <div className="flex flex-col">
                         <Moment
                           date={job.createdAt}
@@ -323,8 +328,8 @@ export function JobsDataTable({
                           <Moment date={job.createdAt} fromNow utc />
                         </span>
                       </div>
-                    </TableCell>
-                    <TableCell>
+                    </LinkableTableCell>
+                    <LinkableTableCell href={`/jobs/${job.id}`}>
                       {job.postedAt && (
                         <div className="flex flex-col">
                           <Moment date={job.postedAt} format="YYYY/MM/DD" utc />
@@ -333,7 +338,7 @@ export function JobsDataTable({
                           </span>
                         </div>
                       )}
-                    </TableCell>
+                    </LinkableTableCell>
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

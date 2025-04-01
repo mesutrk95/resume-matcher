@@ -47,7 +47,12 @@ function AccordionElement({
   return (
     <AccordionItem value={name}>
       <AccordionTrigger asChild>
-        <div className={clsx("flex justify-between px-4 bg-slate-50/80", isOpen && 'border-b')}>
+        <div
+          className={clsx(
+            "flex justify-between px-4 bg-slate-50/80",
+            isOpen && "border-b"
+          )}
+        >
           {title}
           {isOpen ? <ChevronDown size={16} /> : <ChevronLeft size={16} />}
         </div>
@@ -59,7 +64,6 @@ function AccordionElement({
 
 export function AccordionResumeBuilder({}: IPropsType) {
   const [tabs, setTabs] = useState<Record<string, boolean>>({});
-  console.log(tabs);
 
   return (
     <Accordion
