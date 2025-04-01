@@ -16,7 +16,7 @@ export default function MainLayout({
     <>
       <TrialBanner />
       <Navbar />
-      <main className={clsx('', shouldIgnoreStyling ? "" : "mx-10 py-10")}>
+      <main className={clsx('', shouldIgnoreStyling ? "" : "px-10 py-10")}>
         {shouldIgnoreStyling ? (
           children
         ) : (

@@ -23,6 +23,7 @@ import {
   LucideMessageCircleX,
   LucideScrollText,
   MapPin,
+  Plus,
   Search,
   Trash,
 } from "lucide-react";
@@ -238,25 +239,31 @@ export function JobsDataTable({
               }
             /> */}
           </div>
+          <form
+            onSubmit={handleSearch}
+            className="flex w-full max-w-md items-center space-x-2"
+          >
+            <Input
+              placeholder="Search in jobs..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full"
+            />
+            <Button type="submit" size="icon" variant='outline'>
+              <Search className="h-4 w-4" />
+            </Button>
+          </form>
         </div>
-        <form
-          onSubmit={handleSearch}
-          className="flex w-full max-w-sm items-center space-x-2"
-        >
-          <Input
-            placeholder="Search jobs..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full"
-          />
-          <Button type="submit" size="icon">
-            <Search className="h-4 w-4" />
-          </Button>
-        </form>
+        <Button asChild>
+          <Link href="/jobs/create">
+            <Plus className="mr-2 h-4 w-4" />
+            Add New Job
+          </Link>
+        </Button>
       </div>
 
       <ContentLoading loading={loading} className="my-10">
-        <div className="rounded-md border">
+        <div className="rounded-md border bg-white">
           <Table>
             <TableHeader>
               <TableRow>

@@ -42,6 +42,7 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
 
   return (
     <ResumeBuilderProvider
+      scheme="accordion"
       initialResume={content}
       initialResumeAnalyzeResults={
         jobResume.analyzeResults as ResumeAnalyzeResults

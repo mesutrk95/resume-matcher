@@ -168,16 +168,16 @@ export const JobPostPreview = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <Tabs defaultValue="jd" className=" ">
-        <TabsList className="grid w-full grid-cols-3" variant={"outline"}>
+      <Tabs defaultValue="jd" className="">
+        <TabsList className="grid w-full grid-cols-3 bg-white" variant={"outline"}>
           <TabsTrigger value="jd" variant={"outline"}>
-            Job Description
+            Description
           </TabsTrigger>
           <TabsTrigger value="keywords" variant={"outline"}>
             Keywords
           </TabsTrigger>
           <TabsTrigger value="summary" variant={"outline"}>
-            Job Summary by AI
+            Summary
           </TabsTrigger>
         </TabsList>
         <TabsContent className="px-2" value="jd">

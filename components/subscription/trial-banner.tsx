@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { useSubscription } from '@/providers/SubscriptionProvider';
-import { SubscriptionStatus } from '@prisma/client';
-import { AlertCircle, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { Button } from '../ui/button';
-import { formatDistanceToNow } from 'date-fns';
+import { useSubscription } from "@/providers/SubscriptionProvider";
+import { SubscriptionStatus } from "@prisma/client";
+import { AlertCircle, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Button } from "../ui/button";
+import { formatDistanceToNow } from "date-fns";
+import Link from "next/link";
 
 export function TrialBanner() {
   const { subscription } = useSubscription();
@@ -26,7 +27,7 @@ export function TrialBanner() {
   const trialEndDate = subscription.currentPeriodEnd;
   const timeRemaining = trialEndDate
     ? formatDistanceToNow(new Date(trialEndDate), { addSuffix: true })
-    : '';
+    : "";
 
   return (
     <div className="bg-indigo-600 text-white py-2 px-4">
@@ -42,9 +43,9 @@ export function TrialBanner() {
             variant="outline"
             size="sm"
             className="bg-white text-indigo-600 border-white hover:bg-indigo-100 hover:text-indigo-800"
-            onClick={() => router.push('/settings/billing')}
+            asChild
           >
-            Manage Subscription
+            <Link href="/settings/billing">Manage Subscription</Link>
           </Button>
           <Button
             variant="ghost"

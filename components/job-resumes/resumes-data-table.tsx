@@ -27,7 +27,7 @@ type JobResumeItem = Omit<
 
 interface JobResumesDataTableProps {
   data: JobResumeItem[];
-  pageCount: number;
+  total: number;
   currentPage: number;
   pageSize: number;
   searchQuery: string;
@@ -35,11 +35,12 @@ interface JobResumesDataTableProps {
 
 export function JobResumesDataTable({
   data,
-  pageCount,
+  total,
   currentPage,
   pageSize,
   searchQuery,
 }: JobResumesDataTableProps) {
+  const pageCount = Math.ceil(total / pageSize);
   const router = useRouter();
   const pathname = usePathname();
   const [search, setSearch] = useState(searchQuery);
@@ -95,13 +96,13 @@ export function JobResumesDataTable({
             onChange={(e) => setSearch(e.target.value)}
             className="w-full"
           />
-          <Button type="submit" size="icon">
-            <Search className="h-4 w-4" />
+          <Button type="submit" size="icon" variant={'outline'}>
+            <Search className="h-4 w-4"  />
           </Button>
         </form>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-white">
         <Table>
           <TableHeader>
             <TableRow>
@@ -179,7 +180,7 @@ export function JobResumesDataTable({
                   (currentPage - 1) * pageSize + data.length
                 )}
               </span>{" "}
-              of <span className="font-medium">{pageCount * pageSize}</span> job
+              of <span className="font-medium">{total}</span> job
               resumes
             </>
           )}

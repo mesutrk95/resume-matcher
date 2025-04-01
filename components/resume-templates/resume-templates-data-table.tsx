@@ -19,6 +19,7 @@ import { deleteResumeTemplate } from "@/actions/resume-template";
 import { toast } from "sonner";
 import Moment from "react-moment";
 import { confirmDialog } from "../shared/confirm-dialog";
+import { CreateNewTemplateForm } from "./create-new-template-button";
 
 interface ResumeTemplatesDateTableProps {
   data: ResumeTemplate[];
@@ -89,13 +90,14 @@ export function ResumeTemplatesDateTable({
             onChange={(e) => setSearch(e.target.value)}
             className="w-full"
           />
-          <Button type="submit" size="icon">
+          <Button type="submit" size="icon" variant={'outline'}>
             <Search className="h-4 w-4" />
           </Button>
         </form>
+        <CreateNewTemplateForm />
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-white">
         <Table>
           <TableHeader>
             <TableRow>

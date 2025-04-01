@@ -63,7 +63,7 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
           <JobPostPreview job={job} />
         </div>
         {/* Resumes Column */}
-        <div className="md:col-span-1 bg-white rounded-lg  ">
+        <div className="md:col-span-1 rounded-lg  ">
           {/* Job Status Update Section */}
           <div className="mb-6">
             <h3 className="text-xl font-bold mb-3">Application Status</h3>

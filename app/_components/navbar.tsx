@@ -113,7 +113,7 @@ function NavItem({
 export default function Navbar() {
   return (
     //fixed top-0 bg-white w-full z-10
-    <nav className="border-b ">
+    <nav className="border-b bg-white">
       <div className="container">
         <div className="flex gap-x-4 items-center justify-between">
           <div className="flex gap-10 items-center text-sm font-medium">

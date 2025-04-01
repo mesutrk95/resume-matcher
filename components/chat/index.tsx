@@ -159,7 +159,7 @@ export function ChatInterface({
   };
 
   return (
-    <Card className="w-full h-full flex flex-col justify-stretch">
+    <Card className="w-full h-full flex flex-col justify-stretch border-none">
       <CardHeader className="shrink-0 flex flex-row items-center gap-5 space-y-0 p-4 border-b">
         <div className="flex items-center space-x-2">
           <Switch

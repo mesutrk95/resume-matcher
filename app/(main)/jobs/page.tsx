@@ -101,12 +101,6 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
             Manage your job listings and applications
           </p>
         </div>
-        <Button asChild>
-          <Link href="/jobs/create">
-            <Plus className="mr-2 h-4 w-4" />
-            Add New Job
-          </Link>
-        </Button>
       </div>
       <JobsDataTable
         data={jobs}
