@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useTransition } from "react";
+import React, { useMemo, useTransition } from "react";
 import { AccordionResumeBuilder } from "@/components/job-resumes/resume-builder";
 import { Job, JobResume } from "@prisma/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -37,6 +37,8 @@ import { ChatInterface } from "@/components/chat";
 import { useResumeBuilder } from "@/components/job-resumes/resume-builder/context/useResumeBuilder";
 import { ResumeScoreTab } from "./ResumeScoreTab";
 import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSubscription } from "@/providers/SubscriptionProvider";
 
 export const JobMatcher = ({
   jobResume,
@@ -46,6 +48,7 @@ export const JobMatcher = ({
   job: Job;
 }) => {
   const router = useRouter();
+  const { isTrialingBannerEnable } = useSubscription();
   const { id: jobResumeId } = useParams();
   const { resume, setResumeAnalyzeResults } = useResumeBuilder();
 
@@ -110,9 +113,18 @@ export const JobMatcher = ({
     });
   };
 
+  const navbarHeight = useMemo(
+    () => 58 + (isTrialingBannerEnable ? 52 : 0),
+    [isTrialingBannerEnable]
+  );
+
   return (
     // <PDFBuilderProvider resume={resume}>
-    <div className="h-[calc(100vh-58px)]">
+    <div 
+      style={{
+        height: `calc(100vh - ${navbarHeight}px)`,
+      }}
+    >
       <div
         defaultValue="builder"
         className="flex flex-col h-full justify-stretch"
@@ -198,13 +210,13 @@ export const JobMatcher = ({
         </div>
         <div className="flex-auto h-0">
           <div className="grid grid-cols-12 gap-2 container h-full py-2 relative">
-            <Card className="col-span-7 overflow-auto h-full border-r">
+            <Card className="col-span-7 h-full border-r">
               <Tabs
                 defaultValue="builder"
                 className="flex flex-col h-full justify-stretch "
               >
                 <TabsList
-                  className="w-full border-b bg-white"
+                  className="w-full shrink-0 border-b  "
                   variant={"bottomline"}
                 >
                   <TabsTrigger value="builder" variant={"bottomline"}>
@@ -220,12 +232,18 @@ export const JobMatcher = ({
                     Ask AI
                   </TabsTrigger>
                 </TabsList>
-                <CardContent className="overflow-auto h-full p-0 relative">
-                  <TabsContent className="p-0 mt-0" value="builder">
-                    <AccordionResumeBuilder />
+                <CardContent className="flex-grow h-0 p-0 relative">
+                  <TabsContent className="p-0 mt-0 h-full" value="builder">
+                    <ScrollArea className="h-full">
+                      <AccordionResumeBuilder />
+                    </ScrollArea>
                   </TabsContent>
-                  <TabsContent className="p-5" value="score">
-                    <ResumeScoreTab jobResume={jobResume} />
+                  <TabsContent className="p-0 m-0 h-full" value="score">
+                    <ScrollArea className="h-full">
+                      <div className=" p-5">
+                        <ResumeScoreTab jobResume={jobResume} />
+                      </div>
+                    </ScrollArea>
                   </TabsContent>
                   <TabsContent className="h-full p-0 m-0" value="chat">
                     <ChatInterface jobResume={jobResume} resume={resume} />
@@ -255,7 +273,7 @@ export const JobMatcher = ({
                   <TabsContent className="p-5 pt-0 relative" value="preview">
                     <CVPreview data={resume} jobResume={jobResume} />
                   </TabsContent>
-                  <TabsContent className="p-0" value="jd">
+                  <TabsContent className="p-0 px-3 pb-3" value="jd">
                     <JobPostPreview job={job} />
                   </TabsContent>
                 </CardContent>

@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
-import { getUserSubscription } from '@/actions/subscription/customer';
+import { getUserSubscription } from "@/actions/subscription/customer";
 import {
   createSubscription,
   createCustomerPortalSession,
-} from '@/actions/subscription/session';
+} from "@/actions/subscription/session";
 import {
   cancelUserSubscription,
   reactivateUserSubscription,
-} from '@/actions/subscription/status';
-import { SubscriptionInterval } from '@/actions/subscription';
-import { Subscription, SubscriptionStatus } from '@prisma/client';
+} from "@/actions/subscription/status";
+import { SubscriptionInterval } from "@/actions/subscription";
+import { Subscription, SubscriptionStatus } from "@prisma/client";
 import {
   createContext,
   useContext,
   useState,
   useEffect,
   useCallback,
-} from 'react';
-import { toast } from 'sonner';
+} from "react";
+import { toast } from "sonner";
 
 interface SubscriptionContextType {
   subscription: Subscription | null;
@@ -32,6 +32,9 @@ interface SubscriptionContextType {
   handleCancelSubscription: () => Promise<boolean>;
   handleReactivateSubscription: () => Promise<boolean>;
   handleRedirectToPortal: (returnUrl?: string) => Promise<boolean>;
+
+  isTrialingBannerEnable?: boolean;
+  dismissTrialBanner: () => void;
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType>({
@@ -46,6 +49,7 @@ const SubscriptionContext = createContext<SubscriptionContextType>({
   handleCancelSubscription: async () => false,
   handleReactivateSubscription: async () => false,
   handleRedirectToPortal: async () => false,
+  dismissTrialBanner: () => {},
 });
 
 export const SubscriptionProvider = ({
@@ -56,13 +60,14 @@ export const SubscriptionProvider = ({
   initialSubscription?: Subscription | null;
 }) => {
   const [subscription, setSubscription] = useState<Subscription | null>(
-    initialSubscription,
+    initialSubscription
   );
   const [isLoading, setIsLoading] = useState(!initialSubscription);
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);
   const [isReactivating, setIsReactivating] = useState(false);
   const [isRedirectingToPortal, setIsRedirectingToPortal] = useState(false);
+  const [isTrailBannerDismissed, setIsTrailBannerDismissed] = useState(false);
 
   const fetchSubscription = useCallback(async () => {
     try {
@@ -72,7 +77,7 @@ export const SubscriptionProvider = ({
       // If we have a subscription with customerId but no subscriptionId, it might be abandoned
       if (data?.customerId && !data?.subscriptionId) {
         const { cleanupAbandonedSubscriptions } = await import(
-          '@/actions/subscription/cleanup'
+          "@/actions/subscription/cleanup"
         );
         const cleanedData = await cleanupAbandonedSubscriptions(data.userId);
         setSubscription(cleanedData);
@@ -82,10 +87,10 @@ export const SubscriptionProvider = ({
       setSubscription(data);
       return data;
     } catch (error: any) {
-      console.error('Error fetching subscription:', error);
-      if (error.message !== 'User not authenticated') {
+      console.error("Error fetching subscription:", error);
+      if (error.message !== "User not authenticated") {
         // Don't show toast for auth errors as those are expected when not logged in
-        toast.error(error.message || 'Failed to fetch subscription');
+        toast.error(error.message || "Failed to fetch subscription");
       }
       return null;
     } finally {
@@ -100,7 +105,7 @@ export const SubscriptionProvider = ({
       const response = await createSubscription(interval);
 
       if (!response.success) {
-        toast.error('Failed to create subscription');
+        toast.error("Failed to create subscription");
         return null;
       }
 
@@ -108,12 +113,12 @@ export const SubscriptionProvider = ({
         window.location.href = response.url;
         return response;
       } else {
-        toast.error('No checkout URL returned');
+        toast.error("No checkout URL returned");
         return null;
       }
     } catch (error: any) {
-      console.error('Error creating subscription:', error);
-      toast.error(error.message || 'Failed to create subscription');
+      console.error("Error creating subscription:", error);
+      toast.error(error.message || "Failed to create subscription");
       return null;
     } finally {
       setIsSubscribing(false);
@@ -127,16 +132,16 @@ export const SubscriptionProvider = ({
       const response = await cancelUserSubscription();
 
       if (response.success) {
-        toast.success(response.message || 'Subscription canceled successfully');
+        toast.success(response.message || "Subscription canceled successfully");
         await fetchSubscription();
         return true;
       } else {
-        toast.error(response.error?.message || 'Failed to cancel subscription');
+        toast.error(response.error?.message || "Failed to cancel subscription");
         return false;
       }
     } catch (error: any) {
-      console.error('Error canceling subscription:', error);
-      toast.error(error.message || 'Failed to cancel subscription');
+      console.error("Error canceling subscription:", error);
+      toast.error(error.message || "Failed to cancel subscription");
       return false;
     } finally {
       setIsCanceling(false);
@@ -151,19 +156,19 @@ export const SubscriptionProvider = ({
 
       if (response.success) {
         toast.success(
-          response.message || 'Subscription reactivated successfully',
+          response.message || "Subscription reactivated successfully"
         );
         await fetchSubscription();
         return true;
       } else {
         toast.error(
-          response.error?.message || 'Failed to reactivate subscription',
+          response.error?.message || "Failed to reactivate subscription"
         );
         return false;
       }
     } catch (error: any) {
-      console.error('Error reactivating subscription:', error);
-      toast.error(error.message || 'Failed to reactivate subscription');
+      console.error("Error reactivating subscription:", error);
+      toast.error(error.message || "Failed to reactivate subscription");
       return false;
     } finally {
       setIsReactivating(false);
@@ -180,12 +185,12 @@ export const SubscriptionProvider = ({
         window.location.href = response.url;
         return true;
       } else {
-        toast.error('Failed to create portal session');
+        toast.error("Failed to create portal session");
         return false;
       }
     } catch (error: any) {
-      console.error('Error creating portal session:', error);
-      toast.error(error.message || 'Failed to create portal session');
+      console.error("Error creating portal session:", error);
+      toast.error(error.message || "Failed to create portal session");
       return false;
     } finally {
       setIsRedirectingToPortal(false);
@@ -213,6 +218,12 @@ export const SubscriptionProvider = ({
         handleCancelSubscription,
         handleReactivateSubscription,
         handleRedirectToPortal,
+
+        dismissTrialBanner: () => setIsTrailBannerDismissed(true),
+        isTrialingBannerEnable:
+          !!subscription &&
+          subscription.status === SubscriptionStatus.TRIALING &&
+          !isTrailBannerDismissed,
       }}
     >
       {children}

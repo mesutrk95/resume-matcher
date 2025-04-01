@@ -10,27 +10,22 @@ import { formatDistanceToNow } from "date-fns";
 import Link from "next/link";
 
 export function TrialBanner() {
-  const { subscription } = useSubscription();
-  const [dismissed, setDismissed] = useState(false);
-  const router = useRouter();
+  const { subscription, isTrialingBannerEnable, dismissTrialBanner } =
+    useSubscription();
 
   // Don't show if no subscription, not on trial, or already dismissed
-  if (
-    !subscription ||
-    subscription.status !== SubscriptionStatus.TRIALING ||
-    dismissed
-  ) {
+  if (!isTrialingBannerEnable) {
     return null;
   }
 
   // Calculate days remaining
-  const trialEndDate = subscription.currentPeriodEnd;
+  const trialEndDate = subscription!.currentPeriodEnd;
   const timeRemaining = trialEndDate
     ? formatDistanceToNow(new Date(trialEndDate), { addSuffix: true })
     : "";
 
   return (
-    <div className="bg-indigo-600 text-white py-2 px-4">
+    <div className="bg-indigo-600 text-white py-2 px-4" id="trialing-banner">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <AlertCircle className="h-4 w-4" />
@@ -51,7 +46,7 @@ export function TrialBanner() {
             variant="ghost"
             size="sm"
             className="text-white hover:bg-indigo-700 hover:text-white p-0 h-6 w-6"
-            onClick={() => setDismissed(true)}
+            onClick={dismissTrialBanner}
           >
             <X className="h-4 w-4" />
           </Button>
