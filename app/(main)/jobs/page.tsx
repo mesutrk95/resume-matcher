@@ -26,7 +26,9 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   const page = Number(searchParams.page) || 1;
   const pageSize = Number(searchParams.pageSize) || 10;
   const search = searchParams.search || "";
-  const statuses = searchParams.status ? searchParams.status.split(",") : [];
+  const statuses = searchParams.status
+    ? searchParams.status.split(",")
+    : undefined;
   const skip = (page - 1) * pageSize;
 
   // Prepare search filter
@@ -52,7 +54,9 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
 
   // Prepare status filter
   const statusFilter =
-    statuses.length > 0 ? { status: { in: statuses as JobStatus[] } } : {};
+    statuses && statuses.length > 0
+      ? { status: { in: statuses as JobStatus[] } }
+      : {};
 
   // Get jobs with filters, pagination and sorting
   const jobs = await db.job.findMany({
@@ -87,7 +91,6 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
     },
   });
 
-  const totalPages = Math.ceil(totalJobs / pageSize);
 
   return (
     <div className="">
@@ -98,16 +101,10 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
             Manage your job listings and applications
           </p>
         </div>
-        <Button asChild>
-          <Link href="/jobs/create">
-            <Plus className="mr-2 h-4 w-4" />
-            Add New Job
-          </Link>
-        </Button>
       </div>
       <JobsDataTable
         data={jobs}
-        pageCount={totalPages}
+        total={totalJobs}
         currentPage={page}
         pageSize={pageSize}
         searchQuery={search}

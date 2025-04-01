@@ -4,7 +4,7 @@ import { useSubscription } from '@/providers/SubscriptionProvider';
 import { SubscriptionStatus } from '@prisma/client';
 import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
-import { Sparkles } from 'lucide-react';
+import { LottieAnimatedIcon } from '@/app/_components/lottie-animated-icon';
 
 export function SubscriptionStatusIndicator() {
   const { subscription, isLoading } = useSubscription();
@@ -26,11 +26,12 @@ export function SubscriptionStatusIndicator() {
     return (
       <Badge
         variant="outline"
-        className="cursor-pointer border-dashed"
+        className="cursor-pointer border-slate-300 border-dashed py-1"
         onClick={() => router.push('/settings/billing')}
       >
-        <Sparkles className="h-3 w-3 mr-1" />
-        Upgrade
+        <LottieAnimatedIcon icon="/iconly/Star5.json"/>
+        {/* <Sparkles className="h-3 w-3 mr-1" /> */}
+        <span className='ms-2'>Upgrade</span>
       </Badge>
     );
   }

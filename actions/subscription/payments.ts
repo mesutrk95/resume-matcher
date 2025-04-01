@@ -1,14 +1,14 @@
 // actions/subscription/payments.ts
-'use server';
+"use server";
 
-import { currentUser } from '@/lib/auth';
-import { getStripeServer } from '@/lib/stripe';
-import { getSubscriptionByUserId } from './customer';
+import { currentUser } from "@/lib/auth";
+import { getStripeServer } from "@/lib/stripe";
+import { getSubscriptionByUserId } from "./customer";
 import {
   BadRequestException,
   InternalServerErrorException,
-} from '@/lib/exceptions';
-import Logger from '@/lib/logger';
+} from "@/lib/exceptions";
+import Logger from "@/lib/logger";
 
 export type PaymentHistoryItem = {
   id: string;
@@ -17,15 +17,15 @@ export type PaymentHistoryItem = {
   status: string;
   date: Date;
   description: string;
-  invoiceUrl?: string;
-  receiptUrl?: string;
+  invoiceUrl?: string | null;
+  receiptUrl?: string | null;
 };
 
 export const getPaymentHistory = async (): Promise<PaymentHistoryItem[]> => {
   try {
     const user = await currentUser();
     if (!user?.id) {
-      throw new BadRequestException('User not authenticated');
+      throw new BadRequestException("User not authenticated");
     }
 
     const subscription = await getSubscriptionByUserId(user.id);
@@ -35,7 +35,7 @@ export const getPaymentHistory = async (): Promise<PaymentHistoryItem[]> => {
 
     const stripe = getStripeServer();
     if (!stripe) {
-      throw new InternalServerErrorException('Failed to initialize Stripe');
+      throw new InternalServerErrorException("Failed to initialize Stripe");
     }
 
     const charges = await stripe.charges.list({
@@ -48,9 +48,9 @@ export const getPaymentHistory = async (): Promise<PaymentHistoryItem[]> => {
       limit: 20,
     });
 
-    const payments = charges.data.map(charge => {
+    const payments = charges.data.map((charge) => {
       const relatedInvoice = invoices.data.find(
-        invoice => invoice.charge === charge.id,
+        (invoice) => invoice.charge === charge.id
       );
 
       return {
@@ -59,7 +59,7 @@ export const getPaymentHistory = async (): Promise<PaymentHistoryItem[]> => {
         currency: charge.currency.toUpperCase(),
         status: charge.status,
         date: new Date(charge.created * 1000),
-        description: charge.description || 'Subscription payment',
+        description: charge.description || "Subscription payment",
         invoiceUrl: relatedInvoice?.hosted_invoice_url,
         receiptUrl: charge.receipt_url,
       };
@@ -67,7 +67,7 @@ export const getPaymentHistory = async (): Promise<PaymentHistoryItem[]> => {
 
     return payments;
   } catch (error) {
-    Logger.error('Error fetching payment history', {
+    Logger.error("Error fetching payment history", {
       error: error instanceof Error ? error.message : String(error),
     });
     throw error;

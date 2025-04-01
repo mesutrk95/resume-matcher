@@ -66,8 +66,6 @@ export default async function ResumesPage({ searchParams }: ResumesPageProps) {
     },
   });
 
-  const totalPages = Math.ceil(totalJobResume / pageSize);
-
   return (
     <div className="space-y-6">
       <div>
@@ -78,7 +76,7 @@ export default async function ResumesPage({ searchParams }: ResumesPageProps) {
       </div>
       <JobResumesDataTable
         data={jobResumes}
-        pageCount={totalPages}
+        total={totalJobResume}
         currentPage={page}
         pageSize={pageSize}
         searchQuery={search}

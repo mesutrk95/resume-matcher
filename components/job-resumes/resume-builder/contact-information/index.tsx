@@ -48,10 +48,12 @@ export function ContactInfoSection({}: ContactInfoSectionProps) {
       buttons={
         <div>
           {!isEditing ? (
-            <Button variant="outline" size="sm" onClick={handleEdit}>
-              <Edit className="h-4 w-4 mr-1" />
-              Edit
-            </Button>
+            <div className="flex ">
+              <Button variant="default" size="sm" onClick={handleEdit}>
+                <Edit className="h-4 w-4 mr-1" />
+                Edit
+              </Button>
+            </div>
           ) : (
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={handleCancel}>

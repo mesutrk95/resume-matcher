@@ -77,7 +77,6 @@ export default async function TemplatesPage({
             Manage your resume templates
           </p>
         </div>
-        <CreateNewTemplateForm />
       </div>
 
       <ResumeTemplatesDateTable

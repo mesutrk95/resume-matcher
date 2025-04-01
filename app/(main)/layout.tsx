@@ -2,6 +2,7 @@
 
 import Navbar from "@/app/_components/navbar";
 import { TrialBanner } from "@/components/subscription/trial-banner";
+import clsx from "clsx";
 import { usePathname } from "next/navigation";
 
 export default function MainLayout({
@@ -15,7 +16,7 @@ export default function MainLayout({
     <>
       <TrialBanner />
       <Navbar />
-      <main className={shouldIgnoreStyling ? "" : "mx-10 py-10"}>
+      <main className={clsx('', shouldIgnoreStyling ? "" : "px-10 pt-10")}>
         {shouldIgnoreStyling ? (
           children
         ) : (

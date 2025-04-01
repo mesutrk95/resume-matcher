@@ -46,14 +46,14 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <Button asChild variant="ghost">
           <Link href={`/jobs`}>
             <ChevronLeft className="mr-2 h-4 w-4" />
             Back to Jobs
           </Link>
         </Button>
-      </div>
+      </div> */}
 
       {/* <h1 className="text-3xl font-bold">Resumes for {job.title}</h1> */}
 
@@ -63,12 +63,12 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
           <JobPostPreview job={job} />
         </div>
         {/* Resumes Column */}
-        <div className="md:col-span-1 bg-white rounded-lg  ">
+        <div className="md:col-span-1 rounded-lg  ">
           {/* Job Status Update Section */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <h3 className="text-xl font-bold mb-3">Application Status</h3>
             <JobStatusUpdateForm job={job} />
-          </div>
+          </div> */}
           <div className="space-y-4">
             <h3 className="text-xl font-bold">Resumes</h3>
             <div className="space-y-3">

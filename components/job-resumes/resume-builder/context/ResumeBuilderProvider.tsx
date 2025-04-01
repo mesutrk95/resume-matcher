@@ -4,6 +4,8 @@ import { ResumeAnalyzeResults, ResumeContent } from "@/types/resume";
 import React, { createContext, useState } from "react";
 
 export type IResumeTemplateEditor = {
+  scheme?: "cards" | "accordion";
+
   resume: ResumeContent;
   saveResume: (resume: ResumeContent) => void;
 
@@ -13,19 +15,21 @@ export type IResumeTemplateEditor = {
   >;
 };
 
-export const ResumeBuilderContext = createContext<IResumeTemplateEditor>(
-  {} as IResumeTemplateEditor
-);
+export const ResumeBuilderContext = createContext<IResumeTemplateEditor>({
+  scheme: "cards",
+} as IResumeTemplateEditor);
 
 export const ResumeBuilderProvider = ({
   children,
   initialResume,
   initialResumeAnalyzeResults,
+  scheme,
   onUpdated,
 }: {
   children: React.ReactNode;
   initialResume: ResumeContent;
   initialResumeAnalyzeResults?: ResumeAnalyzeResults;
+  scheme?: "cards" | "accordion",
   onUpdated?: (resume: ResumeContent) => void;
 }) => {
   const [resume, setResume] = useState<ResumeContent>(initialResume);
@@ -43,6 +47,7 @@ export const ResumeBuilderProvider = ({
       value={{
         // setScores,
         // scores,
+        scheme,
         resume,
         saveResume,
         resumeAnalyzeResults,
