@@ -317,7 +317,7 @@ export function ExperienceItem({
                     {/* Edit */}
                   </Button>
                   <Button
-                    variant="destructive"
+                    variant="outline-destructive"
                     size="sm"
                     onClick={() => onDelete(experience.id)}
                   >

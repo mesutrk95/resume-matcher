@@ -182,6 +182,7 @@ export const JobPostPreview = ({
               <DropdownMenuItem
                 onClick={handleDeleteJob}
                 disabled={isDeletingJob}
+                className="text-destructive"
               >
                 <Trash size={16} />
                 Delete Job
@@ -206,7 +207,7 @@ export const JobPostPreview = ({
           </TabsTrigger>
         </TabsList>
         <Card className="mt-2">
-          <CardContent>
+          <CardContent className="px-3">
             <TabsContent className="px-2" value="jd">
               <JobDescriptionPreview job={job} />
             </TabsContent>

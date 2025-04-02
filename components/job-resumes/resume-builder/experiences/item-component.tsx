@@ -252,7 +252,7 @@ export function ItemComponent({
                     <Edit className="h-4 w-4" />
                   </Button>
                   <Button
-                    variant="destructive"
+                    variant="outline-destructive"
                     size="sm"
                     onClick={() => onDelete(item.id)}
                   >
@@ -341,7 +341,7 @@ export function ItemComponent({
                       <Edit className="h-4 w-4" />
                     </Button>
                     <Button
-                      variant="destructive"
+                      variant="outline-destructive"
                       size="sm"
                       onClick={() => onDelete(item.id)}
                     >

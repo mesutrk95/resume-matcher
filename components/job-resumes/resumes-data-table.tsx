@@ -173,9 +173,8 @@ export function JobResumesDataTable({
                   </LinkableTableCell>
                   <TableCell className="flex gap-2">
                     <Button
-                      variant={"outline"}
+                      variant={"outline-destructive"}
                       disabled={isDeleting}
-                      className="text-destructive focus:text-destructive"
                       onClick={() => handleDeleteJobResume(jobResume)}
                     >
                       <Trash className="h-4 w-4" />

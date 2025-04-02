@@ -13,6 +13,7 @@ import { withErrorHandling } from "./with-error-handling";
 import cheerio from "cheerio";
 import axios from "axios";
 import moment from "moment";
+import { downloadImageAsBase64 } from "@/lib/utils";
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {
@@ -182,6 +183,10 @@ export const extractJobDescriptionFromUrl = async (url: string) => {
 
   // Load the HTML into cheerio
   const $ = cheerio.load(html);
+  const logoImage = $("img[data-delayed-url*='company-logo']")
+    .first()
+    .attr("data-delayed-url");
+
   const cardTop = $(".top-card-layout__entity-info-container").text().trim();
   const description = $(".description__text--rich .show-more-less-html__markup")
     .html()
@@ -196,6 +201,10 @@ export const extractJobDescriptionFromUrl = async (url: string) => {
     "YYYY/MM/DD HH:mm"
   )}). Ensure the response is in a valid JSON format with no extra text:\n ${jd}`;
 
+  let image = null;
+  try {
+    if (logoImage) image = await downloadImageAsBase64(logoImage);
+  } catch (ex) {}
   const result = await getAIJsonResponse(prompt);
-  return result;
+  return { ...result.result, image };
 };

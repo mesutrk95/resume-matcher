@@ -25,7 +25,7 @@ export function JobResumeCard({ jobResume }: JobResumeCardProps) {
       !(await confirmDialog({
         title: "Are you absolutely sure!?",
         description: `You are deleting the resume "${jobResume.name}".`,
-        confirmText: `Yes, Delete It!`
+        confirmText: `Yes, Delete It!`,
       }))
     )
       return;
@@ -60,7 +60,7 @@ export function JobResumeCard({ jobResume }: JobResumeCardProps) {
             </Link>
           </Button>
           <Button
-            variant="destructive"
+            variant="outline-destructive"
             size="sm"
             disabled={isPending}
             onClick={handleDelete}

@@ -1,58 +1,59 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { ResumeProfessionalSummary } from "@/types/resume"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Edit, GripVertical, Save, Trash2, X } from "lucide-react"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+import { useState } from "react";
+import type { ResumeProfessionalSummary } from "@/types/resume";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type SummaryItemProps = {
-  summary: ResumeProfessionalSummary
-  onUpdate: (summary: ResumeProfessionalSummary) => void
-  onDelete: (summaryId: string) => void
-}
+  summary: ResumeProfessionalSummary;
+  onUpdate: (summary: ResumeProfessionalSummary) => void;
+  onDelete: (summaryId: string) => void;
+};
 
 export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: summary.id })
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: summary.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  }
+  };
 
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     content: summary.content,
-  })
+  });
 
   const handleEdit = () => {
     setEditForm({
       content: summary.content,
-    })
-    setIsEditing(true)
-  }
+    });
+    setIsEditing(true);
+  };
 
   const handleSave = () => {
     onUpdate({
       ...summary,
       content: editForm.content,
-    })
-    setIsEditing(false)
-  }
+    });
+    setIsEditing(false);
+  };
 
   const handleCancel = () => {
-    setIsEditing(false)
-  }
+    setIsEditing(false);
+  };
 
   const handleToggleEnabled = (checked: boolean) => {
     onUpdate({
       ...summary,
       enabled: checked,
-    })
-  }
+    });
+  };
 
   return (
     <div ref={setNodeRef} style={style} className="border rounded-md p-4">
@@ -82,7 +83,13 @@ export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
               rows={3}
             />
           ) : (
-            <p className={`text-sm ${!summary.enabled ? "text-muted-foreground" : ""}`}>{summary.content}</p>
+            <p
+              className={`text-sm ${
+                !summary.enabled ? "text-muted-foreground" : ""
+              }`}
+            >
+              {summary.content}
+            </p>
           )}
         </div>
 
@@ -101,7 +108,11 @@ export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
               <Button variant="outline" size="sm" onClick={handleEdit}>
                 <Edit className="h-4 w-4" />
               </Button>
-              <Button variant="destructive" size="sm" onClick={() => onDelete(summary.id)}>
+              <Button
+                variant="outline-destructive"
+                size="sm"
+                onClick={() => onDelete(summary.id)}
+              >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </>
@@ -109,6 +120,5 @@ export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

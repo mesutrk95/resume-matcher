@@ -100,3 +100,33 @@ export function randomNDigits(n?: number) {
   //   Math.pow(10, n || 5)
   // );
 }
+
+export async function downloadImageAsBase64(imageUrl: string): Promise<string> {
+  try {
+    // Fetch the image
+    const response = await fetch(imageUrl);
+    
+    // Check if the request was successful
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
+    }
+    
+    // Get the content type
+    const contentType = response.headers.get('content-type') || 'image/jpeg';
+    
+    // Get the image as an ArrayBuffer
+    const arrayBuffer = await response.arrayBuffer();
+    
+    // Convert ArrayBuffer to Buffer
+    const buffer = Buffer.from(arrayBuffer);
+    
+    // Convert to Base64
+    const base64String = buffer.toString('base64');
+    
+    // Return as data URL
+    return `data:${contentType};base64,${base64String}`;
+  } catch (error) {
+    console.error('Error downloading image:', error);
+    throw error;
+  }
+}

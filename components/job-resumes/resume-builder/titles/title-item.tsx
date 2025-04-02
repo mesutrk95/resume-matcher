@@ -1,58 +1,59 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { ResumeTargetTitle } from "@/types/resume"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Edit, GripVertical, Save, Trash2, X } from "lucide-react"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+import { useState } from "react";
+import type { ResumeTargetTitle } from "@/types/resume";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type TitleItemProps = {
-  title: ResumeTargetTitle
-  onUpdate: (title: ResumeTargetTitle) => void
-  onDelete: (titleId: string) => void
-}
+  title: ResumeTargetTitle;
+  onUpdate: (title: ResumeTargetTitle) => void;
+  onDelete: (titleId: string) => void;
+};
 
 export function TitleItem({ title, onUpdate, onDelete }: TitleItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: title.id })
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: title.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  }
+  };
 
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     content: title.content,
-  })
+  });
 
   const handleEdit = () => {
     setEditForm({
       content: title.content,
-    })
-    setIsEditing(true)
-  }
+    });
+    setIsEditing(true);
+  };
 
   const handleSave = () => {
     onUpdate({
       ...title,
       content: editForm.content,
-    })
-    setIsEditing(false)
-  }
+    });
+    setIsEditing(false);
+  };
 
   const handleCancel = () => {
-    setIsEditing(false)
-  }
+    setIsEditing(false);
+  };
 
   const handleToggleEnabled = (checked: boolean) => {
     onUpdate({
       ...title,
       enabled: checked,
-    })
-  }
+    });
+  };
 
   return (
     <div ref={setNodeRef} style={style} className="border rounded-md p-4">
@@ -77,10 +78,12 @@ export function TitleItem({ title, onUpdate, onDelete }: TitleItemProps) {
             <Input
               value={editForm.content}
               onChange={(e) => setEditForm({ content: e.target.value })}
-              placeholder="Title" 
+              placeholder="Title"
             />
           ) : (
-            <p className={`${!title.enabled ? "text-muted-foreground" : ""}`}>{title.content}</p>
+            <p className={`${!title.enabled ? "text-muted-foreground" : ""}`}>
+              {title.content}
+            </p>
           )}
         </div>
 
@@ -99,7 +102,11 @@ export function TitleItem({ title, onUpdate, onDelete }: TitleItemProps) {
               <Button variant="outline" size="sm" onClick={handleEdit}>
                 <Edit className="h-4 w-4" />
               </Button>
-              <Button variant="destructive" size="sm" onClick={() => onDelete(title.id)}>
+              <Button
+                variant="outline-destructive"
+                size="sm"
+                onClick={() => onDelete(title.id)}
+              >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </>
@@ -107,6 +114,5 @@ export function TitleItem({ title, onUpdate, onDelete }: TitleItemProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

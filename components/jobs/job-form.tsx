@@ -68,19 +68,16 @@ export const JobForm = ({ initialData }: JobFormProps) => {
   const handleExtractJD = () => {
     startExtractingJDTransition(async () => {
       try {
-        const result = await extractJobDescriptionFromUrl(
+        const data = await extractJobDescriptionFromUrl(
           form.getValues().url || ""
         );
-        const data = result?.result;
         data?.description && form.setValue("description", data?.description);
         data?.companyName && form.setValue("companyName", data?.companyName);
         data?.location && form.setValue("location", data?.location);
         data?.title && form.setValue("title", data?.title);
         data?.postedDate && form.setValue("postedAt", data?.postedDate);
-      } catch (error) {
-        console.log(error);
-
-        // toast.error(error.error || "Something went wrong.")
+      } catch (error: unknown) {
+        toast.error(error?.toString() || "Something went wrong.");
       }
     });
   };
@@ -96,32 +93,31 @@ export const JobForm = ({ initialData }: JobFormProps) => {
 
       <Form {...form}>
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex items-end gap-2">
-            <FormInput
-              className="flex-grow"
-              control={form.control}
-              name="url"
-              label="Job URL"
-              placeholder="https://example.com/job-posting"
-              isPending={isPending || isExtractingJD}
-            />
-            <LoadingButton
-              asChild
-              className="flex-shrink-0 cursor-pointer"
-              loading={isExtractingJD}
-              disabled={isExtractingJD}
-              loadingText="Extracting ..."
-              onClick={(e) => {
-                e.preventDefault();
-                handleExtractJD();
-              }}
-            >
-              <span>Extract From Link</span>
-            </LoadingButton>
-          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left Column: Input Fields */}
             <div className="space-y-4">
+              <div className="flex items-end gap-2">
+                <FormInput
+                  className="flex-grow"
+                  control={form.control}
+                  name="url"
+                  label="Job URL"
+                  placeholder="https://example.com/job-posting"
+                  isPending={isPending || isExtractingJD}
+                />
+                <LoadingButton
+                  className="flex-shrink-0 cursor-pointer"
+                  loading={isExtractingJD}
+                  loadingText="Extracting ..."
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleExtractJD();
+                  }}
+                >
+                  Extract From Link
+                </LoadingButton>
+              </div>
+
               <FormInput
                 control={form.control}
                 name="title"
@@ -153,6 +149,15 @@ export const JobForm = ({ initialData }: JobFormProps) => {
                 type="text"
                 isPending={isPending}
               />
+              {/* Submit Button */}
+              <LoadingButton
+                variant={"default"}
+                type="submit"
+                loading={isPending}
+                loadingText={isEditing ? "Updating Job ..." : "Creating Job ..."}
+              >
+                {isEditing ? "Update Job" : "Create Job"}
+              </LoadingButton>
             </div>
 
             {/* Right Column: Job Description */}
@@ -163,20 +168,11 @@ export const JobForm = ({ initialData }: JobFormProps) => {
                 label="Job Description"
                 placeholder="Describe the job role, responsibilities, and requirements..."
                 isPending={isPending}
-                config={{ height: "400px" }}
+                config={{ height: "400px"}}
               />
             </div>
           </div>
 
-          {/* Submit Button */}
-          <LoadingButton
-            variant={"default"}
-            type="submit"
-            loading={isPending}
-            loadingText={isEditing ? "Updating Job ..." : "Creating Job ..."}
-          >
-            {isEditing ? "Update Job" : "Create Job"}
-          </LoadingButton>
         </form>
       </Form>
     </div>
