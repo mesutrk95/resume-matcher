@@ -68,7 +68,7 @@ export default async function ResumesPage({ searchParams }: ResumesPageProps) {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Your Resumes</h1>
         <p className="text-muted-foreground mt-2">
           Manage your resumes and applications

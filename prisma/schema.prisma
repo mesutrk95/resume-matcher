@@ -130,7 +130,7 @@ model Job {
 
 model JobResume {
   id                   String   @id @default(cuid())
-  jobId                String
+  jobId                String?
   userId               String
   createdAt            DateTime @default(now())
   updatedAt            DateTime @default(now()) @updatedAt
@@ -140,7 +140,7 @@ model JobResume {
   name                 String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  job  Job?  @relation(fields: [jobId], references: [id], onDelete: SetNull)
 }
 
 enum SubscriptionStatus {

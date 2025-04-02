@@ -45,7 +45,7 @@ export const JobMatcher = ({
   job,
 }: {
   jobResume: JobResume;
-  job: Job;
+  job?: Job;
 }) => {
   const router = useRouter();
   const { isTrialingBannerEnable } = useSubscription();
@@ -266,15 +266,17 @@ export const JobMatcher = ({
                   </TabsTrigger>
                   <TabsTrigger value="jd" variant={"bottomline"}>
                     <BriefcaseBusiness className="me-2" size={18} />
-                    Job Description
+                    {job ? "Job Description" : "Resume Job"}
                   </TabsTrigger>
                 </TabsList>
                 <CardContent className="overflow-auto h-full p-0">
                   <TabsContent className="p-5 pt-0 relative" value="preview">
                     <CVPreview data={resume} jobResume={jobResume} />
                   </TabsContent>
+
                   <TabsContent className="p-0 px-3 pb-3" value="jd">
-                    <JobPostPreview job={job} />
+                    {job && <JobPostPreview job={job} />}
+                    {!job && <div>Please attach a job to this resume!</div>}
                   </TabsContent>
                 </CardContent>
               </Tabs>

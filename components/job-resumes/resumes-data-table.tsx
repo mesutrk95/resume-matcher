@@ -11,7 +11,14 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, ChevronRight, Edit, Search, Trash } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Edit,
+  Plus,
+  Search,
+  Trash,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { Job, JobResume } from "@prisma/client";
@@ -22,7 +29,7 @@ import { confirmDialog } from "../shared/confirm-dialog";
 import { LinkableTableCell } from "../ui/linkable-table-cell";
 
 type JobResumeItem = Omit<
-  JobResume & { job: Pick<Job, "companyName"> },
+  JobResume & { job: Pick<Job, "companyName"> | null },
   "analyzeResults" | "content" | "jobId" | "userId" | "baseResumeTemplateId"
 >;
 
@@ -68,7 +75,9 @@ export function JobResumesDataTable({
     if (
       !(await confirmDialog({
         title: "Are you absolutely sure!?",
-        description: `You are deleting the resume "${jobResume.name}" at "${jobResume.job.companyName}".`,
+        description: `You are deleting the resume "${jobResume.name}"${
+          jobResume.job && ` at "${jobResume.job.companyName}"`
+        }.`,
       }))
     )
       return;
@@ -101,6 +110,12 @@ export function JobResumesDataTable({
             <Search className="h-4 w-4" />
           </Button>
         </form>
+        <Button asChild>
+          <Link href="/resumes/create">
+            <Plus className="mr-2 h-4 w-4" />
+            Create New Resume
+          </Link>
+        </Button>
       </div>
 
       <div className="rounded-md border bg-white">
@@ -126,21 +141,21 @@ export function JobResumesDataTable({
                 <TableRow key={jobResume.id}>
                   <LinkableTableCell
                     className="font-medium"
-                    href={`/resumes/${jobResume.id}`}
+                    href={`/resumes/${jobResume.id}/builder`}
                   >
                     {jobResume.name}
                   </LinkableTableCell>
-                  <LinkableTableCell href={`/resumes/${jobResume.id}`}>
-                    {jobResume.job.companyName}
+                  <LinkableTableCell href={`/resumes/${jobResume.id}/builder`}>
+                    {jobResume.job ? jobResume.job?.companyName: <span className="text-muted-foreground">No attached job</span>}
                   </LinkableTableCell>
-                  <LinkableTableCell href={`/resumes/${jobResume.id}`}>
+                  <LinkableTableCell href={`/resumes/${jobResume.id}/builder`}>
                     <Moment
                       date={jobResume.createdAt}
                       format="MMM d, yyyy HH:mm"
                       utc
                     />
                   </LinkableTableCell>
-                  <LinkableTableCell href={`/resumes/${jobResume.id}`}>
+                  <LinkableTableCell href={`/resumes/${jobResume.id}/builder`}>
                     <Moment
                       date={jobResume.updatedAt}
                       format="MMM d, yyyy HH:mm"
@@ -157,7 +172,7 @@ export function JobResumesDataTable({
                       <Trash className="h-4 w-4" />
                     </Button>
                     <Button asChild variant={"outline"} disabled={isDeleting}>
-                      <Link href={`/resumes/${jobResume.id}`}>
+                      <Link href={`/resumes/${jobResume.id}/builder`}>
                         <Edit className="h-4 w-4" />
                       </Link>
                     </Button>

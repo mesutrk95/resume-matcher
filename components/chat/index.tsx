@@ -172,8 +172,9 @@ export function ChatInterface({
         <div className="flex items-center space-x-2">
           <Switch
             id="share-jd"
-            checked={shareJD}
+            checked={!!jobResume.jobId && shareJD}
             onCheckedChange={setShareJD}
+            disabled={!jobResume.jobId}
           />
           <Label htmlFor="share-jd">Share Job Description</Label>
         </div>

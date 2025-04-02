@@ -11,7 +11,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const shouldIgnoreStyling = /^\/resumes\/[^/]+$/.test(pathname);
+  const shouldIgnoreStyling = /^\/resumes\/[^/]+\/builder$/.test(pathname);
   return (
     <>
       <main>

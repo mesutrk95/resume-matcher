@@ -44,7 +44,7 @@ export function JobResumeCard({ jobResume }: JobResumeCardProps) {
     <Card className="">
       <CardContent className="space-y-4 p-4">
         <div>
-          <Link href={`/resumes/${jobResume.id}`}>
+          <Link href={`/resumes/${jobResume.id}/builder`}>
             <h3 className="text-lg font-semibold">{jobResume.name}</h3>
           </Link>
           <p className="text-sm text-muted-foreground">
@@ -54,7 +54,7 @@ export function JobResumeCard({ jobResume }: JobResumeCardProps) {
         </div>
         <div className="flex items-center gap-2">
           <Button asChild variant="outline" size="sm">
-            <Link href={`/resumes/${jobResume.id}`}>
+            <Link href={`/resumes/${jobResume.id}/builder`}>
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </Link>

@@ -33,30 +33,36 @@ export const findJobResume = async (id: string) => {
 };
 
 export const createJobResume = async (
-  jobId: string,
-  resumeTemplateId: string
+  resumeTemplateId?: string,
+  jobId?: string
 ) => {
   const user = await currentUser();
-  const resumeTemplate = await db.resumeTemplate.findUnique({
-    where: { id: resumeTemplateId, userId: user?.id },
-  });
-  const job = await db.job.findUnique({
-    where: { id: jobId, userId: user?.id },
-  });
+  const resumeTemplate =
+    resumeTemplateId &&
+    (await db.resumeTemplate.findUnique({
+      where: { id: resumeTemplateId, userId: user?.id },
+    }));
+  const job =
+    jobId &&
+    (await db.job.findUnique({
+      where: { id: jobId, userId: user?.id },
+    }));
 
-  if (!resumeTemplate) {
-    throw new Error(
-      "Resume Template not found or you don't have permission to use it"
-    );
-  }
+  // if (!resumeTemplate) {
+  //   throw new Error(
+  //     "Resume Template not found or you don't have permission to use it"
+  //   );
+  // }
 
   const resumeJob = await db.jobResume.create({
     data: {
       jobId: jobId,
       baseResumeTemplateId: resumeTemplateId,
       content:
-        migrateResumeContent(resumeTemplate.content as ResumeContent) || {},
-      name: `${job?.title} at ${job?.companyName}`,
+        (resumeTemplate &&
+          migrateResumeContent(resumeTemplate.content as ResumeContent)) ||
+        DEFAULT_RESUME_CONTENT,
+      name: job ? `${job?.title} at ${job?.companyName}` : "Blank",
       userId: user?.id!,
     },
   });
@@ -95,7 +101,7 @@ export const deleteJobResume = async (id: string) => {
   });
 
   revalidatePath("/resumes");
-  revalidatePath(`/resumes/${id}`);
+  revalidatePath(`/resumes/${id}/builder`);
   return true;
 };
 
@@ -117,6 +123,7 @@ export const analyzeResumeScore = async (
   });
 
   if (!jobResume) throw new Error("Resume not found.");
+  if (!jobResume.job) throw new Error("Job not attached to the resume.");
 
   // let content = `Job Description: \n${jobResume?.job.title}\n${jobResume?.job.description}`;
 
@@ -155,8 +162,8 @@ Please analyze and optimize the following resume to better match the job descrip
 ${resumeExperiencesToString(jobResume.content as ResumeContent, true, true)}
 
 **Job Description:**
-${jobResume?.job.title}
-${jobResume?.job.description}
+${jobResume?.job!.title}
+${jobResume?.job!.description}
 
 Provide your suggestions in the exact JSON format specified.`;
 
@@ -188,8 +195,8 @@ Instructions:
 Please analyze and optimize the following resume skills section to better match the job description.
 
 Job Description:
-${jobResume?.job.title}
-${jobResume?.job.description}
+${jobResume?.job!.title}
+${jobResume?.job!.description}
 
 Provide your optimization suggestion in the required JSON format.`;
 
@@ -198,7 +205,7 @@ Provide your optimization suggestion in the required JSON format.`;
 
   const getScore = async () => {
     const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, you need to give a score to the resume content based on how well it matches the job description, for missed_keywords dont need to mention not important ones, give me the details in this format { "score" : 45, "matched_keywords": [...] , "missed_keywords": [...] }
-    Job Description: \n${jobResume?.job.title}\n${jobResume?.job.description}
+    Job Description: \n${jobResume?.job!.title}\n${jobResume?.job!.description}
     Ensure the response is in a valid JSON format with no extra text!`;
 
     return getAIJsonResponse(prompt, [pdfBuffer]);
@@ -286,6 +293,7 @@ export const analyzeResumeItemsScores = async (
   if (!jobResume) {
     throw new Error("Job Resume not found");
   }
+  if (!jobResume.job) throw new Error("Job not attached to the resume.");
 
   const resumeAnalyzeResults = jobResume.analyzeResults as ResumeAnalyzeResults;
   const oldItemsScore = resumeAnalyzeResults.itemsScore;
@@ -315,7 +323,8 @@ export const analyzeResumeItemsScores = async (
 
   let jobAnalyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
   if (!jobAnalyzeResults?.summary) {
-    jobAnalyzeResults = (await analyzeJobByAI(jobResume.jobId)).analyzeResults!;
+    jobAnalyzeResults = (await analyzeJobByAI(jobResume.jobId!))
+      .analyzeResults!;
   }
 
   // const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
@@ -401,6 +410,7 @@ export const askCustomQuestionFromAI = async (
   }
   const jd =
     (shareJobDescription &&
+      jobResume.job &&
       jobResume.job.description &&
       `## Job description: 
     Company: ${jobResume.job.companyName}
