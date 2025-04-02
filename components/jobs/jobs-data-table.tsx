@@ -313,8 +313,15 @@ export function JobsDataTable({
                     </LinkableTableCell>
                     <LinkableTableCell href={`/jobs/${job.id}`}>
                       <div className="flex gap-1 items-center">
-                        <MapPin className="text-muted-foreground" size={14} />
-                        {job.location}
+                        {job.location ? (
+                          <>
+                            <MapPin
+                              className="text-muted-foreground"
+                              size={14}
+                            />
+                            {job.location}
+                          </>
+                        ): <span className="text-muted-foreground">No Location</span>}
                       </div>
                     </LinkableTableCell>
                     <LinkableTableCell href={`/jobs/${job.id}`}>
