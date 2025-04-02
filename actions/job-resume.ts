@@ -21,8 +21,8 @@ import { analyzeJobByAI } from "./job";
 import {
   migrateResumeContent,
   resumeExperiencesToString,
-  resumeSkillsToString,
 } from "@/lib/resume-content";
+import { BadRequestException, NotFoundException } from "@/lib/exceptions";
 
 export const findJobResume = async (id: string) => {
   const user = await currentUser();
@@ -48,11 +48,8 @@ export const createJobResume = async (
       where: { id: jobId, userId: user?.id },
     }));
 
-  // if (!resumeTemplate) {
-  //   throw new Error(
-  //     "Resume Template not found or you don't have permission to use it"
-  //   );
-  // }
+  let name = job ? `${job?.title} at ${job?.companyName}` : null;
+  if (!name) name = resumeTemplate ? resumeTemplate.name : null;
 
   const resumeJob = await db.jobResume.create({
     data: {
@@ -62,7 +59,7 @@ export const createJobResume = async (
         (resumeTemplate &&
           migrateResumeContent(resumeTemplate.content as ResumeContent)) ||
         DEFAULT_RESUME_CONTENT,
-      name: job ? `${job?.title} at ${job?.companyName}` : "Blank",
+      name: name || "Blank",
       userId: user?.id!,
     },
   });
@@ -122,8 +119,9 @@ export const analyzeResumeScore = async (
     },
   });
 
-  if (!jobResume) throw new Error("Resume not found.");
-  if (!jobResume.job) throw new Error("Job not attached to the resume.");
+  if (!jobResume) throw new NotFoundException("Resume not found.");
+  if (!jobResume.job)
+    throw new BadRequestException("The resume has not been attached to a job!");
 
   // let content = `Job Description: \n${jobResume?.job.title}\n${jobResume?.job.description}`;
 
@@ -291,9 +289,10 @@ export const analyzeResumeItemsScores = async (
   });
 
   if (!jobResume) {
-    throw new Error("Job Resume not found");
+    throw new NotFoundException("Job Resume not found");
   }
-  if (!jobResume.job) throw new Error("Job not attached to the resume.");
+  if (!jobResume.job)
+    throw new BadRequestException("The resume has not been attached to a job!");
 
   const resumeAnalyzeResults = jobResume.analyzeResults as ResumeAnalyzeResults;
   const oldItemsScore = resumeAnalyzeResults.itemsScore;
@@ -406,7 +405,7 @@ export const askCustomQuestionFromAI = async (
   });
 
   if (!jobResume) {
-    throw new Error("Job Resume not found");
+    throw new NotFoundException("Resume not found");
   }
   const jd =
     (shareJobDescription &&
