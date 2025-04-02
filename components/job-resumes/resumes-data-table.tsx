@@ -132,8 +132,11 @@ export function JobResumesDataTable({
           <TableBody>
             {data.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center">
-                  No job resumes found.
+                <TableCell
+                  colSpan={6}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  No resumes found!
                 </TableCell>
               </TableRow>
             ) : (
@@ -146,7 +149,13 @@ export function JobResumesDataTable({
                     {jobResume.name}
                   </LinkableTableCell>
                   <LinkableTableCell href={`/resumes/${jobResume.id}/builder`}>
-                    {jobResume.job ? jobResume.job?.companyName: <span className="text-muted-foreground">No attached job</span>}
+                    {jobResume.job ? (
+                      jobResume.job?.companyName
+                    ) : (
+                      <span className="text-muted-foreground">
+                        No attached job
+                      </span>
+                    )}
                   </LinkableTableCell>
                   <LinkableTableCell href={`/resumes/${jobResume.id}/builder`}>
                     <Moment

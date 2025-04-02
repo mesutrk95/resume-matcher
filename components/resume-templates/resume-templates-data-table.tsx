@@ -112,8 +112,11 @@ export function ResumeTemplatesDateTable({
           <TableBody>
             {data.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  No templates found.
+                <TableCell
+                  colSpan={5}
+                  className="h-24 text-center text-muted-foreground"
+                >
+                  No templates found!
                 </TableCell>
               </TableRow>
             ) : (
