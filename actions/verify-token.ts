@@ -1,9 +1,12 @@
-"use server";
+'use server';
 
-import { isExpired, response } from "@/lib/utils";
-import { getUserByEmail, updateUserById } from "@/services/user";
-import { deleteVerificationTokenById, getVerificationToken } from "@/services/verification-token";
-import { redirect } from "next/navigation";
+import { isExpired, response } from '@/lib/utils';
+import { getUserByEmail, updateUserById } from '@/services/user';
+import {
+  deleteVerificationTokenById,
+  getVerificationToken,
+} from '@/services/verification-token';
+import { redirect } from 'next/navigation';
 
 export const newVerification = async (token: string) => {
   // Check if token doesn't exist, then return an error.
@@ -13,7 +16,7 @@ export const newVerification = async (token: string) => {
       success: false,
       error: {
         code: 422,
-        message: "Invalid token provided.",
+        message: 'Invalid token provided.',
       },
     });
   }
@@ -21,7 +24,7 @@ export const newVerification = async (token: string) => {
   // Check if token has expired, then redirect to the resend form.
   const hasExpired = isExpired(existingToken.expires);
   if (hasExpired) {
-    redirect("/resend");
+    redirect('/resend');
   }
 
   // Check if email address doesn't exist, then return an error
@@ -31,7 +34,7 @@ export const newVerification = async (token: string) => {
       success: false,
       error: {
         code: 401,
-        message: "Email address does not exist.",
+        message: 'Email address does not exist.',
       },
     });
   }
@@ -39,14 +42,14 @@ export const newVerification = async (token: string) => {
   // Update user verified based on current datetime.
   await updateUserById(existingUser.id, {
     emailVerified: new Date(),
-    email: existingToken.email, // This is needed when user want to change their email address
+    email: existingToken.email,
   });
-  // Then delete verify token.
+
   await deleteVerificationTokenById(existingToken.id);
 
   return response({
     success: true,
     code: 200,
-    message: "Your email address has been verified.",
+    message: "Your email address has been verified. You're now logged in.",
   });
 };
