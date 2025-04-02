@@ -72,6 +72,11 @@ export const JobMatcher = ({
     });
   };
   const handleSyncToTemplate = async () => {
+    const templateId = jobResume.baseResumeTemplateId;
+    if (!templateId) {
+      toast.error("This resume is not connected to any resume template!");
+      return;
+    }
     if (
       !(await confirmDialog({
         confirmText: "Yes, Sync It!",
@@ -84,7 +89,7 @@ export const JobMatcher = ({
     startSyncToTemplateTransition(async () => {
       try {
         await updateResumeTemplateContent(
-          jobResume.baseResumeTemplateId!,
+          templateId,
           resume
         );
         toast.success("Successfully synced to template!");
