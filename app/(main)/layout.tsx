@@ -14,13 +14,15 @@ export default function MainLayout({
   const shouldIgnoreStyling = /^\/resumes\/[^/]+$/.test(pathname);
   return (
     <>
-      <TrialBanner />
-      <Navbar />
-      <main className={clsx('', shouldIgnoreStyling ? "" : "px-10 pt-10")}>
+      <main>
+        <TrialBanner />
+        <Navbar />
         {shouldIgnoreStyling ? (
           children
         ) : (
-          <div className="container">{children}</div>
+          <div className={clsx("", shouldIgnoreStyling ? "" : "px-10 py-10")}>
+            <div className="container">{children}</div>
+          </div>
         )}
       </main>
     </>

@@ -2,25 +2,15 @@
 
 import { JobResume } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Edit, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useTransition } from "react";
 import { deleteJobResume } from "@/actions/job-resume";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
-import { AlertDialogCancel } from "@radix-ui/react-alert-dialog";
-import Moment from "react-moment";
 import { Card, CardContent } from "../ui/card";
+import { confirmDialog } from "../shared/confirm-dialog";
+import Moment from "react-moment";
+import Link from "next/link";
 
 interface JobResumeCardProps {
   jobResume: JobResume;
@@ -30,7 +20,15 @@ export function JobResumeCard({ jobResume }: JobResumeCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    if (
+      !(await confirmDialog({
+        title: "Are you absolutely sure!?",
+        description: `You are deleting the resume "${jobResume.name}".`,
+        confirmText: `Yes, Delete It!`
+      }))
+    )
+      return;
     startTransition(async () => {
       try {
         await deleteJobResume(jobResume.id);
@@ -61,30 +59,15 @@ export function JobResumeCard({ jobResume }: JobResumeCardProps) {
               Edit
             </Link>
           </Button>
-
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" size="sm" disabled={isPending}>
-                <Trash className="mr-2 h-4 w-4" />
-                Delete
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the
-                  job resume and remove your data from our servers.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete}>
-                  Yes, Delete!
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <Button
+            variant="destructive"
+            size="sm"
+            disabled={isPending}
+            onClick={handleDelete}
+          >
+            <Trash className="mr-2 h-4 w-4" />
+            Delete
+          </Button>
         </div>
       </CardContent>
     </Card>

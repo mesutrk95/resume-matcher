@@ -15,6 +15,7 @@ export interface Props {
   title?: string;
   description?: string;
   confirmText?: string;
+  variant?: "destructive" | "default";
 }
 
 const AlertConfirmDialog: ConfirmDialog<Props, boolean> = ({
@@ -25,6 +26,7 @@ const AlertConfirmDialog: ConfirmDialog<Props, boolean> = ({
   title = "Are you absolutely sure?",
   description = "This action cannot be undone.",
   confirmText = "Yes!",
+  variant = "destructive",
 }) => {
   return (
     <AlertDialog open={show} onOpenChange={dismiss}>
@@ -33,9 +35,9 @@ const AlertConfirmDialog: ConfirmDialog<Props, boolean> = ({
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
+        <AlertDialogFooter className="flex justify-between">
           <AlertDialogCancel onClick={cancel}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => proceed(true)}>
+          <AlertDialogAction onClick={() => proceed(true)} variant={variant}>
             {confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
