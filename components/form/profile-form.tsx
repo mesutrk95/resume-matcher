@@ -96,13 +96,13 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
                     autoComplete="off"
                     isPending={isPending}
                   />
-                  <FormToggle
+                  {/* <FormToggle
                     control={form.control}
                     name="isTwoFactorEnabled"
                     label="Two-Factor Authentication"
                     description="Protect your account with additional security by enabling two-factor authentication for login. You will be required to enter both your credentials and an authentication code to login."
                     isPending={isPending}
-                  />
+                  /> */}
                 </>
               )}
             </div>

@@ -50,7 +50,7 @@ export function SubscriptionStatusIndicator() {
     return (
       <Badge
         variant="outline"
-        className="cursor-pointer bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
+        className="cursor-pointer bg-indigo-50 border-indigo-200 text-indigo-700 hover:bg-indigo-100"
         onClick={() => router.push('/settings/billing')}
       >
         Trial: {daysRemaining} {daysRemaining === 1 ? 'day' : 'days'} left
