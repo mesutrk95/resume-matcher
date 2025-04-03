@@ -49,7 +49,7 @@ export function ExperienceItem({
   onUpdate,
   onDelete,
 }: ExperienceItemProps) {
-  const [isOpen, setIsOpen] = useState("");
+  const [isOpen, setIsOpen] = useState<string | undefined>();
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: experience.id });
 

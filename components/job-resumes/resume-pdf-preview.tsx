@@ -52,7 +52,7 @@ const CVPreview = ({
           <>
             <div className="flex justify-center absolute left-0 bottom-1 w-full">
               <Button
-                className=" z-10"
+                className="z-10 shadow-lg "
                 variant="outline"
                 onClick={() => {
                   if (!blob) return;

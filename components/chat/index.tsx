@@ -157,15 +157,22 @@ export function ChatInterface({
     localStorage.removeItem("ai-conversation-" + jobResume.id);
     setMessages([INITIAL_MESSAGE]);
   };
+  // const textInputRef = useRef<HTMLInputElement | null>(null);
+  // useEffect(() => {
+  //     textInputRef.current?.focus({
+  //         preventScroll: true
+  //     })
+  // }, [textInputRef])
 
   return (
-    <Card className="w-full h-full flex flex-col justify-stretch border-none shadow-none">
-      <CardHeader className="shrink-0 flex flex-row items-center gap-5 space-y-0 p-4 border-b">
+    <Card className="w-full  flex flex-col   ">
+      <CardHeader className=" flex flex-row items-center gap-5 space-y-0 p-4 border-b">
         <div className="flex items-center space-x-2">
           <Switch
             id="share-resume"
             checked={shareResume}
             onCheckedChange={setShareResume}
+            tabIndex={0}
           />
           <Label htmlFor="share-resume">Share My Resume</Label>
         </div>
@@ -179,8 +186,8 @@ export function ChatInterface({
           <Label htmlFor="share-jd">Share Job Description</Label>
         </div>
       </CardHeader>
-      <CardContent className="flex-auto h-0 pt-6 px-2 py-0">
-        <ScrollArea className="h-full pr-4">
+      <CardContent className="pt-6 px-2 py-0">
+        <ScrollArea className="h-[400px] pr-4">
           <div className="flex flex-col space-y-4 py-4">
             {messages.map((message, index) => (
               <ErrorBoundary
@@ -239,6 +246,7 @@ export function ChatInterface({
                   onKeyDown={(e) => handleKeyDown(e, blob)}
                   disabled={isLoading}
                   className="flex-1"
+                  autoFocus={false} 
                 />
                 <Button
                   size="icon"
