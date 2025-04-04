@@ -87,14 +87,12 @@ interface SubscriptionPlansProps {
   currentSubscription: Subscription | null;
   pricingData: Record<string, number>;
   productInfo: any | null;
-  isLoadingPrices: boolean;
 }
 
 export function SubscriptionPlans({
   currentSubscription,
   pricingData,
   productInfo,
-  isLoadingPrices,
 }: SubscriptionPlansProps) {
   // Use provided pricing data or fall back to defaults
   const PRICES = pricingData || DEFAULT_PRICES;
@@ -171,11 +169,6 @@ export function SubscriptionPlans({
           {productInfo?.description ||
             'Boost your job search success with our premium tools'}
         </p>
-        {isLoadingPrices && (
-          <p className="text-xs text-muted-foreground mt-2">
-            Loading pricing information...
-          </p>
-        )}
       </div>
 
       {/* Interval selector tabs */}
@@ -222,18 +215,14 @@ export function SubscriptionPlans({
 
           <CardContent className="pt-6">
             <div className="mb-6 flex items-end">
-              {isLoadingPrices ? (
-                <div className="animate-pulse bg-gray-200 h-10 w-24 rounded"></div>
-              ) : (
-                <>
-                  <span className="text-4xl font-bold">
-                    {formatPrice(PRICES[interval])}
-                  </span>
-                  <span className="text-muted-foreground ml-2 mb-1">
-                    /{interval.replace('ly', '')}
-                  </span>
-                </>
-              )}
+              <>
+                <span className="text-4xl font-bold">
+                  {formatPrice(PRICES[interval])}
+                </span>
+                <span className="text-muted-foreground ml-2 mb-1">
+                  /{interval.replace('ly', '')}
+                </span>
+              </>
               <div className="ml-auto border border-green-200 bg-green-50 rounded px-2 py-1">
                 <span className="text-xs text-green-700">3-day free trial</span>
               </div>
@@ -268,9 +257,9 @@ export function SubscriptionPlans({
                 className="w-full"
                 onClick={() => handleSubscribe(interval)}
                 loading={isSubscribing}
-                disabled={isSubscribing || isLoadingPrices}
+                disabled={isSubscribing}
               >
-                {isLoadingPrices ? 'Loading...' : 'Start Free Trial'}
+                Start Free Trial
               </LoadingButton>
             )}
             <p className="w-full text-center text-xs text-muted-foreground mt-2">

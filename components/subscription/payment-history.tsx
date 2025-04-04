@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -18,35 +17,27 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import {
-  PaymentHistoryItem,
-  getPaymentHistory,
-} from '@/actions/subscription/payments';
 import { ExternalLink, FileText, Receipt } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function PaymentHistory() {
-  const [payments, setPayments] = useState<PaymentHistoryItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export interface PaymentHistoryItem {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string;
+  date: Date;
+  description: string;
+  invoiceUrl?: string | null;
+  receiptUrl?: string | null;
+  isUpcoming?: boolean;
+}
 
-  useEffect(() => {
-    const fetchPayments = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getPaymentHistory();
-        setPayments(data);
-      } catch (err) {
-        setError('Failed to load payment history');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+interface PaymentHistoryProps {
+  payments: PaymentHistoryItem[];
+  error: string | null;
+}
 
-    fetchPayments();
-  }, []);
-
+export function PaymentHistory({ payments, error }: PaymentHistoryProps) {
   // Helper function to format currency
   const formatCurrency = (amount: number, currency: string) => {
     return new Intl.NumberFormat('en-US', {
@@ -64,28 +55,12 @@ export function PaymentHistory() {
         return 'bg-yellow-100 text-yellow-800';
       case 'failed':
         return 'bg-red-100 text-red-800';
+      case 'upcoming':
+        return 'bg-blue-100 text-blue-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
   };
-
-  if (isLoading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Payment History</CardTitle>
-          <CardDescription>Your recent subscription payments</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-20 w-full" />
-            <Skeleton className="h-20 w-full" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   if (error) {
     return (
@@ -100,11 +75,17 @@ export function PaymentHistory() {
     );
   }
 
+  // Separate upcoming payments and past payments
+  const upcomingPayments = payments.filter(payment => payment.isUpcoming);
+  const pastPayments = payments.filter(payment => !payment.isUpcoming);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Payment History</CardTitle>
-        <CardDescription>Your recent subscription payments</CardDescription>
+        <CardDescription>
+          Your recent and upcoming subscription payments
+        </CardDescription>
       </CardHeader>
       <CardContent>
         {payments.length === 0 ? (
@@ -113,6 +94,35 @@ export function PaymentHistory() {
           </p>
         ) : (
           <div className="overflow-x-auto">
+            {upcomingPayments.length > 0 && (
+              <>
+                <h3 className="font-medium mb-2">Upcoming Payments</h3>
+                <Table className="mb-6">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead>Description</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {upcomingPayments.map(payment => (
+                      <TableRow key={payment.id}>
+                        <TableCell>
+                          {format(payment.date, 'MMM d, yyyy')}
+                        </TableCell>
+                        <TableCell>
+                          {formatCurrency(payment.amount, payment.currency)}
+                        </TableCell>
+                        <TableCell>{payment.description}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </>
+            )}
+
+            <h3 className="font-medium mb-2">Past Payments</h3>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -124,7 +134,7 @@ export function PaymentHistory() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {payments.map(payment => (
+                {pastPayments.map(payment => (
                   <TableRow key={payment.id}>
                     <TableCell>{format(payment.date, 'MMM d, yyyy')}</TableCell>
                     <TableCell>

@@ -1,27 +1,24 @@
-"use client";
+'use client';
 
-import { CurrentSubscription } from "@/components/subscription/current-subscription";
-import { SubscriptionPlans } from "@/components/subscription/subscription-plans";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useSubscription } from "@/providers/SubscriptionProvider";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { getSubscriptionPrices } from "@/actions/subscription/pricing";
-import { verifySubscriptionFromSession } from "@/actions/subscription/session";
-import { PaymentHistory } from "@/components/subscription/payment-history";
+import { CurrentSubscription } from '@/components/subscription/current-subscription';
+import { SubscriptionPlans } from '@/components/subscription/subscription-plans';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useSubscription } from '@/providers/SubscriptionProvider';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
+import { getSubscriptionPrices } from '@/actions/subscription/pricing';
+import { verifySubscriptionFromSession } from '@/actions/subscription/session';
+import {
+  PaymentHistory,
+  PaymentHistoryItem,
+} from '@/components/subscription/payment-history';
+import { getPaymentHistory } from '@/actions/subscription/payments';
 
 export default function BillingPage() {
-  const {
-    subscription,
-    isLoading: isLoadingSubscription,
-    fetchSubscription,
-  } = useSubscription();
-  const [isLoadingPrices, setIsLoadingPrices] = useState(true);
-  const [isVerifyingSession, setIsVerifyingSession] = useState(false);
+  const { subscription, fetchSubscription } = useSubscription();
   const [pricingData, setPricingData] = useState<{
     prices: Record<string, number>;
     product: any | null;
@@ -32,62 +29,51 @@ export default function BillingPage() {
     error: null,
   });
 
+  // Payment history states
+  const [paymentHistory, setPaymentHistory] = useState<PaymentHistoryItem[]>(
+    [],
+  );
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+
   // Get URL parameters
   const searchParams = useSearchParams();
-  const success = searchParams.get("success");
-  const canceled = searchParams.get("canceled");
-  const sessionId = searchParams.get("session_id");
+  const success = searchParams.get('success');
+  const canceled = searchParams.get('canceled');
+  const sessionId = searchParams.get('session_id');
 
-  // Combined useEffect for URL parameters, session verification, and toast messages
+  // Handle session verification and cleanup
   useEffect(() => {
-    // Handle URL parameters and show relevant toasts
-    if (sessionId && success === "true") {
-      // Session ID is present - verify the session
-      const checkSession = async () => {
-        try {
-          setIsVerifyingSession(true);
-          const result = await verifySubscriptionFromSession(sessionId);
-
+    if (sessionId && success === 'true') {
+      verifySubscriptionFromSession(sessionId)
+        .then(result => {
           if (result.success) {
             // Clean up URL parameters
-            const newUrl = window.location.pathname;
-            window.history.replaceState({}, document.title, newUrl);
-
-            toast.success("Subscription activated successfully!");
-
-            // Reload subscription data
+            window.history.replaceState(
+              {},
+              document.title,
+              window.location.pathname,
+            );
+            toast.success('Subscription activated successfully!');
             fetchSubscription();
           } else {
-            toast.error("Failed to verify subscription");
+            toast.error('Failed to verify subscription');
           }
-        } catch (error: any) {
-          toast.error(error.message || "An unexpected error occurred");
-        } finally {
-          setIsVerifyingSession(false);
-        }
-      };
-
-      checkSession();
+        })
+        .catch(error => {
+          toast.error(error.message || 'An unexpected error occurred');
+        });
     } else if (success && !sessionId) {
-      // Success parameter without session ID
-      toast.success("Your subscription is being processed...");
+      toast.success('Your subscription is being processed...');
     } else if (canceled) {
-      // Canceled parameter is present
-      toast.info("Subscription checkout was canceled");
-
-      // Clean up URL parameters after showing toast
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, document.title, newUrl);
+      toast.info('Subscription checkout was canceled');
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [sessionId, success, canceled, fetchSubscription]);
 
-  // Load pricing data on component mount
+  // Load pricing data
   useEffect(() => {
-    const loadPricingData = async () => {
-      try {
-        setIsLoadingPrices(true);
-        const result = await getSubscriptionPrices();
-
+    getSubscriptionPrices()
+      .then(result => {
         if (result.success) {
           setPricingData({
             prices: result.prices || {},
@@ -98,48 +84,36 @@ export default function BillingPage() {
           setPricingData({
             prices: {},
             product: null,
-            error: "Failed to load pricing data.",
+            error: 'Failed to load pricing data.',
           });
         }
-      } catch (error: any) {
+      })
+      .catch(error => {
         setPricingData({
           prices: {},
           product: null,
-          error: error.message || "An unexpected error occurred.",
+          error: error.message || 'An unexpected error occurred.',
         });
-      } finally {
-        setIsLoadingPrices(false);
-      }
-    };
-
-    loadPricingData();
+      });
   }, []);
 
-  // Loading indicator
-  if (isLoadingSubscription || isVerifyingSession) {
-    return (
-      <div className="">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">
-            Subscription Management
-          </h1>
-          <p className="text-muted-foreground">
-            Manage your subscription, payment methods, and billing information
-          </p>
-        </div>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Skeleton className="h-8 w-64" />
-            <Skeleton className="h-4 w-full" />
-          </div>
-          <Skeleton className="h-[400px] w-full" />
-        </div>
-      </div>
-    );
-  }
+  // Load payment history
+  useEffect(() => {
+    getPaymentHistory()
+      .then(({ payments, error }) => {
+        setPaymentHistory(payments);
+        if (error) {
+          setPaymentError(error);
+        }
+      })
+      .catch(err => {
+        setPaymentError('Failed to load payment history');
+        console.error(err);
+      });
+  }, [subscription?.subscriptionId]);
 
   return (
-    <div className="">
+    <div>
       <div className="mb-6">
         <h1 className="text-3xl font-bold tracking-tight mb-2">
           Subscription Management
@@ -157,24 +131,24 @@ export default function BillingPage() {
         </Alert>
       )}
 
-      <Tabs defaultValue={subscription ? "current" : "plans"} className="mt-8">
-        <TabsList className=" mb-6 border-b w-full" variant={"bottomline"}>
+      <Tabs defaultValue={subscription ? 'current' : 'plans'} className="mt-8">
+        <TabsList className="mb-6 border-b w-full" variant={'bottomline'}>
           {subscription && (
             <TabsTrigger
               id="current-tab"
               value="current"
-              variant={"bottomline"}
+              variant={'bottomline'}
             >
               Current Subscription
             </TabsTrigger>
           )}
-          <TabsTrigger id="plans-tab" value="plans" variant={"bottomline"}>
+          <TabsTrigger id="plans-tab" value="plans" variant={'bottomline'}>
             Subscription Plans
           </TabsTrigger>
           <TabsTrigger
             id="payments-tab"
             value="payments"
-            variant={"bottomline"}
+            variant={'bottomline'}
           >
             Payment History
           </TabsTrigger>
@@ -191,12 +165,11 @@ export default function BillingPage() {
             currentSubscription={subscription}
             pricingData={pricingData.prices}
             productInfo={pricingData.product}
-            isLoadingPrices={isLoadingPrices}
           />
         </TabsContent>
 
         <TabsContent value="payments">
-          <PaymentHistory />
+          <PaymentHistory payments={paymentHistory} error={paymentError} />
         </TabsContent>
       </Tabs>
     </div>

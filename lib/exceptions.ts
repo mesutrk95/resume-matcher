@@ -36,7 +36,8 @@ export class ForbiddenException extends HttpException {
 }
 
 export class InternalServerErrorException extends HttpException {
-  constructor(message = 'Internal server error') {
+  constructor(input: string | Error = 'Internal server error') {
+    const message = input instanceof Error ? input.message : input;
     super(500, message);
   }
 }
