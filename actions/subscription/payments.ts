@@ -20,6 +20,7 @@ export type PaymentHistoryItem = {
   invoiceUrl?: string | null;
   receiptUrl?: string | null;
   isUpcoming?: boolean;
+  billingPeriod?: string;
 };
 
 export const getPaymentHistory = async (): Promise<{
@@ -70,11 +71,66 @@ export const getPaymentHistory = async (): Promise<{
       });
     }
 
+    // Get plan information to create better descriptions
+    let planName = 'Subscription';
+    let planInterval = '';
+
+    if (subscription.priceId) {
+      try {
+        const price = await stripe.prices.retrieve(subscription.priceId);
+        if (price.product && typeof price.product !== 'string') {
+          planName = (price.product as any).name || 'Resume Matcher Pro';
+        } else if (typeof price.product === 'string') {
+          const product = await stripe.products.retrieve(price.product);
+          planName = product.name || 'Resume Matcher Pro';
+        }
+
+        if (price.recurring) {
+          const interval = price.recurring.interval;
+          const count = price.recurring.interval_count || 1;
+
+          if (count === 1) {
+            planInterval = interval;
+          } else {
+            planInterval = `${count}-${interval}`;
+          }
+        }
+      } catch (error) {
+        Logger.warn('Error fetching price information', {
+          priceId: subscription.priceId,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+
+    // Helper to format billing period
+    const formatBillingPeriod = (start: number, end: number) => {
+      const startDate = new Date(start * 1000);
+      const endDate = new Date(end * 1000);
+      return `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+    };
+
     // Convert past charges to PaymentHistoryItems
     const pastPayments = charges.data.map(charge => {
       const relatedInvoice = pastInvoices.data.find(
         invoice => invoice.charge === charge.id,
       );
+
+      let description = 'Subscription payment';
+      let billingPeriod = undefined;
+
+      if (relatedInvoice) {
+        if (relatedInvoice.billing_reason === 'subscription_create') {
+          description = `${planName} - Initial payment`;
+        } else if (relatedInvoice.billing_reason === 'subscription_cycle') {
+          description = `${planName} - ${planInterval} renewal`;
+        }
+
+        if (relatedInvoice.lines?.data[0]?.period) {
+          const { start, end } = relatedInvoice.lines.data[0].period;
+          billingPeriod = formatBillingPeriod(start, end);
+        }
+      }
 
       return {
         id: charge.id,
@@ -82,16 +138,25 @@ export const getPaymentHistory = async (): Promise<{
         currency: charge.currency.toUpperCase(),
         status: charge.status,
         date: new Date(charge.created * 1000),
-        description: charge.description || 'Subscription payment',
+        description: description,
         invoiceUrl: relatedInvoice?.hosted_invoice_url,
         receiptUrl: charge.receipt_url,
         isUpcoming: false,
+        billingPeriod,
       };
     });
 
     // Create upcoming payment item if available
     const upcomingPayments: PaymentHistoryItem[] = [];
     if (upcomingInvoice) {
+      let upcomingDescription = `${planName} - Upcoming ${planInterval} payment`;
+      let billingPeriod = undefined;
+
+      if (upcomingInvoice.lines?.data[0]?.period) {
+        const { start, end } = upcomingInvoice.lines.data[0].period;
+        billingPeriod = formatBillingPeriod(start, end);
+      }
+
       upcomingPayments.push({
         id: `upcoming_${new Date().getTime()}`,
         amount: upcomingInvoice.amount_due / 100,
@@ -101,12 +166,9 @@ export const getPaymentHistory = async (): Promise<{
           (upcomingInvoice.next_payment_attempt || upcomingInvoice.created) *
             1000,
         ),
-        description: `Upcoming payment for ${
-          subscription.priceId
-            ? subscription.priceId.split('_').pop()
-            : 'subscription'
-        }`,
+        description: upcomingDescription,
         isUpcoming: true,
+        billingPeriod,
       });
     }
 
