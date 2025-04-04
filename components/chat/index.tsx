@@ -68,7 +68,11 @@ export function ChatInterface({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+      inline: "nearest",
+    });
   };
 
   useEffect(() => {
@@ -172,7 +176,6 @@ export function ChatInterface({
             id="share-resume"
             checked={shareResume}
             onCheckedChange={setShareResume}
-            tabIndex={0}
           />
           <Label htmlFor="share-resume">Share My Resume</Label>
         </div>
@@ -187,7 +190,7 @@ export function ChatInterface({
         </div>
       </CardHeader>
       <CardContent className="pt-6 px-2 py-0">
-        <ScrollArea className="h-[400px] pr-4">
+        <ScrollArea className="h-[400px] pr-4 relative">
           <div className="flex flex-col space-y-4 py-4">
             {messages.map((message, index) => (
               <ErrorBoundary
@@ -246,7 +249,7 @@ export function ChatInterface({
                   onKeyDown={(e) => handleKeyDown(e, blob)}
                   disabled={isLoading}
                   className="flex-1"
-                  autoFocus={false} 
+                  autoFocus={false}
                 />
                 <Button
                   size="icon"

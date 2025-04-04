@@ -13,6 +13,7 @@ import { JobResume } from "@prisma/client";
 import { BlobProvider } from "@react-pdf/renderer";
 import { CheckCircle, CircleX, WandSparkles } from "lucide-react";
 import { toast } from "sonner";
+import { ConnectJobToResume } from "../../../../../components/job-resumes/connect-job-to-resume";
 
 const ImprovementNote = ({
   index,
@@ -165,6 +166,21 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
   };
 
   if (!resumeAnalyzeResults) return;
+
+  if (!jobResume.jobId) {
+    return (
+      <div className="p-4 flex justify-center items-center ">
+        <div className="text-center py-5">
+          <h3 className="text-lg font-bold">Target a Job!</h3>
+          <p className="text-muted-foreground text-xs mb-4">
+            Select the job you’re targeting so we can personalize this resume
+            for you!
+          </p>
+          <ConnectJobToResume jobResumeId={jobResume.id} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

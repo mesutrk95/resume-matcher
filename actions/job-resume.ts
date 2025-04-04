@@ -23,6 +23,8 @@ import {
   resumeExperiencesToString,
 } from "@/lib/resume-content";
 import { BadRequestException, NotFoundException } from "@/lib/exceptions";
+import { resumeContentSchema } from "@/schemas/resume";
+import z from "zod";
 
 export const findJobResume = async (id: string) => {
   const user = await currentUser();
@@ -69,29 +71,73 @@ export const createJobResume = async (
   return resumeJob;
 };
 
-export const updateJobResume = async (resume: JobResume) => {
+export const updateJobResume = async (
+  resume: Partial<JobResume>,
+  forceRevalidate = false
+) => {
   const user = await currentUser();
   const content =
     resume.content && migrateResumeContent(resume.content as ResumeContent);
 
-  // Update job in database
+  const updateJobSchema = z.object({
+    content: resumeContentSchema.optional(),
+    name: z.string().optional(),
+  });
+
+  const validationResult = updateJobSchema.safeParse({ ...resume, content });
+  if (validationResult.error) {
+    throw new BadRequestException("Error in validating the resume data.");
+  }
+
   const updatedJob = await db.jobResume.update({
     where: {
       id: resume.id,
       userId: user?.id,
     },
     data: {
-      name: resume.name,
-      content: content || DEFAULT_RESUME_CONTENT,
+      ...validationResult.data,
       updatedAt: new Date(),
     },
   });
 
   // revalidatePath("/resumes");
-  // revalidatePath(`/resumes/${resume.id}`);
+  forceRevalidate && revalidatePath(`/resumes/${resume.id}/builder`);
 
   return updatedJob;
 };
+
+export const connectJobResumeToJob = async (
+  jobResumeId: string,
+  jobId: string
+) => {
+  const user = await currentUser();
+
+  const job = await db.job.findUnique({
+    where: { id: jobId, userId: user?.id },
+    select: { id: true },
+  });
+
+  if (!job) {
+    throw new NotFoundException("Job not found!");
+  }
+  // Update job in database
+  const updatedJob = await db.jobResume.update({
+    where: {
+      id: jobResumeId,
+      userId: user?.id,
+    },
+    data: {
+      jobId: job.id,
+      updatedAt: new Date(),
+    },
+  });
+
+  // revalidatePath("/resumes");
+  revalidatePath(`/resumes/${jobResumeId}/builder`);
+
+  return updatedJob;
+};
+
 export const deleteJobResume = async (id: string) => {
   await db.jobResume.delete({
     where: { id },

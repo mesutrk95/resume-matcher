@@ -26,8 +26,7 @@ import {
   ScanEye,
   Trash,
 } from "lucide-react";
-import { JobPostPreview } from "@/components/jobs/job-post-preview";
-import Moment from "react-moment";
+import { JobPostPreview } from "@/components/jobs/job-post-preview"; 
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,8 +39,9 @@ import { ChatInterface } from "@/components/chat";
 import { useResumeBuilder } from "@/components/job-resumes/resume-builder/context/useResumeBuilder";
 import { ResumeScoreTab } from "./ResumeScoreTab";
 import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSubscription } from "@/providers/SubscriptionProvider";
+import { ConnectJobToResume } from "@/components/job-resumes/connect-job-to-resume";
+import { ResumeHeader } from "../../../../../components/job-resumes/job-resume-builder-header";
 
 export const JobMatcher = ({
   jobResume,
@@ -127,12 +127,7 @@ export const JobMatcher = ({
         <div className=" relative z-1 flex items-center pt-2 ">
           <div className="container">
             <div className="flex justify-between items-center py-2 ps-1 ">
-              <div>
-                <h2 className="text-xl font-bold ">{jobResume.name} Resume</h2>
-                <span className="text-muted-foreground text-xs">
-                  Last updated <Moment date={jobResume.updatedAt} utc fromNow />
-                </span>
-              </div>
+              <ResumeHeader jobResume={jobResume} />
 
               <div className="flex flex-wrap gap-2">
                 <DropdownMenu>
@@ -198,12 +193,10 @@ export const JobMatcher = ({
                 </DropdownMenu>
               </div>
             </div>
-            {/* <div>
-            </div> */}
           </div>
         </div>
         <div className=" container">
-          <div className="grid grid-cols-12 gap-2 h-full pb-2 relative">
+          <div className="grid grid-cols-12 gap-2 h-full relative">
             <div className="col-span-7 h-full">
               <Tabs
                 defaultValue="builder"
@@ -243,7 +236,7 @@ export const JobMatcher = ({
                     </TabsTrigger>
                   </TabsList>
                 </div>
-                <div className="mt-2 px-[1px]">
+                <div className="mt-2 pb-2 px-[1px]">
                   <TabsContent className="p-0 mt-0 " value="builder">
                     <ResumeBuilder />
                   </TabsContent>
@@ -307,7 +300,20 @@ export const JobMatcher = ({
                             </div>
                           )}
                           {!job && (
-                            <div>Please attach a job to this resume!</div>
+                            <div className="p-4 flex justify-center items-center ">
+                              <div className="text-center py-5">
+                                <h3 className="text-lg font-bold">
+                                  Target a Job!
+                                </h3>
+                                <p className="text-muted-foreground text-xs mb-4">
+                                  Select the job you’re targeting so we can
+                                  personalize this resume for you!
+                                </p>
+                                <ConnectJobToResume
+                                  jobResumeId={jobResume.id}
+                                />
+                              </div>
+                            </div>
                           )}
                         </CardContent>
                       </TabsContent>

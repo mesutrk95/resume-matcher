@@ -51,9 +51,9 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
         "use server";
         // console.log("resume updateddddddddd");
         try {
-          await updateJobResume({ ...jobResume, content: resume });
+          await updateJobResume({ id: jobResume.id, content: resume });
         } catch (ex) {
-          toast.error("Something went wrong when saving the resume changes.");
+          // toast.error("Something went wrong when saving the resume changes.");
         }
       }}
     >

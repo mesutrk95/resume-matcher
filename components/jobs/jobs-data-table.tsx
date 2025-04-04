@@ -67,7 +67,7 @@ interface JobsDataTableProps {
   total: number;
   currentPage: number;
   pageSize: number;
-  searchQuery: string;
+  searchQuery?: string;
   statusFilter?: string[];
 }
 

@@ -21,7 +21,7 @@ type IPropsType = {};
 
 export function ResumeBuilder({}: IPropsType) {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-2">
       <ContactInfoSection />
       <TitlesSection />
       <SummariesSection />

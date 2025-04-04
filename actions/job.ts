@@ -5,7 +5,7 @@ import { jobSchema } from "@/schemas";
 import { z } from "zod";
 import { currentUser } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
-import { Job, JobStatus } from "@prisma/client";
+import { Job, JobStatus, Prisma } from "@prisma/client";
 import { getAIHtmlResponse, getAIJsonResponse } from "@/lib/ai";
 import { JobAnalyzeResult } from "@/types/job";
 import { withErrorHandling } from "./with-error-handling";
@@ -14,6 +14,7 @@ import cheerio from "cheerio";
 import axios from "axios";
 import moment from "moment";
 import { downloadImageAsBase64 } from "@/lib/utils";
+import { PaginationParams } from "@/types/pagination-params";
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {
@@ -35,6 +36,87 @@ export const createJob = withErrorHandling(
     return job;
   }
 );
+
+export const getJobs = async (
+  params: PaginationParams & {
+    statuses?: JobStatus[] | undefined;
+    search?: string;
+  }
+) => {
+  const user = await currentUser();
+  const page = Number(params.page) || 1;
+  const pageSize = Number(params.pageSize) || 10;
+  const search = params.search || "";
+  // const statuses = params.status ? params.status.split(",") : undefined;
+  const skip = (page - 1) * pageSize;
+
+  // Prepare search filter
+  const searchFilter = search
+    ? {
+        OR: [
+          { title: { contains: search, mode: Prisma.QueryMode.insensitive } },
+          {
+            companyName: {
+              contains: search,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+          {
+            description: {
+              contains: search,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+        ],
+      }
+    : {};
+
+  // Prepare status filter
+  const statusFilter =
+    params.statuses && params.statuses.length > 0
+      ? { status: { in: params.statuses } }
+      : {};
+
+  // Get jobs with filters, pagination and sorting
+  const jobs = await db.job.findMany({
+    where: {
+      userId: user?.id,
+      ...searchFilter,
+      ...statusFilter,
+    },
+    select: {
+      id: true,
+      title: true,
+      companyName: true,
+      location: true,
+      createdAt: true,
+      postedAt: true,
+      status: true,
+      url: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    skip,
+    take: pageSize,
+  });
+
+  // Get total count for pagination
+  const totalJobs = await db.job.count({
+    where: {
+      userId: user?.id,
+      ...searchFilter,
+      ...statusFilter,
+    },
+  });
+
+  return {
+    total: totalJobs,
+    jobs,
+    page,
+    pageSize,
+  };
+};
 
 export const updateJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema> & { id: string }): Promise<Job> => {

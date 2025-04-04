@@ -3,17 +3,17 @@ import { z } from "zod";
 // Define the variation schema
 const variationSchema = z.object({
   id: z.string(),
-  content: z.string(),
+  content: z.string().optional(),
   enabled: z.boolean(),
 });
 
 // Define the experienceItem schema
 const experienceItemSchema = z.object({
   id: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   enabled: z.boolean(),
   variations: z.array(variationSchema),
-  skills: z.array(z.string()),
+  skills: z.array(z.string()).optional(),
 });
 
 // Define the experience schema
@@ -25,8 +25,8 @@ const experienceSchema = z.object({
   endDate: z.string(),
   enabled: z.boolean(),
   items: z.array(experienceItemSchema),
-  location: z.string(),
-  type: z.string(),
+  location: z.string().optional(),
+  type: z.string().optional(),
 });
 
 // Define the resumeProfessionalSummary schema
@@ -57,17 +57,17 @@ const resumeProjectSchema = z.object({
 
 // Define the resumeContactInfo schema
 const resumeContactInfoSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-  phone: z.string(),
-  email: z.string(),
-  linkedIn: z.string(),
-  github: z.string(),
-  website: z.string(),
-  twitter: z.string(),
-  address: z.string(),
-  country: z.string(),
-  pronouns: z.string(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+  linkedIn: z.string().optional(),
+  github: z.string().optional(),
+  website: z.string().optional(),
+  twitter: z.string().optional(),
+  address: z.string().optional(),
+  country: z.string().optional(),
+  pronouns: z.string().optional(),
 });
 
 // Define the resumeTargetTitle schema

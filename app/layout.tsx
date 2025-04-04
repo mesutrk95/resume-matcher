@@ -29,7 +29,7 @@ export default async function RootLayout({
    
   return (
     <html lang="en">
-      <body className={"inter.className bg-slate-50/80"}>
+      <body className={"inter.className bg-slate-50"}>
         <NextTopLoader />
         <Toaster position="bottom-left" richColors theme="light" />
         <UserProvider initialUser={user}>
