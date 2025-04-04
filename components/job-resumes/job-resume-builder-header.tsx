@@ -96,7 +96,7 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({
           <DialogHeader>
             <DialogTitle>Rename Resume</DialogTitle>
             <DialogDescription>
-              Enter a new name for your resume. Click save when you're done.
+              Enter a new name for your resume. Click save when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">

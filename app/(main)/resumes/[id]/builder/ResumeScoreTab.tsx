@@ -80,7 +80,7 @@ const ImprovementNote = ({
   const sourceContent = useMemo(() => {
     return note.id === "skills"
       ? resumeSkillsToString(resume)
-      : variation?.content.trim().replace(/\u200B/g, "");
+      : variation?.content?.trim().replace(/\u200B/g, "");
   }, [resume?.skills, variation]);
 
   return (

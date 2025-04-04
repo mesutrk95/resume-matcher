@@ -347,7 +347,8 @@ export const analyzeResumeItemsScores = async (
   let variations = resume.experiences
     .map((experience) => experience.items.map((i) => i.variations).flat())
     .flat()
-    .map((v) => ({ ...v, hash: hashString(v.content, 8) }));
+    .filter(v => !!v.content)
+    .map((v) => ({ ...v, hash: hashString(v.content!, 8) }));
 
   // concat with project items
   variations = [
