@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { LucideLoader2 } from "lucide-react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
@@ -14,6 +15,15 @@ const workerSrc =
       ).toString();
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
+
+function LoadingPdf() {
+  return (
+    <div className="flex justify-center items-center text-xs gap-1 py-10 font-semibold text-muted-foreground">
+      <LucideLoader2 className="animate-spin" size={16} />
+      Refreshing Resume ...
+    </div>
+  );
+}
 
 function PDFViewer({ pdfBlob }: { pdfBlob: Blob | null }) {
   const [numPages, setNumPages] = useState<number | null>(null);
@@ -43,15 +53,18 @@ function PDFViewer({ pdfBlob }: { pdfBlob: Blob | null }) {
     setNumPages(numPages);
   }
 
+  const loadingIndicator = useMemo(() => <LoadingPdf />, [])
+
   return (
     <div className="relative h-full w-full bg-slate-2001 p-2 overflow-auto">
       <div className=" " ref={ref}>
         {pdfData && (
           <Document
             className={"relative flex flex-col gap-2"}
-            file={pdfData}
+            file={pdfBlob}
             onLoadSuccess={onDocumentLoadSuccess}
             onItemClick={(item) => console.log(item)}
+            loading={loadingIndicator}
           >
             {Array.from(new Array(numPages), (el, index) => (
               <Page

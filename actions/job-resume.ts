@@ -347,7 +347,7 @@ export const analyzeResumeItemsScores = async (
   let variations = resume.experiences
     .map((experience) => experience.items.map((i) => i.variations).flat())
     .flat()
-    .filter(v => !!v.content)
+    .filter((v) => !!v.content)
     .map((v) => ({ ...v, hash: hashString(v.content!, 8) }));
 
   // concat with project items
@@ -430,7 +430,7 @@ export const analyzeResumeItemsScores = async (
 export const askCustomQuestionFromAI = async (
   jobResumeId: string,
   question: string,
-  pdfFile: string,
+  pdfFile: string | null,
   shareJobDescription: boolean,
   history: ContentWithMeta[] = []
 ) => {
@@ -463,15 +463,19 @@ export const askCustomQuestionFromAI = async (
     ${jobResume.job.description}`) ||
     "";
 
-  const messageParts = [
-    { text: question },
-    {
+  const messageParts: (
+    | { inlineData: { data: string; mimeType: string } }
+    | { text: string }
+  )[] = [{ text: question }];
+
+  if (pdfFile) {
+    messageParts.push({
       inlineData: {
         data: pdfFile.split(",")[1],
         mimeType: "application/pdf",
       },
-    },
-  ];
+    });
+  }
 
   const systemInstruction = `Your role is to answer the question based on my resume and JD, give ready to user answers. 
   ${jd}

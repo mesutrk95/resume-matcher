@@ -18,7 +18,7 @@ import { ChatMessage } from "./chat-message";
 import { askCustomQuestionFromAI } from "@/actions/job-resume";
 import type { JobResume } from "@prisma/client";
 import type { ResumeContent } from "@/types/resume";
-import { BlobProvider } from "@react-pdf/renderer";
+import { pdf } from "@react-pdf/renderer";
 import { ResumeDocument } from "../job-resumes/resume-document";
 import { toast } from "sonner";
 import { randomNDigits } from "@/lib/utils";
@@ -107,10 +107,7 @@ export function ChatInterface({
     messages[0]?.role === "model" &&
     messages[0]?.parts?.[0]?.text === "Hello! How can I assist you today?";
 
-  const handleSendMessage = async (
-    pdfBlob: Blob | null,
-    customQuestion?: string
-  ) => {
+  const handleSendMessage = async (customQuestion?: string) => {
     try {
       const questionToSend = customQuestion || inputValue;
       if (!questionToSend.trim()) return;
@@ -127,7 +124,13 @@ export function ChatInterface({
       if (!customQuestion) setInputValue("");
       setIsLoading(true);
 
-      const file = await blob2base64(pdfBlob!);
+      let file = null;
+      if (shareResume) {
+        const pdfBlob = await pdf(
+          <ResumeDocument resume={resume} skipFont={true} />
+        ).toBlob();
+        file = await blob2base64(pdfBlob!);
+      }
       const newMessages = await askCustomQuestionFromAI(
         jobResume.id,
         questionToSend,
@@ -135,7 +138,6 @@ export function ChatInterface({
         shareJD,
         messages.filter((m) => m.id !== "1")
       );
-      console.log(newMessages);
       setMessages(newMessages.updatedHistory);
       localStorage.setItem(
         "ai-conversation-" + jobResume.id,
@@ -147,27 +149,20 @@ export function ChatInterface({
     setIsLoading(false);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, blob: Blob | null) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSendMessage(blob);
+      handleSendMessage();
     }
   };
 
-  const handlePredefinedQuestion = (question: string, blob: Blob | null) => {
-    handleSendMessage(blob, question);
+  const handlePredefinedQuestion = (question: string) => {
+    handleSendMessage(question);
   };
   const clearChat = () => {
     localStorage.removeItem("ai-conversation-" + jobResume.id);
     setMessages([INITIAL_MESSAGE]);
   };
-  // const textInputRef = useRef<HTMLInputElement | null>(null);
-  // useEffect(() => {
-  //     textInputRef.current?.focus({
-  //         preventScroll: true
-  //     })
-  // }, [textInputRef])
-
   return (
     <Card className="w-full  flex flex-col   ">
       <CardHeader className=" flex flex-row items-center gap-5 space-y-0 p-4 border-b">
@@ -212,56 +207,50 @@ export function ChatInterface({
         </ScrollArea>
       </CardContent>
       <CardFooter className="shrink-0 p-4 flex flex-col border-t">
-        <BlobProvider
-          document={<ResumeDocument resume={resume} skipFont={true} />}
-        >
-          {({ blob, url, loading, error }) => (
-            <>
-              {isChatStarting && (
-                <div className="w-full mb-3">
-                  <h3 className="text-sm font-medium mb-4 text-muted-foreground">
-                    Popular questions to get started:
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {PREDEFINED_QUESTIONS.map((question, index) => (
-                      <Button
-                        key={index}
-                        variant="outline"
-                        className="justify-start h-auto py-3 px-4 text-left text-xs"
-                        onClick={() => handlePredefinedQuestion(question, blob)}
-                        disabled={isLoading}
-                      >
-                        <MessageSquare className="h-4 w-4 mr-2 flex-shrink-0" />
-                        <span className="truncate">{question}</span>
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              <div className="flex w-full items-center space-x-2">
-                <Button size="icon" variant={"outline"} onClick={clearChat}>
-                  <Eraser className="h-4 w-4" />
-                </Button>
-                <Input
-                  placeholder="Type your message..."
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(e, blob)}
-                  disabled={isLoading}
-                  className="flex-1"
-                  autoFocus={false}
-                />
-                <Button
-                  size="icon"
-                  onClick={() => handleSendMessage(blob)}
-                  disabled={isLoading || !inputValue.trim()}
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
+        <>
+          {isChatStarting && (
+            <div className="w-full mb-3">
+              <h3 className="text-sm font-medium mb-4 text-muted-foreground">
+                Popular questions to get started:
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {PREDEFINED_QUESTIONS.map((question, index) => (
+                  <Button
+                    key={index}
+                    variant="outline"
+                    className="justify-start h-auto py-3 px-4 text-left text-xs"
+                    onClick={() => handlePredefinedQuestion(question)}
+                    disabled={isLoading}
+                  >
+                    <MessageSquare className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <span className="truncate">{question}</span>
+                  </Button>
+                ))}
               </div>
-            </>
+            </div>
           )}
-        </BlobProvider>
+          <div className="flex w-full items-center space-x-2">
+            <Button size="icon" variant={"outline"} onClick={clearChat}>
+              <Eraser className="h-4 w-4" />
+            </Button>
+            <Input
+              placeholder="Type your message..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={(e) => handleKeyDown(e)}
+              disabled={isLoading}
+              className="flex-1"
+              autoFocus={false}
+            />
+            <Button
+              size="icon"
+              onClick={() => handleSendMessage()}
+              disabled={isLoading || !inputValue.trim()}
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </>
       </CardFooter>
     </Card>
   );

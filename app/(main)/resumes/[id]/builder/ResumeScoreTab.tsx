@@ -10,7 +10,7 @@ import { randomNDigits } from "@/lib/utils";
 import { ResumeAnalyzedImprovementNote } from "@/types/resume";
 import { arrayMove } from "@dnd-kit/sortable";
 import { JobResume } from "@prisma/client";
-import { BlobProvider } from "@react-pdf/renderer";
+import { pdf } from "@react-pdf/renderer";
 import { CheckCircle, CircleX, WandSparkles } from "lucide-react";
 import { toast } from "sonner";
 import { ConnectJobToResume } from "../../../../../components/job-resumes/connect-job-to-resume";
@@ -146,10 +146,13 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
   const { resume, resumeAnalyzeResults, setResumeAnalyzeResults } =
     useResumeBuilder();
   const [isRatingResume, startRatingResumeTransition] = useTransition();
-  const handleResumeScore = (resumePdfBlob: Blob) => {
+  const handleResumeScore = () => {
     startRatingResumeTransition(async () => {
       try {
-        const file = new File([resumePdfBlob], "resume.pdf", {
+        const blobData = await pdf(
+          <ResumeDocument resume={resume} withIdentifiers skipFont={true} />
+        ).toBlob();
+        const file = new File([blobData], "resume.pdf", {
           type: "application/pdf",
         });
         const formData = new FormData();
@@ -184,27 +187,13 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
 
   return (
     <>
-      <BlobProvider
-        document={
-          <ResumeDocument resume={resume} withIdentifiers skipFont={true} />
-        }
+      <LoadingButton
+        onClick={() => handleResumeScore()}
+        loading={isRatingResume}
+        loadingText="Thinking ..."
       >
-        {({ blob, url, loading, error }) => {
-          // if (error) {
-          //   return <div>Error: {error}</div>;
-          // }
-
-          return (
-            <LoadingButton
-              onClick={() => handleResumeScore(blob!)}
-              loading={loading || isRatingResume}
-              loadingText="Thinking ..."
-            >
-              Rate Resume!
-            </LoadingButton>
-          );
-        }}
-      </BlobProvider>
+        Rate Resume!
+      </LoadingButton>
 
       {resumeAnalyzeResults?.missed_keywords && (
         <div className="flex flex-col gap-5 mt-10">
