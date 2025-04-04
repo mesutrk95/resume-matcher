@@ -15,6 +15,12 @@ import { CheckCircle, CircleX, WandSparkles } from "lucide-react";
 import { toast } from "sonner";
 import { ConnectJobToResume } from "../../../../../components/job-resumes/connect-job-to-resume";
 
+import dynamic from "next/dynamic";
+import { Card, CardContent } from "@/components/ui/card";
+const GaugeComponent = dynamic(() => import("react-gauge-component"), {
+  ssr: false,
+});
+
 const ImprovementNote = ({
   index,
   note,
@@ -187,65 +193,178 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
 
   return (
     <>
-      <LoadingButton
-        onClick={() => handleResumeScore()}
-        loading={isRatingResume}
-        loadingText="Thinking ..."
-      >
-        Rate Resume!
-      </LoadingButton>
+      <Card className=" ">
+        <CardContent className="p-5">
+          <div className="flex items-center justify-between">
+            <div className="">
+              {resumeAnalyzeResults.score < 50 && (
+                <>
+                  <h4 className="text-lg text-red-500 font-bold">
+                    Needs Improvement 🚧
+                  </h4>
+                  <p className="text-xs">
+                    Your resume could use some work! Consider improving clarity,
+                    structure, and content. Focus on showcasing your skills,
+                    using strong action verbs, and tailoring it to the job
+                    you’re applying for.
+                  </p>
+                </>
+              )}
+              {resumeAnalyzeResults.score < 80 &&
+                resumeAnalyzeResults.score > 50 && (
+                  <>
+                    <h4 className="text-lg text-yellow-500 font-bold">
+                      Decent, But Can Be Better! ⚡
+                    </h4>
+                    <p className="text-xs">
+                      Your resume is on the right track! To make it stronger,
+                      refine your bullet points, highlight key achievements, and
+                      ensure it’s ATS-friendly. A few tweaks can significantly
+                      boost your chances!
+                    </p>
+                  </>
+                )}
+              {resumeAnalyzeResults.score > 100 && (
+                <>
+                  <h4 className="text-lg text-green-500 font-bold">
+                    Great Job! 🌟
+                  </h4>
+                  <p>
+                    Your resume is well-crafted and optimized! It effectively
+                    highlights your skills and experience. Consider fine-tuning
+                    small details to make it even more compelling and stand out
+                    to recruiters.
+                  </p>
+                </>
+              )}
 
-      {resumeAnalyzeResults?.missed_keywords && (
-        <div className="flex flex-col gap-5 mt-10">
-          <h3 className="text-xl font-bold">
-            Rate: {resumeAnalyzeResults.score}%
-          </h3>
-          <div className="flex flex-col gap-2">
-            <h3 className="text-lg font-bold flex items-center gap-2">
-              <CircleX className="text-red-500" size={18} />
-              Missed Keywords ({resumeAnalyzeResults.missed_keywords.length})
-            </h3>
-            <div className="flex flex-wrap gap-1">
-              {resumeAnalyzeResults.missed_keywords.map((k) => (
-                <span
-                  key={k}
-                  className="px-2 py-1 text-sm bg-slate-200 rounded-full"
-                >
-                  {k}
-                </span>
-              ))}
+              <LoadingButton
+                onClick={() => handleResumeScore()}
+                loading={isRatingResume}
+                loadingText="Thinking ..."
+                className="mt-5"
+                variant={"outline"}
+                size={"sm"}
+              >
+                Rate Resume!
+              </LoadingButton>
+            </div>
+            <div className="min-w-[280px]">
+              <GaugeComponent
+                type="semicircle"
+                // style={{ padding: '0 25px'}}
+                arc={{
+                  colorArray: ["#FF4040", "#FEDC01", "#68CA68"],
+                  padding: 0.025,
+                  cornerRadius: 3,
+                  subArcs: [
+                    { limit: 50 },
+                    { limit: 80 },
+                    { limit: 100, showTick: false },
+                  ],
+                }}
+                labels={{
+                  valueLabel: {
+                    style: {
+                      fontSize: 35,
+                      fill: "hsl(var(--muted-foreground))",
+                      textShadow: "none",
+                      fontWeight: "bold",
+                    },
+                    formatTextValue: (value) => `${value}%`,
+                  },
+                  tickLabels: {
+                    type: "outer",
+                    ticks: [
+                      {
+                        value: 0,
+                        lineConfig: { hide: false },
+                        valueConfig: { formatTextValue: () => "Bad" },
+                      },
+                      {
+                        value: 50,
+                        lineConfig: { hide: false },
+                        valueConfig: { formatTextValue: () => "Normal" },
+                      },
+                      {
+                        value: 80,
+                        lineConfig: { hide: false },
+                        valueConfig: { formatTextValue: () => "Very Good!" },
+                      },
+                      {
+                        value: 100,
+                        lineConfig: { hide: true },
+                        valueConfig: { hide: true },
+                      },
+                    ],
+                  },
+                }}
+                pointer={{ type: "arrow", elastic: true, length: 2, width: 12 }}
+                value={resumeAnalyzeResults.score}
+              />
             </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <h3 className="text-lg font-bold flex items-center gap-2">
-              <CheckCircle className="text-green-500" size={18} />
-              Matched Keywords ({resumeAnalyzeResults.matched_keywords.length})
-            </h3>
-            <div className="flex flex-wrap gap-1">
-              {resumeAnalyzeResults.matched_keywords.map((k) => (
-                <span
-                  key={k}
-                  className="px-2 py-1 text-sm bg-slate-200 rounded-full"
-                >
-                  {k}
-                </span>
-              ))}
-            </div>
-          </div>
-          {resumeAnalyzeResults.notes?.length > 0 && (
-            <div className="flex flex-col gap-2 pb-5">
-              <h3 className="text-lg font-bold flex items-center gap-2">
-                Improvement Notes ({resumeAnalyzeResults.notes.length})
-              </h3>
-              <div className="flex flex-col gap-4">
-                {resumeAnalyzeResults.notes.map((note, index) => (
-                  <ImprovementNote key={note.title} index={index} note={note} />
-                ))}
+        </CardContent>
+      </Card>
+
+      <Card className="mt-2">
+        <CardContent className="p-5">
+          {resumeAnalyzeResults?.missed_keywords && (
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-2">
+                <h3 className="text-lg font-bold flex items-center gap-2">
+                  <CircleX className="text-red-500" size={18} />
+                  Missed Keywords ({resumeAnalyzeResults.missed_keywords.length}
+                  )
+                </h3>
+                <div className="flex flex-wrap gap-1">
+                  {resumeAnalyzeResults.missed_keywords.map((k) => (
+                    <span
+                      key={k}
+                      className="px-2 py-1 text-sm bg-slate-200 rounded-full"
+                    >
+                      {k}
+                    </span>
+                  ))}
+                </div>
               </div>
+              <div className="flex flex-col gap-2">
+                <h3 className="text-lg font-bold flex items-center gap-2">
+                  <CheckCircle className="text-green-500" size={18} />
+                  Matched Keywords (
+                  {resumeAnalyzeResults.matched_keywords.length})
+                </h3>
+                <div className="flex flex-wrap gap-1">
+                  {resumeAnalyzeResults.matched_keywords.map((k) => (
+                    <span
+                      key={k}
+                      className="px-2 py-1 text-sm bg-slate-200 rounded-full"
+                    >
+                      {k}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {resumeAnalyzeResults.notes?.length > 0 && (
+                <div className="flex flex-col gap-2 pb-5">
+                  <h3 className="text-lg font-bold flex items-center gap-2">
+                    Improvement Notes ({resumeAnalyzeResults.notes.length})
+                  </h3>
+                  <div className="flex flex-col gap-4">
+                    {resumeAnalyzeResults.notes.map((note, index) => (
+                      <ImprovementNote
+                        key={note.title}
+                        index={index}
+                        note={note}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
-        </div>
-      )}
+        </CardContent>
+      </Card>
     </>
   );
 };

@@ -27,7 +27,7 @@ function LoadingPdf() {
 
 function PDFViewer({ pdfBlob }: { pdfBlob: Blob | null }) {
   const [numPages, setNumPages] = useState<number | null>(null);
-  const [pdfData, setPdfData] = useState<string | null>(null);
+  // const [pdfData, setPdfData] = useState<string | null>(null);
 
   const ref = useRef<HTMLDivElement>(null);
   const { width = 0, height = 0 } = useResizeObserver({
@@ -35,19 +35,19 @@ function PDFViewer({ pdfBlob }: { pdfBlob: Blob | null }) {
     box: "border-box",
   });
 
-  useEffect(() => {
-    if (!pdfBlob) return;
-    // Convert blob to URL
-    const blobUrl = URL.createObjectURL(
-      new Blob([pdfBlob], { type: "application/pdf" })
-    );
-    setPdfData(blobUrl);
+  // useEffect(() => {
+  //   if (!pdfBlob) return;
+  //   // Convert blob to URL
+  //   const blobUrl = URL.createObjectURL(
+  //     new Blob([pdfBlob], { type: "application/pdf" })
+  //   );
+  //   setPdfData(blobUrl);
 
-    return () => {
-      // Clean up
-      URL.revokeObjectURL(blobUrl);
-    };
-  }, [pdfBlob]);
+  //   return () => {
+  //     // Clean up
+  //     URL.revokeObjectURL(blobUrl);
+  //   };
+  // }, [pdfBlob]);
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
     setNumPages(numPages);
@@ -57,8 +57,8 @@ function PDFViewer({ pdfBlob }: { pdfBlob: Blob | null }) {
 
   return (
     <div className="relative h-full w-full bg-slate-2001 p-2 overflow-auto">
-      <div className=" " ref={ref}>
-        {pdfData && (
+      <div className="" ref={ref}>
+        {pdfBlob && (
           <Document
             className={"relative flex flex-col gap-2"}
             file={pdfBlob}

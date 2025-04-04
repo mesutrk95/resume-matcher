@@ -87,6 +87,9 @@ body,
   body {
     @apply bg-background text-foreground font-roboto;
   }
+  p {
+    @apply text-sm;
+  }
 }
 
 .jd-preview {

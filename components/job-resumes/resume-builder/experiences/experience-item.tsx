@@ -277,7 +277,7 @@ export function ExperienceItem({
                 {!isEditing && (
                   <>
                     <div
-                      className={`font-medium ${
+                      className={`${
                         !experience.enabled ? "text-muted-foreground" : ""
                       }`}
                     >

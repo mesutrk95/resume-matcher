@@ -8,6 +8,7 @@ import { getUserSubscription } from "@/actions/subscription/customer";
 import { UserProvider } from "@/providers/UserProvider";
 import { currentUser } from "@/lib/auth";
 import { User } from "next-auth";
+import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,10 +26,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const subscription = await getUserSubscription().catch(() => null);
-  const user = await currentUser() as User;
-   
+  const user = (await currentUser()) as User;
+
   return (
     <html lang="en">
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Head>
       <body className={"inter.className bg-slate-50"}>
         <NextTopLoader />
         <Toaster position="bottom-left" richColors theme="light" />

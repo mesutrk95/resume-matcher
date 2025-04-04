@@ -26,7 +26,7 @@ import {
   ScanEye,
   Trash,
 } from "lucide-react";
-import { JobPostPreview } from "@/components/jobs/job-post-preview"; 
+import { JobPostPreview } from "@/components/jobs/job-post-preview";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -241,11 +241,7 @@ export const JobMatcher = ({
                     <ResumeBuilder />
                   </TabsContent>
                   <TabsContent className="p-0 m-0 h-full" value="score">
-                    <Card className=" ">
-                      <CardContent className="p-5">
-                        <ResumeScoreTab jobResume={jobResume} />
-                      </CardContent>
-                    </Card>
+                    <ResumeScoreTab jobResume={jobResume} />
                   </TabsContent>
                   <TabsContent className="  p-0 m-0" value="chat">
                     <ChatInterface jobResume={jobResume} resume={resume} />
@@ -256,7 +252,11 @@ export const JobMatcher = ({
 
             <div className="col-span-5">
               <div
-                className={`w-full h-[calc(100vh-${navbarHeight}px)] sticky top-[${navbarHeight}px] py-2`}
+                className={`w-full sticky py-2`}
+                style={{
+                  height: `calc(100vh - ${navbarHeight}px)`,
+                  top: `${navbarHeight}px`,
+                }}
               >
                 <Tabs
                   defaultValue="preview"

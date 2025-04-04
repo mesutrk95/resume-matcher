@@ -98,6 +98,7 @@ const config = {
             lineHeight: "1",
           },
         ],
+        // sm: '0.825rem',
         xxs: "0.6rem",
       },
     },

@@ -157,45 +157,45 @@ export function ContactInfoSection({}: ContactInfoSectionProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <h3 className="text-sm font-medium text-muted-foreground">Name</h3>
+            <h3 className="text-xs font-medium text-muted-foreground">Name</h3>
             <p>
               {resume.contactInfo?.firstName} {resume.contactInfo?.lastName}
             </p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-muted-foreground">Email</h3>
+            <h3 className="text-xs font-medium text-muted-foreground">Email</h3>
             <p>{resume.contactInfo?.email}</p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-muted-foreground">Phone</h3>
+            <h3 className="text-xs font-medium text-muted-foreground">Phone</h3>
             <p>{resume.contactInfo?.phone}</p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-muted-foreground">
+            <h3 className="text-xs font-medium text-muted-foreground">
               LinkedIn
             </h3>
             <p>{resume.contactInfo?.linkedIn}</p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-muted-foreground">
+            <h3 className="text-xs font-medium text-muted-foreground">
               Twitter
             </h3>
             <p>{resume.contactInfo?.twitter}</p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-muted-foreground">
+            <h3 className="text-xs font-medium text-muted-foreground">
               Address
             </h3>
             <p>{resume.contactInfo?.address}</p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-muted-foreground">
+            <h3 className="text-xs font-medium text-muted-foreground">
               Country
             </h3>
             <p>{resume.contactInfo?.country}</p>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-muted-foreground">
+            <h3 className="text-xs font-medium text-muted-foreground">
               Pronouns
             </h3>
             <p>{resume.contactInfo?.pronouns}</p>
