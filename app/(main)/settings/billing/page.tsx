@@ -99,7 +99,6 @@ export default async function BillingPage({
 
       {/* Client wrapper for handling toasts and tab state */}
       <BillingPageClient
-        defaultTab={defaultTab}
         showSuccessToast={showSuccessToast}
         showCanceledToast={showCanceledToast}
       >
