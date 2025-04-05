@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useTransition } from "react";
 import { analyzeResumeScore } from "@/actions/job-resume";
 import { useResumeBuilder } from "@/components/job-resumes/resume-builder/context/useResumeBuilder";
-import { ResumeDocument } from "@/components/job-resumes/resume-document";
+import { ResumeDocument } from "@/components/job-resumes/resume-renderer/resume-document";
 import { Button } from "@/components/ui/button";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { Textarea } from "@/components/ui/textarea";

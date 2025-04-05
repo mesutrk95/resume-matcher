@@ -1,14 +1,13 @@
 import { ResumeContent } from "@/types/resume";
 import { JobResume } from "@prisma/client";
-// import { PDFViewer } from "@react-pdf/renderer";
-import { ResumeDocument } from "./resume-document";
+import { ResumeDocument } from "./resume-renderer/resume-document";
 import { useEffect, useState } from "react";
 import { BlobProvider } from "@react-pdf/renderer";
-import PDFViewer from "./pdf-viewer";
 import { Button } from "../ui/button";
+import PDFViewer from "./resume-renderer/pdf-viewer";
 
 // CV Preview Component with Download Button
-const CVPreview = ({
+export const ResumePreview = ({
   data,
   jobResume,
 }: {
@@ -82,5 +81,3 @@ const CVPreview = ({
     </BlobProvider>
   );
 };
-
-export default CVPreview;

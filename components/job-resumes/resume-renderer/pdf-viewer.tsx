@@ -49,7 +49,7 @@ function PDFViewer({
   const loadingIndicator = useMemo(() => <LoadingPdf />, []);
 
   return (
-    <div className="relative h-full w-full bg-slate-2001 p-2 overflow-hidden">
+    <div className="relative h-full w-full bg-slate-2001 p-2 overflow-auto">
       <div className="" ref={ref}>
         {pdfBlob && (
           <Document
