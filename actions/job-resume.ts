@@ -19,6 +19,7 @@ import { JobAnalyzeResult } from "@/types/job";
 import { chunkArray, hashString } from "@/lib/utils";
 import { analyzeJobByAI } from "./job";
 import {
+  convertResumeObjectToString,
   migrateResumeContent,
   resumeExperiencesToString,
 } from "@/lib/resume-content";
@@ -169,11 +170,13 @@ export const analyzeResumeScore = async (
   if (!jobResume.job)
     throw new BadRequestException("The resume has not been attached to a job!");
 
-  // let content = `Job Description: \n${jobResume?.job.title}\n${jobResume?.job.description}`;
+  const jobAnalyzeResult: JobAnalyzeResult = jobResume?.job!
+    .analyzeResults as JobAnalyzeResult;
+  //   console.log(jobAnalyzeResult.keywords
+  //     .map((k) => k.keyword)
+  //     .join(","));
 
-  // content += `\n\nMy Resume Content: \n${convertResumeObjectToString(
-  //   jobResume?.content as ResumeContent
-  // )}`
+  // throw new Error('')
 
   const getExperiencesImprovementNotes = async () => {
     const systemInstructions = `
@@ -249,39 +252,111 @@ Provide your optimization suggestion in the required JSON format.`;
 
   const getScore = async () => {
     const systemInstructions = `
-    You are an expert ATS (Applicant Tracking System) analyzer.
-    Your task is to evaluate how well a resume matches a given job description.
-    
-    INSTRUCTIONS:
-    - Compare the resume content against the job description
-    - Calculate a match score from 0-100
-    - Identify important keywords that match between the resume and job description
-    - Identify important keywords from the job description that are missing in the resume
-    - Only include meaningful keywords that impact ATS scoring
-    
-    RESPONSE FORMAT:
-    Provide ONLY a JSON object with the following structure:
-    {
-      "score": [0-100 integer],
-      "matched_keywords": [array of important matched keywords],
-      "missed_keywords": [array of important missed keywords]
-    }
-    
-    IMPORTANT:
-    - Your entire response must be ONLY valid JSON with no additional text
-    - Do not include any explanations, breakdown, improvement suggestions, or conclusions
-    - Only focus on important/relevant keywords that would impact ATS scoring`;
+You are an expert ATS (Applicant Tracking System) analyzer.
+Your task is to evaluate how well a resume matches a given job description.
+
+CRITICAL SECTION VALIDATION:
+Before scoring, verify that the following resume sections contain substantive content:
+- Experience/Work History: Must contain relevant work experience with dates, organizations, and responsibilities
+- Skills: Must list specific technical and soft skills relevant to the position
+- Education: Must include degree information and institutions
+- Contact Information: Must have basic contact details
+
+SCORING RULES:
+- If ANY of these critical sections are empty or missing, the total score CANNOT exceed 30
+- If Experience section is empty or very sparse, experience_score MUST be 0
+- If Skills section is missing key technical skills mentioned in job description, skills_score CANNOT exceed 10
+- Resume with no relevant experience to the job description CANNOT score above 40 overall
+
+INSTRUCTIONS:
+- Carefully analyze the resume structure and content sections
+- Compare the resume content against the job description
+- Calculate a realistic match score from 0-100
+- Be strict and critical in your evaluation
+
+SCORING METHODOLOGY:
+- Score range: 0-100
+- Keyword matching: 40% of total score
+- Skills alignment: 30% of total score  
+- Experience relevance: 20% of total score
+- Education & certifications: 10% of total score
+
+RESPONSE FORMAT:
+Provide ONLY a JSON object with the following structure:
+{
+  "score": [0-100 integer],
+  "breakdown": {
+    "keyword_score": [0-40 integer],
+    "skills_score": [0-30 integer],
+    "experience_score": [0-20 integer],
+    "education_score": [0-10 integer]
+  }
+}
+
+IMPORTANT:
+- Your entire response must be ONLY valid JSON with no additional text
+- Do not include any explanations, breakdown, improvement suggestions, or conclusions
+- You must be rigorous and realistic in your scoring - empty sections MUST result in low scores
+- Only focus on important/relevant keywords that would impact ATS scoring`;
 
     const prompt = `Job Description: \n${jobResume?.job!.title}\n${
       jobResume?.job!.description
     }
-    Ensure the response is in a valid JSON format with no extra text!`;
+    Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
 
     return getAIJsonResponse(prompt, [pdfBuffer], systemInstructions);
   };
 
+  const getMatchedKeywords = async () => {
+    const systemInstructions = `
+You are an expert ATS (Applicant Tracking System) keyword analyzer.
+Your task is to identify which important keywords from the job description match or are missing in the resume.
+
+INSTRUCTIONS:
+- Extract only significant keywords from the job description that would impact ATS scoring
+- Compare these keywords against the resume content
+- Identify which important keywords are present (matched) in the resume
+- Identify which important keywords are absent (missed) in the resume
+- Only include meaningful technical skills, qualifications, and experience keywords
+- Do NOT include generic words or phrases that wouldn't affect ATS scoring
+
+KEYWORD SELECTION CRITERIA:
+- Technical skills (programming languages, tools, platforms)
+- Industry-specific terminology
+- Required certifications or qualifications
+- Specific methodologies or processes mentioned
+- Job-specific responsibilities or functions
+- Required years of experience with specific technologies
+- Educational requirements (degrees, fields of study)
+
+RESPONSE FORMAT:
+Provide ONLY a JSON object with the following structure:
+{
+  "matched_keywords": [array of important matched keywords],
+  "missed_keywords": [array of important missed keywords]
+}
+
+IMPORTANT:
+- Your entire response must be ONLY valid JSON with no additional text
+- Do not include any explanations, scoring, or conclusions outside the JSON
+- Focus only on significant keywords that genuinely impact ATS evaluation
+- Limit to maximum 20 most important keywords in each category
+- Sort keywords by importance/relevance (most important first)`;
+
+    const prompt = `Job Keywords: ${jobAnalyzeResult.keywords
+      .map((k) => k.keyword)
+      .join(",")}
+
+    Resume:
+    ${convertResumeObjectToString(jobResume.content as ResumeContent)}
+    Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
+
+    return getAIJsonResponse(prompt, [], systemInstructions);
+  };
+
   const results = await Promise.all([
     getScore(),
+    getMatchedKeywords(),
     getSkillsImprovementNotes(),
     getExperiencesImprovementNotes(),
   ]);
@@ -289,7 +364,8 @@ Provide your optimization suggestion in the required JSON format.`;
   const newAnalyzeResults = {
     ...((jobResume?.analyzeResults as ResumeAnalyzeResults) || {}),
     ...results[0].result,
-    notes: [results[1].result, ...results[2].result],
+    ...results[1].result,
+    notes: [results[2].result, ...results[3].result],
   } as ResumeAnalyzeResults;
 
   await db.jobResume.update({

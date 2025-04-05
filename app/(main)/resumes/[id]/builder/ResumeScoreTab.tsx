@@ -241,8 +241,8 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
             <div className="">
               {resumeAnalyzeResults.score < 50 && (
                 <>
-                  <h4 className="text-lg text-red-500 font-bold">
-                    Needs Improvement 🚧
+                  <h4 className="text-xl text-red-500 font-bold">
+                    Needs Improvement! 🚧
                   </h4>
                   <p className="text-xs">
                     Your resume could use some work! Consider improving clarity,
@@ -255,7 +255,7 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
               {resumeAnalyzeResults.score < 80 &&
                 resumeAnalyzeResults.score > 50 && (
                   <>
-                    <h4 className="text-lg text-yellow-500 font-bold">
+                    <h4 className="text-xl text-yellow-500 font-bold">
                       Decent, But Can Be Better! ⚡
                     </h4>
                     <p className="text-xs">
@@ -266,10 +266,10 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
                     </p>
                   </>
                 )}
-              {resumeAnalyzeResults.score > 100 && (
+              {resumeAnalyzeResults.score >= 80 && (
                 <>
-                  <h4 className="text-lg text-green-500 font-bold">
-                    Great Job! 🌟
+                  <h4 className="text-xl text-green-500 font-bold">
+                    Great Job! 
                   </h4>
                   <p>
                     Your resume is well-crafted and optimized! It effectively
@@ -283,7 +283,7 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
               <LoadingButton
                 onClick={() => handleResumeScore()}
                 loading={isRatingResume}
-                loadingText="Thinking ..."
+                loadingText="Checking ..."
                 className="mt-5 flex gap-2 items-center"
                 variant={"outline"}
                 size={"sm"}

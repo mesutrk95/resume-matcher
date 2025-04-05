@@ -42,7 +42,8 @@ export const resumeSkillsToString = (resume: ResumeContent) => {
 
 export const convertResumeObjectToString = (
   resume: ResumeContent,
-  withIdentifiers?: boolean
+  withIdentifiers?: boolean,
+  onlyEnabledItems?: boolean
 ) => {
   let content = "";
 
@@ -56,14 +57,16 @@ export const convertResumeObjectToString = (
     content += summary + "\n";
   }
 
-  content += `Experiences\n`;
+  content += `Experiences:\n`;
   content += resumeExperiencesToString(resume, withIdentifiers, true);
 
+  content += `Projects:\n`;
   resume.projects.forEach((prj) => {
     if (!prj.enabled) return;
     content += `${prj?.content}\n`;
   });
 
+  content += `Educations:\n`;
   const edu = resume.educations.find((e) => e.enabled);
   if (edu) {
     content += `Education\n${edu.degree} • ${edu.institution} • ${edu.content} \n`;

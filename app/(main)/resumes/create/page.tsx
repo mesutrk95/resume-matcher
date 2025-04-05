@@ -37,7 +37,6 @@ export default async function CreateResumePage({
       <h1 className="text-3xl font-bold">Create a new Resume</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <ResumeTemplateCard />
         {resumeTemplates.map((template) => (
           <ResumeTemplateCard key={template.id} template={template} />
         ))}

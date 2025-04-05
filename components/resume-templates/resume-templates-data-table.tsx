@@ -11,7 +11,14 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, ChevronRight, Edit, Search, Trash } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Edit,
+  Plus,
+  Search,
+  Trash,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { ResumeTemplate } from "@prisma/client";
@@ -19,7 +26,6 @@ import { deleteResumeTemplate } from "@/actions/resume-template";
 import { toast } from "sonner";
 import Moment from "react-moment";
 import { confirmDialog } from "../shared/confirm-dialog";
-import { CreateNewTemplateForm } from "./create-new-template-button";
 import { LinkableTableCell } from "../ui/linkable-table-cell";
 
 interface ResumeTemplatesDateTableProps {
@@ -95,7 +101,12 @@ export function ResumeTemplatesDateTable({
             <Search className="h-4 w-4" />
           </Button>
         </form>
-        <CreateNewTemplateForm />
+        <Button asChild>
+          <Link href="/templates/create">
+            <Plus className="mr-2 h-4 w-4" />
+            Create Resume Template
+          </Link>
+        </Button>
       </div>
 
       <div className="rounded-md border bg-white">

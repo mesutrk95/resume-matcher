@@ -3,7 +3,6 @@ import { ResumeTemplatesDateTable } from "@/components/resume-templates/resume-t
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
-import { CreateNewTemplateForm } from "@/components/resume-templates/create-new-template-button";
 
 export const metadata: Metadata = {
   title: "Resume Templates",

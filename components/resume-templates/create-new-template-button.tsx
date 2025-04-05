@@ -7,14 +7,14 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-export function CreateNewTemplateForm() {
+export function CreateNewTemplateForm({ blank }: { blank?: boolean }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleCreateNewResumeTemplate = async () => {
     startTransition(() => {
       createResumeTemplate()
-        .then((data) => { 
+        .then((data) => {
           const templateId = data?.id;
           router.push("/templates/" + templateId);
           toast.success("Resume template successfully created!");
@@ -33,7 +33,7 @@ export function CreateNewTemplateForm() {
       onClick={handleCreateNewResumeTemplate}
     >
       <Plus className="mr-2 h-4 w-4" />
-      Create Resume Template
+      {blank ? "Create Blank Template" : "Create Resume Template"}
     </LoadingButton>
   );
 }

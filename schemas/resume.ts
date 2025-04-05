@@ -19,10 +19,10 @@ const experienceItemSchema = z.object({
 // Define the experience schema
 const experienceSchema = z.object({
   id: z.string(),
-  companyName: z.string(),
-  role: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
+  companyName: z.string().optional(),
+  role: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   enabled: z.boolean(),
   items: z.array(experienceItemSchema),
   location: z.string().optional(),

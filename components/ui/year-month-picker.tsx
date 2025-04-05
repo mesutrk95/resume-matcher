@@ -45,7 +45,7 @@ const months = [
 export function YearMonthPicker({
   date,
   setDate,
-  startYear = getYear(new Date()) - 30,
+  startYear = getYear(new Date()) - 20,
   endYear = getYear(new Date()) + 10,
   placeholder = "Pick a date",
 }: DatePickerProps) {
@@ -68,12 +68,12 @@ export function YearMonthPicker({
   const handleMonthChange = (month: string) => {
     const monthNumber = months.indexOf(month) + 1;
     const year = selectedDate.year || new Date().getFullYear().toString();
-    setDate(`${monthNumber}/${year}`);
+    setDate(`${monthNumber.toString().padStart(2, '0')}/${year}`);
   };
 
   const handleYearChange = (year: string) => {
     const month = selectedDate.month || new Date().getMonth() + 1;
-    setDate(`${month}/${year}`);
+    setDate(`${month.toString().padStart(2, '0')}/${year}`);
   };
 
   const handleClear = () => {
