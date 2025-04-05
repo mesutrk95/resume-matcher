@@ -23,6 +23,7 @@ import {
   ContactInfoSection,
   EducationSection,
   ExperienceSection,
+  FullNameSection,
   InterestsSection,
   LanguagesSection,
   ProjectsSection,
@@ -82,9 +83,29 @@ const renderSection = (
 ) => {
   switch (sectionName) {
     case "contactInfo":
-      return <ContactInfoSection resume={resume} styles={styles} />;
+      return (
+        <ContactInfoSection
+          resume={resume}
+          styles={styles}
+          resumeDesign={resumeDesign}
+        />
+      );
+    case "fullname":
+      return (
+        <FullNameSection
+          resume={resume}
+          styles={styles}
+          resumeDesign={resumeDesign}
+        />
+      );
     case "title":
-      return <TitleSection resume={resume} styles={styles} />;
+      return (
+        <TitleSection
+          resume={resume}
+          styles={styles}
+          resumeDesign={resumeDesign}
+        />
+      );
     case "summary":
       return (
         <SummarySection
@@ -272,6 +293,12 @@ export const ResumeDocument = ({
       projectUrl: getComputedStyle(design.sections.projects.url),
       projectName: getComputedStyle(design.sections.projects.name),
       projectSubheader: getComputedStyle(design.sections.projects.subheader),
+
+      fullName: getComputedStyle(design.sections.fullName),
+      title: getComputedStyle(design.sections.contactInfo.title),
+      contactInfoMetadata: getComputedStyle(
+        design.sections.contactInfo.metadata
+      ),
 
       pageNumber: {
         borderBottom: "",

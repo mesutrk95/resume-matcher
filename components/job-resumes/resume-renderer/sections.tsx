@@ -1,32 +1,95 @@
 import { renderList, SeperateList } from "@/components/shared/seperate-list";
 import { parseDate } from "@/components/ui/year-month-picker";
-import { ResumeContent, ResumeDesign, ResumeSkill } from "@/types/resume";
+import {
+  Experience,
+  ResumeContent,
+  ResumeDesign,
+  ResumeSkill,
+} from "@/types/resume";
 import { Text, View } from "@react-pdf/renderer";
 import moment from "moment";
 import React from "react";
 
 export const ContactInfoSection = ({
   resume,
+  resumeDesign,
   styles,
 }: {
   resume: ResumeContent;
+  resumeDesign: ResumeDesign;
+  styles: any;
+}) => {
+  // Helper function to get the value for a specific item type
+  const getItemValue = (itemType: string) => {
+    switch (itemType) {
+      case "email":
+        return resume.contactInfo.email;
+      case "phone":
+        return resume.contactInfo.phone;
+      case "linkedIn":
+        return resume.contactInfo.linkedIn;
+      case "github":
+        return resume.contactInfo.github;
+      case "website":
+        return resume.contactInfo.website;
+      case "address":
+        return resume.contactInfo.address;
+      case "country":
+        return resume.contactInfo.country;
+      default:
+        return "";
+    }
+  };
+
+  // Get the configured items and separator
+  const configuredItems = resumeDesign.sections.contactInfo?.metadata
+    ?.items || [
+    "email",
+    "phone",
+    "linkedIn",
+    "github",
+    "website",
+    "address",
+    "country",
+  ];
+  const separator =
+    resumeDesign.sections.contactInfo?.metadata?.separator || "•";
+
+  // Filter out items with empty values
+  const validItems = configuredItems
+    .map((itemType) => ({
+      type: itemType,
+      value: getItemValue(itemType),
+    }))
+    .filter((item) => item.value);
+
+  return (
+    <View style={styles.section}>
+      <Text style={styles.contactInfoMetadata}>
+        {validItems.map((item, index) => (
+          <React.Fragment key={item.type}>
+            <Text>{item.value}</Text>
+            {index < validItems.length - 1 && <Text>{` ${separator} `}</Text>}
+          </React.Fragment>
+        ))}
+      </Text>
+    </View>
+  );
+};
+
+export const FullNameSection = ({
+  resume,
+  styles,
+  resumeDesign,
+}: {
+  resume: ResumeContent;
+  resumeDesign: ResumeDesign;
   styles: any;
 }) => {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionHeading}>Contact Information</Text>
-      <Text style={styles.contactInfo}>
-        <SeperateList
-          data={[
-            resume.contactInfo.email,
-            resume.contactInfo.phone,
-            resume.contactInfo.linkedIn,
-            resume.contactInfo.github,
-            resume.contactInfo.website,
-            resume.contactInfo.address,
-            resume.contactInfo.country,
-          ]}
-        />
+      <Text style={styles.fullName}>
+        {resume.contactInfo.firstName} {resume.contactInfo.lastName}
       </Text>
     </View>
   );
@@ -35,8 +98,10 @@ export const ContactInfoSection = ({
 export const TitleSection = ({
   resume,
   styles,
+  resumeDesign,
 }: {
   resume: ResumeContent;
+  resumeDesign: ResumeDesign;
   styles: any;
 }) => {
   const title = resume.titles.find((t) => t.enabled);
@@ -44,12 +109,12 @@ export const TitleSection = ({
 
   return (
     <View style={styles.header}>
-      <Text style={styles.name}>
+      {/* <Text style={styles.name}>
         <SeperateList
           data={[resume.contactInfo.firstName, resume.contactInfo.lastName]}
           by=" "
         />
-      </Text>
+      </Text> */}
       <Text style={styles.title}>{title.content}</Text>
     </View>
   );
@@ -78,6 +143,15 @@ export const SummarySection = ({
   );
 };
 
+// Helper function to get the formatted date string
+const getFormattedDate = (
+  dateString: string | undefined,
+  format: string | undefined
+) => {
+  if (!dateString) return "";
+  if (dateString === "Present") return "Present";
+  return moment(parseDate(dateString)).format(format || "MMM YYYY");
+};
 export const ExperienceSection = ({
   resume,
   resumeDesign,
@@ -92,39 +166,91 @@ export const ExperienceSection = ({
   const experiences = resume.experiences.filter((e) => e.enabled);
   if (experiences.length === 0) return null;
 
+  // Helper function to get the value for a specific item type
+  const getItemValue = (experience: any, itemType: string) => {
+    switch (itemType) {
+      case "company":
+        return experience.companyName;
+      case "title":
+        return experience.role;
+      case "date":
+        const startDate = getFormattedDate(
+          experience.startDate,
+          resumeDesign.sections.experiences.subheader?.dates?.format
+        );
+        const endDate = getFormattedDate(
+          experience.endDate,
+          resumeDesign.sections.experiences.subheader?.dates?.format
+        );
+        return `${startDate} - ${endDate}`;
+      case "positionType":
+        return experience.type;
+      case "location":
+        return experience.location;
+      default:
+        return "";
+    }
+  };
+
+  // Helper function to get style for a specific item type
+  const getItemStyle = (itemType: string) => {
+    const baseStyle =
+      styles[
+        `experienceSubheader${
+          itemType.charAt(0).toUpperCase() + itemType.slice(1)
+        }`
+      ];
+    return baseStyle || {};
+  };
+
+  // Helper function to render row items with optional separator
+  const renderRowItems = (row: any, experience: Experience) => {
+    const { items, separator } = row;
+
+    if (!separator) {
+      // If no separator, render each item as a separate Text component
+      return items.map((itemType: string, itemIndex: number) => (
+        <Text key={`${itemType}-${itemIndex}`} style={getItemStyle(itemType)}>
+          {getItemValue(experience, itemType)}
+        </Text>
+      ));
+    }
+
+    // With separator, render as a single Text component with separator between items
+    return (
+      <Text style={{}}>
+        {items.map((itemType: string, itemIndex: number) => {
+          const value = getItemValue(experience, itemType);
+          if (!value) return null;
+
+          return (
+            <React.Fragment key={`${itemType}-${itemIndex}`}>
+              <Text style={getItemStyle(itemType)}>{value}</Text>
+              {itemIndex < items.length - 1 &&
+                value &&
+                getItemValue(experience, items[itemIndex + 1]) && (
+                  <Text> {separator} </Text>
+                )}
+            </React.Fragment>
+          );
+        })}
+      </Text>
+    );
+  };
+
   return (
     <View style={styles.section}>
       <Text style={styles.sectionHeading}>Experiences</Text>
       {experiences.map((experience) => (
         <View key={experience.id} style={styles.experience}>
           <View style={styles.experienceSubheader}>
-            <Text style={styles.experienceSubheaderTitle}>
-              {experience.role}
-            </Text>
-            <Text style={styles.experienceSubheaderCompany}>
-              {experience.companyName}
-            </Text>
-            <Text style={styles.experienceSubheaderMetadata}>
-              <SeperateList
-                data={[
-                  experience.location,
-                  experience.type,
-                  `${
-                    experience.startDate &&
-                    moment(parseDate(experience.startDate)).format(
-                      resumeDesign.sections.experiences.dates?.format
-                    )
-                  } - ${
-                    experience.endDate === "Present"
-                      ? "Present"
-                      : experience.endDate &&
-                        moment(parseDate(experience.endDate)).format(
-                          resumeDesign.sections.experiences.dates?.format
-                        )
-                  }`,
-                ]}
-              />
-            </Text>
+            {resumeDesign.sections.experiences.subheader?.rows?.map(
+              (row, rowIndex) => (
+                <View key={rowIndex} style={row.style || {}}>
+                  {renderRowItems(row, experience)}
+                </View>
+              )
+            )}
           </View>
 
           <View style={styles.experienceItems}>

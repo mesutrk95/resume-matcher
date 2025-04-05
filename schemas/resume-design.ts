@@ -31,6 +31,16 @@ const cssStyleSchema = z.object({
       "underline line-through",
     ])
     .optional(),
+  justifyContent: z
+    .enum([
+      "flex-start",
+      "flex-end",
+      "center",
+      "space-around",
+      "space-between",
+      "space-evenly",
+    ])
+    .optional(),
   textDecorationColor: colorSchema.optional(),
   textDecorationStyle: z.enum(["dashed", "dotted", "solid"]).optional(),
   display: z.enum(["none", "flex"]).default("flex").optional(),
@@ -92,6 +102,7 @@ export const resumeDesignOrientation = z
 // Define section schema for layout customization
 const sectionSchema = z.enum([
   "contactInfo",
+  "fullname",
   "title",
   "summary",
   "experience",
@@ -128,18 +139,6 @@ const sectionsSchema = z.object({
     company: elementStyleSchema.extend({
       enable: z.boolean().default(true).optional(),
     }),
-    location: elementStyleSchema
-      .extend({
-        enable: z.boolean().default(true),
-        format: dateFormatSchema.optional(),
-      })
-      .optional(),
-    dates: elementStyleSchema
-      .extend({
-        enable: z.boolean().default(true).optional(),
-        format: dateFormatSchema.optional(),
-      })
-      .optional(),
     bullets: elementStyleSchema
       .extend({
         enable: z.boolean().default(true).optional(),
@@ -154,9 +153,30 @@ const sectionsSchema = z.object({
       .optional(),
     subheader: elementStyleSchema
       .extend({
-        title: elementStyleSchema.optional(),
-        metadata: elementStyleSchema.optional(),
-        company: elementStyleSchema.optional(),
+        rows: z.array(
+          elementStyleSchema.extend({
+            separator: z.string().optional(),
+            items: z.array(
+              z.enum(["company", "title", "date", "positionType", "location"])
+            ),
+          })
+        ),
+        title: elementStyleSchema.extend({}).optional(),
+        metadata: elementStyleSchema.extend({}).optional(),
+        company: elementStyleSchema.extend({}).optional(),
+        dates: elementStyleSchema
+          .extend({
+            enable: z.boolean().default(true).optional(),
+            format: dateFormatSchema.optional(),
+          })
+          .optional(),
+        location: elementStyleSchema
+          .extend({
+            enable: z.boolean().default(true),
+            format: dateFormatSchema.optional(),
+          })
+          .optional(),
+        positionType: elementStyleSchema.extend({}).optional(),
       })
       .optional(),
     group: elementStyleSchema.extend({}).optional(),
@@ -181,11 +201,25 @@ const sectionsSchema = z.object({
     }),
     style: cssStyleSchema.optional(),
   }),
-  contactInfo: z.object({
+  contactInfo: elementStyleSchema.extend({
     showIcons: z.boolean().default(true),
-    alignment: z.enum(["left", "center", "right"]).default("left"),
-    style: cssStyleSchema.optional(),
+    title: elementStyleSchema.extend({}).optional(),
+    metadata: elementStyleSchema.extend({
+      separator: z.string().optional(),
+      items: z.array(
+        z.enum([
+          "email",
+          "phone",
+          "linkedIn",
+          "github",
+          "website",
+          "address",
+          "country",
+        ])
+      ),
+    }),
   }),
+  fullName: elementStyleSchema.extend({}),
 });
 
 // Define the main resume design schema
@@ -211,6 +245,7 @@ export const resumeDesignSchema = z.object({
     .array(sectionSchema)
     .default([
       "title",
+      "fullname",
       "contactInfo",
       "summary",
       "experience",
@@ -287,8 +322,9 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
   },
   columnLayout: "single",
   sectionOrder: [
-    "contactInfo",
     "title",
+    "fullname",
+    "contactInfo",
     "summary",
     "experience",
     "education",
@@ -320,9 +356,6 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     },
     experiences: {
       company: {},
-      dates: {
-        format: "MMM YYYY",
-      },
       bullets: {
         symbol: "•",
       },
@@ -343,10 +376,32 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
         },
       },
       subheader: {
+        rows: [
+          {
+            style: {
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            },
+            items: ["title", "date"],
+          },
+          {
+            style: {
+              display: "flex",
+              flexDirection: "row",
+              gap: 5,
+            },
+            separator: "•",
+            items: ["company", "location", "positionType"],
+          },
+        ],
         style: { marginBottom: 2 },
         title: { typo: "h5" },
         company: { typo: "h6" },
         metadata: { typo: "text-muted" },
+        dates: {
+          format: "MMM YYYY",
+        },
       },
       style: {},
     },
@@ -361,8 +416,26 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       },
     },
     contactInfo: {
+      metadata: {
+        typo: "text-muted",
+        separator: "•",
+        items: [
+          "country",
+          "email",
+          "phone",
+          "linkedIn",
+          "github",
+          "website",
+          "address",
+        ],
+      },
+      title: {
+        typo: "h1",
+      },
       showIcons: true,
-      alignment: "left",
+    },
+    fullName: {
+      typo: "h2",
     },
   },
   enablePageNumbers: true,
