@@ -25,6 +25,7 @@ interface DatePickerProps {
   startYear?: number;
   endYear?: number;
   placeholder?: string;
+  className?: string;
 }
 
 const months = [
@@ -43,6 +44,7 @@ const months = [
 ];
 
 export function YearMonthPicker({
+  className = 'w-full',
   date,
   setDate,
   startYear = getYear(new Date()) - 20,
@@ -68,12 +70,12 @@ export function YearMonthPicker({
   const handleMonthChange = (month: string) => {
     const monthNumber = months.indexOf(month) + 1;
     const year = selectedDate.year || new Date().getFullYear().toString();
-    setDate(`${monthNumber.toString().padStart(2, '0')}/${year}`);
+    setDate(`${monthNumber.toString().padStart(2, "0")}/${year}`);
   };
 
   const handleYearChange = (year: string) => {
     const month = selectedDate.month || new Date().getMonth() + 1;
-    setDate(`${month.toString().padStart(2, '0')}/${year}`);
+    setDate(`${month.toString().padStart(2, "0")}/${year}`);
   };
 
   const handleClear = () => {
@@ -87,8 +89,9 @@ export function YearMonthPicker({
           <Button
             variant={"outline"}
             className={cn(
-              "w-[250px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
+              className,
+              "justify-start text-left font-normal",
+              !date && "text-muted-foreground",
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />

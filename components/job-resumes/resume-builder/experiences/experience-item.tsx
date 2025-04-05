@@ -37,6 +37,7 @@ import { AddItemForm } from "./add-item-form";
 import { randomNDigits } from "@/lib/utils";
 import clsx from "clsx";
 import { SeperateList } from "@/components/shared/seperate-list";
+import { YearMonthPicker } from "@/components/ui/year-month-picker";
 
 type ExperienceItemProps = {
   experience: Experience;
@@ -230,26 +231,6 @@ export function ExperienceItem({
                   placeholder="Role"
                 />
                 <Input
-                  value={editForm.startDate}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({
-                      ...prev,
-                      startDate: e.target.value,
-                    }))
-                  }
-                  placeholder="Start Date"
-                />
-                <Input
-                  value={editForm.endDate}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({
-                      ...prev,
-                      endDate: e.target.value,
-                    }))
-                  }
-                  placeholder="End Date"
-                />
-                <Input
                   value={editForm.type}
                   onChange={(e) =>
                     setEditForm((prev) => ({
@@ -268,6 +249,20 @@ export function ExperienceItem({
                     }))
                   }
                   placeholder="Location"
+                />
+                <YearMonthPicker
+                  date={editForm.startDate}
+                  setDate={(date) =>
+                    setEditForm((prev) => ({ ...prev, startDate: date }))
+                  }
+                  placeholder="Start Date"
+                />
+                <YearMonthPicker
+                  date={editForm.endDate}
+                  setDate={(date) =>
+                    setEditForm((prev) => ({ ...prev, endDate: date }))
+                  }
+                  placeholder="End Date"
                 />
               </div>
             )}

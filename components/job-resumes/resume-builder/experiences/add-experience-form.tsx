@@ -6,16 +6,19 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { YearMonthPicker } from "@/components/ui/year-month-picker";
+
+type AddExperienceType = {
+  companyName: string;
+  role: string;
+  startDate?: string;
+  endDate?: string;
+  location: string;
+  type: string;
+};
 
 type AddExperienceFormProps = {
-  onSave: (experience: {
-    companyName: string;
-    role: string;
-    startDate: string;
-    endDate: string;
-    location: string;
-    type: string;
-  }) => void;
+  onSave: (experience: AddExperienceType) => void;
   onCancel: () => void;
 };
 
@@ -23,11 +26,11 @@ export function AddExperienceForm({
   onSave,
   onCancel,
 }: AddExperienceFormProps) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<AddExperienceType>({
     companyName: "",
     role: "",
-    startDate: "",
-    endDate: "",
+    // startDate: "",
+    // endDate: "",
     location: "",
     type: "",
   });
@@ -66,23 +69,32 @@ export function AddExperienceForm({
               placeholder="Job title"
             />
           </div>
-          <div>
-            <label className="text-sm font-medium mb-1 block">Start Date</label>
-            <Input
-              name="startDate"
-              value={formData.startDate}
-              onChange={handleChange}
-              placeholder="e.g. Jan 2020"
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium mb-1 block">End Date</label>
-            <Input
-              name="endDate"
-              value={formData.endDate}
-              onChange={handleChange}
-              placeholder="e.g. Present"
-            />
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <label className="text-sm font-medium mb-1 block">
+                Start Date
+              </label>
+
+              <YearMonthPicker
+                className="w-full"
+                date={formData.startDate}
+                setDate={(date) =>
+                  setFormData((prev) => ({ ...prev, startDate: date }))
+                }
+                placeholder="Start Date"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">End Date</label>
+              <YearMonthPicker
+                className="w-full"
+                date={formData.endDate}
+                setDate={(date) =>
+                  setFormData((prev) => ({ ...prev, endDate: date }))
+                }
+                placeholder="End Date"
+              />
+            </div>
           </div>
         </div>
         <div className="flex justify-end gap-2">
