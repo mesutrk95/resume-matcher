@@ -5,7 +5,7 @@ import { SubscriptionInterval } from '@/actions/subscription';
 import { Button } from '@/components/ui/button';
 import { Subscription, SubscriptionStatus } from '@prisma/client';
 import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import {
   Card,
   CardContent,

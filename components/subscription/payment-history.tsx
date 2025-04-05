@@ -27,7 +27,6 @@ import {
   RefreshCw,
   XCircle,
 } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
@@ -46,7 +45,7 @@ export interface PaymentHistoryItem {
 
 interface PaymentHistoryProps {
   payments: PaymentHistoryItem[];
-  error: string | null;
+  error: string | undefined;
 }
 
 export function PaymentHistory({ payments, error }: PaymentHistoryProps) {
@@ -129,11 +128,9 @@ export function PaymentHistory({ payments, error }: PaymentHistoryProps) {
 
   // Sort payments with upcoming first, then by date (newest to oldest)
   const sortedPayments = [...payments].sort((a, b) => {
-    // First sort by upcoming status
     if (a.isUpcoming && !b.isUpcoming) return -1;
     if (!a.isUpcoming && b.isUpcoming) return 1;
 
-    // Then sort by date (newest first)
     return b.date.getTime() - a.date.getTime();
   });
 
