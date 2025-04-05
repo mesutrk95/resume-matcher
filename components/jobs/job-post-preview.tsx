@@ -1,6 +1,6 @@
 "use client";
 
-import { JobKeyword, JobKeywordType } from "@/types/job";
+import { JobAnalyzeResult, JobKeyword, JobKeywordType } from "@/types/job";
 import { Job } from "@prisma/client";
 import { useMemo, useTransition } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
@@ -122,7 +122,7 @@ export const JobPostPreview = ({
           acc[keyword.skill] = ks;
           return acc;
         },
-        {}
+        {} as Record<JobKeywordType, JobKeyword[]>
       );
     } catch (error) {
       return null;
