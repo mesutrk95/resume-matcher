@@ -15,7 +15,8 @@
     "prisma:update": "npx prisma generate && npx prisma db push",
     "prisma:clean": "npx prisma generate && npx prisma migrate reset && npx prisma db push",
     "postinstall": "prisma generate",
-    "test": "vitest run",
+    "test": "vitest run --exclude '**/*.integration.test.{js,ts,jsx,tsx}'",
+    "test:integration": "vitest run --dir lib --testNamePattern='integration'",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage"

@@ -47,7 +47,7 @@ export class AIServiceManager {
       // Add schema information to the prompt if it's not a chat request
       if (!request.chatHistory || request.chatHistory.length === 0) {
         const schemaInfo = zodSchemaToString(request.zodSchema);
-        request.prompt = `${request.prompt}\n\nResponse should match this schema: ${schemaInfo}`;
+        request.prompt = `${request.prompt}\n\nJson Response should match this Json schema: ${schemaInfo}`;
       }
     }
     const requestId = request.context?.requestId || getCurrentRequestId();
