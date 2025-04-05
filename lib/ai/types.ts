@@ -1,4 +1,5 @@
 // lib/ai/types.ts
+import * as z from 'zod';
 
 export interface AIRequestOptions {
   maxTokens?: number;
@@ -89,6 +90,7 @@ export interface AIRequestModel<TResponse = any> {
   systemInstruction?: string;
 
   responseValidator?: Validator<TResponse>;
+  zodSchema?: z.ZodType<TResponse>;
 
   options?: {
     maxTokens?: number;

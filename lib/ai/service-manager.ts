@@ -6,6 +6,8 @@ import { AIUsageService } from './usage-service';
 import { TokenLimitExceededError, AIServiceError } from './errors';
 import { PromptProcessor } from './promptProcessors/base';
 import { ResponseProcessor } from './responseProcessors/base';
+import { createJsonSchemaValidator } from './validators';
+import { zodSchemaToString } from '@/lib/zod';
 
 export interface AIServiceManagerConfig {
   maxRetries: number;
@@ -38,6 +40,16 @@ export class AIServiceManager {
    * Execute an AI request with retry capabilities and response validation
    */
   async executeRequest<T>(request: AIRequestModel<T>): Promise<T> {
+    // If zodSchema is provided, create a validator from it
+    if (request.zodSchema && !request.responseValidator) {
+      request.responseValidator = createJsonSchemaValidator(request.zodSchema);
+
+      // Add schema information to the prompt if it's not a chat request
+      if (!request.chatHistory || request.chatHistory.length === 0) {
+        const schemaInfo = zodSchemaToString(request.zodSchema);
+        request.prompt = `${request.prompt}\n\nResponse should match this schema: ${schemaInfo}`;
+      }
+    }
     const requestId = request.context?.requestId || getCurrentRequestId();
     const userId = request.context?.userId;
     let retryCount = 0;
