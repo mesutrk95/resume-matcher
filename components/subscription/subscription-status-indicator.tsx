@@ -66,7 +66,7 @@ export function SubscriptionStatusIndicator() {
         className="cursor-pointer bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
         onClick={() => router.push('/settings/billing')}
       >
-        Pro
+        Minova Pro
       </Badge>
     );
   }

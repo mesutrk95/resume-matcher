@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
 import { ResumeTemplateCard } from "@/components/resume-templates/resume-template-card";
 import { Card, CardContent } from "@/components/ui/card";
-import { CreateResumeButton } from "../../../../../components/job-resumes/create-resume-button";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,6 +11,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { CreateResumeButton } from "@/components/job-resumes/create-resume-button";
 
 interface CreateResumePageProps {
   params: {

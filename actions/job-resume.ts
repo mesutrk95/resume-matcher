@@ -170,13 +170,7 @@ export const analyzeResumeScore = async (
   if (!jobResume.job)
     throw new BadRequestException("The resume has not been attached to a job!");
 
-  const jobAnalyzeResult: JobAnalyzeResult = jobResume?.job!
-    .analyzeResults as JobAnalyzeResult;
-  //   console.log(jobAnalyzeResult.keywords
-  //     .map((k) => k.keyword)
-  //     .join(","));
-
-  // throw new Error('')
+  const jobAnalyzeResult = jobResume?.job!.analyzeResults as JobAnalyzeResult;
 
   const getExperiencesImprovementNotes = async () => {
     const systemInstructions = `

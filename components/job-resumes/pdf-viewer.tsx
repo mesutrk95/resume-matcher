@@ -1,5 +1,5 @@
 import { LucideLoader2 } from "lucide-react";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useRef, useMemo } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
@@ -20,43 +20,36 @@ function LoadingPdf() {
   return (
     <div className="flex justify-center items-center text-xs gap-1 py-10 font-semibold text-muted-foreground">
       <LucideLoader2 className="animate-spin" size={16} />
-      Refreshing Resume ...
+      Building Resume ...
     </div>
   );
 }
 
-function PDFViewer({ pdfBlob }: { pdfBlob: Blob | null }) {
+function PDFViewer({
+  pdfBlob,
+  maxPages,
+}: {
+  pdfBlob: Blob | null;
+  maxPages?: number;
+}) {
   const [numPages, setNumPages] = useState<number | null>(null);
-  // const [pdfData, setPdfData] = useState<string | null>(null);
-
   const ref = useRef<HTMLDivElement>(null);
   const { width = 0, height = 0 } = useResizeObserver({
     ref,
     box: "border-box",
   });
 
-  // useEffect(() => {
-  //   if (!pdfBlob) return;
-  //   // Convert blob to URL
-  //   const blobUrl = URL.createObjectURL(
-  //     new Blob([pdfBlob], { type: "application/pdf" })
-  //   );
-  //   setPdfData(blobUrl);
-
-  //   return () => {
-  //     // Clean up
-  //     URL.revokeObjectURL(blobUrl);
-  //   };
-  // }, [pdfBlob]);
-
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
+    if (maxPages) {
+      return setNumPages(maxPages);
+    }
     setNumPages(numPages);
   }
 
-  const loadingIndicator = useMemo(() => <LoadingPdf />, [])
+  const loadingIndicator = useMemo(() => <LoadingPdf />, []);
 
   return (
-    <div className="relative h-full w-full bg-slate-2001 p-2 overflow-auto">
+    <div className="relative h-full w-full bg-slate-2001 p-2 overflow-hidden">
       <div className="" ref={ref}>
         {pdfBlob && (
           <Document
