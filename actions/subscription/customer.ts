@@ -3,7 +3,7 @@
 import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { getStripeServer } from '@/lib/stripe';
-import { SubscriptionStatus } from '@prisma/client';
+import { Subscription, SubscriptionStatus } from '@prisma/client';
 import { mapStripeStatusToDBStatus } from './constants';
 import { updateSubscriptionInDatabase } from './utils';
 import Logger from '@/lib/logger';
@@ -12,78 +12,120 @@ import {
   InternalServerErrorException,
 } from '@/lib/exceptions';
 
-export const getUserSubscription = async () => {
-  const user = await currentUser();
-  if (!user || !user.id) return null;
+// Define an augmented type for the return value
+type SubscriptionWithPlanDetails = Subscription & {
+  planName?: string | null;
+  planInterval?: string | null;
+  planIntervalCount?: number | null;
+};
 
-  const subscription = await getSubscriptionByUserId(user.id);
+export const getUserSubscription =
+  async (): Promise<SubscriptionWithPlanDetails | null> => {
+    const user = await currentUser();
+    if (!user || !user.id) return null;
 
-  // If there's no subscription or no customer ID, return null
-  if (!subscription || !subscription.customerId) return null;
+    const subscription = await getSubscriptionByUserId(user.id);
 
-  // If there's no subscription ID, but there is a customer ID, this means
-  // the subscription process was started but not completed
-  if (!subscription.subscriptionId) {
-    // Update the subscription status to INCOMPLETE to make sure it's correct
-    await db.subscription.update({
-      where: { userId: user.id },
-      data: {
-        status: SubscriptionStatus.INCOMPLETE,
-      },
-    });
+    // If there's no subscription or no customer ID, return null
+    if (!subscription || !subscription.customerId) return null;
 
-    // Return the updated subscription
-    return await getSubscriptionByUserId(user.id);
-  }
-
-  // If there is a subscription ID, check Stripe for the current status
-  const stripe = getStripeServer();
-  if (!stripe) {
-    throw new InternalServerErrorException('Failed to initialize Stripe');
-  }
-
-  const subscriptionId = String(subscription.subscriptionId);
-
-  try {
-    const stripeSubscription = await stripe.subscriptions.retrieve(
-      subscriptionId,
-    );
-
-    // Check if the status in our database matches Stripe
-    if (
-      mapStripeStatusToDBStatus(stripeSubscription.status) !==
-      subscription.status
-    ) {
-      // Update our database to match Stripe's status
-      await updateSubscriptionInDatabase(
-        user.id,
-        subscriptionId,
-        subscription.priceId || stripeSubscription.items.data[0].price.id,
-        mapStripeStatusToDBStatus(stripeSubscription.status),
-        new Date(stripeSubscription.current_period_start * 1000),
-        new Date(stripeSubscription.current_period_end * 1000),
-        stripeSubscription.cancel_at_period_end,
-      );
-
-      return await getSubscriptionByUserId(user.id);
-    }
-  } catch (error: any) {
-    Logger.error(`Failed to retrieve subscription ${subscriptionId}`, error);
-    if (error.statusCode === 404) {
+    if (!subscription.subscriptionId) {
+      // Update the subscription status to INCOMPLETE to make sure it's correct
       await db.subscription.update({
         where: { userId: user.id },
         data: {
-          subscriptionId: null,
-          status: SubscriptionStatus.CANCELED,
+          status: SubscriptionStatus.INCOMPLETE,
         },
       });
+
+      // Return the updated subscription
       return await getSubscriptionByUserId(user.id);
     }
-    throw error;
-  }
 
-  return subscription;
-};
+    // If there is a subscription ID, check Stripe for the current status
+    const stripe = getStripeServer();
+    if (!stripe) {
+      throw new InternalServerErrorException('Failed to initialize Stripe');
+    }
+
+    const subscriptionId = String(subscription.subscriptionId);
+
+    let planName: string | null = null;
+    let planInterval: string | null = null;
+    let planIntervalCount: number | null = null;
+
+    try {
+      const stripeSubscription = await stripe.subscriptions.retrieve(
+        subscriptionId,
+        { expand: ['plan.product'] },
+      );
+
+      const plan = (stripeSubscription as any).plan;
+      const product = plan?.product;
+
+      planName =
+        typeof product === 'object' && product !== null ? product.name : null;
+      planInterval = plan?.interval ?? null;
+      planIntervalCount = plan?.interval_count ?? null;
+
+      // Check if the status in our database matches Stripe
+      if (
+        mapStripeStatusToDBStatus(stripeSubscription.status) !==
+        subscription.status
+      ) {
+        // Update our database to match Stripe's status
+        await updateSubscriptionInDatabase(
+          user.id,
+          subscriptionId,
+          subscription.priceId || stripeSubscription.items.data[0].price.id,
+          mapStripeStatusToDBStatus(stripeSubscription.status),
+          new Date(stripeSubscription.current_period_start * 1000),
+          new Date(stripeSubscription.current_period_end * 1000),
+          stripeSubscription.cancel_at_period_end,
+        );
+
+        const updatedDbSubscription = await getSubscriptionByUserId(user.id);
+        return updatedDbSubscription
+          ? {
+              ...updatedDbSubscription,
+              planName,
+              planInterval,
+              planIntervalCount,
+            }
+          : null;
+      }
+    } catch (error: any) {
+      Logger.error(`Failed to retrieve subscription ${subscriptionId}`, error);
+      if (error.statusCode === 404) {
+        await db.subscription.update({
+          where: { userId: user.id },
+          data: {
+            subscriptionId: null,
+            status: SubscriptionStatus.CANCELED,
+          },
+        });
+        const updatedDbSubscription = await getSubscriptionByUserId(user.id);
+        return updatedDbSubscription
+          ? {
+              ...updatedDbSubscription,
+              planName: null,
+              planInterval: null,
+              planIntervalCount: null,
+            }
+          : null;
+      }
+      // Re-throw other errors
+      Logger.error(
+        `Unhandled error retrieving subscription ${subscriptionId}`,
+        error,
+      );
+      throw new InternalServerErrorException(
+        'Failed to retrieve subscription details',
+      );
+    }
+
+    return { ...subscription, planName, planInterval, planIntervalCount };
+  };
 
 // Get the subscription for a user
 export const getSubscriptionByUserId = async (userId: string) => {

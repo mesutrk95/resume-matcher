@@ -9,7 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Subscription, SubscriptionStatus } from '@prisma/client';
+import {
+  Subscription as PrismaSubscription,
+  SubscriptionStatus,
+} from '@prisma/client';
 import { format } from 'date-fns';
 import { Badge } from '../ui/badge';
 import {
@@ -34,10 +37,14 @@ import {
   RefreshCw,
   Package,
 } from 'lucide-react';
-import { useSubscription } from '@/providers/SubscriptionProvider';
+import {
+  SubscriptionWithPlanDetails,
+  useSubscription,
+} from '@/providers/SubscriptionProvider'; // Import augmented type
 
+// Update props to potentially accept the augmented type, though initial might not have it
 interface CurrentSubscriptionProps {
-  subscription: Subscription;
+  subscription: PrismaSubscription;
 }
 
 // These are the actual variants supported by your Badge component
@@ -58,7 +65,9 @@ export function CurrentSubscription({
   } = useSubscription();
 
   // Use the hook's subscription state if available, otherwise use prop
-  const currentSubscription = subscription || initialSubscription;
+  // Cast initialSubscription if needed, or rely on the hook's state which should have details
+  const currentSubscription =
+    subscription || (initialSubscription as SubscriptionWithPlanDetails);
 
   // Format date display
   const formatDate = (date: Date | null | undefined) => {
@@ -154,19 +163,29 @@ export function CurrentSubscription({
     }
   };
 
-  // Helper to get the subscription plan name
-  const getPlanName = () => {
-    const priceId = currentSubscription?.priceId;
-    if (!priceId) return 'Standard Plan';
+  // Helper to format the plan name and interval from fetched details
+  const getFormattedPlanDetails = () => {
+    if (!currentSubscription) return 'Unknown Plan';
 
-    // Extract plan type from price ID (assuming naming convention in Stripe)
-    if (priceId.includes('weekly')) return 'Weekly Plan';
-    if (priceId.includes('monthly')) return 'Monthly Plan';
-    if (priceId.includes('quarterly')) return 'Quarterly Plan';
-    if (priceId.includes('biannual')) return '6-Month Plan';
-    if (priceId.includes('yearly')) return 'Annual Plan';
+    const name = currentSubscription.planName;
+    const interval = currentSubscription.planInterval;
+    const intervalCount = currentSubscription.planIntervalCount;
 
-    return 'Standard Plan';
+    if (!name) return 'Subscribed Plan'; // Fallback if name is missing
+
+    if (interval && intervalCount) {
+      if (intervalCount === 1) {
+        // Capitalize interval (e.g., 'month' -> 'Monthly')
+        const formattedInterval =
+          interval.charAt(0).toUpperCase() + interval.slice(1);
+        return `${name} (${formattedInterval})`; // e.g., "Pro Plan (Monthly)"
+      } else {
+        // e.g., "Team Plan (Every 3 months)"
+        return `${name} (Every ${intervalCount} ${interval}s)`;
+      }
+    }
+
+    return name; // Return just the name if interval details are missing
   };
 
   // If no subscription exists
@@ -225,11 +244,12 @@ export function CurrentSubscription({
           <div className="flex items-center gap-3">
             <Package className="h-10 w-10 text-primary" />
             <div>
-              <h3 className="font-bold text-lg">{getPlanName()}</h3>
+              {/* Use the new function to display formatted plan details */}
+              <h3 className="font-bold text-lg">{getFormattedPlanDetails()}</h3>
               <p className="text-sm text-muted-foreground">
                 {currentSubscription.status === SubscriptionStatus.TRIALING
-                  ? 'Trial subscription with full access to all features'
-                  : 'Full access to all premium features'}
+                  ? 'Trial subscription with full access to all features.'
+                  : 'Full access to all premium features.'}
               </p>
             </div>
           </div>
