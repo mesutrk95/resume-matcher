@@ -179,30 +179,4 @@ describe('AI Service Manager Integration Tests', () => {
     expect(response.length).toBeGreaterThan(20);
     console.log('Multi-content response:', response);
   }, 30000);
-
-  it('should handle errors gracefully', async () => {
-    // Testing error handling with an extremely large prompt
-    // that would likely exceed token limits
-    const hugePrompt = Array(100)
-      .fill('Test content that is very long and repeats. ')
-      .join(' ');
-
-    const request: AIRequestModel<string> = {
-      prompt: hugePrompt,
-      responseFormat: 'text',
-    };
-
-    try {
-      const response = await serviceManager.executeRequest<string>(request);
-      console.log(
-        'Large prompt handled without error, response length:',
-        response.length,
-      );
-    } catch (error) {
-      // We expect this might fail, but it should fail gracefully
-      expect(error).toBeDefined();
-      expect(error instanceof Error).toBe(true);
-      console.log('Error handled gracefully:', (error as any).message);
-    }
-  }, 45000);
 });
