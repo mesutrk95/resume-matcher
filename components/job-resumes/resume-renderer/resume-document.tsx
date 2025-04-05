@@ -99,6 +99,7 @@ const renderSection = (
           <ExperienceSection
             resume={resume}
             styles={styles}
+            resumeDesign={resumeDesign}
             withIdentifiers={withIdentifiers}
           />
         </>
@@ -265,8 +266,15 @@ export const ResumeDocument = ({
       experienceSubheaderMetadata: getComputedStyle(
         design.sections.experiences.subheader?.metadata
       ),
+
+      projects: getComputedStyle(design.sections.projects),
+      projectDate: getComputedStyle(design.sections.projects.date),
+      projectUrl: getComputedStyle(design.sections.projects.url),
+      projectName: getComputedStyle(design.sections.projects.name),
+      projectSubheader: getComputedStyle(design.sections.projects.subheader),
+
       pageNumber: {
-        borderBottom: '',
+        borderBottom: "",
         position: "absolute",
         bottom: design.spacing.pagePadding.bottom / 2,
         right: design.spacing.pagePadding.right,

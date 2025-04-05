@@ -45,6 +45,10 @@ const cssStyleSchema = z.object({
   marginLeft: z.number().default(0).optional(),
   marginRight: z.number().default(0).optional(),
   marginTop: z.number().default(0).optional(),
+  paddingBottom: z.number().default(0).optional(),
+  paddingLeft: z.number().default(0).optional(),
+  paddingRight: z.number().default(0).optional(),
+  paddingTop: z.number().default(0).optional(),
   flexDirection: z.enum(["row", "column"]).default("row").optional(),
   gap: z.number().default(0).optional(),
   color: colorSchema.optional(),
@@ -110,7 +114,7 @@ const columnLayoutSchema = z.enum([
 ]);
 
 const dateFormatSchema = z
-  .enum(["YYYY/MM", "YYYY MM", "MM/YYYY", "YYYY MMM"])
+  .enum(["YYYY/MM", "YYYY MM", "MM/YYYY", "MMM YYYY"])
   .default("MM/YYYY");
 
 // Define section specific layout settings
@@ -157,6 +161,12 @@ const sectionsSchema = z.object({
       .optional(),
     group: elementStyleSchema.extend({}).optional(),
     style: cssStyleSchema.optional(),
+  }),
+  projects: elementStyleSchema.extend({
+    url: elementStyleSchema.optional(),
+    date: elementStyleSchema.optional(),
+    name: elementStyleSchema.optional(),
+    subheader: elementStyleSchema.optional(),
   }),
   skills: z.object({
     display: z.enum(["inline", "list", "grid", "tag"]).default("tag"),
@@ -292,13 +302,27 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       sectionContainer: { typo: "p" },
       sectionHeading: {
         typo: "h4",
-        style: { marginBottom: 3, borderBottom: 2, borderColor: '#15803d' },
+        style: {
+          marginBottom: 3,
+          borderBottom: 2,
+          borderColor: "#15803d",
+          paddingBottom: 2,
+        },
       },
       section: { style: { marginBottom: 10 } },
     },
+    projects: {
+      name: { typo: "h5" },
+      url: { typo: "text-muted" },
+      date: { typo: "text-muted" },
+      subheader: {},
+      style: { display: "flex", gap: 5, flexDirection: "column" },
+    },
     experiences: {
       company: {},
-      dates: {},
+      dates: {
+        format: "MMM YYYY",
+      },
       bullets: {
         symbol: "•",
       },

@@ -43,8 +43,15 @@ const months = [
   "December",
 ];
 
+export const parseDate = (date: string) => {
+  const d = date.split("/");
+  console.log(date, `${d[0]}/01/${d[1]}`);
+  
+  return `${d[0]}/01/${d[1]}`;
+};
+
 export function YearMonthPicker({
-  className = 'w-full',
+  className = "w-full",
   date,
   setDate,
   startYear = getYear(new Date()) - 20,
@@ -91,7 +98,7 @@ export function YearMonthPicker({
             className={cn(
               className,
               "justify-start text-left font-normal",
-              !date && "text-muted-foreground",
+              !date && "text-muted-foreground"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />

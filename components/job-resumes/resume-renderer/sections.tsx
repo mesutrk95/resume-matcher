@@ -1,6 +1,8 @@
 import { renderList, SeperateList } from "@/components/shared/seperate-list";
+import { parseDate } from "@/components/ui/year-month-picker";
 import { ResumeContent, ResumeDesign, ResumeSkill } from "@/types/resume";
 import { Text, View } from "@react-pdf/renderer";
+import moment from "moment";
 import React from "react";
 
 export const ContactInfoSection = ({
@@ -78,10 +80,12 @@ export const SummarySection = ({
 
 export const ExperienceSection = ({
   resume,
+  resumeDesign,
   styles,
   withIdentifiers,
 }: {
   resume: ResumeContent;
+  resumeDesign: ResumeDesign;
   styles: any;
   withIdentifiers?: boolean;
 }) => {
@@ -94,14 +98,30 @@ export const ExperienceSection = ({
       {experiences.map((experience) => (
         <View key={experience.id} style={styles.experience}>
           <View style={styles.experienceSubheader}>
-            <Text style={styles.experienceSubheaderTitle}>{experience.role}</Text>
-            <Text style={styles.experienceSubheaderCompany}>{experience.companyName}</Text>
+            <Text style={styles.experienceSubheaderTitle}>
+              {experience.role}
+            </Text>
+            <Text style={styles.experienceSubheaderCompany}>
+              {experience.companyName}
+            </Text>
             <Text style={styles.experienceSubheaderMetadata}>
               <SeperateList
                 data={[
                   experience.location,
                   experience.type,
-                  `${experience.startDate} - ${experience.endDate}`,
+                  `${
+                    experience.startDate &&
+                    moment(parseDate(experience.startDate)).format(
+                      resumeDesign.sections.experiences.dates?.format
+                    )
+                  } - ${
+                    experience.endDate === "Present"
+                      ? "Present"
+                      : experience.endDate &&
+                        moment(parseDate(experience.endDate)).format(
+                          resumeDesign.sections.experiences.dates?.format
+                        )
+                  }`,
                 ]}
               />
             </Text>
@@ -254,14 +274,21 @@ export const ProjectsSection = ({
   const projects = resume.projects.filter((p) => p.enabled);
   if (projects.length === 0) return null;
 
+  //   projects: getComputedStyle(design.sections.projects),
+  //   projectDate: getComputedStyle(design.sections.projects.date),
+  //   projectUrl: getComputedStyle(design.sections.projects.url),
+  //   projectName: getComputedStyle(design.sections.projects.name),
+  //   projectSubheader: getComputedStyle(design.sections.projects.subheader),
   return (
-    <View>
+    <View style={styles.projects}>
       <Text style={styles.sectionHeading}>Projects</Text>
       {projects.map((project) => (
         <View key={project.id} style={styles.sectionContainer}>
-          <Text style={styles.jobTitle}>{project.name}</Text>
-          {project.link && <Text style={styles.metadata}>{project.link}</Text>}
-          <Text style={styles.metadata}>
+          <Text style={styles.projectName}>{project.name}</Text>
+          {project.link && (
+            <Text style={styles.projectUrl}>{project.link}</Text>
+          )}
+          <Text style={styles.projectDate}>
             {project.startDate &&
               project.endDate &&
               `${project.startDate} - ${project.endDate}`}
