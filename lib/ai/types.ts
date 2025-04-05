@@ -48,6 +48,12 @@ export interface AIModelClient {
     costPer1KInputTokens: number;
     costPer1KOutputTokens: number;
   };
+
+  // Client identifier for rate limiting
+  getClientId(): string;
+
+  // Client name for display purposes
+  getClientName(): string;
 }
 
 export type ResponseFormat = 'text' | 'json' | 'html';

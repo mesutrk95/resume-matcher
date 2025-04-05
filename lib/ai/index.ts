@@ -11,6 +11,7 @@ import {
 import { GeminiClient } from './clients/gemini-client';
 import { AIServiceManager } from './service-manager';
 import { AIUsageService } from './usage-service';
+import { AIRateLimitService } from './rate-limit-service';
 import { createStandardPromptProcessors } from './promptProcessors';
 import { createStandardResponseProcessors } from './responseProcessors';
 import { getCurrentRequestId } from '@/lib/request-context';
@@ -27,9 +28,9 @@ export function createAIServiceManager(): AIServiceManager {
   if (_serviceManager) {
     return _serviceManager;
   }
-
-  // Create the usage service
+  // Create the services
   const usageService = new AIUsageService();
+  const rateLimitService = new AIRateLimitService();
 
   // Create the default clients
   const geminiClient = new GeminiClient(
@@ -52,6 +53,7 @@ Always be precise, factual, and helpful.`;
     promptProcessors,
     responseProcessors,
     usageService,
+    rateLimitService,
   });
 
   return _serviceManager;
@@ -199,3 +201,6 @@ export * from './errors';
 export * from './service-manager';
 export * from './usage-service';
 export * from './clients/gemini-client';
+export * from './rate-limit-service';
+export * from './init-rate-limits';
+export * from './manage-rate-limits';

@@ -265,4 +265,12 @@ export class GeminiClient implements AIModelClient {
       costPer1KOutputTokens: 0.00125,
     };
   }
+
+  getClientId(): string {
+    return `google-${this.modelName}`;
+  }
+
+  getClientName(): string {
+    return `Google ${this.modelName}`;
+  }
 }
