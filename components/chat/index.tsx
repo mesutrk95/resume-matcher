@@ -28,12 +28,12 @@ import ErrorBoundary from "../shared/error-boundary";
 // Predefined questions
 const PREDEFINED_QUESTIONS = [
   "Why do you think you are the best fit for this job?",
-  "What did you do in the past that you can proud yourself",
-  "What were the last hard moments and how did you handle them",
+  "What did you do in the past that you can proud yourself?",
+  "What were the last hard moments and how did you handle them?",
   "What are your key strengths for this position?",
   "How does your experience align with this role?",
-  "Give me a good professional summary for the resume",
-  "Give me a cover letter",
+  "Give me a good professional summary for the resume!",
+  "Give me a cover letter!",
 ];
 
 const INITIAL_MESSAGE = {
@@ -97,15 +97,12 @@ export function ChatInterface({
       const messages = JSON.parse(chatsStr) as ContentWithMeta[];
       setMessages(messages.slice(0, 30));
     } else {
-      addMessage(INITIAL_MESSAGE);
+      // addMessage(INITIAL_MESSAGE);
     }
   }, []);
 
   // Check if chat is just starting (only has the initial greeting)
-  const isChatStarting =
-    messages.length <= 1 &&
-    messages[0]?.role === "model" &&
-    messages[0]?.parts?.[0]?.text === "Hello! How can I assist you today?";
+  const isChatStarting = messages.length === 0;
 
   const handleSendMessage = async (customQuestion?: string) => {
     try {
@@ -161,7 +158,7 @@ export function ChatInterface({
   };
   const clearChat = () => {
     localStorage.removeItem("ai-conversation-" + jobResume.id);
-    setMessages([INITIAL_MESSAGE]);
+    setMessages([]);
   };
   return (
     <Card className="w-full  flex flex-col   ">
@@ -171,6 +168,7 @@ export function ChatInterface({
             id="share-resume"
             checked={shareResume}
             onCheckedChange={setShareResume}
+            size="sm"
           />
           <Label htmlFor="share-resume">Share My Resume</Label>
         </div>
@@ -180,13 +178,36 @@ export function ChatInterface({
             checked={!!jobResume.jobId && shareJD}
             onCheckedChange={setShareJD}
             disabled={!jobResume.jobId}
+            size="sm"
           />
           <Label htmlFor="share-jd">Share Job Description</Label>
         </div>
       </CardHeader>
       <CardContent className="pt-6 px-2 py-0">
-        <ScrollArea className="h-[400px] pr-4 relative">
+        <ScrollArea className="h-[450px] pr-4 relative">
           <div className="flex flex-col space-y-4 py-4">
+            {isChatStarting && (
+              <div className="w-full mb-3 border p-3 rounded-lg">
+                <h3 className="text-sm font-bold ms-2 mb-2 text-muted-foreground">
+                  Popular questions
+                </h3>
+                <div className="flex flex-col ">
+                  {PREDEFINED_QUESTIONS.map((question, index) => (
+                    <div key={index}>
+                      <Button
+                        variant="ghost"
+                        className=" justify-start h-auto py-2 px-4 text-left text-xs"
+                        onClick={() => handlePredefinedQuestion(question)}
+                        disabled={isLoading}
+                      >
+                        <MessageSquare className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="truncate">{question}</span>
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             {messages.map((message, index) => (
               <ErrorBoundary
                 key={message.id + index}
@@ -208,27 +229,6 @@ export function ChatInterface({
       </CardContent>
       <CardFooter className="shrink-0 p-4 flex flex-col border-t">
         <>
-          {isChatStarting && (
-            <div className="w-full mb-3">
-              <h3 className="text-sm font-medium mb-4 text-muted-foreground">
-                Popular questions to get started:
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {PREDEFINED_QUESTIONS.map((question, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    className="justify-start h-auto py-3 px-4 text-left text-xs"
-                    onClick={() => handlePredefinedQuestion(question)}
-                    disabled={isLoading}
-                  >
-                    <MessageSquare className="h-4 w-4 mr-2 flex-shrink-0" />
-                    <span className="truncate">{question}</span>
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
           <div className="flex w-full items-center space-x-2">
             <Button size="icon" variant={"outline"} onClick={clearChat}>
               <Eraser className="h-4 w-4" />

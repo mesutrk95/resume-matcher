@@ -11,12 +11,13 @@ import { ResumeAnalyzedImprovementNote } from "@/types/resume";
 import { arrayMove } from "@dnd-kit/sortable";
 import { JobResume } from "@prisma/client";
 import { pdf } from "@react-pdf/renderer";
-import { CheckCircle, CircleX, WandSparkles } from "lucide-react";
+import { CheckCircle, CircleX, RefreshCw, WandSparkles } from "lucide-react";
 import { toast } from "sonner";
 import { ConnectJobToResume } from "../../../../../components/job-resumes/connect-job-to-resume";
 
 import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
+import { LottieAnimatedIcon } from "@/app/_components/lottie-animated-icon";
 const GaugeComponent = dynamic(() => import("react-gauge-component"), {
   ssr: false,
 });
@@ -178,16 +179,57 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
 
   if (!jobResume.jobId) {
     return (
-      <div className="p-4 flex justify-center items-center ">
-        <div className="text-center py-5">
-          <h3 className="text-lg font-bold">Target a Job!</h3>
-          <p className="text-muted-foreground text-xs mb-4">
-            Select the job you’re targeting so we can personalize this resume
-            for you!
-          </p>
-          <ConnectJobToResume jobResumeId={jobResume.id} />
-        </div>
-      </div>
+      <Card className=" ">
+        <CardContent className="p-5">
+          <div className="p-4 flex justify-center items-center ">
+            <div className="text-center py-5">
+              <h3 className="text-lg font-bold">Target a Job!</h3>
+              <p className="text-muted-foreground text-xs mb-4">
+                Select the job you’re targeting so we can personalize this
+                resume for you!
+              </p>
+              <ConnectJobToResume jobResumeId={jobResume.id} />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (typeof resumeAnalyzeResults.score === "undefined") {
+    return (
+      <Card className=" ">
+        <CardContent className="p-8">
+          <div className="flex items-center justify-between">
+            <div className="">
+              <h4 className="text-lg text-slate-700 font-bold">
+                Resume Score 🎯
+              </h4>
+              <p>
+                Minova evaluates key factors such as relevant skills,
+                experience, keywords, and overall structure. A higher score
+                means your resume is more tailored to the job and likely to
+                catch the attention of recruiters and ATS systems!
+              </p>
+              <LoadingButton
+                onClick={() => handleResumeScore()}
+                loading={isRatingResume}
+                loadingText="Thinking ..."
+                className="mt-5"
+                variant={"default"}
+                size={"sm"}
+              >
+                Score It!
+              </LoadingButton>
+            </div>
+            <div className=" flex justify-center">
+              <img src="/assets/resume-score.svg" className="min-w-[200px]" />
+
+              {/* <LottieAnimatedIcon icon="/iconly/AiProcessor.json" width={150} height={150}/> */}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -242,11 +284,12 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
                 onClick={() => handleResumeScore()}
                 loading={isRatingResume}
                 loadingText="Thinking ..."
-                className="mt-5"
+                className="mt-5 flex gap-2 items-center"
                 variant={"outline"}
                 size={"sm"}
               >
-                Rate Resume!
+                <RefreshCw size={16}/>
+                Check Again!
               </LoadingButton>
             </div>
             <div className="min-w-[280px]">
@@ -307,64 +350,68 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
         </CardContent>
       </Card>
 
-      <Card className="mt-2">
-        <CardContent className="p-5">
-          {resumeAnalyzeResults?.missed_keywords && (
-            <div className="flex flex-col gap-5">
-              <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-bold flex items-center gap-2">
-                  <CircleX className="text-red-500" size={18} />
-                  Missed Keywords ({resumeAnalyzeResults.missed_keywords.length}
-                  )
-                </h3>
-                <div className="flex flex-wrap gap-1">
-                  {resumeAnalyzeResults.missed_keywords.map((k) => (
-                    <span
-                      key={k}
-                      className="px-2 py-1 text-sm bg-slate-200 rounded-full"
-                    >
-                      {k}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-bold flex items-center gap-2">
-                  <CheckCircle className="text-green-500" size={18} />
-                  Matched Keywords (
-                  {resumeAnalyzeResults.matched_keywords.length})
-                </h3>
-                <div className="flex flex-wrap gap-1">
-                  {resumeAnalyzeResults.matched_keywords.map((k) => (
-                    <span
-                      key={k}
-                      className="px-2 py-1 text-sm bg-slate-200 rounded-full"
-                    >
-                      {k}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              {resumeAnalyzeResults.notes?.length > 0 && (
-                <div className="flex flex-col gap-2 pb-5">
+      {(resumeAnalyzeResults?.missed_keywords.length > 0 ||
+        resumeAnalyzeResults.matched_keywords.length > 0 ||
+        resumeAnalyzeResults.notes.length > 0) && (
+        <Card className="mt-2">
+          <CardContent className="p-5">
+            {resumeAnalyzeResults?.missed_keywords && (
+              <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-2">
                   <h3 className="text-lg font-bold flex items-center gap-2">
-                    Improvement Notes ({resumeAnalyzeResults.notes.length})
+                    <CircleX className="text-red-500" size={18} />
+                    Missed Keywords (
+                    {resumeAnalyzeResults.missed_keywords.length})
                   </h3>
-                  <div className="flex flex-col gap-4">
-                    {resumeAnalyzeResults.notes.map((note, index) => (
-                      <ImprovementNote
-                        key={note.title}
-                        index={index}
-                        note={note}
-                      />
+                  <div className="flex flex-wrap gap-1">
+                    {resumeAnalyzeResults.missed_keywords.map((k) => (
+                      <span
+                        key={k}
+                        className="px-2 py-1 text-sm bg-slate-200 rounded-full"
+                      >
+                        {k}
+                      </span>
                     ))}
                   </div>
                 </div>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-lg font-bold flex items-center gap-2">
+                    <CheckCircle className="text-green-500" size={18} />
+                    Matched Keywords (
+                    {resumeAnalyzeResults.matched_keywords.length})
+                  </h3>
+                  <div className="flex flex-wrap gap-1">
+                    {resumeAnalyzeResults.matched_keywords.map((k) => (
+                      <span
+                        key={k}
+                        className="px-2 py-1 text-sm bg-slate-200 rounded-full"
+                      >
+                        {k}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                {resumeAnalyzeResults.notes?.length > 0 && (
+                  <div className="flex flex-col gap-2 pb-5">
+                    <h3 className="text-lg font-bold flex items-center gap-2">
+                      Improvement Notes ({resumeAnalyzeResults.notes.length})
+                    </h3>
+                    <div className="flex flex-col gap-4">
+                      {resumeAnalyzeResults.notes.map((note, index) => (
+                        <ImprovementNote
+                          key={note.title}
+                          index={index}
+                          note={note}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </>
   );
 };

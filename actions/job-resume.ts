@@ -248,11 +248,36 @@ Provide your optimization suggestion in the required JSON format.`;
   };
 
   const getScore = async () => {
-    const prompt = `I'm trying to score this resume based on job description, the point is it should be able to pass ATS easily, you need to give a score to the resume content based on how well it matches the job description, for missed_keywords dont need to mention not important ones, give me the details in this format { "score" : 45, "matched_keywords": [...] , "missed_keywords": [...] }
-    Job Description: \n${jobResume?.job!.title}\n${jobResume?.job!.description}
+    const systemInstructions = `
+    You are an expert ATS (Applicant Tracking System) analyzer.
+    Your task is to evaluate how well a resume matches a given job description.
+    
+    INSTRUCTIONS:
+    - Compare the resume content against the job description
+    - Calculate a match score from 0-100
+    - Identify important keywords that match between the resume and job description
+    - Identify important keywords from the job description that are missing in the resume
+    - Only include meaningful keywords that impact ATS scoring
+    
+    RESPONSE FORMAT:
+    Provide ONLY a JSON object with the following structure:
+    {
+      "score": [0-100 integer],
+      "matched_keywords": [array of important matched keywords],
+      "missed_keywords": [array of important missed keywords]
+    }
+    
+    IMPORTANT:
+    - Your entire response must be ONLY valid JSON with no additional text
+    - Do not include any explanations, breakdown, improvement suggestions, or conclusions
+    - Only focus on important/relevant keywords that would impact ATS scoring`;
+
+    const prompt = `Job Description: \n${jobResume?.job!.title}\n${
+      jobResume?.job!.description
+    }
     Ensure the response is in a valid JSON format with no extra text!`;
 
-    return getAIJsonResponse(prompt, [pdfBuffer]);
+    return getAIJsonResponse(prompt, [pdfBuffer], systemInstructions);
   };
 
   const results = await Promise.all([

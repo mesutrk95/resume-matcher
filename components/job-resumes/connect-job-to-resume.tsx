@@ -41,7 +41,7 @@ export const ConnectJobToResume = ({
         renderOption={(item) => (
           <div className="text-xs">
             <h5 className="font-semibold">{item.title}</h5>
-            <p className="text-muted-foreground ">At {item.companyName}</p>
+            <p className="text-muted-foreground text-xs">At {item.companyName}</p>
           </div>
         )}
         getOptionValue={getOptionValue}
