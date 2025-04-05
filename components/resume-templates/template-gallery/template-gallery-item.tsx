@@ -1,8 +1,8 @@
 "use client";
 
 import { CreateTemplateButton } from "./create-template-button";
-import PDFViewer from "@/components/job-resumes/pdf-viewer";
-import { ResumeDocument } from "@/components/job-resumes/resume-document";
+import PDFViewer from "@/components/job-resumes/resume-renderer/pdf-viewer";
+import { ResumeDocument } from "@/components/job-resumes/resume-renderer/resume-document";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ResumeContent } from "@/types/resume";
