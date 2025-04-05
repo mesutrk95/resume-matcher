@@ -1,13 +1,10 @@
-"use client";
+'use client';
 
-import { useSubscription } from "@/providers/SubscriptionProvider";
-import { SubscriptionStatus } from "@prisma/client";
-import { AlertCircle, X } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Button } from "../ui/button";
-import { formatDistanceToNow } from "date-fns";
-import Link from "next/link";
+import { useSubscription } from '@/providers/SubscriptionProvider';
+import { AlertCircle, X } from 'lucide-react';
+import { Button } from '../ui/button';
+import { formatDistanceToNow } from 'date-fns';
+import Link from 'next/link';
 
 export function TrialBanner() {
   const { subscription, isTrialingBannerEnable, dismissTrialBanner } =
@@ -22,7 +19,7 @@ export function TrialBanner() {
   const trialEndDate = subscription!.currentPeriodEnd;
   const timeRemaining = trialEndDate
     ? formatDistanceToNow(new Date(trialEndDate), { addSuffix: true })
-    : "";
+    : '';
 
   return (
     <div className="bg-indigo-600 text-white py-2 px-4" id="trialing-banner">

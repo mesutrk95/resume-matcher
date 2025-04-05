@@ -1,11 +1,11 @@
 'use client';
 
-import { useSubscription } from '@/providers/SubscriptionProvider';
+import { toast } from 'sonner';
 import { SubscriptionInterval } from '@/actions/subscription';
 import { Button } from '@/components/ui/button';
 import { Subscription, SubscriptionStatus } from '@prisma/client';
 import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import {
   Card,
   CardContent,
@@ -14,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from '../ui/card';
-import { LoadingButton } from '../ui/loading-button';
 import {
   Check,
   CheckCircle,
@@ -99,8 +98,28 @@ export function SubscriptionPlans({
   const PRICES = pricingData || DEFAULT_PRICES;
 
   const [interval, setInterval] = useState<SubscriptionInterval>('monthly');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubscribe, isSubscribing } = useSubscription();
+  const handleSubscribe = async (interval: SubscriptionInterval) => {
+    setIsLoading(true);
+    try {
+      const { createSubscription } = await import(
+        '@/actions/subscription/session'
+      );
+      const response = await createSubscription(interval);
+
+      if (response.success && response.url) {
+        window.location.href = response.url;
+      } else {
+        toast.error('Failed to create subscription');
+      }
+    } catch (error) {
+      toast.error('An error occurred while setting up your subscription');
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const calculateDiscount = (selectedInterval: SubscriptionInterval) => {
     if (selectedInterval === 'weekly') return 0;
@@ -263,22 +282,22 @@ export function SubscriptionPlans({
                   : 'Already Subscribed'}
               </Button>
             ) : (
-              <LoadingButton
+              <Button
                 className="w-full"
                 onClick={() => handleSubscribe(interval)}
-                loading={isSubscribing}
-                disabled={isSubscribing}
+                disabled={isLoading}
               >
-                {isTrialEligible ? 'Start Free Trial' : 'Subscribe Now'}
-              </LoadingButton>
+                {isLoading
+                  ? 'Processing...'
+                  : isTrialEligible
+                  ? 'Start Free Trial'
+                  : 'Subscribe Now'}
+              </Button>
             )}
             <p className="w-full text-center text-xs text-muted-foreground mt-2">
               {isTrialEligible
                 ? 'Cancel anytime during your trial. No commitment required.'
                 : 'Cancel anytime. No commitment required.'}
-            </p>
-            <p className="w-full text-center text-xs text-muted-foreground mt-2">
-              Cancel anytime. No commitment required.
             </p>
           </CardFooter>
         </Card>
