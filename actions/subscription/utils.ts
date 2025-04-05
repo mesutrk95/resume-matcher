@@ -7,6 +7,7 @@ import {
   InternalServerErrorException,
 } from '@/lib/exceptions';
 import Logger from '@/lib/logger';
+import { currentUser } from '@/lib/auth';
 
 export const updateSubscriptionInDatabase = async (
   userId: string,
@@ -81,3 +82,17 @@ export const getCustomerById = async (customerId: string) => {
     );
   }
 };
+
+export async function checkTrialEligibility() {
+  const user = await currentUser();
+  if (!user?.id) return false;
+
+  const subscriptionCount = await db.subscription.count({
+    where: {
+      userId: user.id,
+      subscriptionId: { not: null },
+    },
+  });
+
+  return subscriptionCount === 0;
+}

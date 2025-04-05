@@ -87,30 +87,27 @@ interface SubscriptionPlansProps {
   currentSubscription: Subscription | null;
   pricingData: Record<string, number>;
   productInfo: any | null;
+  isTrialEligible: boolean;
 }
 
 export function SubscriptionPlans({
   currentSubscription,
   pricingData,
   productInfo,
+  isTrialEligible,
 }: SubscriptionPlansProps) {
-  // Use provided pricing data or fall back to defaults
   const PRICES = pricingData || DEFAULT_PRICES;
 
-  // Current selected billing interval
   const [interval, setInterval] = useState<SubscriptionInterval>('monthly');
 
-  // Use our subscription provider
   const { handleSubscribe, isSubscribing } = useSubscription();
 
-  // Calculate discount percentage compared to weekly pricing
   const calculateDiscount = (selectedInterval: SubscriptionInterval) => {
     if (selectedInterval === 'weekly') return 0;
 
     const weeklyPrice = PRICES.weekly;
     const selectedPrice = PRICES[selectedInterval];
 
-    // Calculate equivalent weekly cost
     let weeklyEquivalent: number;
 
     switch (selectedInterval) {
@@ -150,7 +147,6 @@ export function SubscriptionPlans({
     (currentSubscription.status === SubscriptionStatus.ACTIVE ||
       currentSubscription.status === SubscriptionStatus.TRIALING);
 
-  // Available billing intervals
   const intervals = [
     { value: 'weekly', label: 'Weekly' },
     { value: 'monthly', label: 'Monthly' },
@@ -161,6 +157,16 @@ export function SubscriptionPlans({
 
   return (
     <div className="w-full">
+      {isTrialEligible && (
+        <div className="mb-6 p-3 bg-green-100 border border-green-300 rounded-md text-center">
+          <p className="font-bold text-green-800">
+            You&apos;re eligible for a FREE 3-day trial!
+          </p>
+          <p className="text-sm text-green-700">
+            No charge until your trial ends. Cancel anytime.
+          </p>
+        </div>
+      )}
       <div className="mx-auto mb-10 max-w-md text-center">
         <h2 className="text-3xl font-bold">
           {productInfo?.name || 'Resume Matcher Pro'}
@@ -223,9 +229,13 @@ export function SubscriptionPlans({
                   /{interval.replace('ly', '')}
                 </span>
               </>
-              <div className="ml-auto border border-green-200 bg-green-50 rounded px-2 py-1">
-                <span className="text-xs text-green-700">3-day free trial</span>
-              </div>
+              {isTrialEligible && (
+                <div className="ml-auto border border-green-200 bg-green-50 rounded px-2 py-1">
+                  <span className="text-xs text-green-700">
+                    3-day free trial
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="space-y-4">
@@ -259,9 +269,14 @@ export function SubscriptionPlans({
                 loading={isSubscribing}
                 disabled={isSubscribing}
               >
-                Start Free Trial
+                {isTrialEligible ? 'Start Free Trial' : 'Subscribe Now'}
               </LoadingButton>
             )}
+            <p className="w-full text-center text-xs text-muted-foreground mt-2">
+              {isTrialEligible
+                ? 'Cancel anytime during your trial. No commitment required.'
+                : 'Cancel anytime. No commitment required.'}
+            </p>
             <p className="w-full text-center text-xs text-muted-foreground mt-2">
               Cancel anytime. No commitment required.
             </p>

@@ -165,6 +165,7 @@ export default function BillingPage() {
             currentSubscription={subscription}
             pricingData={pricingData.prices}
             productInfo={pricingData.product}
+            isTrialEligible={true}
           />
         </TabsContent>
 

@@ -98,14 +98,12 @@ export const createCheckoutSession = async (
       trial_period_days: TRIAL_PERIOD_DAYS,
       metadata: {
         userId,
-        isFirstSubscription: 'true',
       },
     };
   } else {
     sessionConfig.subscription_data = {
       metadata: {
         userId,
-        isFirstSubscription: 'false',
       },
     };
   }
