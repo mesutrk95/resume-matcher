@@ -190,8 +190,8 @@ model AIRateLimit {
   clientId          String   @unique
   clientName        String
   requestsPerMinute Int      @default(5)
-  requestsPerHour   Int      @default(100)
-  requestsPerDay    Int      @default(1000)
+  requestsPerHour   Int      @default(60)
+  requestsPerDay    Int      @default(700)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
