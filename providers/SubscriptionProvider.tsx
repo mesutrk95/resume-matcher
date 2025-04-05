@@ -6,7 +6,10 @@ import {
   cancelUserSubscription,
   reactivateUserSubscription,
 } from '@/actions/subscription/status';
-import { Subscription, SubscriptionStatus } from '@prisma/client';
+import {
+  Subscription as PrismaSubscription,
+  SubscriptionStatus,
+} from '@prisma/client';
 import {
   createContext,
   useContext,
@@ -16,14 +19,22 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 
+// Define the augmented type based on what getUserSubscription returns
+export type SubscriptionWithPlanDetails = PrismaSubscription & {
+  // Add export here
+  planName?: string | null;
+  planInterval?: string | null;
+  planIntervalCount?: number | null;
+};
+
 interface SubscriptionContextType {
-  subscription: Subscription | null;
+  subscription: SubscriptionWithPlanDetails | null; // Use augmented type
   isLoading: boolean;
   isSubscribing: boolean;
   isCanceling: boolean;
   isReactivating: boolean;
   isRedirectingToPortal: boolean;
-  fetchSubscription: () => Promise<Subscription | null>;
+  fetchSubscription: () => Promise<SubscriptionWithPlanDetails | null>; // Use augmented type
   handleCancelSubscription: () => Promise<boolean>;
   handleReactivateSubscription: () => Promise<boolean>;
   handleRedirectToPortal: (returnUrl?: string) => Promise<boolean>;
@@ -33,13 +44,13 @@ interface SubscriptionContextType {
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType>({
-  subscription: null,
+  subscription: null, // Initial value remains null
   isLoading: false,
   isSubscribing: false,
   isCanceling: false,
   isReactivating: false,
   isRedirectingToPortal: false,
-  fetchSubscription: async () => null,
+  fetchSubscription: async () => null, // Initial function returns null
   handleCancelSubscription: async () => false,
   handleReactivateSubscription: async () => false,
   handleRedirectToPortal: async () => false,
@@ -51,11 +62,10 @@ export const SubscriptionProvider = ({
   initialSubscription = null,
 }: {
   children: React.ReactNode;
-  initialSubscription?: Subscription | null;
+  initialSubscription?: SubscriptionWithPlanDetails | null; // Use augmented type
 }) => {
-  const [subscription, setSubscription] = useState<Subscription | null>(
-    initialSubscription,
-  );
+  const [subscription, setSubscription] =
+    useState<SubscriptionWithPlanDetails | null>(initialSubscription); // Use augmented type
   const [isLoading, setIsLoading] = useState(!initialSubscription);
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);
