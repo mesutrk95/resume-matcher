@@ -1,0 +1,516 @@
+{
+  "experiences": [
+    {
+      "id": "exp-1",
+      "companyName": "Google",
+      "role": "Full Stack Developer",
+      "startDate": "March 2022",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "exp-1-item-1",
+          "description": "Implemented a microservices architecture for the internal tool, reducing downtime by 35% and increasing feature delivery speed by 45% using Node.js and Docker.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-1-item-1-var-1",
+              "content": "Implemented a microservices architecture for the internal tool, reducing downtime by 35% and increasing feature delivery speed by 45% using Node.js and Docker.",
+              "enabled": true
+            }
+          ],
+          "skills": ["Microservices", "Node.js", "Docker"]
+        },
+        {
+          "id": "exp-1-item-2",
+          "description": "Led a team of 5 engineers to successfully migrate a legacy system to a modern web stack, resulting in a 60% increase in system performance and a 70% boost in user satisfaction.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-1-item-2-var-1",
+              "content": "Led a team of 5 engineers to successfully migrate a legacy system to a modern web stack, resulting in a 60% increase in system performance and a 70% boost in user satisfaction.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Team Leadership",
+            "System Migration",
+            "Performance Optimization"
+          ]
+        },
+        {
+          "id": "exp-1-item-3",
+          "description": "Developed a comprehensive testing suite with Selenium, reducing critical bugs by 40% and enhancing overall software reliability by 30%.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-1-item-3-var-1",
+              "content": "Developed a comprehensive testing suite with Selenium, reducing critical bugs by 40% and enhancing overall software reliability by 30%.",
+              "enabled": true
+            }
+          ],
+          "skills": ["Testing", "Selenium", "Quality Assurance"]
+        },
+        {
+          "id": "exp-1-item-4",
+          "description": "Optimized database queries using PostgreSQL, leading to a 50% reduction in data retrieval times and improved application scalability to handle a 45% increase in user traffic.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-1-item-4-var-1",
+              "content": "Optimized database queries using PostgreSQL, leading to a 50% reduction in data retrieval times and improved application scalability to handle a 45% increase in user traffic.",
+              "enabled": true
+            }
+          ],
+          "skills": ["PostgreSQL", "Database Optimization", "Scalability"]
+        },
+        {
+          "id": "exp-1-item-5",
+          "description": "Spearheaded the integration of CI/CD pipelines with Jenkins and Azure DevOps, decreasing release cycle times by 50% and increasing deployment frequency from monthly to weekly.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-1-item-5-var-1",
+              "content": "Spearheaded the integration of CI/CD pipelines with Jenkins and Azure DevOps, decreasing release cycle times by 50% and increasing deployment frequency from monthly to weekly.",
+              "enabled": true
+            }
+          ],
+          "skills": ["CI/CD", "Jenkins", "Azure DevOps"]
+        },
+        {
+          "id": "exp-1-item-6",
+          "description": "Designed and implemented a caching mechanism with Redis, resulting in a 65% improvement in load times for high-traffic pages.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-1-item-6-var-1",
+              "content": "Designed and implemented a caching mechanism with Redis, resulting in a 65% improvement in load times for high-traffic pages.",
+              "enabled": true
+            }
+          ],
+          "skills": ["Redis", "Caching", "Performance Optimization"]
+        },
+        {
+          "id": "exp-1-item-7",
+          "description": "Collaborated with UX designers to redesign the user interface, contributing to a 40% increase in user engagement metrics within the first quarter post-launch.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-1-item-7-var-1",
+              "content": "Collaborated with UX designers to redesign the user interface, contributing to a 40% increase in user engagement metrics within the first quarter post-launch.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "UI/UX",
+            "Cross-functional Collaboration",
+            "User Engagement"
+          ]
+        }
+      ],
+      "location": "City, Country",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp-2",
+      "companyName": "Microsoft",
+      "role": "Software Engineer",
+      "startDate": "January 2020",
+      "endDate": "February 2022",
+      "enabled": true,
+      "items": [
+        {
+          "id": "exp-2-item-1",
+          "description": "Architected and developed a scalable cloud-based application that improved data processing capabilities by 55% and ensured 99.9% uptime using AWS and serverless computing.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-2-item-1-var-1",
+              "content": "Architected and developed a scalable cloud-based application that improved data processing capabilities by 55% and ensured 99.9% uptime using AWS and serverless computing.",
+              "enabled": true
+            }
+          ],
+          "skills": ["Cloud Architecture", "AWS", "Serverless Computing"]
+        },
+        {
+          "id": "exp-2-item-2",
+          "description": "Enhanced frontend performance by 30% while maintaining responsive design across multiple devices, leveraging Angular and Bootstrap.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-2-item-2-var-1",
+              "content": "Enhanced frontend performance by 30% while maintaining responsive design across multiple devices, leveraging Angular and Bootstrap.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Angular",
+            "Bootstrap",
+            "Responsive Design",
+            "Frontend Performance"
+          ]
+        },
+        {
+          "id": "exp-2-item-3",
+          "description": "Implemented a RESTful API that streamlined backend processes, reducing server load by 40% and increasing request-response efficiency by 25%.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-2-item-3-var-1",
+              "content": "Implemented a RESTful API that streamlined backend processes, reducing server load by 40% and increasing request-response efficiency by 25%.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "RESTful API",
+            "Backend Development",
+            "Server Optimization"
+          ]
+        }
+      ],
+      "location": "City, Country",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp-3",
+      "companyName": "Amazon",
+      "role": "Backend Developer",
+      "startDate": "June 2017",
+      "endDate": "December 2019",
+      "enabled": true,
+      "items": [
+        {
+          "id": "exp-3-item-1",
+          "description": "Optimized application performance through code refactoring and the adoption of modern programming paradigms, achieving a 35% improvement in speed and reducing server costs by 20%.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-3-item-1-var-1",
+              "content": "Optimized application performance through code refactoring and the adoption of modern programming paradigms, achieving a 35% improvement in speed and reducing server costs by 20%.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Code Refactoring",
+            "Performance Optimization",
+            "Cost Reduction"
+          ]
+        },
+        {
+          "id": "exp-3-item-2",
+          "description": "Piloted the use of containerization with Kubernetes, which decreased deployment time by 35% and allowed seamless scaling to meet peak demand periods.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-3-item-2-var-1",
+              "content": "Piloted the use of containerization with Kubernetes, which decreased deployment time by 35% and allowed seamless scaling to meet peak demand periods.",
+              "enabled": true
+            }
+          ],
+          "skills": ["Kubernetes", "Containerization", "Scalability"]
+        },
+        {
+          "id": "exp-3-item-3",
+          "description": "Designed a monitoring dashboard using Grafana that decreased system alert response times by 50% and enhanced incident management efficiency.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-3-item-3-var-1",
+              "content": "Designed a monitoring dashboard using Grafana that decreased system alert response times by 50% and enhanced incident management efficiency.",
+              "enabled": true
+            }
+          ],
+          "skills": ["Grafana", "Monitoring", "Incident Management"]
+        }
+      ],
+      "location": "City, Country",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp-4",
+      "companyName": "Facebook",
+      "role": "Junior Backend Developer",
+      "startDate": "August 2015",
+      "endDate": "May 2017",
+      "enabled": true,
+      "items": [
+        {
+          "id": "exp-4-item-1",
+          "description": "Contributed to the development of an internal analytics tool, reducing report generation time by 40% through the implementation of asynchronous processing techniques.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-4-item-1-var-1",
+              "content": "Contributed to the development of an internal analytics tool, reducing report generation time by 40% through the implementation of asynchronous processing techniques.",
+              "enabled": true
+            }
+          ],
+          "skills": ["Analytics", "Asynchronous Processing"]
+        },
+        {
+          "id": "exp-4-item-2",
+          "description": "Automated recurring data processing tasks using Python, saving over 20 hours per month in manual operations and increasing data accuracy by 30%.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-4-item-2-var-1",
+              "content": "Automated recurring data processing tasks using Python, saving over 20 hours per month in manual operations and increasing data accuracy by 30%.",
+              "enabled": true
+            }
+          ],
+          "skills": ["Python", "Automation", "Data Processing"]
+        },
+        {
+          "id": "exp-4-item-3",
+          "description": "Participated in daily Scrum meetings to enhance team communication and improve sprint delivery times by 15%.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "exp-4-item-3-var-1",
+              "content": "Participated in daily Scrum meetings to enhance team communication and improve sprint delivery times by 15%.",
+              "enabled": true
+            }
+          ],
+          "skills": ["Agile", "Scrum", "Team Collaboration"]
+        }
+      ],
+      "location": "City, Country",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title-1",
+      "content": "Full Stack Developer",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary-1",
+      "content": "Accomplished Full Stack Developer with extensive experience in building high-performance applications using modern technologies. Skilled in microservices architecture, CI/CD implementation, and database optimization with a proven track record of leading teams and delivering projects that significantly improve system performance and user satisfaction.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu-1",
+      "content": "Master of Science - Computer Science with Specialization in Full-Stack Development",
+      "enabled": true,
+      "startDate": "",
+      "endDate": "December 2019",
+      "institution": "Resume Worded Institute",
+      "location": "City, Country",
+      "degree": "Master of Science - Computer Science"
+    },
+    {
+      "id": "edu-2",
+      "content": "Bachelor of Science - Software Engineering, Graduated with Honors",
+      "enabled": true,
+      "startDate": "",
+      "endDate": "May 2015",
+      "institution": "Resume Worded University",
+      "location": "City, Country",
+      "degree": "Bachelor of Science - Software Engineering"
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill-1",
+      "content": "JavaScript",
+      "category": "Programming Languages",
+      "enabled": true
+    },
+    {
+      "id": "skill-2",
+      "content": "Python",
+      "category": "Programming Languages",
+      "enabled": true
+    },
+    {
+      "id": "skill-3",
+      "content": "Java",
+      "category": "Programming Languages",
+      "enabled": true
+    },
+    {
+      "id": "skill-4",
+      "content": "C#",
+      "category": "Programming Languages",
+      "enabled": true
+    },
+    {
+      "id": "skill-5",
+      "content": "Ruby",
+      "category": "Programming Languages",
+      "enabled": true
+    },
+    {
+      "id": "skill-6",
+      "content": "SQL",
+      "category": "Programming Languages",
+      "enabled": true
+    },
+    {
+      "id": "skill-7",
+      "content": "React.js",
+      "category": "Frameworks & Libraries",
+      "enabled": true
+    },
+    {
+      "id": "skill-8",
+      "content": "Node.js",
+      "category": "Frameworks & Libraries",
+      "enabled": true
+    },
+    {
+      "id": "skill-9",
+      "content": "Angular",
+      "category": "Frameworks & Libraries",
+      "enabled": true
+    },
+    {
+      "id": "skill-10",
+      "content": "Django",
+      "category": "Frameworks & Libraries",
+      "enabled": true
+    },
+    {
+      "id": "skill-11",
+      "content": "Express",
+      "category": "Frameworks & Libraries",
+      "enabled": true
+    },
+    {
+      "id": "skill-12",
+      "content": "ASP.NET",
+      "category": "Frameworks & Libraries",
+      "enabled": true
+    },
+    {
+      "id": "skill-13",
+      "content": "AWS",
+      "category": "Tools & Platforms",
+      "enabled": true
+    },
+    {
+      "id": "skill-14",
+      "content": "Azure",
+      "category": "Tools & Platforms",
+      "enabled": true
+    },
+    {
+      "id": "skill-15",
+      "content": "Docker",
+      "category": "Tools & Platforms",
+      "enabled": true
+    },
+    {
+      "id": "skill-16",
+      "content": "Kubernetes",
+      "category": "Tools & Platforms",
+      "enabled": true
+    },
+    {
+      "id": "skill-17",
+      "content": "Jenkins",
+      "category": "Tools & Platforms",
+      "enabled": true
+    },
+    {
+      "id": "skill-18",
+      "content": "Git",
+      "category": "Tools & Platforms",
+      "enabled": true
+    },
+    {
+      "id": "skill-19",
+      "content": "MySQL",
+      "category": "Databases",
+      "enabled": true
+    },
+    {
+      "id": "skill-20",
+      "content": "MongoDB",
+      "category": "Databases",
+      "enabled": true
+    },
+    {
+      "id": "skill-21",
+      "content": "PostgreSQL",
+      "category": "Databases",
+      "enabled": true
+    },
+    {
+      "id": "skill-22",
+      "content": "Redis",
+      "category": "Databases",
+      "enabled": true
+    },
+    {
+      "id": "skill-23",
+      "content": "Cassandra",
+      "category": "Databases",
+      "enabled": true
+    },
+    {
+      "id": "skill-24",
+      "content": "DynamoDB",
+      "category": "Databases",
+      "enabled": true
+    }
+  ],
+  "projects": [
+    {
+      "id": "project-1",
+      "name": "E-commerce Web Application",
+      "link": "",
+      "content": "Developed an e-commerce web application with microservices architecture",
+      "startDate": "",
+      "endDate": "",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "Your",
+    "lastName": "Name",
+    "phone": "(123) 456-789",
+    "email": "yourname@resumeworded.com",
+    "linkedIn": "linkedin.com/in/your-profile",
+    "github": "",
+    "website": "",
+    "twitter": "",
+    "address": "City, Country",
+    "country": "",
+    "pronouns": ""
+  },
+  "version": 1,
+  "languages": [],
+  "certifications": [
+    {
+      "id": "cert-1",
+      "name": "AWS Certified Solutions Architect",
+      "issuer": "Amazon Web Services",
+      "date": "2023",
+      "enabled": true
+    },
+    {
+      "id": "cert-2",
+      "name": "Microsoft Certified: Azure Developer Associate",
+      "issuer": "Microsoft",
+      "date": "",
+      "enabled": true
+    }
+  ],
+  "awards": [
+    {
+      "id": "award-1",
+      "name": "Employee of the Year at Microsoft (2021)",
+      "issuer": "Microsoft",
+      "date": "2021",
+      "enabled": true
+    }
+  ],
+  "interests": [],
+  "references": []
+}

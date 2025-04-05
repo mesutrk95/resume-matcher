@@ -8,83 +8,90 @@ import { DEFAULT_RESUME_CONTENT } from "./constants";
 import { ResumeContent } from "@/types/resume";
 
 export const deleteResumeTemplate = async (id: string) => {
-    const user = await currentUser()
-    await db.resumeTemplate.delete({
-        where: { id, userId: user?.id },
-    });
-    revalidatePath("/templates");
-    return true
-}
+  const user = await currentUser();
+  await db.resumeTemplate.delete({
+    where: { id, userId: user?.id },
+  });
+  revalidatePath("/templates");
+  return true;
+};
 
 export const updateResumeTemplate = async (template: ResumeTemplate) => {
-    const user = await currentUser();
+  const user = await currentUser();
 
-    // Update job in database
-    const updatedJob = await db.resumeTemplate.update({
-        where: {
-            id: template.id,
-            userId: user?.id,
-        },
-        data: {
-            name: template.name,
-            description: template.description,
-            content: template.content || DEFAULT_RESUME_CONTENT,
-        },
-    });
+  // Update job in database
+  const updatedJob = await db.resumeTemplate.update({
+    where: {
+      id: template.id,
+      userId: user?.id,
+    },
+    data: {
+      name: template.name,
+      description: template.description,
+      content: template.content || DEFAULT_RESUME_CONTENT,
+    },
+  });
 
-    revalidatePath("/templates");
-    revalidatePath(`/templates/${template.id}`);
+  revalidatePath("/templates");
+  revalidatePath(`/templates/${template.id}`);
 
-    return updatedJob
-}
+  return updatedJob;
+};
 
-export const updateResumeTemplateContent = async (templateId: string, resmueContent: ResumeContent) => {
-    const user = await currentUser();
+export const updateResumeTemplateContent = async (
+  templateId: string,
+  resmueContent: ResumeContent
+) => {
+  const user = await currentUser();
 
-    const updatedJob = await db.resumeTemplate.update({
-        where: {
-            id: templateId,
-            userId: user?.id,
-        },
-        data: { 
-            content: resmueContent || DEFAULT_RESUME_CONTENT,
-        },
-    });
+  const updatedJob = await db.resumeTemplate.update({
+    where: {
+      id: templateId,
+      userId: user?.id,
+    },
+    data: {
+      content: resmueContent || DEFAULT_RESUME_CONTENT,
+    },
+  });
 
-    revalidatePath("/templates");
-    revalidatePath(`/templates/${templateId}`);
+  revalidatePath("/templates");
+  revalidatePath(`/templates/${templateId}`);
 
-    return updatedJob
-}
+  return updatedJob;
+};
 
-export const createResumeTemplate = async () => {
-    const user = await currentUser();
+export const createResumeTemplate = async (
+  resumeContent?: ResumeContent,
+  name?: string,
+  description?: string
+) => {
+  const user = await currentUser();
 
-    // Update job in database
-    const template = await db.resumeTemplate.create({
-        data: {
-            name: 'No name template',
-            description: 'No description',
-            content: DEFAULT_RESUME_CONTENT,
-            userId: user?.id!,
-        },
-    });
+  // Update job in database
+  const template = await db.resumeTemplate.create({
+    data: {
+      name: name || "No name template",
+      description: description || "No description",
+      content: resumeContent || DEFAULT_RESUME_CONTENT,
+      userId: user?.id!,
+    },
+  });
 
-    revalidatePath("/templates");
+  revalidatePath("/templates");
 
-    return template
-}
+  return template;
+};
 
 export const getResumeTemplate = async (id: string) => {
-    const user = await currentUser();
+  const user = await currentUser();
 
-    // Update job in database
-    const rt = await db.resumeTemplate.findUnique({
-        where: {
-            id,
-            userId: user?.id!
-        },
-    });
+  // Update job in database
+  const rt = await db.resumeTemplate.findUnique({
+    where: {
+      id,
+      userId: user?.id!,
+    },
+  });
 
-    return rt
-} 
+  return rt;
+};
