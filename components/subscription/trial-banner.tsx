@@ -23,12 +23,10 @@ export function TrialBanner() {
 
   return (
     <div className="bg-indigo-600 text-white py-2 px-4" id="trialing-banner">
-      <div className="container mx-auto flex items-center justify-between">
+      <div className="container mx-auto flex flex-col items-center justify-center gap-y-2 py-2 sm:flex-row sm:justify-between sm:py-0">
         <div className="flex items-center space-x-2">
-          <AlertCircle className="h-4 w-4" />
-          <p className="text-sm font-medium">
-            You&apos;re currently on a trial. Your trial ends {timeRemaining}.
-          </p>
+          <AlertCircle className="h-4 w-4 flex-shrink-0" />
+          <p className="text-sm font-medium">Trial ends {timeRemaining}.</p>
         </div>
         <div className="flex items-center space-x-2">
           <Button
