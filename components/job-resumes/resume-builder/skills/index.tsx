@@ -133,7 +133,7 @@ export function SkillsSection({}: SkillsSectionProps) {
     setAddingCategory(false);
     // Automatically open the add skills dialog for the new category
     setSelectedCategoryForSkills(category);
-    setAddingSkills(true);
+    // setAddingSkills(true);
   };
 
   const handleUpdateSkill = (
