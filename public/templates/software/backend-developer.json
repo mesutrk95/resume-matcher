@@ -2,7 +2,7 @@
   "experiences": [
     {
       "id": "exp_mgbs0d",
-      "companyName": "Resume Worded",
+      "companyName": "Minova",
       "role": "Backend Developer",
       "startDate": "January 2022",
       "endDate": "Present",
@@ -269,7 +269,7 @@
       "enabled": true,
       "startDate": "",
       "endDate": "May 2017",
-      "institution": "Resume Worded Academic Center",
+      "institution": "Minova Academic Center",
       "location": "City, Country",
       "degree": "Master of Science in Software Engineering"
     },
@@ -279,7 +279,7 @@
       "enabled": true,
       "startDate": "",
       "endDate": "May 2015",
-      "institution": "Resume Worded University",
+      "institution": "Minova University",
       "location": "City, Country",
       "degree": "Bachelor of Science in Computer Science"
     }
@@ -460,8 +460,8 @@
   "awards": [
     {
       "id": "award_rve6z1",
-      "name": "Finalist in Resume Worded Global Hackathon 2018",
-      "issuer": "Resume Worded",
+      "name": "Finalist in Minova Global Hackathon 2018",
+      "issuer": "Minova",
       "date": "2018",
       "enabled": true
     },

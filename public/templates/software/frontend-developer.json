@@ -315,7 +315,7 @@
       "enabled": true,
       "startDate": "",
       "endDate": "May 2014",
-      "institution": "Resume Worded Institute",
+      "institution": "Minova Institute",
       "location": "City, Country",
       "degree": "Master of Science in Computer Science"
     },
@@ -325,7 +325,7 @@
       "enabled": true,
       "startDate": "",
       "endDate": "October 2016",
-      "institution": "Resume Worded University",
+      "institution": "Minova University",
       "location": "City, Country",
       "degree": "Certified Node.js Developer"
     }
@@ -557,7 +557,7 @@
     {
       "id": "cert_65zfjm",
       "name": "Continuous Integration/Continuous Deployment (CI/CD) with Jenkins",
-      "issuer": "Resume Worded Academic Center",
+      "issuer": "Minova Academic Center",
       "date": "2019",
       "enabled": true
     }
