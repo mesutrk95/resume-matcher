@@ -74,7 +74,10 @@ export const ResumePreview = ({
                 Download
               </Button>
             </div>
-            <PDFViewer pdfBlob={blob} />
+            <PDFViewer
+              pdfBlob={blob}
+              className=" h-full w-full  p-2 overflow-auto"
+            />
           </>
         );
       }}

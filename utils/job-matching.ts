@@ -119,7 +119,8 @@ export const convertResumeObjectToString = (resume: ResumeContent) => {
   if (edu) {
     content += `Skills\n${resume.skills
       .filter((e) => e.enabled)
-      .map((s) => s.content)
+      .map((s) => s.skills.filter((s) => s.enabled))
+      .flat()
       .join(", ")} \n`;
   }
   return content;

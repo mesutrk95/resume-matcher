@@ -48,22 +48,28 @@ export const TemplateGalleryItem = ({
   }, [url]);
 
   return (
-    <Card className="p-0">
-      <CardContent className=" space-y-5 p-4 flex flex-col justify-between">
+    <Card className="p-0 overflow-hidden">
+      <CardContent className=" space-y-5 p-0 flex flex-col justify-between">
         <div className="border-b h-[250px] flex items-center justify-center">
           {isLoading ? (
             <div className="w-full h-full flex flex-col space-y-2">
               <Skeleton className="w-full h-full" />
             </div>
           ) : resume ? (
-            <PDFViewer pdfBlob={resume.blob} maxPages={1}></PDFViewer>
+            <div className="h-full w-full bg-indigo-500 overflow-hidden ">
+              <PDFViewer
+                pdfBlob={resume.blob}
+                maxPages={1}
+                className=" h-full w-full p-4 overflow-hidden hover:mb-2"
+              ></PDFViewer>
+            </div>
           ) : (
             <div className="text-sm text-muted-foreground">
               Failed to load template
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 p-4">
           <div className="">
             {isLoading ? (
               <>

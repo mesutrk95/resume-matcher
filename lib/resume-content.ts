@@ -35,7 +35,7 @@ export const resumeExperiencesToString = (
 export const resumeSkillsToString = (resume: ResumeContent) => {
   return resume.skills
     .filter((e) => e.enabled)
-    .map((s) => s.skills)
+    .map((s) => s.skills.filter((s) => s.enabled))
     .flat()
     .join(", ")
     .replace(/\u200B/g, "");
