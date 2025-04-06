@@ -344,16 +344,17 @@ export const SkillsSection = ({
 
   return (
     <View style={styles.section}>
-      {/* <Text style={styles.sectionTitle}>SKILLS</Text> */}
       <Text style={styles.sectionHeading}>Skills</Text>
       <View style={styles.sectionContent}>
         {resumeDesign.sections?.skills?.groupByCategory ? (
           Object.entries(categorizedSkills).map(
             ([category, categorySkills], index) => (
               <View key={category}>
-                {hasMultipleCategories && (
-                  <Text style={styles.skillCategory}>
-                    {category}:{" "}
+                {hasMultipleCategories ? (
+                  <Text style={styles.skillsCategory}>
+                    {category !== "Default" && category.length > 0
+                      ? category + ": "
+                      : ""}
                     <Text style={styles.skillsList}>
                       {renderList({
                         data: categorySkills.map(
@@ -365,6 +366,18 @@ export const SkillsSection = ({
                         by: ", ",
                       })}
                     </Text>
+                  </Text>
+                ) : (
+                  <Text style={styles.skillsList}>
+                    {renderList({
+                      data: categorySkills.map(
+                        (skill) =>
+                          `${withIdentifiers ? `[${skill.id}] ` : ""}${
+                            skill.content
+                          }`
+                      ),
+                      by: ", ",
+                    })}
                   </Text>
                 )}
               </View>

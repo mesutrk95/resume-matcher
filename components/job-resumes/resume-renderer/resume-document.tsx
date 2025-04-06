@@ -294,6 +294,10 @@ export const ResumeDocument = ({
       projectName: getComputedStyle(design.sections.projects.name),
       projectSubheader: getComputedStyle(design.sections.projects.subheader),
 
+      skills : getComputedStyle(design.sections.skills ),
+      skillsCategory: getComputedStyle(design.sections.skills.category),
+      skillsList: getComputedStyle(design.sections.skills.list),
+
       fullName: getComputedStyle(design.sections.fullName),
       title: getComputedStyle(design.sections.contactInfo.title),
       contactInfoMetadata: getComputedStyle(
@@ -309,7 +313,6 @@ export const ResumeDocument = ({
         // color: design.colors.secondary,
       },
     });
-    console.log(styles);
     return styles;
   }, [resumeDesign, skipFont]);
 

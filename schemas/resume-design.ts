@@ -197,18 +197,10 @@ const sectionsSchema = z.object({
     name: elementStyleSchema.optional(),
     subheader: elementStyleSchema.optional(),
   }),
-  skills: z.object({
-    display: z.enum(["inline", "list", "grid", "tag"]).default("tag"),
+  skills: elementStyleSchema.extend({
     groupByCategory: z.boolean().default(true),
-    skillsList: z.object({
-      typo: typographySchema.optional(),
-      style: cssStyleSchema.optional(),
-    }),
-    skillsCategory: z.object({
-      typo: typographySchema.optional(),
-      style: cssStyleSchema.optional(),
-    }),
-    style: cssStyleSchema.optional(),
+    list: elementStyleSchema.extend({}),
+    category: elementStyleSchema.extend({}),
   }),
   contactInfo: elementStyleSchema.extend({
     showIcons: z.boolean().default(true),
@@ -352,16 +344,16 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
           borderBottom: 2,
           borderColor: "#15803d",
           paddingBottom: 2,
-          minWidth: "100%",
+          // minWidth: "100%",
         },
       },
       section: {
         style: {
           paddingBottom: 10,
-          display: "flex",
-          flexWrap: "wrap",
-          flexDirection: "column",
-          minWidth: "100%",
+          // display: "flex",
+          // flexWrap: "wrap",
+          // flexDirection: "column",
+          // minWidth: "100%",
         },
       },
     },
@@ -424,12 +416,11 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       style: {},
     },
     skills: {
-      display: "tag",
       groupByCategory: true,
-      skillsCategory: {
+      category: {
         style: { fontWeight: "bold" },
       },
-      skillsList: {
+      list: {
         style: { fontWeight: "normal" },
       },
     },
