@@ -4,11 +4,26 @@ import {
   Experience,
   ResumeContent,
   ResumeDesign,
-  ResumeSkill,
+  ResumeDesignElementStyle,
+  ResumeDesignTypography,
 } from "@/types/resume";
 import { Text, View } from "@react-pdf/renderer";
 import moment from "moment";
 import React from "react";
+
+const typo = (design: ResumeDesign, name?: ResumeDesignTypography) =>
+  (name && design.typography[name]) || {};
+
+const getComputedStyle = (
+  design: ResumeDesign,
+  elementStyle?: ResumeDesignElementStyle
+) =>
+  elementStyle
+    ? {
+        ...typo(design, elementStyle.typo),
+        ...(elementStyle.style || {}),
+      }
+    : {};
 
 export const ContactInfoSection = ({
   resume,
@@ -323,54 +338,38 @@ export const SkillsSection = ({
   styles: any;
   withIdentifiers?: boolean;
 }) => {
-  const skills = resume.skills.filter((s) => s.enabled);
-  if (skills.length === 0) return null;
+  // Get enabled skill sets and their enabled skills
+  const enabledSkillSets = resume.skills
+    .filter((set) => set.enabled)
+    .map((set) => ({
+      ...set,
+      skills: set.skills.filter((skill) => skill.enabled),
+    }))
+    .filter((set) => set.skills.length > 0);
 
-  // Group skills by category if needed
-  const categorizedSkills: Record<string, ResumeSkill[]> = {};
-
-  if (resumeDesign.sections?.skills?.groupByCategory) {
-    skills.forEach((skill) => {
-      if (!categorizedSkills[skill.category]) {
-        categorizedSkills[skill.category] = [];
-      }
-      categorizedSkills[skill.category].push(skill);
-    });
-  }
+  if (enabledSkillSets.length === 0) return null;
 
   const hasMultipleCategories =
     resumeDesign.sections?.skills?.groupByCategory &&
-    Object.keys(categorizedSkills).length > 1;
+    enabledSkillSets.length > 1;
 
   return (
     <View style={styles.section}>
       <Text style={styles.sectionHeading}>Skills</Text>
       <View style={styles.sectionContent}>
         {resumeDesign.sections?.skills?.groupByCategory ? (
-          Object.entries(categorizedSkills).map(
-            ([category, categorySkills], index) => (
-              <View key={category}>
-                {hasMultipleCategories ? (
-                  <Text style={styles.skillsCategory}>
-                    {category !== "Default" && category.length > 0
-                      ? category + ": "
-                      : ""}
-                    <Text style={styles.skillsList}>
-                      {renderList({
-                        data: categorySkills.map(
-                          (skill) =>
-                            `${withIdentifiers ? `[${skill.id}] ` : ""}${
-                              skill.content
-                            }`
-                        ),
-                        by: ", ",
-                      })}
-                    </Text>
-                  </Text>
-                ) : (
+          // Render skills grouped by category
+          enabledSkillSets.map((skillSet, index) => (
+            <View key={skillSet.category}>
+              {hasMultipleCategories ? (
+                <Text style={styles.skillsCategory}>
+                  {skillSet.category !== "Default" &&
+                  skillSet.category.length > 0
+                    ? skillSet.category + ": "
+                    : ""}
                   <Text style={styles.skillsList}>
                     {renderList({
-                      data: categorySkills.map(
+                      data: skillSet.skills.map(
                         (skill) =>
                           `${withIdentifiers ? `[${skill.id}] ` : ""}${
                             skill.content
@@ -379,17 +378,34 @@ export const SkillsSection = ({
                       by: ", ",
                     })}
                   </Text>
-                )}
-              </View>
-            )
-          )
+                </Text>
+              ) : (
+                <Text style={styles.skillsList}>
+                  {renderList({
+                    data: skillSet.skills.map(
+                      (skill) =>
+                        `${withIdentifiers ? `[${skill.id}] ` : ""}${
+                          skill.content
+                        }`
+                    ),
+                    by: ", ",
+                  })}
+                </Text>
+              )}
+            </View>
+          ))
         ) : (
+          // Render all skills in a flat list
           <View style={styles.skillsList}>
             <Text>
               {renderList({
-                data: skills.map(
-                  (skill) =>
-                    `${withIdentifiers ? `[${skill.id}] ` : ""}${skill.content}`
+                data: enabledSkillSets.flatMap((set) =>
+                  set.skills.map(
+                    (skill) =>
+                      `${withIdentifiers ? `[${skill.id}] ` : ""}${
+                        skill.content
+                      }`
+                  )
                 ),
                 by: ", ",
               })}

@@ -13,6 +13,8 @@ import {
   resumeItemScoreAnalyzeSchema,
   resumeAnalyzedImprovementNoteSchema,
   resumeAnalyzeResultsSchema,
+  resumeSkillSetSchema,
+  resumeSkillItemSchema,
 } from "@/schemas/resume";
 import {
   elementStyleSchema,
@@ -27,7 +29,8 @@ export type Experience = z.infer<typeof experienceSchema>;
 export type ResumeProfessionalSummary = z.infer<
   typeof resumeProfessionalSummarySchema
 >;
-export type ResumeSkill = z.infer<typeof resumeSkillSchema>;
+export type ResumeSkillSet = z.infer<typeof resumeSkillSetSchema>;
+export type ResumeSkillItem = z.infer<typeof resumeSkillItemSchema>;
 export type ResumeProject = z.infer<typeof resumeProjectSchema>;
 export type ResumeContactInfo = z.infer<typeof resumeContactInfoSchema>;
 export type ResumeTargetTitle = z.infer<typeof resumeTargetTitleSchema>;

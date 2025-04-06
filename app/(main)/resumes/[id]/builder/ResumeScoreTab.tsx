@@ -35,48 +35,48 @@ const ImprovementNote = ({
 
   const applyAction = () => {
     if (note.id === "skills") {
-      const newSkills = newContent
-        .split(/,\s*(?![^()]*\))/)
-        .map((s) => s.trim());
+      // const newSkills = newContent
+      //   .split(/,\s*(?![^()]*\))/)
+      //   .map((s) => s.trim());
 
-      const resumeSkills = new Set(
-        resume.skills.map((s) =>
-          s.content
-            .trim()
-            .replace(/\u200B/g, "")
-            .toLowerCase()
-        )
-      );
+      // const resumeSkills = new Set(
+      //   resume.skills.map((s) =>
+      //     s.content
+      //       .trim()
+      //       .replace(/\u200B/g, "")
+      //       .toLowerCase()
+      //   )
+      // );
 
-      // add missing skills
-      const skillsToAdd = newSkills.filter(
-        (rs) => !resumeSkills.has(rs.toLowerCase())
-      );
+      // // add missing skills
+      // const skillsToAdd = newSkills.filter(
+      //   (rs) => !resumeSkills.has(rs.toLowerCase())
+      // );
 
-      skillsToAdd.forEach((s) => {
-        const newSkill = {
-          id: `skill_${randomNDigits()}`,
-          content: s.trim(),
-          category: "Default",
-          enabled: true,
-        };
-        resume.skills.push(newSkill);
-      });
+      // skillsToAdd.forEach((s) => {
+      //   const newSkill = {
+      //     id: `skill_${randomNDigits()}`,
+      //     content: s.trim(),
+      //     category: "Default",
+      //     enabled: true,
+      //   };
+      //   resume.skills.push(newSkill);
+      // });
 
-      let finalList = resume.skills.map((s) => ({ ...s, enabled: false }));
+      // let finalList = resume.skills.map((s) => ({ ...s, enabled: false }));
 
-      // sort skills
-      newSkills.forEach((ns, index) => {
-        const oldIndex = finalList.findIndex(
-          (skill) => skill.content.replace(/\u200B/g, "").trim() === ns
-        );
+      // // sort skills
+      // newSkills.forEach((ns, index) => {
+      //   const oldIndex = finalList.findIndex(
+      //     (skill) => skill.content.replace(/\u200B/g, "").trim() === ns
+      //   );
 
-        if (oldIndex !== index)
-          finalList = arrayMove(finalList, oldIndex, index);
-        finalList[index].enabled = true;
-      });
-      saveResume({ ...resume, skills: finalList });
-      toast.success("Resume skills updated!");
+      //   if (oldIndex !== index)
+      //     finalList = arrayMove(finalList, oldIndex, index);
+      //   finalList[index].enabled = true;
+      // });
+      // saveResume({ ...resume, skills: finalList });
+      // toast.success("Resume skills updated!");
     } else if (variation) {
       variation.content = newContent;
       toast.success("Update applied to the resume!");

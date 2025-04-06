@@ -6,13 +6,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
-
+ 
 type AddSkillsDialogProps = {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onSave: (skills: string[], category: string) => void
-  categories: string[]
-}
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSave: (skills: string[], category: string) => void;
+  categories: string[];
+  selectedCategory: string | null;
+};
 
 export function AddSkillsDialog({ open, onOpenChange, onSave, categories }: AddSkillsDialogProps) {
   const [skills, setSkills] = useState("")

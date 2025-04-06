@@ -20,7 +20,6 @@ import { chunkArray, hashString } from "@/lib/utils";
 import { analyzeJobByAI } from "./job";
 import {
   convertResumeObjectToString,
-  migrateResumeContent,
   resumeExperiencesToString,
 } from "@/lib/resume-content";
 import { BadRequestException, NotFoundException } from "@/lib/exceptions";
@@ -40,11 +39,11 @@ export const createJobResume = async (
   jobId?: string
 ) => {
   const user = await currentUser();
-  const resumeTemplate =
-    resumeTemplateId &&
-    (await db.resumeTemplate.findUnique({
-      where: { id: resumeTemplateId, userId: user?.id },
-    }));
+  const resumeTemplate = resumeTemplateId
+    ? await db.resumeTemplate.findUnique({
+        where: { id: resumeTemplateId, userId: user?.id },
+      })
+    : null;
   const job =
     jobId &&
     (await db.job.findUnique({
@@ -59,9 +58,7 @@ export const createJobResume = async (
       jobId: jobId,
       baseResumeTemplateId: resumeTemplateId,
       content:
-        (resumeTemplate &&
-          migrateResumeContent(resumeTemplate.content as ResumeContent)) ||
-        DEFAULT_RESUME_CONTENT,
+        (resumeTemplate?.content as ResumeContent) || DEFAULT_RESUME_CONTENT,
       name: name || "Blank",
       userId: user?.id!,
     },
@@ -77,8 +74,7 @@ export const updateJobResume = async (
   forceRevalidate = false
 ) => {
   const user = await currentUser();
-  const content =
-    resume.content && migrateResumeContent(resume.content as ResumeContent);
+  const content = resume.content as ResumeContent;
 
   const updateJobSchema = z.object({
     content: resumeContentSchema.optional(),
