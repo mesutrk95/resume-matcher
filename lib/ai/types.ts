@@ -1,4 +1,5 @@
 // lib/ai/types.ts
+import * as z from 'zod';
 
 export interface AIRequestOptions {
   maxTokens?: number;
@@ -47,6 +48,12 @@ export interface AIModelClient {
     costPer1KInputTokens: number;
     costPer1KOutputTokens: number;
   };
+
+  // Client identifier for rate limiting
+  getClientId(): string;
+
+  // Client name for display purposes
+  getClientName(): string;
 }
 
 export type ResponseFormat = 'text' | 'json' | 'html';
@@ -89,6 +96,7 @@ export interface AIRequestModel<TResponse = any> {
   systemInstruction?: string;
 
   responseValidator?: Validator<TResponse>;
+  zodSchema?: z.ZodType<TResponse>;
 
   options?: {
     maxTokens?: number;

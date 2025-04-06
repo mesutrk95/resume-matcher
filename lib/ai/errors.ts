@@ -62,3 +62,13 @@ export class PromptProcessingError extends AIServiceError {
     this.name = 'PromptProcessingError';
   }
 }
+
+/**
+ * Error thrown when rate limits are exceeded
+ */
+export class RateLimitExceededError extends AIServiceError {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = 'RateLimitExceededError';
+  }
+}

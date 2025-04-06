@@ -2,7 +2,6 @@ import { db } from '@/lib/db';
 import Logger from '@/lib/logger';
 import { SubscriptionStatus } from '@prisma/client';
 
-// Determine if we're in development mode
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 /**
@@ -11,7 +10,6 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 export const TOKEN_LIMITS = {
   FREE: 50_000,
   BASIC: 500_000,
-  // Unlimited for development
   DEV: Number.MAX_SAFE_INTEGER,
 };
 

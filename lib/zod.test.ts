@@ -3,136 +3,59 @@ import { z } from 'zod';
 import { zodSchemaToString } from './zod';
 
 describe('zodSchemaToString', () => {
-  it('handles string schema', () => {
-    const schema = z.string();
-    expect(zodSchemaToString(schema)).toBe('string');
-  });
-
-  it('handles string schema with constraints', () => {
-    const schema = z.string().min(5).max(10).email();
-    const result = zodSchemaToString(schema);
-    expect(result).toContain('string');
-    expect(result).toContain('min length: 5');
-    expect(result).toContain('max length: 10');
-    expect(result).toContain('valid email format');
-  });
-
-  it('handles number schema with constraints', () => {
-    const schema = z.number().int().min(0).max(100);
-    const result = zodSchemaToString(schema);
-    expect(result).toContain('number');
-    expect(result).toContain('integer');
-    expect(result).toContain('min: 0');
-    expect(result).toContain('max: 100');
-  });
-
-  it('handles boolean schema', () => {
-    const schema = z.boolean();
-    expect(zodSchemaToString(schema)).toBe('boolean');
-  });
-
-  it('handles enum schema', () => {
-    const schema = z.enum(['apple', 'banana', 'cherry']);
-    expect(zodSchemaToString(schema)).toBe(
-      'enum: one of ["apple", "banana", "cherry"]',
-    );
-  });
-
-  it('handles literal schema', () => {
-    const schema = z.literal('success');
-    expect(zodSchemaToString(schema)).toBe('literal: "success"');
-  });
-
-  it('handles union schema', () => {
-    const schema = z.union([z.string(), z.number()]);
-    expect(zodSchemaToString(schema)).toBe('one of: [string | number]');
-  });
-
-  it('handles array schema', () => {
-    const schema = z.array(z.string());
-    expect(zodSchemaToString(schema)).toBe('Array of string');
-  });
-
-  it('handles array of objects schema', () => {
-    const schema = z.array(z.object({ name: z.string() }));
-    expect(zodSchemaToString(schema)).toBe('Array of object');
-  });
-
-  it('handles nested object schema', () => {
+  it('should convert a simple Zod schema to a JSON schema string', () => {
+    // Create a simple Zod schema
     const schema = z.object({
-      user: z.object({
-        name: z.string(),
-        age: z.number(),
-      }),
-    });
-
-    const result = zodSchemaToString(schema);
-    expect(result).toContain('"user" (required): object');
-  });
-
-  it('handles object schema with optional fields', () => {
-    const schema = z.object({
-      id: z.string(),
-      name: z.string().optional(),
-      email: z.string().email().optional(),
-    });
-
-    const result = zodSchemaToString(schema);
-    expect(result).toContain('"id" (required): string');
-    expect(result).toContain('"name" (optional): string');
-    expect(result).toContain('"email" (optional): string (valid email format)');
-  });
-
-  it('handles complex object schema', () => {
-    const userSchema = z.object({
-      id: z.string().uuid(),
-      name: z.string().min(2),
+      name: z.string(),
+      age: z.number(),
       email: z.string().email(),
-      age: z.number().int().positive().optional(),
-      roles: z.array(z.enum(['admin', 'user', 'guest'])),
-      settings: z
-        .object({
-          theme: z.enum(['light', 'dark']).optional(),
-          notifications: z.boolean().default(true),
-        })
-        .optional(),
-      lastLogin: z.date().nullable(),
+      isActive: z.boolean().optional(),
     });
 
-    const result = zodSchemaToString(userSchema);
+    // Convert the schema to a string
+    const result = zodSchemaToString(schema);
 
-    // Should be an object representation
-    expect(result.startsWith('{')).toBe(true);
-    expect(result.endsWith('}')).toBe(true);
+    // Verify the result is a string
+    expect(typeof result).toBe('string');
 
-    // Should contain all the fields
-    expect(result).toContain('"id"');
-    expect(result).toContain('"name"');
-    expect(result).toContain('"email"');
-    expect(result).toContain('"age"');
-    expect(result).toContain('"roles"');
-    expect(result).toContain('"settings"');
-    expect(result).toContain('"lastLogin"');
+    // Parse the result back to an object to verify its structure
+    const parsedResult = JSON.parse(result);
 
-    // Check for some specific type descriptions
-    expect(result).toContain(
-      'array of enum: one of ["admin", "user", "guest"]',
+    // Verify the schema structure
+    expect(parsedResult).toHaveProperty(
+      '$schema',
+      'http://json-schema.org/draft-07/schema#',
     );
-    expect(result).toContain('(optional): object');
-  });
+    expect(parsedResult).toHaveProperty('$ref', '#/definitions/schema');
+    expect(parsedResult).toHaveProperty('definitions');
+    expect(parsedResult.definitions).toHaveProperty('schema');
 
-  it('handles nullable schema', () => {
-    const schema = z.string().nullable();
-    expect(zodSchemaToString(schema)).toBe('string or null');
-  });
+    // Get the actual schema from definitions
+    const schemaDefinition = parsedResult.definitions.schema;
 
-  it('handles record schema', () => {
-    const schema = z.record(z.string());
-    expect(zodSchemaToString(schema)).toBe('record with values of type string');
-  });
+    // Verify the schema definition structure
+    expect(schemaDefinition).toHaveProperty('type', 'object');
+    expect(schemaDefinition).toHaveProperty('properties');
+    expect(schemaDefinition).toHaveProperty('additionalProperties', false);
 
-  it('handles tuple schema', () => {
-    const schema = z.tuple([z.string(), z.number(), z.boolean()]);
-    expect(zodSchemaToString(schema)).toBe('tuple [string, number, boolean]');
+    // Verify the properties
+    expect(schemaDefinition.properties).toHaveProperty('name');
+    expect(schemaDefinition.properties).toHaveProperty('age');
+    expect(schemaDefinition.properties).toHaveProperty('email');
+    expect(schemaDefinition.properties).toHaveProperty('isActive');
+
+    // Verify property types
+    expect(schemaDefinition.properties.name.type).toBe('string');
+    expect(schemaDefinition.properties.age.type).toBe('number');
+    expect(schemaDefinition.properties.email.type).toBe('string');
+    expect(schemaDefinition.properties.email.format).toBe('email');
+    expect(schemaDefinition.properties.isActive.type).toBe('boolean');
+
+    // Verify required fields
+    expect(schemaDefinition).toHaveProperty('required');
+    expect(schemaDefinition.required).toContain('name');
+    expect(schemaDefinition.required).toContain('age');
+    expect(schemaDefinition.required).toContain('email');
+    expect(schemaDefinition.required).not.toContain('isActive'); // isActive is optional
   });
 });

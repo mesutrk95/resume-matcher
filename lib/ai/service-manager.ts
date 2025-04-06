@@ -3,9 +3,16 @@ import { AIModelClient, AIRequestModel, ResponseFormat } from './types';
 import Logger from '@/lib/logger';
 import { getCurrentRequestId } from '@/lib/request-context';
 import { AIUsageService } from './usage-service';
-import { TokenLimitExceededError, AIServiceError } from './errors';
+import {
+  TokenLimitExceededError,
+  AIServiceError,
+  RateLimitExceededError,
+} from './errors';
+import { AIRateLimitService } from './rate-limit-service';
 import { PromptProcessor } from './promptProcessors/base';
 import { ResponseProcessor } from './responseProcessors/base';
+import { createJsonSchemaValidator } from './validators';
+import { zodSchemaToString } from '@/lib/zod';
 
 export interface AIServiceManagerConfig {
   maxRetries: number;
@@ -13,6 +20,7 @@ export interface AIServiceManagerConfig {
   promptProcessors: PromptProcessor[];
   responseProcessors: ResponseProcessor[];
   usageService: AIUsageService;
+  rateLimitService?: AIRateLimitService;
 }
 
 export class AIServiceManager {
@@ -21,12 +29,14 @@ export class AIServiceManager {
   private readonly promptProcessors: PromptProcessor[];
   private readonly responseProcessors: ResponseProcessor[];
   private readonly usageService: AIUsageService;
+  private readonly rateLimitService?: AIRateLimitService;
 
   constructor(config: AIServiceManagerConfig) {
     this.maxRetries = config.maxRetries || 2;
     this.promptProcessors = config.promptProcessors || [];
     this.responseProcessors = config.responseProcessors || [];
     this.usageService = config.usageService;
+    this.rateLimitService = config.rateLimitService;
 
     // Initialize default client but allow it to be overridden for testing
     this.defaultClient =
@@ -38,6 +48,16 @@ export class AIServiceManager {
    * Execute an AI request with retry capabilities and response validation
    */
   async executeRequest<T>(request: AIRequestModel<T>): Promise<T> {
+    // If zodSchema is provided, create a validator from it
+    if (request.zodSchema && !request.responseValidator) {
+      request.responseValidator = createJsonSchemaValidator(request.zodSchema);
+
+      // Add schema information to the prompt if it's not a chat request
+      if (!request.chatHistory || request.chatHistory.length === 0) {
+        const schemaInfo = zodSchemaToString(request.zodSchema);
+        request.prompt = `${request.prompt}\n\nJson Response should match this Json schema: ${schemaInfo}`;
+      }
+    }
     const requestId = request.context?.requestId || getCurrentRequestId();
     const userId = request.context?.userId;
     let retryCount = 0;
@@ -48,6 +68,7 @@ export class AIServiceManager {
 
     // Check usage limits if user ID is provided
     if (userId) {
+      // Check token usage limits
       const canProceed = await this.usageService.checkAndRecordIntent(
         userId,
         this.estimateTokenUsage(request),
@@ -55,6 +76,24 @@ export class AIServiceManager {
 
       if (!canProceed) {
         throw new TokenLimitExceededError('Token usage limit exceeded');
+      }
+
+      // Check rate limits if rate limit service is provided
+      if (this.rateLimitService) {
+        // Select the client to get its ID
+        const client = this.getClientForRequest(request);
+        const clientId = client.getClientId();
+
+        const rateLimitCheck = await this.rateLimitService.checkRateLimit(
+          userId,
+          clientId,
+        );
+
+        if (!rateLimitCheck.allowed) {
+          throw new RateLimitExceededError(
+            rateLimitCheck.reason || 'Rate limit exceeded',
+          );
+        }
       }
     }
 
@@ -92,6 +131,15 @@ export class AIServiceManager {
             response.tokenUsage.promptTokens,
             response.tokenUsage.completionTokens,
           );
+
+          // Record request for rate limiting if rate limit service is provided
+          if (this.rateLimitService) {
+            const client = this.getClientForRequest(request);
+            await this.rateLimitService.recordRequest(
+              userId,
+              client.getClientId(),
+            );
+          }
         }
 
         // Process the response

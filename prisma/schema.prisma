@@ -186,3 +186,26 @@ model AIUsage {
   @@index([userId, createdAt])
   @@index([createdAt])
 }
+
+model AIRateLimit {
+  id                String   @id @default(cuid())
+  clientId          String   @unique
+  clientName        String
+  requestsPerMinute Int      @default(5)
+  requestsPerHour   Int      @default(60)
+  requestsPerDay    Int      @default(700)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model AIRateLimitUsage {
+  id           String   @id @default(cuid())
+  userId       String
+  clientId     String
+  requestCount Int      @default(0)
+  timestamp    DateTime @default(now())
+
+  @@unique([userId, clientId, timestamp])
+  @@index([userId, clientId, timestamp])
+  @@index([timestamp])
+}

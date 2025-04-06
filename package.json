@@ -15,7 +15,8 @@
     "prisma:update": "npx prisma generate && npx prisma db push",
     "prisma:clean": "npx prisma generate && npx prisma migrate reset && npx prisma db push",
     "postinstall": "prisma generate",
-    "test": "vitest run",
+    "test": "vitest run --exclude '**/*.integration.test.{js,ts,jsx,tsx}'",
+    "test:integration": "vitest run --dir lib --testNamePattern='integration'",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage"
@@ -83,7 +84,8 @@
     "uuid": "^9.0.1",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -96,6 +98,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-c8": "^0.33.0",
     "autoprefixer": "^10.0.1",
+    "dotenv": "^16.4.7",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "postcss": "^8",
