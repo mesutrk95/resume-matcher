@@ -71,23 +71,57 @@ export function migrateSkills(resumeContent: ResumeContent): ResumeContent {
   };
 }
 
-function updateResumeKeysLength(data: any): any {
+function getIdPrefixV1(path?: string) {
+  switch (path) {
+    case "experiences":
+      return "exp_";
+    case "experiences.items":
+      return "expitem_";
+    case "experiences.items.variations":
+      return "var_";
+    case "titles":
+      return "title_";
+    case "summaries":
+      return "summary_";
+    case "educations":
+      return "edu_";
+    case "skills":
+      return "skill_";
+    case "projects":
+      return "project_";
+    case "awards":
+      return "award_";
+    case "certifications":
+      return "cert_";
+    case "languages":
+      return "lang_";
+    case "interests":
+      return "interest_";
+    case "references":
+      return "ref_";
+  }
+}
+
+function updateResumeKeysLength(data: any, keyName?: string): any {
   if (Array.isArray(data)) {
-    return data.map((item) => updateResumeKeysLength(item));
+    return data.map((item) => updateResumeKeysLength(item, keyName));
   } else if (typeof data === "object" && data !== null) {
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
         if (key === "id" && typeof data[key] === "string") {
-          let prefix = data[key].replace(/\d+/g, "");
-          if (prefix.startsWith("skill")) prefix = "skill";
-          data[key] = `${prefix}_${randomNDigits()}`;
+          let prefix = getIdPrefixV1(keyName);
+          data[key] = `${prefix}${randomNDigits()}`;
         } else {
-          data[key] = updateResumeKeysLength(data[key]);
+          data[key] = updateResumeKeysLength(
+            data[key],
+            (keyName ? keyName + "." : "") + key
+          );
         }
       }
     }
     return data;
   }
+
   return data;
 }
 

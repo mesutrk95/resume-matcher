@@ -1,7 +1,7 @@
 {
   "experiences": [
     {
-      "id": "exp-1",
+      "id": "exp_mgbs0d",
       "companyName": "Resume Worded",
       "role": "Backend Developer",
       "startDate": "January 2022",
@@ -9,76 +9,94 @@
       "enabled": true,
       "items": [
         {
-          "id": "exp-1-item-1",
+          "id": "expitem_usm5c9",
           "description": "Optimized database queries, reducing server response time by 40%, which improved user experience and decreased page load times by 2 seconds on average",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-1-item-1-var-1",
+              "id": "var_02ejyv",
               "content": "Optimized database queries, reducing server response time by 40%, which improved user experience and decreased page load times by 2 seconds on average",
               "enabled": true
             }
           ],
-          "skills": ["Database Optimization", "Performance Tuning"]
+          "skills": [
+            "Database Optimization",
+            "Performance Tuning"
+          ]
         },
         {
-          "id": "exp-1-item-2",
+          "id": "expitem_oey3vi",
           "description": "Led a team of 5 developers to implement a new microservices architecture, resulting in a 35% increase in system scalability and a 25% reduction in server costs",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-1-item-2-var-1",
+              "id": "var_u75wmu",
               "content": "Led a team of 5 developers to implement a new microservices architecture, resulting in a 35% increase in system scalability and a 25% reduction in server costs",
               "enabled": true
             }
           ],
-          "skills": ["Team Leadership", "Microservices", "System Architecture"]
+          "skills": [
+            "Team Leadership",
+            "Microservices",
+            "System Architecture"
+          ]
         },
         {
-          "id": "exp-1-item-3",
+          "id": "expitem_5c5u6a",
           "description": "Developed a comprehensive API documentation, enhancing cross-team collaboration and reducing integration errors by 20%",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-1-item-3-var-1",
+              "id": "var_z8fp8u",
               "content": "Developed a comprehensive API documentation, enhancing cross-team collaboration and reducing integration errors by 20%",
               "enabled": true
             }
           ],
-          "skills": ["API Documentation", "Cross-team Collaboration"]
+          "skills": [
+            "API Documentation",
+            "Cross-team Collaboration"
+          ]
         },
         {
-          "id": "exp-1-item-4",
+          "id": "expitem_sy9pbv",
           "description": "Automated deployment processes using Jenkins, decreasing deployment time by 30% and reducing human error in the release pipeline",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-1-item-4-var-1",
+              "id": "var_fw6s1e",
               "content": "Automated deployment processes using Jenkins, decreasing deployment time by 30% and reducing human error in the release pipeline",
               "enabled": true
             }
           ],
-          "skills": ["Jenkins", "CI/CD", "Automation"]
+          "skills": [
+            "Jenkins",
+            "CI/CD",
+            "Automation"
+          ]
         },
         {
-          "id": "exp-1-item-5",
+          "id": "expitem_zoga66",
           "description": "Integrated a Redis caching system, which resulted in a 60% decrease in data retrieval times and significantly improved application performance",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-1-item-5-var-1",
+              "id": "var_j8h6tf",
               "content": "Integrated a Redis caching system, which resulted in a 60% decrease in data retrieval times and significantly improved application performance",
               "enabled": true
             }
           ],
-          "skills": ["Redis", "Caching", "Performance Optimization"]
+          "skills": [
+            "Redis",
+            "Caching",
+            "Performance Optimization"
+          ]
         }
       ],
       "location": "City, Country",
       "type": "Full-time"
     },
     {
-      "id": "exp-2",
+      "id": "exp_bgyuoc",
       "companyName": "Google",
       "role": "Backend Developer",
       "startDate": "August 2019",
@@ -86,50 +104,61 @@
       "enabled": true,
       "items": [
         {
-          "id": "exp-2-item-1",
+          "id": "expitem_axqf8x",
           "description": "Implemented load balancing techniques, which led to a 50% improvement in server uptime during peak traffic hours",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-2-item-1-var-1",
+              "id": "var_m322ux",
               "content": "Implemented load balancing techniques, which led to a 50% improvement in server uptime during peak traffic hours",
               "enabled": true
             }
           ],
-          "skills": ["Load Balancing", "Server Management"]
+          "skills": [
+            "Load Balancing",
+            "Server Management"
+          ]
         },
         {
-          "id": "exp-2-item-2",
+          "id": "expitem_f99k0v",
           "description": "Reduced server downtimes by 75% through proactive monitoring and automated alerts using Prometheus and Grafana",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-2-item-2-var-1",
+              "id": "var_5bs5we",
               "content": "Reduced server downtimes by 75% through proactive monitoring and automated alerts using Prometheus and Grafana",
               "enabled": true
             }
           ],
-          "skills": ["Prometheus", "Grafana", "Monitoring", "Alerts"]
+          "skills": [
+            "Prometheus",
+            "Grafana",
+            "Monitoring",
+            "Alerts"
+          ]
         },
         {
-          "id": "exp-2-item-3",
+          "id": "expitem_zydhke",
           "description": "Refactored existing codebase to improve readability and maintainability, leading to a 20% increase in development speed for new features",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-2-item-3-var-1",
+              "id": "var_epybdy",
               "content": "Refactored existing codebase to improve readability and maintainability, leading to a 20% increase in development speed for new features",
               "enabled": true
             }
           ],
-          "skills": ["Code Refactoring", "Maintainability"]
+          "skills": [
+            "Code Refactoring",
+            "Maintainability"
+          ]
         }
       ],
       "location": "City, Country",
       "type": "Full-time"
     },
     {
-      "id": "exp-3",
+      "id": "exp_1bbzpm",
       "companyName": "Amazon",
       "role": "Junior Backend Developer",
       "startDate": "May 2017",
@@ -137,37 +166,44 @@
       "enabled": true,
       "items": [
         {
-          "id": "exp-3-item-1",
+          "id": "expitem_qvu131",
           "description": "Developed RESTful APIs, enabling seamless integration between frontend and backend systems and reducing bug occurrences by 15%",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-3-item-1-var-1",
+              "id": "var_b54eiy",
               "content": "Developed RESTful APIs, enabling seamless integration between frontend and backend systems and reducing bug occurrences by 15%",
               "enabled": true
             }
           ],
-          "skills": ["RESTful APIs", "System Integration"]
+          "skills": [
+            "RESTful APIs",
+            "System Integration"
+          ]
         },
         {
-          "id": "exp-3-item-2",
+          "id": "expitem_1caa6b",
           "description": "Migrated legacy systems to a modern microservices architecture, resulting in a 30% increase in system reliability and performance",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-3-item-2-var-1",
+              "id": "var_eyzea5",
               "content": "Migrated legacy systems to a modern microservices architecture, resulting in a 30% increase in system reliability and performance",
               "enabled": true
             }
           ],
-          "skills": ["System Migration", "Microservices", "Legacy Systems"]
+          "skills": [
+            "System Migration",
+            "Microservices",
+            "Legacy Systems"
+          ]
         }
       ],
       "location": "City, Country",
       "type": "Full-time"
     },
     {
-      "id": "exp-4",
+      "id": "exp_zbi9in",
       "companyName": "Coached.com",
       "role": "Software Engineer Intern",
       "startDate": "June 2016",
@@ -175,30 +211,37 @@
       "enabled": true,
       "items": [
         {
-          "id": "exp-4-item-1",
+          "id": "expitem_878z3v",
           "description": "Assisted in the design and implementation of backend systems using Node.js, contributing to a 20% improvement in application efficiency and load times",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-4-item-1-var-1",
+              "id": "var_vrbsnr",
               "content": "Assisted in the design and implementation of backend systems using Node.js, contributing to a 20% improvement in application efficiency and load times",
               "enabled": true
             }
           ],
-          "skills": ["Node.js", "Backend Development"]
+          "skills": [
+            "Node.js",
+            "Backend Development"
+          ]
         },
         {
-          "id": "exp-4-item-2",
+          "id": "expitem_xb9lug",
           "description": "Collaborated with senior developers to debug and optimize SQL queries, reducing data retrieval times by 25%",
           "enabled": true,
           "variations": [
             {
-              "id": "exp-4-item-2-var-1",
+              "id": "var_fitz50",
               "content": "Collaborated with senior developers to debug and optimize SQL queries, reducing data retrieval times by 25%",
               "enabled": true
             }
           ],
-          "skills": ["SQL", "Query Optimization", "Debugging"]
+          "skills": [
+            "SQL",
+            "Query Optimization",
+            "Debugging"
+          ]
         }
       ],
       "location": "City, Country",
@@ -207,21 +250,21 @@
   ],
   "titles": [
     {
-      "id": "title-1",
+      "id": "title_vkx0jg",
       "content": "Backend Developer",
       "enabled": true
     }
   ],
   "summaries": [
     {
-      "id": "summary-1",
+      "id": "summary_z6ojmw",
       "content": "Experienced Backend Developer with a proven track record in optimizing database performance, implementing microservices architectures, and enhancing system scalability. Skilled in various programming languages and development tools with a focus on creating efficient, robust backend solutions.",
       "enabled": true
     }
   ],
   "educations": [
     {
-      "id": "edu-1",
+      "id": "edu_xyvypo",
       "content": "Master of Science in Software Engineering with a focus on Distributed Systems and Machine Learning Applications",
       "enabled": true,
       "startDate": "",
@@ -231,7 +274,7 @@
       "degree": "Master of Science in Software Engineering"
     },
     {
-      "id": "edu-2",
+      "id": "edu_sjgotn",
       "content": "Bachelor of Science in Computer Science, Graduated Summa Cum Laude. Relevant Coursework: Advanced Data Structures, Database Management Systems",
       "enabled": true,
       "startDate": "",
@@ -243,142 +286,143 @@
   ],
   "skills": [
     {
-      "id": "skill-1",
-      "content": "MySQL (Advanced)",
       "category": "Databases",
-      "enabled": true
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_ifob99",
+          "content": "MySQL (Advanced)",
+          "enabled": true
+        },
+        {
+          "id": "skill_ix3dqi",
+          "content": "PostgreSQL (Advanced)",
+          "enabled": true
+        },
+        {
+          "id": "skill_qz1x5t",
+          "content": "MongoDB (Expert)",
+          "enabled": true
+        },
+        {
+          "id": "skill_d7mqx8",
+          "content": "Redis (Expert)",
+          "enabled": true
+        },
+        {
+          "id": "skill_g02kz4",
+          "content": "Cassandra (Intermediate)",
+          "enabled": true
+        }
+      ]
     },
     {
-      "id": "skill-2",
-      "content": "PostgreSQL (Advanced)",
-      "category": "Databases",
-      "enabled": true
-    },
-    {
-      "id": "skill-3",
-      "content": "MongoDB (Expert)",
-      "category": "Databases",
-      "enabled": true
-    },
-    {
-      "id": "skill-4",
-      "content": "Redis (Expert)",
-      "category": "Databases",
-      "enabled": true
-    },
-    {
-      "id": "skill-5",
-      "content": "Cassandra (Intermediate)",
-      "category": "Databases",
-      "enabled": true
-    },
-    {
-      "id": "skill-6",
-      "content": "Java (Expert)",
       "category": "Programming Languages",
-      "enabled": true
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_cf8qfr",
+          "content": "Java (Expert)",
+          "enabled": true
+        },
+        {
+          "id": "skill_1cdzk0",
+          "content": "Python (Expert)",
+          "enabled": true
+        },
+        {
+          "id": "skill_vkm6rg",
+          "content": "Ruby (Intermediate)",
+          "enabled": true
+        },
+        {
+          "id": "skill_7ahk21",
+          "content": "Scala (Intermediate)",
+          "enabled": true
+        },
+        {
+          "id": "skill_horvbs",
+          "content": "PHP (Intermediate)",
+          "enabled": true
+        },
+        {
+          "id": "skill_1hcz92",
+          "content": "C# (Basic)",
+          "enabled": true
+        }
+      ]
     },
     {
-      "id": "skill-7",
-      "content": "Python (Expert)",
-      "category": "Programming Languages",
-      "enabled": true
-    },
-    {
-      "id": "skill-8",
-      "content": "Ruby (Intermediate)",
-      "category": "Programming Languages",
-      "enabled": true
-    },
-    {
-      "id": "skill-9",
-      "content": "Scala (Intermediate)",
-      "category": "Programming Languages",
-      "enabled": true
-    },
-    {
-      "id": "skill-10",
-      "content": "PHP (Intermediate)",
-      "category": "Programming Languages",
-      "enabled": true
-    },
-    {
-      "id": "skill-11",
-      "content": "C# (Basic)",
-      "category": "Programming Languages",
-      "enabled": true
-    },
-    {
-      "id": "skill-12",
-      "content": "Node.js",
       "category": "Frameworks & Libraries",
-      "enabled": true
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_dffyw7",
+          "content": "Node.js",
+          "enabled": true
+        },
+        {
+          "id": "skill_uxr13x",
+          "content": "Express.js",
+          "enabled": true
+        },
+        {
+          "id": "skill_o0nl4g",
+          "content": "Django",
+          "enabled": true
+        },
+        {
+          "id": "skill_kk5o36",
+          "content": "Flask",
+          "enabled": true
+        },
+        {
+          "id": "skill_365t3x",
+          "content": ".NET Framework",
+          "enabled": true
+        },
+        {
+          "id": "skill_pfjgb4",
+          "content": "Ruby on Rails",
+          "enabled": true
+        }
+      ]
     },
     {
-      "id": "skill-13",
-      "content": "Express.js",
-      "category": "Frameworks & Libraries",
-      "enabled": true
-    },
-    {
-      "id": "skill-14",
-      "content": "Django",
-      "category": "Frameworks & Libraries",
-      "enabled": true
-    },
-    {
-      "id": "skill-15",
-      "content": "Flask",
-      "category": "Frameworks & Libraries",
-      "enabled": true
-    },
-    {
-      "id": "skill-16",
-      "content": ".NET Framework",
-      "category": "Frameworks & Libraries",
-      "enabled": true
-    },
-    {
-      "id": "skill-17",
-      "content": "Ruby on Rails",
-      "category": "Frameworks & Libraries",
-      "enabled": true
-    },
-    {
-      "id": "skill-18",
-      "content": "Docker (Proficient)",
       "category": "Development Tools & Practices",
-      "enabled": true
-    },
-    {
-      "id": "skill-19",
-      "content": "Kubernetes (Proficient)",
-      "category": "Development Tools & Practices",
-      "enabled": true
-    },
-    {
-      "id": "skill-20",
-      "content": "AWS (Proficient)",
-      "category": "Development Tools & Practices",
-      "enabled": true
-    },
-    {
-      "id": "skill-21",
-      "content": "Git (Advanced)",
-      "category": "Development Tools & Practices",
-      "enabled": true
-    },
-    {
-      "id": "skill-22",
-      "content": "CI/CD (Advanced)",
-      "category": "Development Tools & Practices",
-      "enabled": true
-    },
-    {
-      "id": "skill-23",
-      "content": "Agile/Scrum (Advanced)",
-      "category": "Development Tools & Practices",
-      "enabled": true
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_11p213",
+          "content": "Docker (Proficient)",
+          "enabled": true
+        },
+        {
+          "id": "skill_phitdg",
+          "content": "Kubernetes (Proficient)",
+          "enabled": true
+        },
+        {
+          "id": "skill_9pc488",
+          "content": "AWS (Proficient)",
+          "enabled": true
+        },
+        {
+          "id": "skill_a9mb10",
+          "content": "Git (Advanced)",
+          "enabled": true
+        },
+        {
+          "id": "skill_1ldovo",
+          "content": "CI/CD (Advanced)",
+          "enabled": true
+        },
+        {
+          "id": "skill_g5jq3p",
+          "content": "Agile/Scrum (Advanced)",
+          "enabled": true
+        }
+      ]
     }
   ],
   "projects": [],
@@ -395,18 +439,18 @@
     "country": "",
     "pronouns": ""
   },
-  "version": 1,
+  "version": 3,
   "languages": [],
   "certifications": [
     {
-      "id": "cert-1",
+      "id": "cert_8xou2s",
       "name": "Oracle Certified Professional, Java SE 8 Programmer",
       "issuer": "Oracle",
       "date": "",
       "enabled": true
     },
     {
-      "id": "cert-2",
+      "id": "cert_kmqg1u",
       "name": "AWS Certified Developer – Associate",
       "issuer": "Amazon Web Services",
       "date": "2020",
@@ -415,14 +459,14 @@
   ],
   "awards": [
     {
-      "id": "award-1",
+      "id": "award_rve6z1",
       "name": "Finalist in Resume Worded Global Hackathon 2018",
       "issuer": "Resume Worded",
       "date": "2018",
       "enabled": true
     },
     {
-      "id": "award-2",
+      "id": "award_gvo22w",
       "name": "Participated in Google Code Jam 2016",
       "issuer": "Google",
       "date": "2016",

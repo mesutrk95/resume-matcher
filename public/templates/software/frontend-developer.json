@@ -1,520 +1,576 @@
 {
-    "experiences": [
-      {
-        "id": "exp-1",
-        "companyName": "Amazon",
-        "role": "Lead JavaScript Developer",
-        "startDate": "June 2020",
-        "endDate": "Present",
-        "enabled": true,
-        "items": [
-          {
-            "id": "exp-1-item-1",
-            "description": "Spearheaded the redesign of the Amazon Prime shopping cart interface, leveraging React and Redux, resulting in a 30% uptick in user engagement and a significant reduction in checkout times.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-1-item-1-var-1",
-                "content": "Spearheaded the redesign of the Amazon Prime shopping cart interface, leveraging React and Redux, resulting in a 30% uptick in user engagement and a significant reduction in checkout times.",
-                "enabled": true
-              }
-            ],
-            "skills": ["React", "Redux", "UI Design", "E-commerce"]
-          },
-          {
-            "id": "exp-1-item-2",
-            "description": "Orchestrated a three-month initiative to refactor legacy codebase, implementing ES6+ concepts which enhanced application performance by 25% and maintenance efficiency.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-1-item-2-var-1",
-                "content": "Orchestrated a three-month initiative to refactor legacy codebase, implementing ES6+ concepts which enhanced application performance by 25% and maintenance efficiency.",
-                "enabled": true
-              }
-            ],
-            "skills": ["JavaScript", "ES6+", "Code Refactoring", "Performance Optimization"]
-          },
-          {
-            "id": "exp-1-item-3",
-            "description": "Engineered a Node.js microservices architecture for the new user profile service that decreased load times by 40% and improved system resilience.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-1-item-3-var-1",
-                "content": "Engineered a Node.js microservices architecture for the new user profile service that decreased load times by 40% and improved system resilience.",
-                "enabled": true
-              }
-            ],
-            "skills": ["Node.js", "Microservices", "System Architecture", "Performance Optimization"]
-          },
-          {
-            "id": "exp-1-item-4",
-            "description": "Directed a team of 10 developers adopting Agile methodologies, achieving a 20% acceleration in development cycles and ensuring on-time delivery for 5 consecutive major releases.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-1-item-4-var-1",
-                "content": "Directed a team of 10 developers adopting Agile methodologies, achieving a 20% acceleration in development cycles and ensuring on-time delivery for 5 consecutive major releases.",
-                "enabled": true
-              }
-            ],
-            "skills": ["Team Leadership", "Agile Methodologies", "Project Management"]
-          },
-          {
-            "id": "exp-1-item-5",
-            "description": "Pioneered the integration of AWS Lambda and API Gateway to automate backend processes, reducing costs by $50K annually and improving scalability.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-1-item-5-var-1",
-                "content": "Pioneered the integration of AWS Lambda and API Gateway to automate backend processes, reducing costs by $50K annually and improving scalability.",
-                "enabled": true
-              }
-            ],
-            "skills": ["AWS Lambda", "API Gateway", "Cost Optimization", "Scalability"]
-          },
-          {
-            "id": "exp-1-item-6",
-            "description": "Conceived and executed a comprehensive unit testing strategy using Jest and Enzyme, which decreased bug rates by 45% pre-production.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-1-item-6-var-1",
-                "content": "Conceived and executed a comprehensive unit testing strategy using Jest and Enzyme, which decreased bug rates by 45% pre-production.",
-                "enabled": true
-              }
-            ],
-            "skills": ["Jest", "Enzyme", "Unit Testing", "Quality Assurance"]
-          },
-          {
-            "id": "exp-1-item-7",
-            "description": "Initiated and facilitated cross-departmental workshops to align software development with UX/UI principles, elevating customer satisfaction ratings by 15%.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-1-item-7-var-1",
-                "content": "Initiated and facilitated cross-departmental workshops to align software development with UX/UI principles, elevating customer satisfaction ratings by 15%.",
-                "enabled": true
-              }
-            ],
-            "skills": ["Cross-functional Collaboration", "UX/UI Principles", "Workshop Facilitation"]
-          }
-        ],
-        "location": "City, Country",
-        "type": "Full-time"
-      },
-      {
-        "id": "exp-2",
-        "companyName": "eBay",
-        "role": "Senior JavaScript Engineer",
-        "startDate": "January 2018",
-        "endDate": "May 2020",
-        "enabled": true,
-        "items": [
-          {
-            "id": "exp-2-item-1",
-            "description": "Developed an AI-powered recommendation engine with TensorFlow, which personalizes user shopping experiences and boosted sales by 20%.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-2-item-1-var-1",
-                "content": "Developed an AI-powered recommendation engine with TensorFlow, which personalizes user shopping experiences and boosted sales by 20%.",
-                "enabled": true
-              }
-            ],
-            "skills": ["TensorFlow", "AI", "Recommendation Systems", "E-commerce"]
-          },
-          {
-            "id": "exp-2-item-2",
-            "description": "Adopted and integrated Vue.js into existing projects, which enhanced application responsiveness and resulted in a 35% improvement in page load times.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-2-item-2-var-1",
-                "content": "Adopted and integrated Vue.js into existing projects, which enhanced application responsiveness and resulted in a 35% improvement in page load times.",
-                "enabled": true
-              }
-            ],
-            "skills": ["Vue.js", "Frontend Development", "Performance Optimization"]
-          },
-          {
-            "id": "exp-2-item-3",
-            "description": "Conducted comprehensive code reviews that improved project code quality by 10% and fostered a culture of collaboration within the team.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-2-item-3-var-1",
-                "content": "Conducted comprehensive code reviews that improved project code quality by 10% and fostered a culture of collaboration within the team.",
-                "enabled": true
-              }
-            ],
-            "skills": ["Code Review", "Quality Assurance", "Team Collaboration"]
-          }
-        ],
-        "location": "City, Country",
-        "type": "Full-time"
-      },
-      {
-        "id": "exp-3",
-        "companyName": "Shopify",
-        "role": "JavaScript Developer",
-        "startDate": "March 2015",
-        "endDate": "December 2017",
-        "enabled": true,
-        "items": [
-          {
-            "id": "exp-3-item-1",
-            "description": "Implemented dynamic web components for custom Shopify themes using Vue.js, increasing customization options for merchants and driving a 50% increase in theme adoption.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-3-item-1-var-1",
-                "content": "Implemented dynamic web components for custom Shopify themes using Vue.js, increasing customization options for merchants and driving a 50% increase in theme adoption.",
-                "enabled": true
-              }
-            ],
-            "skills": ["Vue.js", "Web Components", "Shopify Themes", "E-commerce"]
-          },
-          {
-            "id": "exp-3-item-2",
-            "description": "Optimized existing codebase, resulting in a 30% improvement in server response times and support for 10,000 more concurrent users without additional hardware investments.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-3-item-2-var-1",
-                "content": "Optimized existing codebase, resulting in a 30% improvement in server response times and support for 10,000 more concurrent users without additional hardware investments.",
-                "enabled": true
-              }
-            ],
-            "skills": ["Performance Optimization", "Scalability", "Code Optimization"]
-          }
-        ],
-        "location": "City, Country",
-        "type": "Full-time"
-      },
-      {
-        "id": "exp-4",
-        "companyName": "Adobe",
-        "role": "Front End Developer",
-        "startDate": "July 2012",
-        "endDate": "February 2015",
-        "enabled": true,
-        "items": [
-          {
-            "id": "exp-4-item-1",
-            "description": "Integrated Adobe Experience Manager (AEM) with React applications, streamlining content management processes and boosting team productivity by 20%.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-4-item-1-var-1",
-                "content": "Integrated Adobe Experience Manager (AEM) with React applications, streamlining content management processes and boosting team productivity by 20%.",
-                "enabled": true
-              }
-            ],
-            "skills": ["React", "Adobe Experience Manager", "CMS Integration"]
-          },
-          {
-            "id": "exp-4-item-2",
-            "description": "Revamped the customer portal interface using AngularJS, which enhanced user experience and contributed to a 10% increase in customer retention.",
-            "enabled": true,
-            "variations": [
-              {
-                "id": "exp-4-item-2-var-1",
-                "content": "Revamped the customer portal interface using AngularJS, which enhanced user experience and contributed to a 10% increase in customer retention.",
-                "enabled": true
-              }
-            ],
-            "skills": ["AngularJS", "UI Design", "Customer Retention"]
-          }
-        ],
-        "location": "City, Country",
-        "type": "Full-time"
-      }
-    ],
-    "titles": [
-      {
-        "id": "title-1",
-        "content": "Lead JavaScript Developer",
-        "enabled": true
-      }
-    ],
-    "summaries": [
-      {
-        "id": "summary-1",
-        "content": "Results-driven Lead JavaScript Developer with extensive experience in e-commerce platforms. Proven track record of enhancing user engagement, optimizing application performance, and leading development teams. Specialized in React, Vue.js, and Node.js with expertise in building scalable microservices architectures and implementing modern JavaScript frameworks.",
-        "enabled": true
-      }
-    ],
-    "educations": [
-      {
-        "id": "edu-1",
-        "content": "Master of Science in Computer Science, Specialization in Full-Stack Web Development",
-        "enabled": true,
-        "startDate": "",
-        "endDate": "May 2014",
-        "institution": "Resume Worded Institute",
-        "location": "City, Country",
-        "degree": "Master of Science in Computer Science"
-      },
-      {
-        "id": "edu-2",
-        "content": "Certified Node.js Developer, Focused on scalable back-end architecture",
-        "enabled": true,
-        "startDate": "",
-        "endDate": "October 2016",
-        "institution": "Resume Worded University",
-        "location": "City, Country",
-        "degree": "Certified Node.js Developer"
-      }
-    ],
-    "skills": [
-      {
-        "id": "skill-1",
-        "content": "React.js",
-        "category": "Front End",
-        "enabled": true
-      },
-      {
-        "id": "skill-2",
-        "content": "Redux",
-        "category": "Front End",
-        "enabled": true
-      },
-      {
-        "id": "skill-3",
-        "content": "Vue.js",
-        "category": "Front End",
-        "enabled": true
-      },
-      {
-        "id": "skill-4",
-        "content": "Angular",
-        "category": "Front End",
-        "enabled": true
-      },
-      {
-        "id": "skill-5",
-        "content": "HTML5",
-        "category": "Front End",
-        "enabled": true
-      },
-      {
-        "id": "skill-6",
-        "content": "CSS3",
-        "category": "Front End",
-        "enabled": true
-      },
-      {
-        "id": "skill-7",
-        "content": "SASS",
-        "category": "Front End",
-        "enabled": true
-      },
-      {
-        "id": "skill-8",
-        "content": "Bootstrap",
-        "category": "Front End",
-        "enabled": true
-      },
-      {
-        "id": "skill-9",
-        "content": "AJAX",
-        "category": "Front End",
-        "enabled": true
-      },
-      {
-        "id": "skill-10",
-        "content": "Webpack",
-        "category": "Front End",
-        "enabled": true
-      },
-      {
-        "id": "skill-11",
-        "content": "Node.js",
-        "category": "Back End",
-        "enabled": true
-      },
-      {
-        "id": "skill-12",
-        "content": "Express.js",
-        "category": "Back End",
-        "enabled": true
-      },
-      {
-        "id": "skill-13",
-        "content": "MongoDB",
-        "category": "Back End",
-        "enabled": true
-      },
-      {
-        "id": "skill-14",
-        "content": "SQL",
-        "category": "Back End",
-        "enabled": true
-      },
-      {
-        "id": "skill-15",
-        "content": "RESTful API Development",
-        "category": "Back End",
-        "enabled": true
-      },
-      {
-        "id": "skill-16",
-        "content": "GraphQL",
-        "category": "Back End",
-        "enabled": true
-      },
-      {
-        "id": "skill-17",
-        "content": "JWT",
-        "category": "Back End",
-        "enabled": true
-      },
-      {
-        "id": "skill-18",
-        "content": "Git",
-        "category": "Development Tools",
-        "enabled": true
-      },
-      {
-        "id": "skill-19",
-        "content": "Docker",
-        "category": "Development Tools",
-        "enabled": true
-      },
-      {
-        "id": "skill-20",
-        "content": "Jenkins",
-        "category": "Development Tools",
-        "enabled": true
-      },
-      {
-        "id": "skill-21",
-        "content": "NPM",
-        "category": "Development Tools",
-        "enabled": true
-      },
-      {
-        "id": "skill-22",
-        "content": "Babel",
-        "category": "Development Tools",
-        "enabled": true
-      },
-      {
-        "id": "skill-23",
-        "content": "ESLint",
-        "category": "Development Tools",
-        "enabled": true
-      },
-      {
-        "id": "skill-24",
-        "content": "Mocha",
-        "category": "Development Tools",
-        "enabled": true
-      },
-      {
-        "id": "skill-25",
-        "content": "Chai",
-        "category": "Development Tools",
-        "enabled": true
-      },
-      {
-        "id": "skill-26",
-        "content": "jQuery",
-        "category": "Libraries & Frameworks",
-        "enabled": true
-      },
-      {
-        "id": "skill-27",
-        "content": "Gulp.js",
-        "category": "Libraries & Frameworks",
-        "enabled": true
-      },
-      {
-        "id": "skill-28",
-        "content": "Lodash",
-        "category": "Libraries & Frameworks",
-        "enabled": true
-      },
-      {
-        "id": "skill-29",
-        "content": "React Native",
-        "category": "Libraries & Frameworks",
-        "enabled": true
-      },
-      {
-        "id": "skill-30",
-        "content": "Next.js",
-        "category": "Libraries & Frameworks",
-        "enabled": true
-      },
-      {
-        "id": "skill-31",
-        "content": "Tailwind CSS",
-        "category": "Libraries & Frameworks",
-        "enabled": true
-      }
-    ],
-    "projects": [
-      {
-        "id": "project-1",
-        "name": "React-Bootstrap",
-        "link": "",
-        "content": "Contributor to 'React-Bootstrap' open source project",
-        "startDate": "",
-        "endDate": "",
-        "enabled": true
-      },
-      {
-        "id": "project-2",
-        "name": "E-commerce Checkout System",
-        "link": "",
-        "content": "Developed e-commerce checkout system now used by 50+ online stores",
-        "startDate": "",
-        "endDate": "",
-        "enabled": true
-      }
-    ],
-    "contactInfo": {
-      "firstName": "Your",
-      "lastName": "Name",
-      "phone": "(123) 456-789",
-      "email": "yourname@minova.ai",
-      "linkedIn": "linkedin.com/in/your-profile",
-      "github": "",
-      "website": "",
-      "twitter": "",
-      "address": "City, Country",
-      "country": "",
-      "pronouns": ""
+  "experiences": [
+    {
+      "id": "exp_857w3q",
+      "companyName": "Amazon",
+      "role": "Lead JavaScript Developer",
+      "startDate": "June 2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_g0uony",
+          "description": "Spearheaded the redesign of the Amazon Prime shopping cart interface, leveraging React and Redux, resulting in a 30% uptick in user engagement and a significant reduction in checkout times.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_knqtel",
+              "content": "Spearheaded the redesign of the Amazon Prime shopping cart interface, leveraging React and Redux, resulting in a 30% uptick in user engagement and a significant reduction in checkout times.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "React",
+            "Redux",
+            "UI Design",
+            "E-commerce"
+          ]
+        },
+        {
+          "id": "expitem_8e05n5",
+          "description": "Orchestrated a three-month initiative to refactor legacy codebase, implementing ES6+ concepts which enhanced application performance by 25% and maintenance efficiency.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_tuhg3p",
+              "content": "Orchestrated a three-month initiative to refactor legacy codebase, implementing ES6+ concepts which enhanced application performance by 25% and maintenance efficiency.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "JavaScript",
+            "ES6+",
+            "Code Refactoring",
+            "Performance Optimization"
+          ]
+        },
+        {
+          "id": "expitem_8li3z2",
+          "description": "Engineered a Node.js microservices architecture for the new user profile service that decreased load times by 40% and improved system resilience.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_bcvkm1",
+              "content": "Engineered a Node.js microservices architecture for the new user profile service that decreased load times by 40% and improved system resilience.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Node.js",
+            "Microservices",
+            "System Architecture",
+            "Performance Optimization"
+          ]
+        },
+        {
+          "id": "expitem_fd9oxh",
+          "description": "Directed a team of 10 developers adopting Agile methodologies, achieving a 20% acceleration in development cycles and ensuring on-time delivery for 5 consecutive major releases.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_wrcouy",
+              "content": "Directed a team of 10 developers adopting Agile methodologies, achieving a 20% acceleration in development cycles and ensuring on-time delivery for 5 consecutive major releases.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Team Leadership",
+            "Agile Methodologies",
+            "Project Management"
+          ]
+        },
+        {
+          "id": "expitem_ug6p76",
+          "description": "Pioneered the integration of AWS Lambda and API Gateway to automate backend processes, reducing costs by $50K annually and improving scalability.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_y2b3hb",
+              "content": "Pioneered the integration of AWS Lambda and API Gateway to automate backend processes, reducing costs by $50K annually and improving scalability.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "AWS Lambda",
+            "API Gateway",
+            "Cost Optimization",
+            "Scalability"
+          ]
+        },
+        {
+          "id": "expitem_el1ebo",
+          "description": "Conceived and executed a comprehensive unit testing strategy using Jest and Enzyme, which decreased bug rates by 45% pre-production.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_ni44tv",
+              "content": "Conceived and executed a comprehensive unit testing strategy using Jest and Enzyme, which decreased bug rates by 45% pre-production.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Jest",
+            "Enzyme",
+            "Unit Testing",
+            "Quality Assurance"
+          ]
+        },
+        {
+          "id": "expitem_nynjg6",
+          "description": "Initiated and facilitated cross-departmental workshops to align software development with UX/UI principles, elevating customer satisfaction ratings by 15%.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_dzhsgh",
+              "content": "Initiated and facilitated cross-departmental workshops to align software development with UX/UI principles, elevating customer satisfaction ratings by 15%.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Cross-functional Collaboration",
+            "UX/UI Principles",
+            "Workshop Facilitation"
+          ]
+        }
+      ],
+      "location": "City, Country",
+      "type": "Full-time"
     },
-    "version": 1,
-    "languages": [],
-    "certifications": [
-      {
-        "id": "cert-1",
-        "name": "AWS Certified Solutions Architect – Associate",
-        "issuer": "Amazon Web Services",
-        "date": "2021",
-        "enabled": true
-      },
-      {
-        "id": "cert-2",
-        "name": "Continuous Integration/Continuous Deployment (CI/CD) with Jenkins",
-        "issuer": "Resume Worded Academic Center",
-        "date": "2019",
-        "enabled": true
-      }
-    ],
-    "awards": [
-      {
-        "id": "award-1",
-        "name": "Amazon Lead Developer Excellence Award",
-        "issuer": "Amazon",
-        "date": "2021",
-        "enabled": true
-      }
-    ],
-    "interests": [],
-    "references": []
-  }
+    {
+      "id": "exp_kdf2xg",
+      "companyName": "eBay",
+      "role": "Senior JavaScript Engineer",
+      "startDate": "January 2018",
+      "endDate": "May 2020",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_tpm5po",
+          "description": "Developed an AI-powered recommendation engine with TensorFlow, which personalizes user shopping experiences and boosted sales by 20%.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_zjwdtc",
+              "content": "Developed an AI-powered recommendation engine with TensorFlow, which personalizes user shopping experiences and boosted sales by 20%.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "TensorFlow",
+            "AI",
+            "Recommendation Systems",
+            "E-commerce"
+          ]
+        },
+        {
+          "id": "expitem_cgasl2",
+          "description": "Adopted and integrated Vue.js into existing projects, which enhanced application responsiveness and resulted in a 35% improvement in page load times.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_12dwmz",
+              "content": "Adopted and integrated Vue.js into existing projects, which enhanced application responsiveness and resulted in a 35% improvement in page load times.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Vue.js",
+            "Frontend Development",
+            "Performance Optimization"
+          ]
+        },
+        {
+          "id": "expitem_hqsccx",
+          "description": "Conducted comprehensive code reviews that improved project code quality by 10% and fostered a culture of collaboration within the team.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_0mlpjc",
+              "content": "Conducted comprehensive code reviews that improved project code quality by 10% and fostered a culture of collaboration within the team.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Code Review",
+            "Quality Assurance",
+            "Team Collaboration"
+          ]
+        }
+      ],
+      "location": "City, Country",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_9a1kiz",
+      "companyName": "Shopify",
+      "role": "JavaScript Developer",
+      "startDate": "March 2015",
+      "endDate": "December 2017",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_ekiqqe",
+          "description": "Implemented dynamic web components for custom Shopify themes using Vue.js, increasing customization options for merchants and driving a 50% increase in theme adoption.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_i8uqh0",
+              "content": "Implemented dynamic web components for custom Shopify themes using Vue.js, increasing customization options for merchants and driving a 50% increase in theme adoption.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Vue.js",
+            "Web Components",
+            "Shopify Themes",
+            "E-commerce"
+          ]
+        },
+        {
+          "id": "expitem_l7rhwi",
+          "description": "Optimized existing codebase, resulting in a 30% improvement in server response times and support for 10,000 more concurrent users without additional hardware investments.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_yzmnf8",
+              "content": "Optimized existing codebase, resulting in a 30% improvement in server response times and support for 10,000 more concurrent users without additional hardware investments.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Performance Optimization",
+            "Scalability",
+            "Code Optimization"
+          ]
+        }
+      ],
+      "location": "City, Country",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_x2iipn",
+      "companyName": "Adobe",
+      "role": "Front End Developer",
+      "startDate": "July 2012",
+      "endDate": "February 2015",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_kqwyac",
+          "description": "Integrated Adobe Experience Manager (AEM) with React applications, streamlining content management processes and boosting team productivity by 20%.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_2dy8io",
+              "content": "Integrated Adobe Experience Manager (AEM) with React applications, streamlining content management processes and boosting team productivity by 20%.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "React",
+            "Adobe Experience Manager",
+            "CMS Integration"
+          ]
+        },
+        {
+          "id": "expitem_l1wph2",
+          "description": "Revamped the customer portal interface using AngularJS, which enhanced user experience and contributed to a 10% increase in customer retention.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_q560dl",
+              "content": "Revamped the customer portal interface using AngularJS, which enhanced user experience and contributed to a 10% increase in customer retention.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "AngularJS",
+            "UI Design",
+            "Customer Retention"
+          ]
+        }
+      ],
+      "location": "City, Country",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_rl5jaw",
+      "content": "Lead JavaScript Developer",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_hpicnz",
+      "content": "Results-driven Lead JavaScript Developer with extensive experience in e-commerce platforms. Proven track record of enhancing user engagement, optimizing application performance, and leading development teams. Specialized in React, Vue.js, and Node.js with expertise in building scalable microservices architectures and implementing modern JavaScript frameworks.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_6je701",
+      "content": "Master of Science in Computer Science, Specialization in Full-Stack Web Development",
+      "enabled": true,
+      "startDate": "",
+      "endDate": "May 2014",
+      "institution": "Resume Worded Institute",
+      "location": "City, Country",
+      "degree": "Master of Science in Computer Science"
+    },
+    {
+      "id": "edu_fu7oxa",
+      "content": "Certified Node.js Developer, Focused on scalable back-end architecture",
+      "enabled": true,
+      "startDate": "",
+      "endDate": "October 2016",
+      "institution": "Resume Worded University",
+      "location": "City, Country",
+      "degree": "Certified Node.js Developer"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Front End",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_cg9qnk",
+          "content": "React.js",
+          "enabled": true
+        },
+        {
+          "id": "skill_j2fgb6",
+          "content": "Redux",
+          "enabled": true
+        },
+        {
+          "id": "skill_9854fb",
+          "content": "Vue.js",
+          "enabled": true
+        },
+        {
+          "id": "skill_b518pl",
+          "content": "Angular",
+          "enabled": true
+        },
+        {
+          "id": "skill_n1ye3r",
+          "content": "HTML5",
+          "enabled": true
+        },
+        {
+          "id": "skill_7er6w5",
+          "content": "CSS3",
+          "enabled": true
+        },
+        {
+          "id": "skill_00ziyl",
+          "content": "SASS",
+          "enabled": true
+        },
+        {
+          "id": "skill_26mszj",
+          "content": "Bootstrap",
+          "enabled": true
+        },
+        {
+          "id": "skill_km9ci6",
+          "content": "AJAX",
+          "enabled": true
+        },
+        {
+          "id": "skill_mximj3",
+          "content": "Webpack",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Back End",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_4i0qn6",
+          "content": "Node.js",
+          "enabled": true
+        },
+        {
+          "id": "skill_7xarry",
+          "content": "Express.js",
+          "enabled": true
+        },
+        {
+          "id": "skill_aebdet",
+          "content": "MongoDB",
+          "enabled": true
+        },
+        {
+          "id": "skill_y4t83a",
+          "content": "SQL",
+          "enabled": true
+        },
+        {
+          "id": "skill_5okxcu",
+          "content": "RESTful API Development",
+          "enabled": true
+        },
+        {
+          "id": "skill_g1erjr",
+          "content": "GraphQL",
+          "enabled": true
+        },
+        {
+          "id": "skill_vcza5z",
+          "content": "JWT",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Development Tools",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_vf2elo",
+          "content": "Git",
+          "enabled": true
+        },
+        {
+          "id": "skill_pkclud",
+          "content": "Docker",
+          "enabled": true
+        },
+        {
+          "id": "skill_n8jnd4",
+          "content": "Jenkins",
+          "enabled": true
+        },
+        {
+          "id": "skill_xiathd",
+          "content": "NPM",
+          "enabled": true
+        },
+        {
+          "id": "skill_msr5pa",
+          "content": "Babel",
+          "enabled": true
+        },
+        {
+          "id": "skill_adbcaf",
+          "content": "ESLint",
+          "enabled": true
+        },
+        {
+          "id": "skill_iytis6",
+          "content": "Mocha",
+          "enabled": true
+        },
+        {
+          "id": "skill_ph3510",
+          "content": "Chai",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Libraries & Frameworks",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_mrril4",
+          "content": "jQuery",
+          "enabled": true
+        },
+        {
+          "id": "skill_wyu2mo",
+          "content": "Gulp.js",
+          "enabled": true
+        },
+        {
+          "id": "skill_issdn3",
+          "content": "Lodash",
+          "enabled": true
+        },
+        {
+          "id": "skill_w9npc5",
+          "content": "React Native",
+          "enabled": true
+        },
+        {
+          "id": "skill_ibld4g",
+          "content": "Next.js",
+          "enabled": true
+        },
+        {
+          "id": "skill_dlu37a",
+          "content": "Tailwind CSS",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_rd1we3",
+      "name": "React-Bootstrap",
+      "link": "",
+      "content": "Contributor to 'React-Bootstrap' open source project",
+      "startDate": "",
+      "endDate": "",
+      "enabled": true
+    },
+    {
+      "id": "project_04ewz9",
+      "name": "E-commerce Checkout System",
+      "link": "",
+      "content": "Developed e-commerce checkout system now used by 50+ online stores",
+      "startDate": "",
+      "endDate": "",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "Your",
+    "lastName": "Name",
+    "phone": "(123) 456-789",
+    "email": "yourname@minova.ai",
+    "linkedIn": "linkedin.com/in/your-profile",
+    "github": "",
+    "website": "",
+    "twitter": "",
+    "address": "City, Country",
+    "country": "",
+    "pronouns": ""
+  },
+  "version": 3,
+  "languages": [],
+  "certifications": [
+    {
+      "id": "cert_h5gbw9",
+      "name": "AWS Certified Solutions Architect – Associate",
+      "issuer": "Amazon Web Services",
+      "date": "2021",
+      "enabled": true
+    },
+    {
+      "id": "cert_65zfjm",
+      "name": "Continuous Integration/Continuous Deployment (CI/CD) with Jenkins",
+      "issuer": "Resume Worded Academic Center",
+      "date": "2019",
+      "enabled": true
+    }
+  ],
+  "awards": [
+    {
+      "id": "award_qctm3p",
+      "name": "Amazon Lead Developer Excellence Award",
+      "issuer": "Amazon",
+      "date": "2021",
+      "enabled": true
+    }
+  ],
+  "interests": [],
+  "references": []
+}
