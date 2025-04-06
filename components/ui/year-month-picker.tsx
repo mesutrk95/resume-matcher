@@ -45,7 +45,6 @@ const months = [
 
 export const parseDate = (date: string) => {
   const d = date.split("/");
-  console.log(date, `${d[0]}/01/${d[1]}`);
   
   return `${d[0]}/01/${d[1]}`;
 };
