@@ -160,11 +160,11 @@ export function SkillCategoryItem({
 
       <div
         className={`
-          flex flex-wrap gap-2 min-h-[60px] p-3 rounded-lg border-2 transition-colors
+          flex flex-wrap gap-2 min-h-[60px] p-3 rounded-lg transition-colors
           ${
             isDragging
-              ? "border-primary bg-primary/5 border-dashed"
-              : "border-muted-foreground/20 border-dashed"
+              ? "border-primary bg-primary/5 border-dashed border-2"
+              : "border-muted-foreground/20 border "
           }
         `}
       >
