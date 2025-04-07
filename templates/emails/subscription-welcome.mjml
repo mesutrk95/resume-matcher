@@ -1,0 +1,59 @@
+<mj-section>
+  <mj-column>
+    <mj-text
+      font-size="24px"
+      font-weight="bold"
+      color="#333333"
+      align="center"
+      padding-bottom="20px"
+    >
+      Welcome to Resume Matcher Pro!
+    </mj-text>
+
+    <mj-text> Hello {{name}}, </mj-text>
+
+    <mj-text>
+      Thank you for subscribing to Resume Matcher Pro! We're excited to have you
+      on board and can't wait for you to experience all the premium features we
+      offer.
+    </mj-text>
+
+    <mj-text>
+      <strong>Your trial period:</strong> You're currently on a free trial that
+      will end on {{trialEndDate}}. During this time, you'll have full access to
+      all premium features at no cost.
+    </mj-text>
+
+    <mj-text>
+      <strong>What's included in {{productName}}:</strong>
+    </mj-text>
+
+    <mj-text padding-left="25px">
+      • Unlimited resume matching<br />
+      • Advanced AI-powered job recommendations<br />
+      • Custom resume templates<br />
+      • Priority support<br />
+      • And much more!
+    </mj-text>
+
+    <mj-button
+      background-color="#4f46e5"
+      color="white"
+      border-radius="4px"
+      font-weight="bold"
+      href="{{appUrl}}/dashboard"
+    >
+      Go to Dashboard
+    </mj-button>
+
+    <mj-text>
+      If you have any questions or need assistance, please don't hesitate to
+      contact our support team.
+    </mj-text>
+
+    <mj-text>
+      Best regards,<br />
+      The {{appName}} Team
+    </mj-text>
+  </mj-column>
+</mj-section>

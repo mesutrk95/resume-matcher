@@ -1,0 +1,79 @@
+<mj-section>
+  <mj-column>
+    <mj-text
+      font-size="24px"
+      font-weight="bold"
+      color="#333333"
+      align="center"
+      padding-bottom="20px"
+    >
+      Your Subscription Has Ended
+    </mj-text>
+
+    <mj-text> Hello {{name}}, </mj-text>
+
+    <mj-text>
+      We're sorry to see you go. Your Resume Matcher Pro subscription has been
+      canceled and ended on <strong>{{endDate}}</strong>.
+    </mj-text>
+
+    <mj-text>
+      Your account has been downgraded to the free plan, which includes limited
+      features. You'll still have access to your existing data, but premium
+      features are no longer available.
+    </mj-text>
+
+    <mj-text>
+      <strong>What you'll miss with Resume Matcher Pro:</strong>
+    </mj-text>
+
+    <mj-text padding-left="25px">
+      • Unlimited resume matching<br />
+      • Advanced AI-powered job recommendations<br />
+      • Custom resume templates<br />
+      • Priority support<br />
+      • And much more!
+    </mj-text>
+
+    <mj-text>
+      If you've changed your mind or canceled by mistake, you can resubscribe
+      anytime:
+    </mj-text>
+
+    <mj-button
+      background-color="#4f46e5"
+      color="white"
+      border-radius="4px"
+      font-weight="bold"
+      href="{{resubscribeUrl}}"
+    >
+      Resubscribe Now
+    </mj-button>
+
+    <mj-text>
+      We'd love to hear your feedback on why you decided to cancel. Your
+      insights will help us improve our service:
+    </mj-text>
+
+    <mj-button
+      background-color="#ffffff"
+      color="#4f46e5"
+      border="1px solid #4f46e5"
+      border-radius="4px"
+      font-weight="bold"
+      href="{{feedbackUrl}}"
+    >
+      Share Your Feedback
+    </mj-button>
+
+    <mj-text>
+      Thank you for being a Resume Matcher Pro subscriber. We hope to welcome
+      you back soon.
+    </mj-text>
+
+    <mj-text>
+      Best regards,<br />
+      The {{appName}} Team
+    </mj-text>
+  </mj-column>
+</mj-section>

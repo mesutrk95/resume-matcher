@@ -1,0 +1,77 @@
+<mj-section>
+  <mj-column>
+    <mj-text
+      font-size="24px"
+      font-weight="bold"
+      color="#333333"
+      align="center"
+      padding-bottom="20px"
+    >
+      We Miss You!
+    </mj-text>
+
+    <mj-text> Hello {{name}}, </mj-text>
+
+    <mj-text>
+      We noticed it's been a while since you've used Resume Matcher Pro, and we
+      wanted to reach out with a special offer just for you.
+    </mj-text>
+
+    <mj-text
+      font-size="20px"
+      font-weight="bold"
+      color="#4f46e5"
+      align="center"
+      padding="15px 0"
+    >
+      50% OFF for 3 months!
+    </mj-text>
+
+    <mj-text>
+      We've been busy improving Resume Matcher Pro with new features and
+      enhancements:
+    </mj-text>
+
+    <mj-text padding-left="25px">
+      • Enhanced AI matching algorithm<br />
+      • New professional resume templates<br />
+      • Improved job recommendation engine<br />
+      • Streamlined user interface<br />
+      • And much more!
+    </mj-text>
+
+    <mj-text>
+      This exclusive offer is valid for 7 days only. Don't miss out on this
+      opportunity to supercharge your job search at half the price!
+    </mj-text>
+
+    <mj-button
+      background-color="#4f46e5"
+      color="white"
+      border-radius="4px"
+      font-weight="bold"
+      href="{{specialOfferUrl}}"
+    >
+      Claim Your 50% Discount
+    </mj-button>
+
+    <mj-text>
+      If you have any questions or need assistance, our support team is always
+      here to help.
+    </mj-text>
+
+    <mj-text>
+      Best regards,<br />
+      The {{appName}} Team
+    </mj-text>
+
+    <mj-text font-size="12px" color="#888888" padding-top="20px">
+      If you don't want to receive promotional emails,
+      <a
+        href="{{appUrl}}/unsubscribe?email={{emailEncoded}}"
+        style="color: #888888"
+        >unsubscribe here</a
+      >.
+    </mj-text>
+  </mj-column>
+</mj-section>

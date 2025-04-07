@@ -5,12 +5,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Social } from "@/components/shared/social";
-import { Separator } from "@/components/ui/separator";
-import Image from "next/image";
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { Social } from '@/components/shared/social';
+import { Separator } from '@/components/ui/separator';
+import Image from 'next/image';
 
 type CardWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
   headerTitle: string;
@@ -36,8 +36,14 @@ export const CardWrapper = (props: CardWrapperProps) => {
   return (
     <Card className="w-[400px] shadow mx-4 md:mx-0" {...rest}>
       {heroImage ? (
-        <div className="w-1/4 relative pt-6 mx-auto">
-          <Image src={heroImage} alt="Hero Image" width={24} height={24} className="relative w-full h-full max-w-md select-none" />
+        <div className="w-1/2 relative pt-6 mx-auto">
+          <Image
+            src={heroImage}
+            alt="Hero Image"
+            width={120}
+            height={120}
+            className="relative w-full h-full select-none"
+          />
         </div>
       ) : null}
       <CardHeader className="text-center">
