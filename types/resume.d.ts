@@ -38,6 +38,12 @@ export type ResumeProject = z.infer<typeof resumeProjectSchema>;
 export type ResumeContactInfo = z.infer<typeof resumeContactInfoSchema>;
 export type ResumeTargetTitle = z.infer<typeof resumeTargetTitleSchema>;
 export type ResumeEducation = z.infer<typeof resumeEducationSchema>;
+export type ResumeAward = z.infer<typeof resumeAwardSchema>;
+export type ResumeCertification = z.infer<typeof resumeCertificationSchema>;
+export type ResumeLanguage = z.infer<typeof resumeLanguageSchema>;
+export type ResumeReference = z.infer<typeof resumeReferenceSchema>;
+export type ResumeInterest = z.infer<typeof resumeInterestSchema>;
+
 export type ResumeContent = z.infer<typeof resumeContentSchema>;
 
 export type ResumeItemScoreAnalyze = z.infer<
@@ -52,5 +58,7 @@ export type ResumeDesign = z.infer<typeof resumeDesignSchema>;
 export type ResumeDesignTypography = z.infer<typeof typographySchema>;
 export type ResumeDesignElementStyle = z.infer<typeof elementStyleSchema>;
 export type ResumeDesignSection = z.infer<typeof sectionSchema>;
-export type ResumeDesignSectionSubHeader = z.infer<typeof sectionSubheaderSchema>;
+export type ResumeDesignSectionSubHeader = z.infer<
+  typeof sectionSubheaderSchema
+>;
 export type ResumeDesignSectionName = z.infer<typeof sectionNamesSchema>;

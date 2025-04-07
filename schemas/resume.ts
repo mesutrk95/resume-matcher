@@ -93,6 +93,47 @@ const resumeEducationSchema = z.object({
   degree: z.string(),
 });
 
+const resumeAwardSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  organization: z.string(),
+  date: z.string(),
+  enabled: z.boolean(),
+});
+
+const resumeCertificationSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  issuer: z.string(),
+  date: z.string(),
+  enabled: z.boolean(),
+});
+
+const resumeLanguageSchema = z.object({
+  id: z.string(),
+  language: z.string(),
+  proficiency: z.string(),
+  enabled: z.boolean(),
+});
+
+const resumeInterestSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  enabled: z.boolean(),
+});
+
+const resumeReferenceSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  title: z.string(),
+  company: z.string(),
+  email: z.string(),
+  phone: z.string(),
+  relationship: z.string(),
+  description: z.string(),
+  enabled: z.boolean(),
+});
+
 // Define the resumeContent schema
 const resumeContentSchema = z.object({
   experiences: z.array(experienceSchema),
@@ -102,12 +143,12 @@ const resumeContentSchema = z.object({
   skills: z.array(resumeSkillSetSchema),
   projects: z.array(resumeProjectSchema),
   contactInfo: resumeContactInfoSchema,
+  awards: z.array(resumeAwardSchema),
+  languages: z.array(resumeLanguageSchema),
+  certifications: z.array(resumeCertificationSchema),
+  interests: z.array(resumeInterestSchema),
+  references: z.array(resumeReferenceSchema),
   version: z.number().optional(),
-  languages: z.array(z.any()),
-  certifications: z.array(z.any()),
-  awards: z.array(z.any()),
-  interests: z.array(z.any()),
-  references: z.array(z.any()),
 });
 
 // Define the resumeItemScoreAnalyze schema
@@ -148,8 +189,14 @@ export {
   resumeContactInfoSchema,
   resumeTargetTitleSchema,
   resumeEducationSchema,
+  resumeAwardSchema,
+  resumeCertificationSchema,
+  resumeLanguageSchema,
+  resumeInterestSchema,
+  resumeReferenceSchema,
   resumeContentSchema,
   resumeItemScoreAnalyzeSchema,
   resumeAnalyzedImprovementNoteSchema,
   resumeAnalyzeResultsSchema,
-};
+}; 
+ 
