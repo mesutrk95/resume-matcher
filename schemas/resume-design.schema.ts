@@ -11,17 +11,8 @@ const colorSchema = z
   .string()
   .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Must be a valid hex color");
 
-export const typographySchema = z.enum([
-  "h6",
-  "h5",
-  "h4",
-  "h3",
-  "h2",
-  "h1",
-  "p",
-  "text-muted",
-]);
-const cssStyleSchema = z.object({
+export const resumeDesignClassSchema = z.string();
+export const resumeDesignStyleSchema = z.object({
   textDecoration: z
     .enum([
       "line-through",
@@ -87,8 +78,8 @@ const cssStyleSchema = z.object({
 });
 
 export const elementStyleSchema = z.object({
-  typo: typographySchema.optional(),
-  style: cssStyleSchema.optional(),
+  class: resumeDesignClassSchema.optional(),
+  style: resumeDesignStyleSchema.optional(),
 });
 
 export const sectionSchema = elementStyleSchema.extend({
@@ -197,7 +188,6 @@ const sectionsSchema = elementStyleSchema.extend({
       })
       .optional(),
     group: elementStyleSchema.extend({}).optional(),
-    style: cssStyleSchema.optional(),
   }),
   projects: sectionSchema.extend({
     subheader: sectionSubheaderSchema
@@ -252,6 +242,17 @@ const sectionsSchema = elementStyleSchema.extend({
   title: sectionSchema.extend({}),
 });
 
+const typographyClassesSchema = z.object({
+  h6: resumeDesignStyleSchema.optional(),
+  h5: resumeDesignStyleSchema.optional(),
+  h4: resumeDesignStyleSchema.optional(),
+  h3: resumeDesignStyleSchema.optional(),
+  h2: resumeDesignStyleSchema.optional(),
+  h1: resumeDesignStyleSchema.optional(),
+  p: resumeDesignStyleSchema.optional(),
+  "text-muted": resumeDesignStyleSchema.optional(),
+});
+
 // Define the main resume design schema
 export const resumeDesignSchema = z.object({
   name: z.string().default("Default"),
@@ -259,16 +260,9 @@ export const resumeDesignSchema = z.object({
   pageSize: resumeDesignPageSize,
   orientation: resumeDesignOrientation,
   fonts: fontSchema,
-  typography: z.object({
-    h6: cssStyleSchema.optional(),
-    h5: cssStyleSchema.optional(),
-    h4: cssStyleSchema.optional(),
-    h3: cssStyleSchema.optional(),
-    h2: cssStyleSchema.optional(),
-    h1: cssStyleSchema.optional(),
-    p: cssStyleSchema.optional(),
-    "text-muted": cssStyleSchema.optional(),
-  }),
+  classDefs: z
+    .record(z.string(), resumeDesignStyleSchema)
+    .and(typographyClassesSchema),
   spacing: spacingSchema,
   columnLayout: columnLayoutSchema.default("single"),
   sectionOrder: z
@@ -337,7 +331,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       "projects",
     ],
   },
-  typography: {
+  classDefs: {
     "text-muted": {
       color: "#666",
     },
@@ -369,6 +363,11 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       fontSize: 10,
       fontWeight: "normal",
     },
+    "flex-between": {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "space-between",
+    },
   },
   spacing: {
     unit: 4,
@@ -394,9 +393,9 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     "certifications",
   ],
   sections: {
-    container: { typo: "p", style: { paddingBottom: 10 } },
+    container: { class: "p", style: { paddingBottom: 10 } },
     heading: {
-      typo: "h4",
+      class: "h4",
       style: {
         marginBottom: 3,
         borderBottom: 2,
@@ -407,15 +406,16 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     projects: {
       label: { enable: true },
       subheader: {
-        name: { typo: "h5" },
-        url: { typo: "text-muted" },
-        date: { typo: "text-muted" },
-        rows: [{ items: ["name", "date"],  
-          style: {
-            display: "flex",
-            justifyContent: "space-between",
-            flexDirection: "row",
-          }, }, { items: ["url"] }],
+        name: { class: "h5" },
+        url: { class: "text-muted" },
+        date: { class: "text-muted" },
+        rows: [
+          {
+            items: ["name", "date"],
+            class: "flex-between",
+          },
+          { items: ["url"] },
+        ],
       },
       item: { style: { paddingBottom: 5 } },
       style: {},
@@ -426,11 +426,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
         rows: [
           {
             items: ["issuer", "date"],
-            style: {
-              display: "flex",
-              justifyContent: "space-between",
-              flexDirection: "row",
-            },
+            class: "flex-between",
           },
           { items: ["name"] },
         ],
@@ -445,11 +441,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
         rows: [
           {
             items: ["name", "date"],
-            style: {
-              display: "flex",
-              justifyContent: "space-between",
-              flexDirection: "row",
-            },
+            class: "flex-between",
           },
           { items: ["issuer"] },
         ],
@@ -504,11 +496,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       subheader: {
         rows: [
           {
-            style: {
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            },
+            class: "flex-between",
             items: ["role", "date"],
           },
           {
@@ -522,9 +510,9 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
           },
         ],
         style: { marginBottom: 2 },
-        title: { typo: "h5" },
-        company: { typo: "h6" },
-        metadata: { typo: "text-muted" },
+        title: { class: "h5" },
+        company: { class: "h6" },
+        metadata: { class: "text-muted" },
         dates: {
           format: "MMM YYYY",
         },
@@ -550,18 +538,18 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       label: { enable: true },
     },
     title: {
-      typo: "h1",
-      container: { typo: "h1" },
+      class: "h1",
+      container: { class: "h1" },
       label: { enable: false },
     },
     fullname: {
-      container: { typo: "h2" },
+      container: { class: "h2" },
       label: { enable: false },
     },
 
     contactInfo: {
       container: {
-        typo: "text-muted",
+        class: "text-muted",
       },
       label: { enable: true, text: "Profile" },
       separator: "\n",

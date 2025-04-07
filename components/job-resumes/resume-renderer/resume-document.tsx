@@ -5,14 +5,8 @@ import {
   View,
   StyleSheet,
   Font,
-  PDFViewer,
 } from "@react-pdf/renderer";
-import {
-  ResumeContent,
-  ResumeDesign,
-  ResumeDesignElementStyle,
-  ResumeDesignTypography,
-} from "@/types/resume";
+import { ResumeContent, ResumeDesign } from "@/types/resume";
 // import { ResumeDesign } from "@/types/resume-design";
 // import { SeperateList } from "../shared/seperate-list";
 import React, { useMemo } from "react";
@@ -134,7 +128,7 @@ const ResumeDocumentRenderer = ({
   withIdentifiers?: boolean;
   skipFont?: boolean;
 }) => {
-  const { design } = useResumeRenderer();
+  const { design, resolveStyle } = useResumeRenderer();
   // Register any custom fonts needed by this design
   if (!skipFont) {
     registerFonts(design);
@@ -143,16 +137,6 @@ const ResumeDocumentRenderer = ({
   // Generate styles based on the resume design configuration
   const styles = useMemo(() => {
     const spacing = (units: number) => units * design.spacing.unit;
-    const typo = (name?: ResumeDesignTypography) =>
-      (name && design.typography[name]) || {};
-
-    const getComputedStyle = (elementStyle?: ResumeDesignElementStyle) =>
-      elementStyle
-        ? {
-            ...typo(elementStyle.typo),
-            ...(elementStyle.style || {}),
-          }
-        : {};
 
     const styles = StyleSheet.create({
       page: {
@@ -168,10 +152,9 @@ const ResumeDocumentRenderer = ({
         flexDirection: "row",
         flexGrow: 1,
       },
-      leftColumn: getComputedStyle(design.leftColumn),
-      rightColumn: getComputedStyle(design.rightColumn),
-
-      fullName: getComputedStyle(design.sections.fullname),
+      leftColumn: resolveStyle(design.leftColumn),
+      rightColumn: resolveStyle(design.rightColumn),
+      fullName: resolveStyle(design.sections.fullname),
 
       pageNumber: {
         borderBottom: "",

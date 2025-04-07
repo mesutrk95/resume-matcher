@@ -2,8 +2,8 @@
 
 import {
   ResumeDesign,
+  ResumeDesignClass,
   ResumeDesignElementStyle,
-  ResumeDesignTypography,
 } from "@/types/resume";
 import { createContext, useContext, useState } from "react";
 
@@ -27,8 +27,17 @@ export const ResumeRendererProvider = ({
 }) => {
   const [design, setDesign] = useState<ResumeDesign>(initialResumeDesign);
 
-  const typo = (name?: ResumeDesignTypography) =>
-    (name && design.typography[name]) || {};
+  const getClassStyles = (name?: ResumeDesignClass) => {
+    if (!name) return {};
+    const classes = name.split(" ").map((c) => design.classDefs[c]);
+    return classes.reduce(
+      (acc, classStyles) => ({
+        ...acc,
+        ...classStyles,
+      }),
+      {}
+    );
+  };
 
   const resolveStyle = (
     ...elementStyles: (ResumeDesignElementStyle | undefined)[]
@@ -45,13 +54,12 @@ export const ResumeRendererProvider = ({
     //   }),
     //   {}
     // ));
-    
 
     // Merge all styles in the arguments
     return elementStyles.reduce(
       (acc, elementStyle) => ({
         ...acc,
-        ...typo(elementStyle?.typo),
+        ...getClassStyles(elementStyle?.class),
         ...(elementStyle?.style || {}),
       }),
       {}
