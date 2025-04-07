@@ -91,9 +91,19 @@ export const sectionSchema = elementStyleSchema.extend({
   item: elementStyleSchema.extend({}).optional(),
 });
 
+const sectionRowItemSchema = z.lazy(() =>
+  z.union([
+    z.string(), // Simple item key
+    z.object({
+      items: z.array(z.string()), // Group of item keys
+      separator: z.string().optional(), // Separator for this group
+    }),
+  ])
+);
+
 const sectionRowSchema = elementStyleSchema.extend({
   separator: z.string().optional(),
-  items: z.array(z.string()), // Generic item keys that will be looked up in the data
+  items: z.array(sectionRowItemSchema),
 });
 
 // Update the sectionSubheaderSchema to be more generic
@@ -169,7 +179,7 @@ const sectionsSchema = elementStyleSchema.extend({
       .optional(),
     subheader: sectionSubheaderSchema
       .extend({
-        title: elementStyleSchema.extend({}).optional(),
+        role: elementStyleSchema.extend({}).optional(),
         metadata: elementStyleSchema.extend({}).optional(),
         company: elementStyleSchema.extend({}).optional(),
         dates: elementStyleSchema
@@ -380,18 +390,6 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       left: 30,
     },
   },
-  sectionOrder: [
-    "title",
-    "fullname",
-    "contactInfo",
-    "summary",
-    "skills",
-    "experiences",
-    "educations",
-    "projects",
-    "languages",
-    "certifications",
-  ],
   sections: {
     container: { class: "p", style: { paddingBottom: 10 } },
     heading: {
@@ -470,6 +468,9 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
           },
         ],
       },
+      item: {
+        style: { paddingBottom: 10 },
+      },
     },
     experiences: {
       label: { enable: true },
@@ -510,7 +511,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
           },
         ],
         style: { marginBottom: 2 },
-        title: { class: "h5" },
+        role: { class: "h5" },
         company: { class: "h6" },
         metadata: { class: "text-muted" },
         dates: {
@@ -544,6 +545,9 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
             items: ["institution", "location"],
           },
         ],
+      },
+      item: {
+        style: { paddingBottom: 10 },
       },
     },
     summary: {

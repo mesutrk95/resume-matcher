@@ -23,10 +23,6 @@ interface SectionHeaderProps {
     data: Record<string, any>
   ) => string | undefined;
 }
-
-/**
- * A reusable component for rendering section headers with configurable rows and items
- */
 export const SectionHeader: React.FC<SectionHeaderProps> = ({
   sectionName,
   data,
@@ -50,44 +46,109 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
     return null;
   }
 
+  // Helper function to render a group of items with a separator
+  const renderItemGroup = (
+    items: string[],
+    separator?: string,
+    parentKey?: string
+  ) => {
+    const validItems = items
+      .map((itemType) => ({
+        type: itemType,
+        value: getItemValue(itemType, data),
+      }))
+      .filter((item) => item.value);
+
+    if (validItems.length === 0) return null;
+
+    return (
+      <View key={parentKey || items.join("-")}>
+        {validItems.map((item, index) => (
+          <Text
+            key={`${item.type}-${index}`}
+            style={resolveStyle(styleGetter(item.type))}
+          >
+            {item.value}
+            {separator && index < validItems.length - 1 && separator}
+          </Text>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <View style={resolveStyle(subheader)}>
       {subheader.rows.map((row, rowIndex) => (
         <View key={rowIndex} style={resolveStyle(row)}>
           {!row.separator ? (
-            // If no separator, render each item as a separate Text component
-            row.items.map((itemType: string, itemIndex: number) => {
-              const value = getItemValue(itemType, data);
-              if (!value) return null;
-
-              return (
-                <Text
-                  key={`${itemType}-${itemIndex}`}
-                  style={resolveStyle(styleGetter(itemType))}
-                >
-                  {value}
-                </Text>
-              );
-            })
-          ) : (
-            // With separator, render as a single Text component with separator between items
-            <Text>
-              {row.items.map((itemType: string, itemIndex: number) => {
-                const value = getItemValue(itemType, data);
+            row.items.map((itemOrGroup, itemIndex) => {
+              if (typeof itemOrGroup === "string") {
+                // Handle simple string item
+                const value = getItemValue(itemOrGroup, data);
                 if (!value) return null;
 
-                // Check if this is the last valid item to avoid trailing separator
-                const nextValidItemIndex = row.items.findIndex(
-                  (nextItem, i) =>
-                    i > itemIndex && !!getItemValue(nextItem, data)
-                );
-                const hasNextValidItem = nextValidItemIndex !== -1;
-
                 return (
-                  <React.Fragment key={`${itemType}-${itemIndex}`}>
-                    <Text style={resolveStyle(styleGetter(itemType))}>
+                  <Text
+                    key={`item-${itemIndex}`}
+                    style={resolveStyle(styleGetter(itemOrGroup))}
+                  >
+                    {value}
+                  </Text>
+                );
+              } else {
+                // Handle item group with its own separator
+                return renderItemGroup(
+                  itemOrGroup.items,
+                  itemOrGroup.separator,
+                  `group-${itemIndex}`
+                );
+              }
+            })
+          ) : (
+            // Handle row with separator for all items
+            <Text>
+              {row.items.map((itemOrGroup, itemIndex) => {
+                // For items with a row separator, we need to handle both simple items and groups
+                let content;
+
+                if (typeof itemOrGroup === "string") {
+                  const value = getItemValue(itemOrGroup, data);
+                  if (!value) return null;
+
+                  content = (
+                    <Text style={resolveStyle(styleGetter(itemOrGroup))}>
                       {value}
                     </Text>
+                  );
+                } else {
+                  // Render a group within the row
+                  content = renderItemGroup(
+                    itemOrGroup.items,
+                    itemOrGroup.separator,
+                    `group-${itemIndex}`
+                  );
+                  if (!content) return null;
+                }
+
+                // Find the next valid item/group for separator logic
+                const nextValidIndex = row.items.findIndex((nextItem, i) => {
+                  if (i <= itemIndex) return false;
+
+                  if (typeof nextItem === "string") {
+                    return !!getItemValue(nextItem, data);
+                  } else {
+                    // Check if any item in the group has a value
+                    return nextItem.items.some(
+                      (item) => !!getItemValue(item, data)
+                    );
+                  }
+                });
+
+                const hasNextValidItem = nextValidIndex !== -1;
+
+                return (
+                  <React.Fragment key={`row-item-${itemIndex}`}>
+                    {content}
                     {hasNextValidItem && <Text> {row.separator} </Text>}
                   </React.Fragment>
                 );
@@ -411,12 +472,7 @@ export const SkillsSection = ({
                   : ""}
                 <Text style={resolveStyle(design.sections.skills.list)}>
                   {renderList({
-                    data: skillSet.skills.map(
-                      (skill) =>
-                        `${withIdentifiers ? `[${skill.id}] ` : ""}${
-                          skill.content
-                        }`
-                    ),
+                    data: skillSet.skills.map((skill) => skill.content),
                     by: design.sections.skills.list.itemsSeparator,
                   })}
                 </Text>
@@ -430,7 +486,7 @@ export const SkillsSection = ({
                         skill.content
                       }`
                   ),
-                  by: ", ",
+                  by: design.sections.skills.list.itemsSeparator || ", ",
                 })}
               </Text>
             )}
@@ -447,7 +503,7 @@ export const SkillsSection = ({
                     `${withIdentifiers ? `[${skill.id}] ` : ""}${skill.content}`
                 )
               ),
-              by: ", ",
+              by: design.sections.skills.list.itemsSeparator || ", ",
             })}
           </Text>
         </View>
