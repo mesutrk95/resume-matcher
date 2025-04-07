@@ -20,7 +20,7 @@ import {
   elementStyleSchema,
   resumeDesignSchema,
   typographySchema,
-} from "@/schemas/resume-design";
+} from "@/schemas/resume-design.schema";
 
 // Infer types from Zod schemas
 export type Variation = z.infer<typeof variationSchema>;

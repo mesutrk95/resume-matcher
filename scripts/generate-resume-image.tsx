@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
 import { ResumeDocument } from "@/components/job-resumes/resume-renderer/resume-document";
-import { DEFAULT_RESUME_DESIGN } from "@/schemas/resume-design";
+import { DEFAULT_RESUME_DESIGN } from "@/schemas/resume-design.schema";
 import { renderToFile } from "@react-pdf/renderer";
 import React from "react";
 import { getDirectoryFiles } from "./utils";

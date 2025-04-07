@@ -1,12 +1,9 @@
 "use client";
 
 import { CreateTemplateButton } from "./create-template-button";
-import PDFViewer from "@/components/job-resumes/resume-renderer/pdf-viewer";
-import { ResumeDocument } from "@/components/job-resumes/resume-renderer/resume-document";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ResumeContent } from "@/types/resume";
-import { pdf } from "@react-pdf/renderer";
 import { useEffect, useState } from "react";
 
 interface ResumeTemplateCardProps {
@@ -20,48 +17,45 @@ export const TemplateGalleryItem = ({
   url,
   caption,
 }: ResumeTemplateCardProps) => {
-  const [resume, setResume] = useState<{
-    content: ResumeContent;
-    blob: Blob;
-  } | null>();
+  const [resumeContent, setResumeContent] = useState<ResumeContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
+    
+    // Generate image URL by replacing .json with .png
+    const imgUrl = url.replace('.json', '.png');
+    setImageUrl(imgUrl);
+    
+    // Still fetch the JSON to get resume content for the Create button
     fetch(url)
       .then((res) => res.json())
-      .then(async (res) => {
-        const content = res as ResumeContent;
-        const blob = await pdf(
-          <ResumeDocument
-            resume={content}
-            withIdentifiers={false}
-            skipFont={false}
-          />
-        ).toBlob();
-        setResume({ blob, content });
+      .then((res) => {
+        setResumeContent(res as ResumeContent);
         setIsLoading(false);
       })
       .catch((err) => {
+        console.error("Error loading template data:", err);
         setIsLoading(false);
       });
   }, [url]);
 
   return (
     <Card className="p-0 overflow-hidden">
-      <CardContent className=" space-y-5 p-0 flex flex-col justify-between">
+      <CardContent className="space-y-5 p-0 flex flex-col justify-between">
         <div className="border-b h-[250px] flex items-center justify-center">
           {isLoading ? (
             <div className="w-full h-full flex flex-col space-y-2">
               <Skeleton className="w-full h-full" />
             </div>
-          ) : resume ? (
-            <div className="h-full w-full overflow-hidden ">
-              <PDFViewer
-                pdfBlob={resume.blob}
-                maxPages={1}
-                className=" h-full w-full p-4 overflow-hidden hover:mb-2"
-              ></PDFViewer>
+          ) : imageUrl ? (
+            <div className="h-full w-full overflow-hidden p-3">
+              <img 
+                src={imageUrl} 
+                alt={`${label} template preview`}
+                className="  w-full object-contain p-4 overflow-hidden hover:mb-2 border rounded-lg"
+              />
             </div>
           ) : (
             <div className="text-sm text-muted-foreground">
@@ -86,7 +80,7 @@ export const TemplateGalleryItem = ({
           {isLoading ? (
             <Skeleton className="h-10 w-full" />
           ) : (
-            <CreateTemplateButton resumeContent={resume?.content!} />
+            <CreateTemplateButton resumeContent={resumeContent!} />
           )}
         </div>
       </CardContent>

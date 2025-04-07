@@ -57,8 +57,7 @@ export const ContactInfoSection = ({
   };
 
   // Get the configured items and separator
-  const configuredItems = resumeDesign.sections.contactInfo?.metadata
-    ?.items || [
+  const configuredItems = resumeDesign.sections.contactInfo?.items || [
     "email",
     "phone",
     "linkedIn",
@@ -68,7 +67,7 @@ export const ContactInfoSection = ({
     "country",
   ];
   const separator =
-    resumeDesign.sections.contactInfo?.metadata?.separator || "•";
+    resumeDesign.sections.contactInfo?.separator || "•";
 
   // Filter out items with empty values
   const validItems = configuredItems
@@ -80,7 +79,12 @@ export const ContactInfoSection = ({
 
   return (
     <View style={styles.section}>
-      <Text style={styles.contactInfoMetadata}>
+      {resumeDesign.sections.contactInfo.label && (
+        <Text style={styles.sectionHeading}>
+          {resumeDesign.sections.contactInfo.label}
+        </Text>
+      )}
+      <Text style={styles.sectionContainer}>
         {validItems.map((item, index) => (
           <React.Fragment key={item.type}>
             <Text>{item.value}</Text>
@@ -365,7 +369,9 @@ export const SkillsSection = ({
                 <Text style={styles.skillsCategory}>
                   {skillSet.category !== "Default" &&
                   skillSet.category.length > 0
-                    ? skillSet.category + ": "
+                    ? skillSet.category +
+                      (resumeDesign.sections.skills.category.itemsSeparator ||
+                        ": ")
                     : ""}
                   <Text style={styles.skillsList}>
                     {renderList({
@@ -375,7 +381,7 @@ export const SkillsSection = ({
                             skill.content
                           }`
                       ),
-                      by: ", ",
+                      by: resumeDesign.sections.skills.list.itemsSeparator,
                     })}
                   </Text>
                 </Text>

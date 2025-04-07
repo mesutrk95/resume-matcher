@@ -55,10 +55,12 @@ const cssStyleSchema = z.object({
   marginLeft: z.number().default(0).optional(),
   marginRight: z.number().default(0).optional(),
   marginTop: z.number().default(0).optional(),
+  margin: z.number().default(0).optional(),
   paddingBottom: z.number().default(0).optional(),
   paddingLeft: z.number().default(0).optional(),
   paddingRight: z.number().default(0).optional(),
   paddingTop: z.number().default(0).optional(),
+  padding: z.number().default(0).optional(),
   flexDirection: z.enum(["row", "column"]).default("row").optional(),
   flexWrap: z.enum(["wrap", "nowrap"]).optional(),
 
@@ -71,6 +73,8 @@ const cssStyleSchema = z.object({
 
   gap: z.number().default(0).optional(),
   color: colorSchema.optional(),
+  backgroundColor: colorSchema.optional(),
+
   border: z.union([z.number(), z.string()]).optional(),
   borderTop: z.union([z.number(), z.string()]).optional(),
   borderRight: z.union([z.number(), z.string()]).optional(),
@@ -85,6 +89,9 @@ const cssStyleSchema = z.object({
 export const elementStyleSchema = z.object({
   typo: typographySchema.optional(),
   style: cssStyleSchema.optional(),
+});
+export const sectionSchema = elementStyleSchema.extend({
+  label: z.string().optional(),
 });
 
 // Define spacing schema
@@ -109,7 +116,7 @@ export const resumeDesignOrientation = z
   .default("portrait");
 
 // Define section schema for layout customization
-const sectionSchema = z.enum([
+const sectionNamesSchema = z.enum([
   "contactInfo",
   "fullname",
   "title",
@@ -144,7 +151,7 @@ const sectionsSchema = z.object({
     sectionHeading: elementStyleSchema,
     sectionContainer: elementStyleSchema,
   }),
-  experiences: z.object({
+  experiences: sectionSchema.extend({
     company: elementStyleSchema.extend({
       enable: z.boolean().default(true).optional(),
     }),
@@ -191,36 +198,36 @@ const sectionsSchema = z.object({
     group: elementStyleSchema.extend({}).optional(),
     style: cssStyleSchema.optional(),
   }),
-  projects: elementStyleSchema.extend({
+  projects: sectionSchema.extend({
     url: elementStyleSchema.optional(),
     date: elementStyleSchema.optional(),
     name: elementStyleSchema.optional(),
     subheader: elementStyleSchema.optional(),
   }),
-  skills: elementStyleSchema.extend({
+  skills: sectionSchema.extend({
     groupByCategory: z.boolean().default(true),
-    list: elementStyleSchema.extend({}),
-    category: elementStyleSchema.extend({}),
-  }),
-  contactInfo: elementStyleSchema.extend({
-    showIcons: z.boolean().default(true),
-    title: elementStyleSchema.extend({}).optional(),
-    metadata: elementStyleSchema.extend({
-      separator: z.string().optional(),
-      items: z.array(
-        z.enum([
-          "email",
-          "phone",
-          "linkedIn",
-          "github",
-          "website",
-          "address",
-          "country",
-        ])
-      ),
+
+    list: elementStyleSchema.extend({ itemsSeparator: z.string().optional() }),
+    category: elementStyleSchema.extend({
+      itemsSeparator: z.string().optional(),
     }),
   }),
-  fullName: elementStyleSchema.extend({}),
+  contactInfo: sectionSchema.extend({
+    showIcons: z.boolean().default(true),
+    separator: z.string().optional(),
+    items: z.array(
+      z.enum([
+        "email",
+        "phone",
+        "linkedIn",
+        "github",
+        "website",
+        "address",
+        "country",
+      ])
+    ),
+  }),
+  fullName: sectionSchema.extend({}),
 });
 
 // Define the main resume design schema
@@ -243,7 +250,7 @@ export const resumeDesignSchema = z.object({
   spacing: spacingSchema,
   columnLayout: columnLayoutSchema.default("single"),
   sectionOrder: z
-    .array(sectionSchema)
+    .array(sectionNamesSchema)
     .default([
       "title",
       "fullname",
@@ -258,9 +265,14 @@ export const resumeDesignSchema = z.object({
       "awards",
       "interests",
       "references",
-    ]),
-  leftColumnSections: z.array(sectionSchema).optional(), // For two-column layouts
-  rightColumnSections: z.array(sectionSchema).optional(), // For two-column layouts
+    ])
+    .optional(),
+  leftColumn: elementStyleSchema.extend({
+    sections: z.array(sectionNamesSchema).optional(),
+  }),
+  rightColumn: elementStyleSchema.extend({
+    sections: z.array(sectionNamesSchema).optional(),
+  }),
   sections: sectionsSchema,
   enablePageNumbers: z.boolean().default(true),
   customCss: z.string().optional(), // For advanced customization
@@ -276,6 +288,29 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     family: "Open Sans",
     fallback: "Helvetica, Arial, sans-serif",
     baseSize: 10,
+  },
+  columnLayout: "main-sidebar",
+  rightColumn: {
+    style: {
+      width: "30%",
+      marginLeft: 10,
+      padding: 10,
+      backgroundColor: "#f5f5f5",
+    },
+    sections: [
+      "contactInfo",
+      "skills",
+      "certifications",
+      "languages",
+      "interests",
+    ],
+  },
+  leftColumn: {
+    style: {
+      width: "70%",
+      paddingRight: 10,
+    },
+    sections: ["title", "summary", "experience", "education", "projects"],
   },
   typography: {
     "text-muted": {
@@ -321,7 +356,6 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       left: 30,
     },
   },
-  columnLayout: "single",
   sectionOrder: [
     "title",
     "fullname",
@@ -344,16 +378,11 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
           borderBottom: 2,
           borderColor: "#15803d",
           paddingBottom: 2,
-          // minWidth: "100%",
         },
       },
       section: {
         style: {
           paddingBottom: 10,
-          // display: "flex",
-          // flexWrap: "wrap",
-          // flexDirection: "column",
-          // minWidth: "100%",
         },
       },
     },
@@ -418,29 +447,27 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     skills: {
       groupByCategory: true,
       category: {
-        style: { fontWeight: "bold" },
+        style: { fontWeight: "bold", marginBottom: 5 },
+        itemsSeparator: "\n",
       },
       list: {
         style: { fontWeight: "normal" },
+        itemsSeparator: "\n",
       },
     },
     contactInfo: {
-      metadata: {
-        typo: "text-muted",
-        separator: "•",
-        items: [
-          "country",
-          "email",
-          "phone",
-          "linkedIn",
-          "github",
-          "website",
-          "address",
-        ],
-      },
-      title: {
-        typo: "h1",
-      },
+      typo: "text-muted",
+      label: "Profile",
+      separator: "\n",
+      items: [
+        "country",
+        "email",
+        "phone",
+        "linkedIn",
+        "github",
+        "website",
+        "address",
+      ],
       showIcons: true,
     },
     fullName: {

@@ -32,7 +32,7 @@ import {
   SummarySection,
   TitleSection,
 } from "./sections";
-import { DEFAULT_RESUME_DESIGN } from "@/schemas/resume-design";
+import { DEFAULT_RESUME_DESIGN } from "@/schemas/resume-design.schema";
 
 // Register fonts (optional but recommended for professional CVs)
 Font.register({
@@ -241,28 +241,9 @@ export const ResumeDocument = ({
         flexDirection: "row",
         flexGrow: 1,
       },
-      mainColumn: {
-        // width:
-        //   design.columnLayout === "two-equal"
-        //     ? "50%"
-        //     : design.columnLayout === "main-sidebar"
-        //     ? `${(1 - (design.columnRatio || 0.3)) * 100}%`
-        //     : `${(design.columnRatio || 0.3) * 100}%`,
-        // paddingRight: design.columnLayout !== "single" ? spacing(2) : 0,
-      },
-      sideColumn: {
-        // width:
-        //   design.columnLayout === "two-equal"
-        //     ? "50%"
-        //     : design.columnLayout === "main-sidebar"
-        //     ? `${(design.columnRatio || 0.3) * 100}%`
-        //     : `${(1 - (design.columnRatio || 0.3)) * 100}%`,
-        // paddingLeft: design.columnLayout !== "single" ? spacing(2) : 0,
-        // backgroundColor:
-        //   design.columnLayout !== "single"
-        //     ? design.colors.muted || "#f5f5f5"
-        //     : undefined,
-      },
+      leftColumn: getComputedStyle(design.leftColumn),
+      rightColumn: getComputedStyle(design.rightColumn),
+
       // contactInfo: {},
       section: getComputedStyle(design.sections.style.section),
       sectionHeading: getComputedStyle(design.sections.style.sectionHeading),
@@ -294,15 +275,11 @@ export const ResumeDocument = ({
       projectName: getComputedStyle(design.sections.projects.name),
       projectSubheader: getComputedStyle(design.sections.projects.subheader),
 
-      skills : getComputedStyle(design.sections.skills ),
+      skills: getComputedStyle(design.sections.skills),
       skillsCategory: getComputedStyle(design.sections.skills.category),
       skillsList: getComputedStyle(design.sections.skills.list),
 
       fullName: getComputedStyle(design.sections.fullName),
-      title: getComputedStyle(design.sections.contactInfo.title),
-      contactInfoMetadata: getComputedStyle(
-        design.sections.contactInfo.metadata
-      ),
 
       pageNumber: {
         borderBottom: "",
@@ -325,7 +302,7 @@ export const ResumeDocument = ({
           style={styles.page}
           orientation={resumeDesign.orientation}
         >
-          {resumeDesign.sectionOrder.map((sectionName, index) => (
+          {resumeDesign.sectionOrder?.map((sectionName, index) => (
             <React.Fragment key={sectionName}>
               {/* style={styles.section}  */}
               {renderSection(
@@ -352,26 +329,6 @@ export const ResumeDocument = ({
     );
   }
 
-  // For two-column layouts
-  const leftColumnSections =
-    resumeDesign.leftColumnSections ||
-    (resumeDesign.columnLayout === "sidebar-main"
-      ? ["contactInfo", "skills", "languages", "interests"]
-      : ["contactInfo", "title", "summary", "experience", "education"]);
-
-  const rightColumnSections =
-    resumeDesign.rightColumnSections ||
-    (resumeDesign.columnLayout === "sidebar-main"
-      ? [
-          "title",
-          "summary",
-          "experience",
-          "education",
-          "projects",
-          "certifications",
-        ]
-      : ["skills", "projects", "languages", "certifications", "interests"]);
-
   return (
     <Document>
       <Page
@@ -381,11 +338,8 @@ export const ResumeDocument = ({
       >
         <View style={styles.twoColumnContainer}>
           {/* Left/Main Column */}
-          <View style={styles.mainColumn}>
-            {(resumeDesign.columnLayout === "sidebar-main"
-              ? rightColumnSections
-              : leftColumnSections
-            ).map((sectionName, index) => (
+          <View style={styles.leftColumn}>
+            {resumeDesign.leftColumn.sections?.map((sectionName, index) => (
               <View key={sectionName} style={styles.section}>
                 {renderSection(
                   sectionName,
@@ -399,11 +353,8 @@ export const ResumeDocument = ({
           </View>
 
           {/* Right/Side Column */}
-          <View style={styles.sideColumn}>
-            {(resumeDesign.columnLayout === "sidebar-main"
-              ? leftColumnSections
-              : rightColumnSections
-            ).map((sectionName, index) => (
+          <View style={styles.rightColumn}>
+            {resumeDesign.rightColumn.sections?.map((sectionName, index) => (
               <View key={sectionName} style={styles.section}>
                 {renderSection(
                   sectionName,
