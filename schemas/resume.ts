@@ -89,7 +89,7 @@ const resumeEducationSchema = z.object({
   startDate: z.string().optional(),
   endDate: z.string().optional(),
   institution: z.string(),
-  location: z.string(),
+  location: z.string().optional(),
   degree: z.string(),
 });
 
@@ -103,7 +103,7 @@ const resumeAwardSchema = z.object({
 
 const resumeCertificationSchema = z.object({
   id: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   name: z.string(),
   issuer: z.string(),
   date: z.string(),
@@ -119,19 +119,19 @@ const resumeLanguageSchema = z.object({
 
 const resumeInterestSchema = z.object({
   id: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   enabled: z.boolean(),
 });
 
 const resumeReferenceSchema = z.object({
   id: z.string(),
-  name: z.string(),
-  title: z.string(),
-  company: z.string(),
-  email: z.string(),
-  phone: z.string(),
-  relationship: z.string(),
-  description: z.string(),
+  name: z.string().optional(),
+  title: z.string().optional(),
+  company: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  relationship: z.string().optional(),
+  description: z.string().optional(),
   enabled: z.boolean(),
 });
 
