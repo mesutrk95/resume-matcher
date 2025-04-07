@@ -26,27 +26,27 @@
     {
       "skills": [
         {
-          "id": "undefined6lvfda",
+          "id": "skill_6lvfda",
           "content": "MySQL (Advanced)",
           "enabled": true
         },
         {
-          "id": "undefinedzhc0p4",
+          "id": "skill_zhc0p4",
           "content": "PostgreSQL (Advanced)",
           "enabled": true
         },
         {
-          "id": "undefined0ujv83",
+          "id": "skill_0ujv83",
           "content": "MongoDB (Expert)",
           "enabled": true
         },
         {
-          "id": "undefinedatzsep",
+          "id": "skill_atzsep",
           "content": "Redis (Expert)",
           "enabled": true
         },
         {
-          "id": "undefinedcmtp8u",
+          "id": "skill_cmtp8u",
           "content": "Cassandra (Intermediate)",
           "enabled": true
         }
@@ -57,47 +57,47 @@
     {
       "skills": [
         {
-          "id": "undefinedofcxbu",
+          "id": "skill_ofcxbu",
           "content": "Java (Expert)",
           "enabled": true
         },
         {
-          "id": "undefinedgiyoz5",
+          "id": "skill_giyoz5",
           "content": "Python (Expert)",
           "enabled": true
         },
         {
-          "id": "undefined5p57gc",
+          "id": "skill_5p57gc",
           "content": "Ruby (Intermediate)",
           "enabled": true
         },
         {
-          "id": "undefined2kute4",
+          "id": "skill_2kute4",
           "content": "Scala (Intermediate)",
           "enabled": true
         },
         {
-          "id": "undefined9gvgk5",
+          "id": "skill_9gvgk5",
           "content": "PHP (Intermediate)",
           "enabled": true
         },
-        { "id": "undefinedsm4qaj", "content": "C# (Basic)", "enabled": true }
+        { "id": "skill_sm4qaj", "content": "C# (Basic)", "enabled": true }
       ],
       "enabled": true,
       "category": "Programming Languages"
     },
     {
       "skills": [
-        { "id": "undefinedy9kbtz", "content": "Node.js", "enabled": true },
-        { "id": "undefined0lx0vu", "content": "Express.js", "enabled": true },
-        { "id": "undefined83jjim", "content": "Django", "enabled": true },
-        { "id": "undefined7wotqr", "content": "Flask", "enabled": true },
+        { "id": "skill_y9kbtz", "content": "Node.js", "enabled": true },
+        { "id": "skill_0lx0vu", "content": "Express.js", "enabled": true },
+        { "id": "skill_83jjim", "content": "Django", "enabled": true },
+        { "id": "skill_7wotqr", "content": "Flask", "enabled": true },
         {
-          "id": "undefinedd00veb",
+          "id": "skill_d00veb",
           "content": ".NET Framework",
           "enabled": true
         },
-        { "id": "undefinedb43oh3", "content": "Ruby on Rails", "enabled": true }
+        { "id": "skill_b43oh3", "content": "Ruby on Rails", "enabled": true }
       ],
       "enabled": true,
       "category": "Frameworks & Libraries"
@@ -105,32 +105,32 @@
     {
       "skills": [
         {
-          "id": "undefined1voejt",
+          "id": "skill_1voejt",
           "content": "Docker (Proficient)",
           "enabled": true
         },
         {
-          "id": "undefined52a24f",
+          "id": "skill_52a24f",
           "content": "Kubernetes (Proficient)",
           "enabled": true
         },
         {
-          "id": "undefinedh2mc9r",
+          "id": "skill_h2mc9r",
           "content": "AWS (Proficient)",
           "enabled": true
         },
         {
-          "id": "undefinedfn5w14",
+          "id": "skill_fn5w14",
           "content": "Git (Advanced)",
           "enabled": true
         },
         {
-          "id": "undefined90tko2",
+          "id": "skill_90tko2",
           "content": "CI/CD (Advanced)",
           "enabled": true
         },
         {
-          "id": "undefinedmzxtqd",
+          "id": "skill_mzxtqd",
           "content": "Agile/Scrum (Advanced)",
           "enabled": true
         }
@@ -141,17 +141,17 @@
     {
       "skills": [
         {
-          "id": "undefinedj3mp9q",
+          "id": "skill_j3mp9q",
           "content": "Elasticsearch (Advanced)",
           "enabled": true
         },
         {
-          "id": "undefined4sv72t",
+          "id": "skill_4sv72t",
           "content": "Kafka (Intermediate)",
           "enabled": true
         },
         {
-          "id": "undefinedp9k48r",
+          "id": "skill_p9k48r",
           "content": "GraphQL (Intermediate)",
           "enabled": true
         }
@@ -200,22 +200,22 @@
   "interests": [
     {
       "id": "interest_3f8j2p",
-      "content": "Distributed Systems Architecture",
+      "description": "Distributed Systems Architecture",
       "enabled": true
     },
     {
       "id": "interest_9d7k3l",
-      "content": "Machine Learning Applications",
+      "description": "Machine Learning Applications",
       "enabled": true
     },
     {
       "id": "interest_5h2g8m",
-      "content": "Open Source Development",
+      "description": "Open Source Development",
       "enabled": true
     },
     {
       "id": "interest_1p6s9n",
-      "content": "Cloud Computing Optimization",
+      "description": "Cloud Computing Optimization",
       "enabled": true
     }
   ],

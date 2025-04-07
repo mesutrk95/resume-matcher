@@ -97,15 +97,17 @@ export const sectionSchema = elementStyleSchema.extend({
     .optional(),
   container: elementStyleSchema.extend({}).optional(),
   heading: elementStyleSchema.extend({}).optional(),
+  item: elementStyleSchema.extend({}).optional(),
 });
 
+const sectionRowSchema = elementStyleSchema.extend({
+  separator: z.string().optional(),
+  items: z.array(z.string()), // Generic item keys that will be looked up in the data
+});
+
+// Update the sectionSubheaderSchema to be more generic
 export const sectionSubheaderSchema = elementStyleSchema.extend({
-  rows: z.array(
-    elementStyleSchema.extend({
-      separator: z.string().optional(),
-      items: z.array(z.string()),
-    })
-  ),
+  rows: z.array(sectionRowSchema),
 });
 
 // Define spacing schema
@@ -176,14 +178,6 @@ const sectionsSchema = elementStyleSchema.extend({
       .optional(),
     subheader: sectionSubheaderSchema
       .extend({
-        // rows: z.array(
-        //   elementStyleSchema.extend({
-        //     separator: z.string().optional(),
-        //     items: z.array(
-        //       z.enum(["company", "title", "date", "positionType", "location"])
-        //     ),
-        //   })
-        // ),
         title: elementStyleSchema.extend({}).optional(),
         metadata: elementStyleSchema.extend({}).optional(),
         company: elementStyleSchema.extend({}).optional(),
@@ -206,12 +200,18 @@ const sectionsSchema = elementStyleSchema.extend({
     style: cssStyleSchema.optional(),
   }),
   projects: sectionSchema.extend({
-    url: elementStyleSchema.optional(),
-    date: elementStyleSchema.optional(),
-    name: elementStyleSchema.optional(),
-    subheader: elementStyleSchema.optional(),
+    subheader: sectionSubheaderSchema
+      .extend({
+        url: elementStyleSchema.optional(),
+        date: elementStyleSchema.optional(),
+        name: elementStyleSchema.optional(),
+      })
+      .optional(),
   }),
-  educations: sectionSchema.extend({ item: elementStyleSchema.optional() }),
+  educations: sectionSchema.extend({
+    item: elementStyleSchema.optional(),
+    subheader: sectionSubheaderSchema.extend({}).optional(),
+  }),
   summary: sectionSchema.extend({}),
   skills: sectionSchema.extend({
     groupByCategory: z.boolean().default(true),
@@ -236,10 +236,16 @@ const sectionsSchema = elementStyleSchema.extend({
       ])
     ),
   }),
-  references: sectionSchema.extend({}),
+  references: sectionSchema.extend({
+    subheader: sectionSubheaderSchema.extend({}).optional(),
+  }),
   interests: sectionSchema.extend({}),
-  certifications: sectionSchema.extend({}),
-  awards: sectionSchema.extend({}),
+  certifications: sectionSchema.extend({
+    subheader: sectionSubheaderSchema.extend({}).optional(),
+  }),
+  awards: sectionSchema.extend({
+    subheader: sectionSubheaderSchema.extend({}).optional(),
+  }),
   licenses: sectionSchema.extend({}),
   languages: sectionSchema.extend({}),
   fullname: sectionSchema.extend({}),
@@ -317,7 +323,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
   leftColumn: {
     style: {
       width: "70%",
-      paddingRight: 10,
+      paddingRight: 30,
     },
     sections: [
       "title",
@@ -325,6 +331,8 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       "summary",
       "experiences",
       "certifications",
+      "references",
+      "awards",
       "educations",
       "projects",
     ],
@@ -398,20 +406,54 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     },
     projects: {
       label: { enable: true },
-      name: { typo: "h5" },
-      url: { typo: "text-muted" },
-      date: { typo: "text-muted" },
-      subheader: {},
+      subheader: {
+        name: { typo: "h5" },
+        url: { typo: "text-muted" },
+        date: { typo: "text-muted" },
+        rows: [{ items: ["name", "date"],  
+          style: {
+            display: "flex",
+            justifyContent: "space-between",
+            flexDirection: "row",
+          }, }, { items: ["url"] }],
+      },
+      item: { style: { paddingBottom: 5 } },
       style: {},
     },
     certifications: {
       label: { enable: true },
+      subheader: {
+        rows: [
+          {
+            items: ["issuer", "date"],
+            style: {
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
+            },
+          },
+          { items: ["name"] },
+        ],
+      },
     },
     interests: {
       label: { enable: true },
     },
     awards: {
       label: { enable: true },
+      subheader: {
+        rows: [
+          {
+            items: ["name", "date"],
+            style: {
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "row",
+            },
+          },
+          { items: ["issuer"] },
+        ],
+      },
     },
     languages: {
       label: { enable: true },
@@ -421,6 +463,21 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     },
     references: {
       label: { enable: true },
+      subheader: {
+        rows: [
+          {
+            items: [
+              "name",
+              "title",
+              "company",
+              "email",
+              "phone",
+              "relationship",
+            ],
+            separator: "|",
+          },
+        ],
+      },
     },
     experiences: {
       label: { enable: true },
@@ -452,7 +509,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
               flexDirection: "row",
               justifyContent: "space-between",
             },
-            items: ["title", "date"],
+            items: ["role", "date"],
           },
           {
             style: {

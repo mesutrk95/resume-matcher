@@ -95,15 +95,16 @@ const resumeEducationSchema = z.object({
 
 const resumeAwardSchema = z.object({
   id: z.string(),
-  description: z.string(),
-  organization: z.string(),
-  date: z.string(),
+  description: z.string().optional(),
+  issuer: z.string().optional(),
+  date: z.string().optional(),
   enabled: z.boolean(),
 });
 
 const resumeCertificationSchema = z.object({
   id: z.string(),
   description: z.string(),
+  name: z.string(),
   issuer: z.string(),
   date: z.string(),
   enabled: z.boolean(),
@@ -111,8 +112,8 @@ const resumeCertificationSchema = z.object({
 
 const resumeLanguageSchema = z.object({
   id: z.string(),
-  language: z.string(),
-  proficiency: z.string(),
+  name: z.string(),
+  level: z.string(),
   enabled: z.boolean(),
 });
 
@@ -198,5 +199,4 @@ export {
   resumeItemScoreAnalyzeSchema,
   resumeAnalyzedImprovementNoteSchema,
   resumeAnalyzeResultsSchema,
-}; 
- 
+};

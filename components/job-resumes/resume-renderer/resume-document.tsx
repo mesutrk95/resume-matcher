@@ -75,12 +75,7 @@ const registerFonts = (design: ResumeDesign) => {
 };
 
 // Helper to dynamically render sections in order
-const renderSection = (
-  sectionName: string,
-  resume: ResumeContent,
-  styles: any,
-  withIdentifiers?: boolean
-) => {
+const renderSection = (sectionName: string, resume: ResumeContent) => {
   switch (sectionName) {
     case "contactInfo":
       return <ContactInfoSection resume={resume} />;
@@ -91,49 +86,23 @@ const renderSection = (
     case "summary":
       return <SummarySection resume={resume} />;
     case "experiences":
-      return (
-        <>
-          <ExperienceSection
-            resume={resume}
-            withIdentifiers={withIdentifiers}
-          />
-        </>
-      );
+      return <ExperienceSection resume={resume} />;
     case "educations":
-      return (
-        <EducationSection resume={resume} withIdentifiers={withIdentifiers} />
-      );
+      return <EducationSection resume={resume} />;
     case "skills":
-      return (
-        <SkillsSection resume={resume} withIdentifiers={withIdentifiers} />
-      );
+      return <SkillsSection resume={resume} />;
     case "projects":
-      return (
-        <ProjectsSection resume={resume} withIdentifiers={withIdentifiers} />
-      );
+      return <ProjectsSection resume={resume} />;
     case "languages":
-      return (
-        <LanguagesSection resume={resume} withIdentifiers={withIdentifiers} />
-      );
+      return <LanguagesSection resume={resume} />;
     case "certifications":
-      return (
-        <CertificationsSection
-          resume={resume}
-          withIdentifiers={withIdentifiers}
-        />
-      );
+      return <CertificationsSection resume={resume} />;
     case "awards":
-      return (
-        <AwardsSection resume={resume} withIdentifiers={withIdentifiers} />
-      );
+      return <AwardsSection resume={resume} />;
     case "interests":
-      return (
-        <InterestsSection resume={resume} withIdentifiers={withIdentifiers} />
-      );
+      return <InterestsSection resume={resume} />;
     case "references":
-      return (
-        <ReferencesSection resume={resume} withIdentifiers={withIdentifiers} />
-      );
+      return <ReferencesSection resume={resume} />;
     default:
       return null;
   }
@@ -227,7 +196,7 @@ const ResumeDocumentRenderer = ({
           {design.sectionOrder?.map((sectionName, index) => (
             <React.Fragment key={sectionName}>
               {/* style={styles.section}  */}
-              {renderSection(sectionName, resume, styles, withIdentifiers)}
+              {renderSection(sectionName, resume)}
             </React.Fragment>
           ))}
 
@@ -257,7 +226,7 @@ const ResumeDocumentRenderer = ({
           <View style={styles.leftColumn}>
             {design.leftColumn.sections?.map((sectionName, index) => (
               <React.Fragment key={sectionName}>
-                {renderSection(sectionName, resume, styles, withIdentifiers)}
+                {renderSection(sectionName, resume)}
               </React.Fragment>
             ))}
           </View>
@@ -266,7 +235,7 @@ const ResumeDocumentRenderer = ({
           <View style={styles.rightColumn}>
             {design.rightColumn.sections?.map((sectionName, index) => (
               <React.Fragment key={sectionName}>
-                {renderSection(sectionName, resume, styles, withIdentifiers)}
+                {renderSection(sectionName, resume)}
               </React.Fragment>
             ))}
           </View>
