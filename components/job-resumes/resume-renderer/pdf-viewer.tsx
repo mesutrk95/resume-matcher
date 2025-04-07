@@ -21,7 +21,7 @@ function LoadingPdf() {
   return (
     <div className="flex justify-center items-center text-xs gap-1 py-10 font-semibold text-muted-foreground">
       <LucideLoader2 className="animate-spin" size={16} />
-      Building Resume ...
+      Loading Resume ...
     </div>
   );
 }

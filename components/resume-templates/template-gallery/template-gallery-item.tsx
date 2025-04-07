@@ -56,7 +56,7 @@ export const TemplateGalleryItem = ({
               <Skeleton className="w-full h-full" />
             </div>
           ) : resume ? (
-            <div className="h-full w-full bg-indigo-500 overflow-hidden ">
+            <div className="h-full w-full overflow-hidden ">
               <PDFViewer
                 pdfBlob={resume.blob}
                 maxPages={1}
@@ -69,7 +69,7 @@ export const TemplateGalleryItem = ({
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-4 p-4">
+        <div className="flex flex-col gap-4 p-4 pt-0">
           <div className="">
             {isLoading ? (
               <>
