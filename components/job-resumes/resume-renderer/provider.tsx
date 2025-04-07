@@ -1,17 +1,21 @@
 "use client";
 
+import React from "react";
 import {
   ResumeDesign,
   ResumeDesignClass,
   ResumeDesignElementStyle,
 } from "@/types/resume";
 import { createContext, useContext, useState } from "react";
+import moment from "moment";
+import { parseDate } from "@/components/ui/year-month-picker";
 
 interface ResumeRendererContextType {
   design: ResumeDesign;
   resolveStyle: (
     ...elementStyles: (ResumeDesignElementStyle | undefined)[]
   ) => any;
+  formatDate: (date?: string) => string;
 }
 
 const ResumeRendererContext = createContext<ResumeRendererContextType>(
@@ -66,11 +70,18 @@ export const ResumeRendererProvider = ({
     );
   };
 
+  const formatDate = (date?: string) => {
+    if (!date) return "";
+    if (date === "Present") return "Present";
+    return moment(parseDate(date)).format(design.dateFormat || "MMM YYYY");
+  };
+
   return (
     <ResumeRendererContext.Provider
       value={{
         design,
         resolveStyle,
+        formatDate,
       }}
     >
       {children}

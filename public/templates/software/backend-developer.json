@@ -2,21 +2,21 @@
   "awards": [
     {
       "id": "award_a3d4hz",
-      "date": "2018",
+      "date": "01/2018",
       "name": "Finalist in Minova Global Hackathon 2018",
       "issuer": "Minova",
       "enabled": true
     },
     {
       "id": "award_7z8og3",
-      "date": "2016",
+      "date": "01/2016",
       "name": "Participated in Google Code Jam 2016",
       "issuer": "Google",
       "enabled": true
     },
     {
       "id": "award_92k7lm",
-      "date": "2019",
+      "date": "01/2019",
       "name": "Outstanding Technical Achievement Award",
       "issuer": "Tech Innovation Summit",
       "enabled": true
@@ -252,9 +252,9 @@
       "degree": "Master of Science in Software Engineering",
       "content": "Master of Science in Software Engineering with a focus on Distributed Systems and Machine Learning Applications",
       "enabled": true,
-      "endDate": "May 2017",
+      "endDate": "05/2017",
       "location": "City, Country",
-      "startDate": "September 2015",
+      "startDate": "09/2015",
       "institution": "Minova Academic Center"
     },
     {
@@ -262,9 +262,9 @@
       "degree": "Bachelor of Science in Computer Science",
       "content": "Bachelor of Science in Computer Science, Graduated Summa Cum Laude. Relevant Coursework: Advanced Data Structures, Database Management Systems",
       "enabled": true,
-      "endDate": "May 2015",
+      "endDate": "05/2015",
       "location": "City, Country",
-      "startDate": "September 2011",
+      "startDate": "09/2011",
       "institution": "Minova University"
     }
   ],
@@ -277,7 +277,7 @@
       "email": "jsmith@resumeworded.com",
       "phone": "+1 (555) 123-4567",
       "relationship": "Direct Manager",
-      "content": "Masoud is an exceptional developer with deep technical knowledge and outstanding problem-solving skills.",
+      "content": "John is an exceptional developer with deep technical knowledge and outstanding problem-solving skills.",
       "enabled": true
     },
     {
@@ -299,22 +299,22 @@
       "email": "rchen@rwu.edu",
       "phone": "+1 (555) 246-8135",
       "relationship": "Academic Advisor",
-      "content": "Masoud demonstrated exceptional aptitude in advanced computing concepts during his academic career.",
+      "content": "John demonstrated exceptional aptitude in advanced computing concepts during his academic career.",
       "enabled": true
     }
   ],
   "contactInfo": {
     "email": "yourname@minova.ai",
     "phone": "(123) 456-789",
-    "github": "github.com/masoudrk",
-    "address": "City, Country",
-    "country": "Armenia",
-    "twitter": "@masoudrk",
-    "website": "www.masoudrk.dev",
-    "lastName": "Reza khanlou",
-    "linkedIn": "https://www.linkedin.com/in/masoud-rezakhanlou/",
+    "github": "github.com/johndoe",
+    "address": "",
+    "country": "Germany",
+    "twitter": "@johndoe",
+    "website": "",
+    "lastName": "Name",
+    "linkedIn": "https://linkedin.com/in/john-doe/",
     "pronouns": "He/Him",
-    "firstName": "Masoud"
+    "firstName": "Your"
   },
   "experiences": [
     {
@@ -390,8 +390,8 @@
       ],
       "enabled": true,
       "endDate": "Present",
-      "location": "City, Country",
-      "startDate": "January 2022",
+      "location": "United States",
+      "startDate": "01/2022",
       "companyName": "Minova"
     },
     {
@@ -440,9 +440,9 @@
         }
       ],
       "enabled": true,
-      "endDate": "December 2021",
-      "location": "City, Country",
-      "startDate": "August 2019",
+      "endDate": "12/2021",
+      "location": "Germany",
+      "startDate": "08/2019",
       "companyName": "Google"
     },
     {
@@ -478,9 +478,9 @@
         }
       ],
       "enabled": true,
-      "endDate": "July 2019",
-      "location": "City, Country",
-      "startDate": "May 2017",
+      "endDate": "07/2019",
+      "location": "United States",
+      "startDate": "05/2017",
       "companyName": "Amazon"
     },
     {
@@ -516,37 +516,37 @@
         }
       ],
       "enabled": true,
-      "endDate": "April 2017",
-      "location": "City, Country",
-      "startDate": "June 2016",
+      "endDate": "04/2017",
+      "location": "United States",
+      "startDate": "06/2016",
       "companyName": "Coached.com"
     }
   ],
   "certifications": [
     {
       "id": "cert_hfnpns",
-      "date": "2018",
+      "date": "01/2018",
       "name": "Oracle Certified Professional, Java SE 8 Programmer",
       "issuer": "Oracle",
       "enabled": true
     },
     {
       "id": "cert_xn8usp",
-      "date": "2020",
+      "date": "01/2020",
       "name": "AWS Certified Developer – Associate",
       "issuer": "Amazon Web Services",
       "enabled": true
     },
     {
       "id": "cert_p2l7mj",
-      "date": "2022",
+      "date": "01/2022",
       "name": "Google Professional Cloud Developer",
       "issuer": "Google Cloud",
       "enabled": true
     },
     {
       "id": "cert_f9k3jh",
-      "date": "2023",
+      "date": "01/2023",
       "name": "MongoDB Certified Developer Associate",
       "issuer": "MongoDB Inc.",
       "enabled": true

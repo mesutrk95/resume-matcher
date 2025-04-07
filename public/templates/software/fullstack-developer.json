@@ -4,7 +4,7 @@
       "id": "exp_2wojnf",
       "companyName": "Google",
       "role": "Full Stack Developer",
-      "startDate": "March 2022",
+      "startDate": "03/2022",
       "endDate": "Present",
       "enabled": true,
       "items": [
@@ -19,11 +19,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Microservices",
-            "Node.js",
-            "Docker"
-          ]
+          "skills": ["Microservices", "Node.js", "Docker"]
         },
         {
           "id": "expitem_937co4",
@@ -53,11 +49,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Testing",
-            "Selenium",
-            "Quality Assurance"
-          ]
+          "skills": ["Testing", "Selenium", "Quality Assurance"]
         },
         {
           "id": "expitem_u0eke2",
@@ -70,11 +62,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "PostgreSQL",
-            "Database Optimization",
-            "Scalability"
-          ]
+          "skills": ["PostgreSQL", "Database Optimization", "Scalability"]
         },
         {
           "id": "expitem_mhkgvh",
@@ -87,11 +75,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "CI/CD",
-            "Jenkins",
-            "Azure DevOps"
-          ]
+          "skills": ["CI/CD", "Jenkins", "Azure DevOps"]
         },
         {
           "id": "expitem_rpo7lm",
@@ -104,11 +88,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Redis",
-            "Caching",
-            "Performance Optimization"
-          ]
+          "skills": ["Redis", "Caching", "Performance Optimization"]
         },
         {
           "id": "expitem_rxvtx5",
@@ -128,15 +108,15 @@
           ]
         }
       ],
-      "location": "City, Country",
+      "location": "United States",
       "type": "Full-time"
     },
     {
       "id": "exp_f0ro8n",
       "companyName": "Microsoft",
       "role": "Software Engineer",
-      "startDate": "January 2020",
-      "endDate": "February 2022",
+      "startDate": "01/2020",
+      "endDate": "02/2022",
       "enabled": true,
       "items": [
         {
@@ -150,11 +130,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Cloud Architecture",
-            "AWS",
-            "Serverless Computing"
-          ]
+          "skills": ["Cloud Architecture", "AWS", "Serverless Computing"]
         },
         {
           "id": "expitem_f3791p",
@@ -192,15 +168,15 @@
           ]
         }
       ],
-      "location": "City, Country",
+      "location": "United States",
       "type": "Full-time"
     },
     {
       "id": "exp_uan1et",
       "companyName": "Amazon",
       "role": "Backend Developer",
-      "startDate": "June 2017",
-      "endDate": "December 2019",
+      "startDate": "06/2017",
+      "endDate": "12/2019",
       "enabled": true,
       "items": [
         {
@@ -231,11 +207,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Kubernetes",
-            "Containerization",
-            "Scalability"
-          ]
+          "skills": ["Kubernetes", "Containerization", "Scalability"]
         },
         {
           "id": "expitem_tqoyyb",
@@ -248,22 +220,18 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Grafana",
-            "Monitoring",
-            "Incident Management"
-          ]
+          "skills": ["Grafana", "Monitoring", "Incident Management"]
         }
       ],
-      "location": "City, Country",
+      "location": "United States",
       "type": "Full-time"
     },
     {
       "id": "exp_9df06r",
       "companyName": "Facebook",
       "role": "Junior Backend Developer",
-      "startDate": "August 2015",
-      "endDate": "May 2017",
+      "startDate": "08/2015",
+      "endDate": "05/2017",
       "enabled": true,
       "items": [
         {
@@ -277,10 +245,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Analytics",
-            "Asynchronous Processing"
-          ]
+          "skills": ["Analytics", "Asynchronous Processing"]
         },
         {
           "id": "expitem_nmostx",
@@ -293,11 +258,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Python",
-            "Automation",
-            "Data Processing"
-          ]
+          "skills": ["Python", "Automation", "Data Processing"]
         },
         {
           "id": "expitem_oj85fd",
@@ -310,14 +271,10 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Agile",
-            "Scrum",
-            "Team Collaboration"
-          ]
+          "skills": ["Agile", "Scrum", "Team Collaboration"]
         }
       ],
-      "location": "City, Country",
+      "location": "United States",
       "type": "Full-time"
     }
   ],
@@ -341,9 +298,9 @@
       "content": "Master of Science - Computer Science with Specialization in Full-Stack Development",
       "enabled": true,
       "startDate": "",
-      "endDate": "December 2019",
+      "endDate": "12/2019",
       "institution": "Minova Institute",
-      "location": "City, Country",
+      "location": "United States",
       "degree": "Master of Science - Computer Science"
     },
     {
@@ -351,9 +308,9 @@
       "content": "Bachelor of Science - Software Engineering, Graduated with Honors",
       "enabled": true,
       "startDate": "",
-      "endDate": "May 2015",
+      "endDate": "05/2015",
       "institution": "Minova University",
-      "location": "City, Country",
+      "location": "United States",
       "degree": "Bachelor of Science - Software Engineering"
     }
   ],
@@ -523,7 +480,7 @@
     "github": "",
     "website": "",
     "twitter": "",
-    "address": "City, Country",
+    "address": "United States",
     "country": "",
     "pronouns": ""
   },
@@ -534,7 +491,7 @@
       "id": "cert_opo3hj",
       "name": "AWS Certified Solutions Architect",
       "issuer": "Amazon Web Services",
-      "date": "2023",
+      "date": "01/2023",
       "enabled": true
     },
     {
@@ -550,7 +507,7 @@
       "id": "award_852yki",
       "name": "Employee of the Year at Microsoft (2021)",
       "issuer": "Microsoft",
-      "date": "2021",
+      "date": "01/2021",
       "enabled": true
     }
   ],

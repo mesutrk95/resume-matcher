@@ -152,6 +152,7 @@ const ResumeDocumentRenderer = ({
         flexDirection: "row",
         flexGrow: 1,
       },
+      header: resolveStyle(design.header),
       leftColumn: resolveStyle(design.leftColumn),
       rightColumn: resolveStyle(design.rightColumn),
       fullName: resolveStyle(design.sections.fullname),
@@ -204,10 +205,19 @@ const ResumeDocumentRenderer = ({
         style={styles.page}
         orientation={design.orientation}
       >
+        {(design.header?.sections?.length || 0) > 0 && (
+          <View style={styles.header}>
+            {design.header?.sections?.map((sectionName, index) => (
+              <React.Fragment key={sectionName}>
+                {renderSection(sectionName, resume)}
+              </React.Fragment>
+            ))}
+          </View>
+        )}
         <View style={styles.twoColumnContainer}>
           {/* Left/Main Column */}
           <View style={styles.leftColumn}>
-            {design.leftColumn.sections?.map((sectionName, index) => (
+            {design.leftColumn?.sections?.map((sectionName, index) => (
               <React.Fragment key={sectionName}>
                 {renderSection(sectionName, resume)}
               </React.Fragment>
@@ -216,7 +226,7 @@ const ResumeDocumentRenderer = ({
 
           {/* Right/Side Column */}
           <View style={styles.rightColumn}>
-            {design.rightColumn.sections?.map((sectionName, index) => (
+            {design.rightColumn?.sections?.map((sectionName, index) => (
               <React.Fragment key={sectionName}>
                 {renderSection(sectionName, resume)}
               </React.Fragment>

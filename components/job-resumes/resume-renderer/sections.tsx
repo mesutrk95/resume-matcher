@@ -1,5 +1,4 @@
 import { renderList, SeperateList } from "@/components/shared/seperate-list";
-import { parseDate } from "@/components/ui/year-month-picker";
 import {
   Experience,
   ResumeContent,
@@ -11,7 +10,6 @@ import {
   ResumeProject,
 } from "@/types/resume";
 import { Text, View } from "@react-pdf/renderer";
-import moment from "moment";
 import React from "react";
 import { useResumeRenderer } from "./provider";
 
@@ -288,15 +286,6 @@ export const SummarySection = ({ resume }: { resume: ResumeContent }) => {
   );
 };
 
-// Helper function to get the formatted date string
-const getFormattedDate = (
-  dateString: string | undefined,
-  format: string | undefined
-) => {
-  if (!dateString) return "";
-  if (dateString === "Present") return "Present";
-  return moment(parseDate(dateString)).format(format || "MMM YYYY");
-};
 export const ExperienceSection = ({
   resume,
   withIdentifiers,
@@ -304,7 +293,7 @@ export const ExperienceSection = ({
   resume: ResumeContent;
   withIdentifiers?: boolean;
 }) => {
-  const { resolveStyle, design } = useResumeRenderer();
+  const { resolveStyle, formatDate, design } = useResumeRenderer();
   const experiences = resume.experiences.filter((e) => e.enabled);
   if (experiences.length === 0) return null;
 
@@ -316,13 +305,13 @@ export const ExperienceSection = ({
       case "role":
         return experience.role;
       case "date":
-        const startDate = getFormattedDate(
-          experience.startDate,
-          design.sections.experiences.subheader?.dates?.format
+        const startDate = formatDate(
+          experience.startDate
+          //   design.sections.experiences.subheader?.dates?.format
         );
-        const endDate = getFormattedDate(
-          experience.endDate,
-          design.sections.experiences.subheader?.dates?.format
+        const endDate = formatDate(
+          experience.endDate
+          //   design.sections.experiences.subheader?.dates?.format
         );
         return `${startDate} - ${endDate}`;
       case "positionType":
@@ -388,7 +377,7 @@ export const EducationSection = ({
   resume: ResumeContent;
   withIdentifiers?: boolean;
 }) => {
-  const { design, resolveStyle } = useResumeRenderer();
+  const { design, resolveStyle, formatDate } = useResumeRenderer();
   const educations = resume.educations.filter((edu) => edu.enabled);
   if (educations.length === 0) return null;
 
@@ -402,7 +391,9 @@ export const EducationSection = ({
       case "institution":
         return education.institution;
       case "date":
-        return `${education.startDate || ""} - ${education.endDate || ""}`;
+        return `${formatDate(education.startDate)} - ${formatDate(
+          education.endDate
+        )}`;
       case "location":
         return education.location;
       default:
@@ -519,7 +510,7 @@ export const ProjectsSection = ({
   resume: ResumeContent;
   withIdentifiers?: boolean;
 }) => {
-  const { design, resolveStyle } = useResumeRenderer();
+  const { design, resolveStyle, formatDate } = useResumeRenderer();
   const projects = resume.projects.filter((p) => p.enabled);
   if (projects.length === 0) return null;
 
@@ -531,7 +522,9 @@ export const ProjectsSection = ({
       case "url":
         return project.link;
       case "date":
-        return `${project.startDate || ""} - ${project.endDate || ""}`;
+        return `${formatDate(project.startDate)} - ${formatDate(
+          project.endDate
+        )}`;
       default:
         return "";
     }
@@ -560,26 +553,19 @@ export const ProjectsSection = ({
   );
 };
 
-export const LanguagesSection = ({
-  resume,
-  withIdentifiers,
-}: {
-  resume: ResumeContent;
-  withIdentifiers?: boolean;
-}) => {
-  //   const { design, resolveStyle } = useResumeRenderer();
+export const LanguagesSection = ({ resume }: { resume: ResumeContent }) => {
+  const { design, resolveStyle } = useResumeRenderer();
   const languages = resume.languages;
   if (languages.length === 0) return null;
 
   return (
     <RenderSection sectionName="languages" defaultLabel="Languages">
-      {languages.map((language, index) => (
-        <Text key={index} style={undefined}>
-          {withIdentifiers && language.id && <>[{language.id}] </>}
-          {language.name}
-          {language.level && ` (${language.level})`}
-        </Text>
-      ))}
+      <Text style={undefined}>
+        {renderList({
+          data: languages.map((l) => `${l.name}${l.level && ` (${l.level})`}`),
+          by: design.sections.languages?.itemsSeperator,
+        })}
+      </Text>
     </RenderSection>
   );
 };
@@ -587,12 +573,10 @@ export const LanguagesSection = ({
 // Certifications Section using SectionHeader
 export const CertificationsSection = ({
   resume,
-  withIdentifiers,
 }: {
   resume: ResumeContent;
-  withIdentifiers?: boolean;
 }) => {
-  const { design, resolveStyle } = useResumeRenderer();
+  const { design, resolveStyle, formatDate } = useResumeRenderer();
   const certifications = resume.certifications;
   if (certifications.length === 0) return null;
 
@@ -608,7 +592,7 @@ export const CertificationsSection = ({
       case "issuer":
         return certification.issuer;
       case "date":
-        return certification.date;
+        return formatDate(certification.date);
       default:
         return "";
     }
@@ -644,7 +628,7 @@ export const AwardsSection = ({
   resume: ResumeContent;
   withIdentifiers?: boolean;
 }) => {
-  const { design, resolveStyle } = useResumeRenderer();
+  const { design, resolveStyle, formatDate } = useResumeRenderer();
   const awards = resume.awards;
   if (awards.length === 0) return null;
 
@@ -664,7 +648,7 @@ export const AwardsSection = ({
       case "issuer":
         return award.issuer;
       case "date":
-        return award.date;
+        return formatDate(award.date);
       default:
         return "";
     }
@@ -691,24 +675,19 @@ export const AwardsSection = ({
   );
 };
 
-export const InterestsSection = ({
-  resume,
-  withIdentifiers,
-}: {
-  resume: ResumeContent;
-  withIdentifiers?: boolean;
-}) => {
+export const InterestsSection = ({ resume }: { resume: ResumeContent }) => {
+  const { design } = useResumeRenderer();
   const interests = resume.interests;
   if (interests.length === 0) return null;
 
   return (
     <RenderSection sectionName="interests" defaultLabel="Interests">
-      {interests.map((interest, index) => (
-        <Text key={index} style={undefined}>
-          {withIdentifiers && interest.id && <>[{interest.id}] </>}
-          {typeof interest === "string" ? interest : interest.description}
-        </Text>
-      ))}
+      <Text style={undefined}>
+        {renderList({
+          data: resume.interests.map((i) => i.description),
+          by: design.sections.interests?.itemsSeperator,
+        })}
+      </Text>
     </RenderSection>
   );
 };

@@ -4,7 +4,7 @@
       "id": "exp_857w3q",
       "companyName": "Amazon",
       "role": "Lead JavaScript Developer",
-      "startDate": "June 2020",
+      "startDate": "06/2020",
       "endDate": "Present",
       "enabled": true,
       "items": [
@@ -19,12 +19,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "React",
-            "Redux",
-            "UI Design",
-            "E-commerce"
-          ]
+          "skills": ["React", "Redux", "UI Design", "E-commerce"]
         },
         {
           "id": "expitem_8e05n5",
@@ -108,12 +103,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Jest",
-            "Enzyme",
-            "Unit Testing",
-            "Quality Assurance"
-          ]
+          "skills": ["Jest", "Enzyme", "Unit Testing", "Quality Assurance"]
         },
         {
           "id": "expitem_nynjg6",
@@ -133,15 +123,15 @@
           ]
         }
       ],
-      "location": "City, Country",
+      "location": "United States",
       "type": "Full-time"
     },
     {
       "id": "exp_kdf2xg",
       "companyName": "eBay",
       "role": "Senior JavaScript Engineer",
-      "startDate": "January 2018",
-      "endDate": "May 2020",
+      "startDate": "01/2018",
+      "endDate": "05/2020",
       "enabled": true,
       "items": [
         {
@@ -155,12 +145,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "TensorFlow",
-            "AI",
-            "Recommendation Systems",
-            "E-commerce"
-          ]
+          "skills": ["TensorFlow", "AI", "Recommendation Systems", "E-commerce"]
         },
         {
           "id": "expitem_cgasl2",
@@ -190,22 +175,18 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Code Review",
-            "Quality Assurance",
-            "Team Collaboration"
-          ]
+          "skills": ["Code Review", "Quality Assurance", "Team Collaboration"]
         }
       ],
-      "location": "City, Country",
+      "location": "United States",
       "type": "Full-time"
     },
     {
       "id": "exp_9a1kiz",
       "companyName": "Shopify",
       "role": "JavaScript Developer",
-      "startDate": "March 2015",
-      "endDate": "December 2017",
+      "startDate": "03/2015",
+      "endDate": "12/2017",
       "enabled": true,
       "items": [
         {
@@ -219,12 +200,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "Vue.js",
-            "Web Components",
-            "Shopify Themes",
-            "E-commerce"
-          ]
+          "skills": ["Vue.js", "Web Components", "Shopify Themes", "E-commerce"]
         },
         {
           "id": "expitem_l7rhwi",
@@ -244,15 +220,15 @@
           ]
         }
       ],
-      "location": "City, Country",
+      "location": "United States",
       "type": "Full-time"
     },
     {
       "id": "exp_x2iipn",
       "companyName": "Adobe",
       "role": "Front End Developer",
-      "startDate": "July 2012",
-      "endDate": "February 2015",
+      "startDate": "07/2012",
+      "endDate": "02/2015",
       "enabled": true,
       "items": [
         {
@@ -266,11 +242,7 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "React",
-            "Adobe Experience Manager",
-            "CMS Integration"
-          ]
+          "skills": ["React", "Adobe Experience Manager", "CMS Integration"]
         },
         {
           "id": "expitem_l1wph2",
@@ -283,14 +255,10 @@
               "enabled": true
             }
           ],
-          "skills": [
-            "AngularJS",
-            "UI Design",
-            "Customer Retention"
-          ]
+          "skills": ["AngularJS", "UI Design", "Customer Retention"]
         }
       ],
-      "location": "City, Country",
+      "location": "United States",
       "type": "Full-time"
     }
   ],
@@ -314,9 +282,9 @@
       "content": "Master of Science in Computer Science, Specialization in Full-Stack Web Development",
       "enabled": true,
       "startDate": "",
-      "endDate": "May 2014",
+      "endDate": "05/2014",
       "institution": "Minova Institute",
-      "location": "City, Country",
+      "location": "United States",
       "degree": "Master of Science in Computer Science"
     },
     {
@@ -324,9 +292,9 @@
       "content": "Certified Node.js Developer, Focused on scalable back-end architecture",
       "enabled": true,
       "startDate": "",
-      "endDate": "October 2016",
+      "endDate": "10/2016",
       "institution": "Minova University",
-      "location": "City, Country",
+      "location": "United States",
       "degree": "Certified Node.js Developer"
     }
   ],
@@ -540,7 +508,7 @@
     "github": "",
     "website": "",
     "twitter": "",
-    "address": "City, Country",
+    "address": "United States",
     "country": "",
     "pronouns": ""
   },
@@ -551,14 +519,14 @@
       "id": "cert_h5gbw9",
       "name": "AWS Certified Solutions Architect – Associate",
       "issuer": "Amazon Web Services",
-      "date": "2021",
+      "date": "01/2021",
       "enabled": true
     },
     {
       "id": "cert_65zfjm",
       "name": "Continuous Integration/Continuous Deployment (CI/CD) with Jenkins",
       "issuer": "Minova Academic Center",
-      "date": "2019",
+      "date": "01/2019",
       "enabled": true
     }
   ],
@@ -567,7 +535,7 @@
       "id": "award_qctm3p",
       "name": "Amazon Lead Developer Excellence Award",
       "issuer": "Amazon",
-      "date": "2021",
+      "date": "01/2021",
       "enabled": true
     }
   ],

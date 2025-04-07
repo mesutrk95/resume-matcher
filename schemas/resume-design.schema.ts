@@ -239,7 +239,9 @@ const sectionsSchema = elementStyleSchema.extend({
   references: sectionSchema.extend({
     subheader: sectionSubheaderSchema.extend({}).optional(),
   }),
-  interests: sectionSchema.extend({}),
+  interests: sectionSchema.extend({
+    itemsSeperator: z.string().optional(),
+  }),
   certifications: sectionSchema.extend({
     subheader: sectionSubheaderSchema.extend({}).optional(),
   }),
@@ -247,7 +249,9 @@ const sectionsSchema = elementStyleSchema.extend({
     subheader: sectionSubheaderSchema.extend({}).optional(),
   }),
   licenses: sectionSchema.extend({}),
-  languages: sectionSchema.extend({}),
+  languages: sectionSchema.extend({
+    itemsSeperator: z.string().optional(),
+  }),
   fullname: sectionSchema.extend({}),
   title: sectionSchema.extend({}),
 });
@@ -293,46 +297,57 @@ export const resumeDesignSchema = z.object({
       "references",
     ])
     .optional(),
-  leftColumn: elementStyleSchema.extend({
-    sections: z.array(sectionNamesSchema).optional(),
-  }),
-  rightColumn: elementStyleSchema.extend({
-    sections: z.array(sectionNamesSchema).optional(),
-  }),
+  leftColumn: elementStyleSchema
+    .extend({
+      sections: z.array(sectionNamesSchema).optional(),
+    })
+    .optional(),
+  rightColumn: elementStyleSchema
+    .extend({
+      sections: z.array(sectionNamesSchema).optional(),
+    })
+    .optional(),
+  header: elementStyleSchema
+    .extend({
+      sections: z.array(sectionNamesSchema).optional(),
+    })
+    .optional(),
   sections: sectionsSchema,
   enablePageNumbers: z.boolean().default(true),
-  customCss: z.string().optional(), // For advanced customization
+  dateFormat: dateFormatSchema,
+  customCss: z.string().optional(),  
 });
 
 // Export the default resume design
 export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
-  name: "Classic",
+  name: "Two Column Gray",
   version: 1,
-  pageSize: "A4" as z.infer<typeof resumeDesignPageSize>,
-  orientation: "portrait" as z.infer<typeof resumeDesignOrientation>,
+  pageSize: "A4",
+  orientation: "portrait",
   fonts: {
     family: "Open Sans",
     fallback: "Helvetica, Arial, sans-serif",
     baseSize: 10,
   },
   columnLayout: "two-columns",
+  header: {
+    sections: ["title", "fullname", "contactInfo", "summary"],
+    style: {
+      paddingBottom: 20,
+    },
+  },
   rightColumn: {
     style: {
       width: "30%",
-      padding: 10,
-      backgroundColor: "#f5f5f5",
+      paddingLeft: 30,
+      borderLeft: 1,
+      borderColor: "#aeaeae",
     },
-    sections: ["contactInfo", "skills", "languages", "interests"],
+    sections: ["skills", "languages", "interests"],
   },
   leftColumn: {
-    style: {
-      width: "70%",
-      paddingRight: 30,
-    },
+    style: { width: "70%", paddingRight: 30 },
     sections: [
-      "title",
-      "fullname",
-      "summary",
       "experiences",
       "certifications",
       "references",
@@ -342,37 +357,14 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     ],
   },
   classDefs: {
-    "text-muted": {
-      color: "#666",
-    },
-    h1: {
-      fontSize: 24,
-      fontWeight: "bold",
-    },
-    h2: {
-      fontSize: 18,
-      fontWeight: "bold",
-    },
-    h3: {
-      fontSize: 16,
-      fontWeight: "bold",
-    },
-    h4: {
-      fontSize: 14,
-      fontWeight: "bold",
-    },
-    h5: {
-      fontSize: 12,
-      fontWeight: "bold",
-    },
-    h6: {
-      fontSize: 10,
-      fontWeight: "bold",
-    },
-    p: {
-      fontSize: 10,
-      fontWeight: "normal",
-    },
+    "text-muted": { color: "#666" },
+    h1: { fontSize: 24, fontWeight: "bold" },
+    h2: { fontSize: 18, fontWeight: "bold" },
+    h3: { fontSize: 16, fontWeight: "bold" },
+    h4: { fontSize: 14, fontWeight: "bold" },
+    h5: { fontSize: 12, fontWeight: "bold" },
+    h6: { fontSize: 10, fontWeight: "bold" },
+    p: { fontSize: 10, fontWeight: "normal" },
     "flex-between": {
       display: "flex",
       flexDirection: "row",
@@ -383,12 +375,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     unit: 4,
     sectionGap: 3,
     itemGap: 1,
-    pagePadding: {
-      top: 30,
-      right: 30,
-      bottom: 30,
-      left: 30,
-    },
+    pagePadding: { top: 30, right: 30, bottom: 30, left: 30 },
   },
   sections: {
     container: { class: "p", style: { paddingBottom: 10 } },
@@ -408,10 +395,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
         url: { class: "text-muted" },
         date: { class: "text-muted" },
         rows: [
-          {
-            items: ["name", "date"],
-            class: "flex-between",
-          },
+          { items: ["name", "date"], class: "flex-between" },
           { items: ["url"] },
         ],
       },
@@ -422,35 +406,23 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       label: { enable: true },
       subheader: {
         rows: [
-          {
-            items: ["issuer", "date"],
-            class: "flex-between",
-          },
+          { items: ["issuer", "date"], class: "flex-between" },
           { items: ["name"] },
         ],
       },
     },
-    interests: {
-      label: { enable: true },
-    },
+    interests: { label: { enable: true } },
     awards: {
       label: { enable: true },
       subheader: {
         rows: [
-          {
-            items: ["name", "date"],
-            class: "flex-between",
-          },
+          { items: ["name", "date"], class: "flex-between" },
           { items: ["issuer"] },
         ],
       },
     },
-    languages: {
-      label: { enable: true },
-    },
-    licenses: {
-      label: { enable: true },
-    },
+    languages: { label: { enable: true } },
+    licenses: { label: { enable: true } },
     references: {
       label: { enable: true },
       subheader: {
@@ -468,16 +440,12 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
           },
         ],
       },
-      item: {
-        style: { paddingBottom: 10 },
-      },
+      item: { style: { paddingBottom: 10 } },
     },
     experiences: {
       label: { enable: true },
       company: {},
-      bullets: {
-        symbol: "•",
-      },
+      bullets: { symbol: "•" },
       items: {
         style: {
           display: "flex",
@@ -496,16 +464,9 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       },
       subheader: {
         rows: [
+          { class: "flex-between", items: ["role", "date"] },
           {
-            class: "flex-between",
-            items: ["role", "date"],
-          },
-          {
-            style: {
-              display: "flex",
-              flexDirection: "row",
-              gap: 5,
-            },
+            style: { display: "flex", flexDirection: "row", gap: 5 },
             separator: "•",
             items: ["company", "location", "positionType"],
           },
@@ -514,9 +475,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
         role: { class: "h5" },
         company: { class: "h6" },
         metadata: { class: "text-muted" },
-        dates: {
-          format: "MMM YYYY",
-        },
+        dates: { format: "MMM YYYY" },
       },
       style: {},
     },
@@ -527,48 +486,32 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
         style: { fontWeight: "bold", marginBottom: 5 },
         itemsSeparator: "\n",
       },
-      list: {
-        style: { fontWeight: "normal" },
-        itemsSeparator: "\n",
-      },
+      list: { style: { fontWeight: "normal" }, itemsSeparator: "\n" },
     },
     educations: {
       label: { enable: true },
       subheader: {
         rows: [
-          {
-            class: "flex-between",
-            items: ["degree", "date"],
-          },
-          {
-            separator: " • ",
-            items: ["institution", "location"],
-          },
+          { class: "flex-between", items: ["degree", "date"] },
+          { separator: " • ", items: ["institution", "location"] },
         ],
       },
-      item: {
-        style: { paddingBottom: 10 },
-      },
+      item: { style: { paddingBottom: 10 } },
     },
     summary: {
-      label: { enable: true },
+      label: { enable: false },
+      style: {},
     },
     title: {
       class: "h1",
       container: { class: "h1" },
       label: { enable: false },
     },
-    fullname: {
-      container: { class: "h2" },
-      label: { enable: false },
-    },
-
+    fullname: { container: { class: "h2" }, label: { enable: false } },
     contactInfo: {
-      container: {
-        class: "text-muted",
-      },
-      label: { enable: true, text: "Profile" },
-      separator: "\n",
+      container: { class: "text-muted" },
+      label: { enable: false, text: "Profile" },
+      separator: " | ",
       items: [
         "country",
         "email",
@@ -582,4 +525,5 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     },
   },
   enablePageNumbers: true,
+  dateFormat:'MM/YYYY'
 };
