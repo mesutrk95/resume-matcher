@@ -99,6 +99,15 @@ export const sectionSchema = elementStyleSchema.extend({
   heading: elementStyleSchema.extend({}).optional(),
 });
 
+export const sectionSubheaderSchema = elementStyleSchema.extend({
+  rows: z.array(
+    elementStyleSchema.extend({
+      separator: z.string().optional(),
+      items: z.array(z.string()),
+    })
+  ),
+});
+
 // Define spacing schema
 const spacingSchema = z.object({
   unit: z.number().default(4), // Base spacing unit in points
@@ -165,16 +174,16 @@ const sectionsSchema = elementStyleSchema.extend({
         item: elementStyleSchema.optional(),
       })
       .optional(),
-    subheader: elementStyleSchema
+    subheader: sectionSubheaderSchema
       .extend({
-        rows: z.array(
-          elementStyleSchema.extend({
-            separator: z.string().optional(),
-            items: z.array(
-              z.enum(["company", "title", "date", "positionType", "location"])
-            ),
-          })
-        ),
+        // rows: z.array(
+        //   elementStyleSchema.extend({
+        //     separator: z.string().optional(),
+        //     items: z.array(
+        //       z.enum(["company", "title", "date", "positionType", "location"])
+        //     ),
+        //   })
+        // ),
         title: elementStyleSchema.extend({}).optional(),
         metadata: elementStyleSchema.extend({}).optional(),
         company: elementStyleSchema.extend({}).optional(),
@@ -300,16 +309,10 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
   rightColumn: {
     style: {
       width: "30%",
-      paddingRight: 10,
+      padding: 10,
       backgroundColor: "#f5f5f5",
     },
-    sections: [
-      "contactInfo",
-      "skills",
-      "certifications",
-      "languages",
-      "interests",
-    ],
+    sections: ["contactInfo", "skills", "languages", "interests"],
   },
   leftColumn: {
     style: {
@@ -321,6 +324,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       "fullname",
       "summary",
       "experiences",
+      "certifications",
       "educations",
       "projects",
     ],
