@@ -533,6 +533,18 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     },
     educations: {
       label: { enable: true },
+      subheader: {
+        rows: [
+          {
+            class: "flex-between",
+            items: ["degree", "date"],
+          },
+          {
+            separator: " • ",
+            items: ["institution", "location"],
+          },
+        ],
+      },
     },
     summary: {
       label: { enable: true },
