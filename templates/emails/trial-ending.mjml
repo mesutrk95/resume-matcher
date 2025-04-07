@@ -1,0 +1,63 @@
+<mj-section>
+  <mj-column>
+    <mj-text
+      font-size="24px"
+      font-weight="bold"
+      color="#333333"
+      align="center"
+      padding-bottom="20px"
+    >
+      Your Trial is Ending Soon
+    </mj-text>
+
+    <mj-text> Hello {{name}}, </mj-text>
+
+    <mj-text>
+      This is a friendly reminder that your free trial of Resume Matcher Pro
+      will end on <strong>{{trialEndDate}}</strong>.
+    </mj-text>
+
+    <mj-text>
+      After your trial ends, your account will be automatically billed
+      {{currency}} {{firstBillingAmount}} to continue your subscription without
+      interruption.
+    </mj-text>
+
+    <mj-text>
+      <strong>What you'll continue to enjoy with Resume Matcher Pro:</strong>
+    </mj-text>
+
+    <mj-text padding-left="25px">
+      • Unlimited resume matching<br />
+      • Advanced AI-powered job recommendations<br />
+      • Custom resume templates<br />
+      • Priority support<br />
+      • And much more!
+    </mj-text>
+
+    <mj-button
+      background-color="#4f46e5"
+      color="white"
+      border-radius="4px"
+      font-weight="bold"
+      href="{{manageBillingUrl}}"
+    >
+      Manage Billing
+    </mj-button>
+
+    <mj-text>
+      If you don't want to continue with your subscription, you can cancel
+      anytime before {{trialEndDate}} by visiting your billing settings.
+    </mj-text>
+
+    <mj-text>
+      Thank you for trying Resume Matcher Pro. We hope you've found it valuable
+      for your job search and career development.
+    </mj-text>
+
+    <mj-text>
+      Best regards,<br />
+      The {{appName}} Team
+    </mj-text>
+  </mj-column>
+</mj-section>

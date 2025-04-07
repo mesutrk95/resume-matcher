@@ -1,0 +1,51 @@
+<mj-section>
+  <mj-column>
+    <mj-text
+      font-size="24px"
+      font-weight="bold"
+      color="#333333"
+      align="center"
+      padding-bottom="20px"
+    >
+      Email Verification
+    </mj-text>
+
+    <mj-text> Hello {{name}}, </mj-text>
+
+    <mj-text>
+      Thank you for registering! Please verify your email address to complete
+      your registration and access all features.
+    </mj-text>
+
+    <mj-text> Click the button below to verify your email address: </mj-text>
+
+    <mj-button
+      background-color="#4f46e5"
+      color="white"
+      border-radius="4px"
+      font-weight="bold"
+      href="{{verificationLink}}"
+    >
+      Verify Email Address
+    </mj-button>
+
+    <mj-text font-size="14px">
+      Or copy and paste this URL into your browser:
+    </mj-text>
+
+    <mj-text font-size="14px" color="#4f46e5" word-break="break-all">
+      {{verificationLink}}
+    </mj-text>
+
+    <mj-text> This verification link will expire in 1 hour. </mj-text>
+
+    <mj-text>
+      If you did not create an account, you can safely ignore this email.
+    </mj-text>
+
+    <mj-text>
+      Best regards,<br />
+      The {{appName}} Team
+    </mj-text>
+  </mj-column>
+</mj-section>

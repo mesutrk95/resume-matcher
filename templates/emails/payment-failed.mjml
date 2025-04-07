@@ -1,0 +1,64 @@
+<mj-section>
+  <mj-column>
+    <mj-text
+      font-size="24px"
+      font-weight="bold"
+      color="#333333"
+      align="center"
+      padding-bottom="20px"
+    >
+      Payment Failed
+    </mj-text>
+
+    <mj-text> Hello {{name}}, </mj-text>
+
+    <mj-text>
+      We were unable to process your payment of {{currency}} {{amount}} for your
+      Resume Matcher Pro subscription.
+    </mj-text>
+
+    <mj-text> <strong>Payment attempt:</strong> {{attemptCount}} of 3 </mj-text>
+
+    <mj-text>
+      <strong>Next automatic retry:</strong> {{nextAttemptDate}}
+    </mj-text>
+
+    <mj-text>
+      To ensure uninterrupted access to Resume Matcher Pro, please update your
+      payment information by clicking the button below:
+    </mj-text>
+
+    <mj-button
+      background-color="#4f46e5"
+      color="white"
+      border-radius="4px"
+      font-weight="bold"
+      href="{{paymentLink}}"
+    >
+      Update Payment Method
+    </mj-button>
+
+    <mj-text>
+      If you don't update your payment information, your subscription may be
+      canceled after our final retry attempt.
+    </mj-text>
+
+    <mj-text> Common reasons for payment failure include: </mj-text>
+
+    <mj-text padding-left="25px">
+      • Expired credit card<br />
+      • Insufficient funds<br />
+      • Card issuer declined the transaction<br />
+      • Outdated billing information
+    </mj-text>
+
+    <mj-text>
+      If you need any assistance, please contact our support team.
+    </mj-text>
+
+    <mj-text>
+      Best regards,<br />
+      The {{appName}} Team
+    </mj-text>
+  </mj-column>
+</mj-section>
