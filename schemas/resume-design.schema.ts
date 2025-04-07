@@ -90,8 +90,13 @@ export const elementStyleSchema = z.object({
   typo: typographySchema.optional(),
   style: cssStyleSchema.optional(),
 });
+
 export const sectionSchema = elementStyleSchema.extend({
-  label: z.string().optional(),
+  label: z
+    .object({ text: z.string().optional(), enable: z.boolean().optional() })
+    .optional(),
+  container: elementStyleSchema.extend({}).optional(),
+  heading: elementStyleSchema.extend({}).optional(),
 });
 
 // Define spacing schema
@@ -116,13 +121,13 @@ export const resumeDesignOrientation = z
   .default("portrait");
 
 // Define section schema for layout customization
-const sectionNamesSchema = z.enum([
+export const sectionNamesSchema = z.enum([
   "contactInfo",
   "fullname",
   "title",
   "summary",
-  "experience",
-  "education",
+  "experiences",
+  "educations",
   "skills",
   "projects",
   "languages",
@@ -133,24 +138,17 @@ const sectionNamesSchema = z.enum([
 ]);
 
 // Define column layout options
-const columnLayoutSchema = z.enum([
-  "single",
-  "two-equal",
-  "main-sidebar",
-  "sidebar-main",
-]);
+const columnLayoutSchema = z.enum(["single", "two-columns"]);
 
 const dateFormatSchema = z
   .enum(["YYYY/MM", "YYYY MM", "MM/YYYY", "MMM YYYY"])
   .default("MM/YYYY");
 
 // Define section specific layout settings
-const sectionsSchema = z.object({
-  style: z.object({
-    section: elementStyleSchema,
-    sectionHeading: elementStyleSchema,
-    sectionContainer: elementStyleSchema,
-  }),
+const sectionsSchema = elementStyleSchema.extend({
+  heading: elementStyleSchema.optional(),
+  container: elementStyleSchema.optional(),
+
   experiences: sectionSchema.extend({
     company: elementStyleSchema.extend({
       enable: z.boolean().default(true).optional(),
@@ -204,6 +202,8 @@ const sectionsSchema = z.object({
     name: elementStyleSchema.optional(),
     subheader: elementStyleSchema.optional(),
   }),
+  educations: sectionSchema.extend({ item: elementStyleSchema.optional() }),
+  summary: sectionSchema.extend({}),
   skills: sectionSchema.extend({
     groupByCategory: z.boolean().default(true),
 
@@ -227,7 +227,14 @@ const sectionsSchema = z.object({
       ])
     ),
   }),
-  fullName: sectionSchema.extend({}),
+  references: sectionSchema.extend({}),
+  interests: sectionSchema.extend({}),
+  certifications: sectionSchema.extend({}),
+  awards: sectionSchema.extend({}),
+  licenses: sectionSchema.extend({}),
+  languages: sectionSchema.extend({}),
+  fullname: sectionSchema.extend({}),
+  title: sectionSchema.extend({}),
 });
 
 // Define the main resume design schema
@@ -256,8 +263,8 @@ export const resumeDesignSchema = z.object({
       "fullname",
       "contactInfo",
       "summary",
-      "experience",
-      "education",
+      "experiences",
+      "educations",
       "skills",
       "projects",
       "languages",
@@ -289,12 +296,11 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     fallback: "Helvetica, Arial, sans-serif",
     baseSize: 10,
   },
-  columnLayout: "main-sidebar",
+  columnLayout: "two-columns",
   rightColumn: {
     style: {
       width: "30%",
-      marginLeft: 10,
-      padding: 10,
+      paddingRight: 10,
       backgroundColor: "#f5f5f5",
     },
     sections: [
@@ -310,7 +316,14 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       width: "70%",
       paddingRight: 10,
     },
-    sections: ["title", "summary", "experience", "education", "projects"],
+    sections: [
+      "title",
+      "fullname",
+      "summary",
+      "experiences",
+      "educations",
+      "projects",
+    ],
   },
   typography: {
     "text-muted": {
@@ -362,38 +375,51 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
     "contactInfo",
     "summary",
     "skills",
-    "experience",
-    "education",
+    "experiences",
+    "educations",
     "projects",
     "languages",
     "certifications",
   ],
   sections: {
-    style: {
-      sectionContainer: { typo: "p" },
-      sectionHeading: {
-        typo: "h4",
-        style: {
-          marginBottom: 3,
-          borderBottom: 2,
-          borderColor: "#15803d",
-          paddingBottom: 2,
-        },
-      },
-      section: {
-        style: {
-          paddingBottom: 10,
-        },
+    container: { typo: "p", style: { paddingBottom: 10 } },
+    heading: {
+      typo: "h4",
+      style: {
+        marginBottom: 3,
+        borderBottom: 2,
+        borderColor: "#15803d",
+        paddingBottom: 2,
       },
     },
     projects: {
+      label: { enable: true },
       name: { typo: "h5" },
       url: { typo: "text-muted" },
       date: { typo: "text-muted" },
       subheader: {},
-      style: { display: "flex", gap: 5, flexDirection: "column" },
+      style: {},
+    },
+    certifications: {
+      label: { enable: true },
+    },
+    interests: {
+      label: { enable: true },
+    },
+    awards: {
+      label: { enable: true },
+    },
+    languages: {
+      label: { enable: true },
+    },
+    licenses: {
+      label: { enable: true },
+    },
+    references: {
+      label: { enable: true },
     },
     experiences: {
+      label: { enable: true },
       company: {},
       bullets: {
         symbol: "•",
@@ -445,6 +471,7 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
       style: {},
     },
     skills: {
+      label: { enable: true },
       groupByCategory: true,
       category: {
         style: { fontWeight: "bold", marginBottom: 5 },
@@ -455,9 +482,27 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
         itemsSeparator: "\n",
       },
     },
+    educations: {
+      label: { enable: true },
+    },
+    summary: {
+      label: { enable: true },
+    },
+    title: {
+      typo: "h1",
+      container: { typo: "h1" },
+      label: { enable: false },
+    },
+    fullname: {
+      container: { typo: "h2" },
+      label: { enable: false },
+    },
+
     contactInfo: {
-      typo: "text-muted",
-      label: "Profile",
+      container: {
+        typo: "text-muted",
+      },
+      label: { enable: true, text: "Profile" },
       separator: "\n",
       items: [
         "country",
@@ -469,9 +514,6 @@ export const DEFAULT_RESUME_DESIGN: z.infer<typeof resumeDesignSchema> = {
         "address",
       ],
       showIcons: true,
-    },
-    fullName: {
-      typo: "h2",
     },
   },
   enablePageNumbers: true,

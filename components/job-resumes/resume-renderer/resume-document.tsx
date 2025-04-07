@@ -33,6 +33,7 @@ import {
   TitleSection,
 } from "./sections";
 import { DEFAULT_RESUME_DESIGN } from "@/schemas/resume-design.schema";
+import { ResumeRendererProvider, useResumeRenderer } from "./provider";
 
 // Register fonts (optional but recommended for professional CVs)
 Font.register({
@@ -77,144 +78,101 @@ const registerFonts = (design: ResumeDesign) => {
 const renderSection = (
   sectionName: string,
   resume: ResumeContent,
-  resumeDesign: ResumeDesign,
   styles: any,
   withIdentifiers?: boolean
 ) => {
   switch (sectionName) {
     case "contactInfo":
-      return (
-        <ContactInfoSection
-          resume={resume}
-          styles={styles}
-          resumeDesign={resumeDesign}
-        />
-      );
+      return <ContactInfoSection resume={resume} />;
     case "fullname":
-      return (
-        <FullNameSection
-          resume={resume}
-          styles={styles}
-          resumeDesign={resumeDesign}
-        />
-      );
+      return <FullNameSection resume={resume} />;
     case "title":
-      return (
-        <TitleSection
-          resume={resume}
-          styles={styles}
-          resumeDesign={resumeDesign}
-        />
-      );
+      return <TitleSection resume={resume} />;
     case "summary":
-      return (
-        <SummarySection
-          resume={resume}
-          styles={styles}
-          withIdentifiers={withIdentifiers}
-        />
-      );
-    case "experience":
+      return <SummarySection resume={resume} />;
+    case "experiences":
       return (
         <>
           <ExperienceSection
             resume={resume}
-            styles={styles}
-            resumeDesign={resumeDesign}
             withIdentifiers={withIdentifiers}
           />
         </>
       );
-    case "education":
+    case "educations":
       return (
-        <EducationSection
-          resume={resume}
-          styles={styles}
-          withIdentifiers={withIdentifiers}
-        />
+        <EducationSection resume={resume} withIdentifiers={withIdentifiers} />
       );
     case "skills":
       return (
-        <SkillsSection
-          resume={resume}
-          resumeDesign={resumeDesign}
-          styles={styles}
-          withIdentifiers={withIdentifiers}
-        />
+        <SkillsSection resume={resume} withIdentifiers={withIdentifiers} />
       );
     case "projects":
       return (
-        <ProjectsSection
-          resume={resume}
-          styles={styles}
-          withIdentifiers={withIdentifiers}
-        />
+        <ProjectsSection resume={resume} withIdentifiers={withIdentifiers} />
       );
     case "languages":
       return (
-        <LanguagesSection
-          resume={resume}
-          styles={styles}
-          withIdentifiers={withIdentifiers}
-        />
+        <LanguagesSection resume={resume} withIdentifiers={withIdentifiers} />
       );
     case "certifications":
       return (
         <CertificationsSection
           resume={resume}
-          styles={styles}
           withIdentifiers={withIdentifiers}
         />
       );
     case "awards":
       return (
-        <AwardsSection
-          resume={resume}
-          styles={styles}
-          withIdentifiers={withIdentifiers}
-        />
+        <AwardsSection resume={resume} withIdentifiers={withIdentifiers} />
       );
     case "interests":
       return (
-        <InterestsSection
-          resume={resume}
-          styles={styles}
-          withIdentifiers={withIdentifiers}
-        />
+        <InterestsSection resume={resume} withIdentifiers={withIdentifiers} />
       );
     case "references":
       return (
-        <ReferencesSection
-          resume={resume}
-          styles={styles}
-          withIdentifiers={withIdentifiers}
-        />
+        <ReferencesSection resume={resume} withIdentifiers={withIdentifiers} />
       );
     default:
       return null;
   }
 };
 
-// Main ResumeDocument component
 export const ResumeDocument = ({
-  resume,
-  withIdentifiers,
-  skipFont,
   resumeDesign = DEFAULT_RESUME_DESIGN,
+  ...props
 }: {
   resume: ResumeContent;
   withIdentifiers?: boolean;
   skipFont?: boolean;
   resumeDesign?: ResumeDesign;
 }) => {
+  return (
+    <ResumeRendererProvider initialResumeDesign={DEFAULT_RESUME_DESIGN}>
+      <ResumeDocumentRenderer {...props} />
+    </ResumeRendererProvider>
+  );
+};
+
+// Main ResumeDocument component
+const ResumeDocumentRenderer = ({
+  resume,
+  withIdentifiers,
+  skipFont,
+}: {
+  resume: ResumeContent;
+  withIdentifiers?: boolean;
+  skipFont?: boolean;
+}) => {
+  const { design } = useResumeRenderer();
   // Register any custom fonts needed by this design
   if (!skipFont) {
-    registerFonts(resumeDesign);
+    registerFonts(design);
   }
 
   // Generate styles based on the resume design configuration
   const styles = useMemo(() => {
-    const design = resumeDesign || DEFAULT_RESUME_DESIGN;
     const spacing = (units: number) => units * design.spacing.unit;
     const typo = (name?: ResumeDesignTypography) =>
       (name && design.typography[name]) || {};
@@ -244,42 +202,7 @@ export const ResumeDocument = ({
       leftColumn: getComputedStyle(design.leftColumn),
       rightColumn: getComputedStyle(design.rightColumn),
 
-      // contactInfo: {},
-      section: getComputedStyle(design.sections.style.section),
-      sectionHeading: getComputedStyle(design.sections.style.sectionHeading),
-      sectionContainer: getComputedStyle(
-        design.sections.style.sectionContainer
-      ),
-      experience: getComputedStyle(design.sections.experiences),
-      experienceItems: getComputedStyle(design.sections.experiences.items),
-      experienceItem: getComputedStyle(design.sections.experiences.items?.item),
-      experienceItemBullet: getComputedStyle(
-        design.sections.experiences.bullets
-      ),
-      experienceSubheader: getComputedStyle(
-        design.sections.experiences.subheader
-      ),
-      experienceSubheaderCompany: getComputedStyle(
-        design.sections.experiences.subheader?.company
-      ),
-      experienceSubheaderTitle: getComputedStyle(
-        design.sections.experiences.subheader?.title
-      ),
-      experienceSubheaderMetadata: getComputedStyle(
-        design.sections.experiences.subheader?.metadata
-      ),
-
-      projects: getComputedStyle(design.sections.projects),
-      projectDate: getComputedStyle(design.sections.projects.date),
-      projectUrl: getComputedStyle(design.sections.projects.url),
-      projectName: getComputedStyle(design.sections.projects.name),
-      projectSubheader: getComputedStyle(design.sections.projects.subheader),
-
-      skills: getComputedStyle(design.sections.skills),
-      skillsCategory: getComputedStyle(design.sections.skills.category),
-      skillsList: getComputedStyle(design.sections.skills.list),
-
-      fullName: getComputedStyle(design.sections.fullName),
+      fullName: getComputedStyle(design.sections.fullname),
 
       pageNumber: {
         borderBottom: "",
@@ -287,35 +210,28 @@ export const ResumeDocument = ({
         bottom: design.spacing.pagePadding.bottom / 2,
         right: design.spacing.pagePadding.right,
         fontSize: 9,
-        // color: design.colors.secondary,
       },
     });
     return styles;
-  }, [resumeDesign, skipFont]);
+  }, [design, skipFont]);
 
   // For single column layout
-  if (resumeDesign.columnLayout === "single") {
+  if (design.columnLayout === "single") {
     return (
       <Document>
         <Page
-          size={resumeDesign.pageSize}
+          size={design.pageSize}
           style={styles.page}
-          orientation={resumeDesign.orientation}
+          orientation={design.orientation}
         >
-          {resumeDesign.sectionOrder?.map((sectionName, index) => (
+          {design.sectionOrder?.map((sectionName, index) => (
             <React.Fragment key={sectionName}>
               {/* style={styles.section}  */}
-              {renderSection(
-                sectionName,
-                resume,
-                resumeDesign,
-                styles,
-                withIdentifiers
-              )}
+              {renderSection(sectionName, resume, styles, withIdentifiers)}
             </React.Fragment>
           ))}
 
-          {resumeDesign.enablePageNumbers && (
+          {design.enablePageNumbers && (
             <Text
               style={styles.pageNumber}
               render={({ pageNumber, totalPages }) =>
@@ -332,43 +248,31 @@ export const ResumeDocument = ({
   return (
     <Document>
       <Page
-        size={resumeDesign.pageSize}
+        size={design.pageSize}
         style={styles.page}
-        orientation={resumeDesign.orientation}
+        orientation={design.orientation}
       >
         <View style={styles.twoColumnContainer}>
           {/* Left/Main Column */}
           <View style={styles.leftColumn}>
-            {resumeDesign.leftColumn.sections?.map((sectionName, index) => (
-              <View key={sectionName} style={styles.section}>
-                {renderSection(
-                  sectionName,
-                  resume,
-                  resumeDesign,
-                  styles,
-                  withIdentifiers
-                )}
-              </View>
+            {design.leftColumn.sections?.map((sectionName, index) => (
+              <React.Fragment key={sectionName}>
+                {renderSection(sectionName, resume, styles, withIdentifiers)}
+              </React.Fragment>
             ))}
           </View>
 
           {/* Right/Side Column */}
           <View style={styles.rightColumn}>
-            {resumeDesign.rightColumn.sections?.map((sectionName, index) => (
-              <View key={sectionName} style={styles.section}>
-                {renderSection(
-                  sectionName,
-                  resume,
-                  resumeDesign,
-                  styles,
-                  withIdentifiers
-                )}
-              </View>
+            {design.rightColumn.sections?.map((sectionName, index) => (
+              <React.Fragment key={sectionName}>
+                {renderSection(sectionName, resume, styles, withIdentifiers)}
+              </React.Fragment>
             ))}
           </View>
         </View>
 
-        {resumeDesign.enablePageNumbers && (
+        {design.enablePageNumbers && (
           <Text
             style={styles.pageNumber}
             render={({ pageNumber, totalPages }) =>

@@ -19,6 +19,8 @@ import {
 import {
   elementStyleSchema,
   resumeDesignSchema,
+  sectionNamesSchema,
+  sectionSchema,
   typographySchema,
 } from "@/schemas/resume-design.schema";
 
@@ -48,3 +50,5 @@ export type ResumeAnalyzeResults = z.infer<typeof resumeAnalyzeResultsSchema>;
 export type ResumeDesign = z.infer<typeof resumeDesignSchema>;
 export type ResumeDesignTypography = z.infer<typeof typographySchema>;
 export type ResumeDesignElementStyle = z.infer<typeof elementStyleSchema>;
+export type ResumeDesignSection = z.infer<typeof sectionSchema>;
+export type ResumeDesignSectionName = z.infer<typeof sectionNamesSchema>;

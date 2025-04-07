@@ -3,37 +3,42 @@ import { parseDate } from "@/components/ui/year-month-picker";
 import {
   Experience,
   ResumeContent,
-  ResumeDesign,
-  ResumeDesignElementStyle,
-  ResumeDesignTypography,
+  ResumeDesignSection,
+  ResumeDesignSectionName,
 } from "@/types/resume";
 import { Text, View } from "@react-pdf/renderer";
 import moment from "moment";
 import React from "react";
+import { useResumeRenderer } from "./provider";
 
-const typo = (design: ResumeDesign, name?: ResumeDesignTypography) =>
-  (name && design.typography[name]) || {};
-
-const getComputedStyle = (
-  design: ResumeDesign,
-  elementStyle?: ResumeDesignElementStyle
-) =>
-  elementStyle
-    ? {
-        ...typo(design, elementStyle.typo),
-        ...(elementStyle.style || {}),
-      }
-    : {};
-
-export const ContactInfoSection = ({
-  resume,
-  resumeDesign,
-  styles,
+const RenderSection = ({
+  sectionName,
+  defaultLabel,
+  children,
 }: {
-  resume: ResumeContent;
-  resumeDesign: ResumeDesign;
-  styles: any;
+  children: React.ReactNode;
+  defaultLabel?: string;
+  sectionName: ResumeDesignSectionName;
 }) => {
+  const { design, resolveStyle } = useResumeRenderer();
+  const section = design.sections[sectionName] as ResumeDesignSection;
+
+  return (
+    <View style={resolveStyle(design.sections, section)}>
+      {section.label?.enable && (
+        <Text style={resolveStyle(design.sections.heading, section.heading)}>
+          {section.label.text || defaultLabel}
+        </Text>
+      )}
+      <View style={resolveStyle(design.sections.container, section?.container)}>
+        {children}
+      </View>
+    </View>
+  );
+};
+
+export const ContactInfoSection = ({ resume }: { resume: ResumeContent }) => {
+  const { design, resolveStyle } = useResumeRenderer();
   // Helper function to get the value for a specific item type
   const getItemValue = (itemType: string) => {
     switch (itemType) {
@@ -57,7 +62,7 @@ export const ContactInfoSection = ({
   };
 
   // Get the configured items and separator
-  const configuredItems = resumeDesign.sections.contactInfo?.items || [
+  const configuredItems = design.sections.contactInfo?.items || [
     "email",
     "phone",
     "linkedIn",
@@ -66,8 +71,7 @@ export const ContactInfoSection = ({
     "address",
     "country",
   ];
-  const separator =
-    resumeDesign.sections.contactInfo?.separator || "•";
+  const separator = design.sections.contactInfo?.separator;
 
   // Filter out items with empty values
   const validItems = configuredItems
@@ -78,87 +82,59 @@ export const ContactInfoSection = ({
     .filter((item) => item.value);
 
   return (
-    <View style={styles.section}>
-      {resumeDesign.sections.contactInfo.label && (
-        <Text style={styles.sectionHeading}>
-          {resumeDesign.sections.contactInfo.label}
-        </Text>
-      )}
-      <Text style={styles.sectionContainer}>
-        {validItems.map((item, index) => (
-          <React.Fragment key={item.type}>
-            <Text>{item.value}</Text>
-            {index < validItems.length - 1 && <Text>{` ${separator} `}</Text>}
-          </React.Fragment>
-        ))}
+    <RenderSection sectionName="contactInfo">
+      <Text>
+        {renderList({
+          data: validItems.map((item) => item.value),
+          by: separator,
+        })}
       </Text>
-    </View>
+
+      {/* 
+      {validItems.map((item, index) => (
+        <React.Fragment key={item.type}>
+            
+          <Text>{item.value}</Text>
+          {index < validItems.length - 1 && <Text>{separator}</Text>}
+        </React.Fragment>
+      ))} */}
+    </RenderSection>
   );
 };
 
-export const FullNameSection = ({
-  resume,
-  styles,
-  resumeDesign,
-}: {
-  resume: ResumeContent;
-  resumeDesign: ResumeDesign;
-  styles: any;
-}) => {
+export const FullNameSection = ({ resume }: { resume: ResumeContent }) => {
+  //   const { design, resolveStyle } = useResumeRenderer();
+
   return (
-    <View style={styles.section}>
-      <Text style={styles.fullName}>
+    <RenderSection sectionName="fullname">
+      <Text>
         {resume.contactInfo.firstName} {resume.contactInfo.lastName}
       </Text>
-    </View>
+    </RenderSection>
   );
 };
 
-export const TitleSection = ({
-  resume,
-  styles,
-  resumeDesign,
-}: {
-  resume: ResumeContent;
-  resumeDesign: ResumeDesign;
-  styles: any;
-}) => {
+export const TitleSection = ({ resume }: { resume: ResumeContent }) => {
+  //   const { design, resolveStyle } = useResumeRenderer();
   const title = resume.titles.find((t) => t.enabled);
   if (!title) return null;
 
   return (
-    <View style={styles.header}>
-      {/* <Text style={styles.name}>
-        <SeperateList
-          data={[resume.contactInfo.firstName, resume.contactInfo.lastName]}
-          by=" "
-        />
-      </Text> */}
-      <Text style={styles.title}>{title.content}</Text>
-    </View>
+    <RenderSection sectionName="title">
+      <Text>{title.content}</Text>
+    </RenderSection>
   );
 };
 
-export const SummarySection = ({
-  resume,
-  styles,
-  withIdentifiers,
-}: {
-  resume: ResumeContent;
-  styles: any;
-  withIdentifiers?: boolean;
-}) => {
+export const SummarySection = ({ resume }: { resume: ResumeContent }) => {
+  //   const { design, resolveStyle } = useResumeRenderer();
   const summary = resume.summaries.find((s) => s.enabled);
   if (!summary) return null;
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionHeading}>Professional Summary</Text>
-      <Text style={styles.sectionContainer}>
-        {withIdentifiers && <>[{summary.id}] </>}
-        {summary.content}
-      </Text>
-    </View>
+    <RenderSection sectionName="summary" defaultLabel="Professional Summary">
+      <Text>{summary.content}</Text>
+    </RenderSection>
   );
 };
 
@@ -171,17 +147,15 @@ const getFormattedDate = (
   if (dateString === "Present") return "Present";
   return moment(parseDate(dateString)).format(format || "MMM YYYY");
 };
+
 export const ExperienceSection = ({
   resume,
-  resumeDesign,
-  styles,
   withIdentifiers,
 }: {
   resume: ResumeContent;
-  resumeDesign: ResumeDesign;
-  styles: any;
   withIdentifiers?: boolean;
 }) => {
+  const { resolveStyle, design } = useResumeRenderer();
   const experiences = resume.experiences.filter((e) => e.enabled);
   if (experiences.length === 0) return null;
 
@@ -195,11 +169,11 @@ export const ExperienceSection = ({
       case "date":
         const startDate = getFormattedDate(
           experience.startDate,
-          resumeDesign.sections.experiences.subheader?.dates?.format
+          design.sections.experiences.subheader?.dates?.format
         );
         const endDate = getFormattedDate(
           experience.endDate,
-          resumeDesign.sections.experiences.subheader?.dates?.format
+          design.sections.experiences.subheader?.dates?.format
         );
         return `${startDate} - ${endDate}`;
       case "positionType":
@@ -213,13 +187,19 @@ export const ExperienceSection = ({
 
   // Helper function to get style for a specific item type
   const getItemStyle = (itemType: string) => {
-    const baseStyle =
-      styles[
-        `experienceSubheader${
-          itemType.charAt(0).toUpperCase() + itemType.slice(1)
-        }`
-      ];
-    return baseStyle || {};
+    switch (itemType) {
+      case "company":
+        return resolveStyle(design.sections.experiences.subheader?.company);
+      case "title":
+        return resolveStyle(design.sections.experiences.subheader?.title);
+      case "metadata":
+        return resolveStyle(design.sections.experiences.subheader?.metadata);
+      case "date":
+      case "positionType":
+      case "location":
+      default:
+        return undefined;
+    }
   };
 
   // Helper function to render row items with optional separator
@@ -258,12 +238,14 @@ export const ExperienceSection = ({
   };
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionHeading}>Experiences</Text>
+    <RenderSection sectionName="experiences" defaultLabel="Experiences">
       {experiences.map((experience) => (
-        <View key={experience.id} style={styles.experience}>
-          <View style={styles.experienceSubheader}>
-            {resumeDesign.sections.experiences.subheader?.rows?.map(
+        <View
+          key={experience.id}
+          style={resolveStyle(design.sections.experiences)}
+        >
+          <View style={resolveStyle(design.sections.experiences.subheader)}>
+            {design.sections.experiences.subheader?.rows?.map(
               (row, rowIndex) => (
                 <View key={rowIndex} style={row.style || {}}>
                   {renderRowItems(row, experience)}
@@ -272,16 +254,27 @@ export const ExperienceSection = ({
             )}
           </View>
 
-          <View style={styles.experienceItems}>
+          <View style={resolveStyle(design.sections.experiences.items)}>
             {experience.items
               .filter((item) => item.enabled)
               .map((item) =>
                 item.variations
                   .filter((v) => v.enabled)
                   .map((variation) => (
-                    <View key={variation.id} style={styles.experienceItem}>
-                      <Text style={styles.experienceItemBullet}>•</Text>
-                      <Text style={styles.bulletText}>
+                    <View
+                      key={variation.id}
+                      style={resolveStyle(
+                        design.sections.experiences.items?.item
+                      )}
+                    >
+                      <Text
+                        style={resolveStyle(
+                          design.sections.experiences.bullets
+                        )}
+                      >
+                        •
+                      </Text>
+                      <Text style={undefined}>
                         {withIdentifiers && <>[{variation.id}] </>}
                         {variation.content}
                       </Text>
@@ -291,57 +284,55 @@ export const ExperienceSection = ({
           </View>
         </View>
       ))}
-    </View>
+    </RenderSection>
   );
 };
 
 export const EducationSection = ({
   resume,
-  styles,
   withIdentifiers,
 }: {
   resume: ResumeContent;
-  styles: any;
   withIdentifiers?: boolean;
 }) => {
+  const { design, resolveStyle } = useResumeRenderer();
   const educations = resume.educations.filter((edu) => edu.enabled);
   if (educations.length === 0) return null;
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionHeading}>Education</Text>
+    <RenderSection sectionName="educations" defaultLabel="Educations">
       {educations.map((edu) => (
-        <View key={edu.id} style={styles.sectionContainer}>
-          <Text style={styles.jobTitle}>{edu.degree}</Text>
-          <Text style={styles.company}>{edu.institution}</Text>
-          <Text style={styles.metadata}>
+        <View
+          key={edu.id}
+          style={resolveStyle(design.sections.educations.item)}
+        >
+          <Text style={undefined}>{edu.degree}</Text>
+          <Text style={undefined}>{edu.institution}</Text>
+          <Text style={undefined}>
             <SeperateList
               data={[edu.location, `${edu.startDate} - ${edu.endDate}`]}
             />
           </Text>
           {edu.content && (
-            <Text style={styles.description}>
+            <Text style={undefined}>
               {withIdentifiers && <>[{edu.id}] </>}
               {edu.content}
             </Text>
           )}
         </View>
       ))}
-    </View>
+    </RenderSection>
   );
 };
 
 export const SkillsSection = ({
   resume,
-  resumeDesign,
-  styles,
   withIdentifiers,
 }: {
   resume: ResumeContent;
-  resumeDesign: ResumeDesign;
-  styles: any;
   withIdentifiers?: boolean;
 }) => {
+  const { design, resolveStyle } = useResumeRenderer();
   // Get enabled skill sets and their enabled skills
   const enabledSkillSets = resume.skills
     .filter((set) => set.enabled)
@@ -354,39 +345,21 @@ export const SkillsSection = ({
   if (enabledSkillSets.length === 0) return null;
 
   const hasMultipleCategories =
-    resumeDesign.sections?.skills?.groupByCategory &&
-    enabledSkillSets.length > 1;
+    design.sections?.skills?.groupByCategory && enabledSkillSets.length > 1;
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionHeading}>Skills</Text>
-      <View style={styles.sectionContent}>
-        {resumeDesign.sections?.skills?.groupByCategory ? (
-          // Render skills grouped by category
-          enabledSkillSets.map((skillSet, index) => (
-            <View key={skillSet.category}>
-              {hasMultipleCategories ? (
-                <Text style={styles.skillsCategory}>
-                  {skillSet.category !== "Default" &&
-                  skillSet.category.length > 0
-                    ? skillSet.category +
-                      (resumeDesign.sections.skills.category.itemsSeparator ||
-                        ": ")
-                    : ""}
-                  <Text style={styles.skillsList}>
-                    {renderList({
-                      data: skillSet.skills.map(
-                        (skill) =>
-                          `${withIdentifiers ? `[${skill.id}] ` : ""}${
-                            skill.content
-                          }`
-                      ),
-                      by: resumeDesign.sections.skills.list.itemsSeparator,
-                    })}
-                  </Text>
-                </Text>
-              ) : (
-                <Text style={styles.skillsList}>
+    <RenderSection sectionName="skills" defaultLabel="Skills">
+      {design.sections?.skills?.groupByCategory ? (
+        // Render skills grouped by category
+        enabledSkillSets.map((skillSet, index) => (
+          <View key={skillSet.category}>
+            {hasMultipleCategories ? (
+              <Text style={resolveStyle(design.sections.skills.category)}>
+                {skillSet.category !== "Default" && skillSet.category.length > 0
+                  ? skillSet.category +
+                    (design.sections.skills.category.itemsSeparator || ": ")
+                  : ""}
+                <Text style={resolveStyle(design.sections.skills.list)}>
                   {renderList({
                     data: skillSet.skills.map(
                       (skill) =>
@@ -394,240 +367,229 @@ export const SkillsSection = ({
                           skill.content
                         }`
                     ),
-                    by: ", ",
+                    by: design.sections.skills.list.itemsSeparator,
                   })}
                 </Text>
-              )}
-            </View>
-          ))
-        ) : (
-          // Render all skills in a flat list
-          <View style={styles.skillsList}>
-            <Text>
-              {renderList({
-                data: enabledSkillSets.flatMap((set) =>
-                  set.skills.map(
+              </Text>
+            ) : (
+              <Text style={resolveStyle(design.sections.skills.list)}>
+                {renderList({
+                  data: skillSet.skills.map(
                     (skill) =>
                       `${withIdentifiers ? `[${skill.id}] ` : ""}${
                         skill.content
                       }`
-                  )
-                ),
-                by: ", ",
-              })}
-            </Text>
+                  ),
+                  by: ", ",
+                })}
+              </Text>
+            )}
           </View>
-        )}
-      </View>
-    </View>
+        ))
+      ) : (
+        // Render all skills in a flat list
+        <View style={resolveStyle(design.sections.skills.list)}>
+          <Text>
+            {renderList({
+              data: enabledSkillSets.flatMap((set) =>
+                set.skills.map(
+                  (skill) =>
+                    `${withIdentifiers ? `[${skill.id}] ` : ""}${skill.content}`
+                )
+              ),
+              by: ", ",
+            })}
+          </Text>
+        </View>
+      )}
+    </RenderSection>
   );
 };
 
 export const ProjectsSection = ({
   resume,
-  styles,
   withIdentifiers,
 }: {
   resume: ResumeContent;
-  styles: any;
   withIdentifiers?: boolean;
 }) => {
+  const { design, resolveStyle } = useResumeRenderer();
   const projects = resume.projects.filter((p) => p.enabled);
   if (projects.length === 0) return null;
 
-  //   projects: getComputedStyle(design.sections.projects),
-  //   projectDate: getComputedStyle(design.sections.projects.date),
-  //   projectUrl: getComputedStyle(design.sections.projects.url),
-  //   projectName: getComputedStyle(design.sections.projects.name),
-  //   projectSubheader: getComputedStyle(design.sections.projects.subheader),
   return (
-    <View style={styles.projects}>
-      <Text style={styles.sectionHeading}>Projects</Text>
+    <RenderSection sectionName="projects" defaultLabel="Projects">
       {projects.map((project) => (
-        <View key={project.id} style={styles.sectionContainer}>
-          <Text style={styles.projectName}>{project.name}</Text>
+        <View key={project.id} style={undefined}>
+          <Text style={resolveStyle(design.sections.projects.name)}>
+            {project.name}
+          </Text>
           {project.link && (
-            <Text style={styles.projectUrl}>{project.link}</Text>
+            <Text style={resolveStyle(design.sections.projects.url)}>
+              {project.link}
+            </Text>
           )}
-          <Text style={styles.projectDate}>
+          <Text style={resolveStyle(design.sections.projects.date)}>
             {project.startDate &&
               project.endDate &&
               `${project.startDate} - ${project.endDate}`}
           </Text>
-          <Text style={styles.description}>
+          <Text style={undefined}>
             {withIdentifiers && <>[{project.id}] </>}
             {project.content}
           </Text>
         </View>
       ))}
-    </View>
+    </RenderSection>
   );
 };
 
 export const LanguagesSection = ({
   resume,
-  styles,
   withIdentifiers,
 }: {
   resume: ResumeContent;
-  styles: any;
   withIdentifiers?: boolean;
 }) => {
+  //   const { design, resolveStyle } = useResumeRenderer();
   const languages = resume.languages;
   if (languages.length === 0) return null;
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionHeading}>Languages</Text>
-      <View style={styles.sectionContainer}>
-        {languages.map((language, index) => (
-          <Text key={index} style={styles.sectionItem}>
-            {withIdentifiers && language.id && <>[{language.id}] </>}
-            {typeof language === "string" ? language : language.name}
-            {typeof language !== "string" &&
-              language.proficiency &&
-              ` (${language.proficiency})`}
-          </Text>
-        ))}
-      </View>
-    </View>
+    <RenderSection sectionName="languages" defaultLabel="Languages">
+      {languages.map((language, index) => (
+        <Text key={index} style={undefined}>
+          {withIdentifiers && language.id && <>[{language.id}] </>}
+          {typeof language === "string" ? language : language.name}
+          {typeof language !== "string" &&
+            language.proficiency &&
+            ` (${language.proficiency})`}
+        </Text>
+      ))}
+    </RenderSection>
   );
 };
 
 export const CertificationsSection = ({
   resume,
-  styles,
   withIdentifiers,
 }: {
   resume: ResumeContent;
-  styles: any;
   withIdentifiers?: boolean;
 }) => {
   const certifications = resume.certifications;
   if (certifications.length === 0) return null;
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionHeading}>Certifications</Text>
+    <RenderSection sectionName="certifications" defaultLabel="Certifications">
       {certifications.map((cert, index) => (
-        <View key={index} style={styles.sectionContainer}>
-          <Text style={styles.subsectionHeading}>
+        <View key={index} style={undefined}>
+          <Text style={undefined}>
             {withIdentifiers && cert.id && <>[{cert.id}] </>}
             {typeof cert === "string" ? cert : cert.name}
           </Text>
           {typeof cert !== "string" && cert.issuer && (
-            <Text style={styles.metadata}>{cert.issuer}</Text>
+            <Text style={undefined}>{cert.issuer}</Text>
           )}
           {typeof cert !== "string" && cert.date && (
-            <Text style={styles.metadata}>{cert.date}</Text>
+            <Text style={undefined}>{cert.date}</Text>
           )}
           {typeof cert !== "string" && cert.description && (
-            <Text style={styles.description}>{cert.description}</Text>
+            <Text style={undefined}>{cert.description}</Text>
           )}
         </View>
       ))}
-    </View>
+    </RenderSection>
   );
 };
 
 export const AwardsSection = ({
   resume,
-  styles,
   withIdentifiers,
 }: {
   resume: ResumeContent;
-  styles: any;
   withIdentifiers?: boolean;
 }) => {
   const awards = resume.awards;
   if (awards.length === 0) return null;
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionHeading}>Awards & Achievements</Text>
+    <RenderSection sectionName="awards" defaultLabel="Awards & Achievements">
       {awards.map((award, index) => (
-        <View key={index} style={styles.sectionContainer}>
-          <Text style={styles.subsectionHeading}>
+        <View key={index} style={undefined}>
+          <Text style={undefined}>
             {withIdentifiers && award.id && <>[{award.id}] </>}
             {typeof award === "string" ? award : award.title}
           </Text>
           {typeof award !== "string" && award.issuer && (
-            <Text style={styles.metadata}>{award.issuer}</Text>
+            <Text style={undefined}>{award.issuer}</Text>
           )}
           {typeof award !== "string" && award.date && (
-            <Text style={styles.metadata}>{award.date}</Text>
+            <Text style={undefined}>{award.date}</Text>
           )}
           {typeof award !== "string" && award.description && (
-            <Text style={styles.description}>{award.description}</Text>
+            <Text style={undefined}>{award.description}</Text>
           )}
         </View>
       ))}
-    </View>
+    </RenderSection>
   );
 };
 
 export const InterestsSection = ({
   resume,
-  styles,
   withIdentifiers,
 }: {
   resume: ResumeContent;
-  styles: any;
   withIdentifiers?: boolean;
 }) => {
   const interests = resume.interests;
   if (interests.length === 0) return null;
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionHeading}>Interests</Text>
-      <View style={styles.sectionContainer}>
-        {interests.map((interest, index) => (
-          <Text key={index} style={styles.sectionItem}>
-            {withIdentifiers && interest.id && <>[{interest.id}] </>}
-            {typeof interest === "string" ? interest : interest.name}
-          </Text>
-        ))}
-      </View>
-    </View>
+    <RenderSection sectionName="interests" defaultLabel="Interests">
+      {interests.map((interest, index) => (
+        <Text key={index} style={undefined}>
+          {withIdentifiers && interest.id && <>[{interest.id}] </>}
+          {typeof interest === "string" ? interest : interest.name}
+        </Text>
+      ))}
+    </RenderSection>
   );
 };
 
 export const ReferencesSection = ({
   resume,
-  styles,
   withIdentifiers,
 }: {
   resume: ResumeContent;
-  styles: any;
   withIdentifiers?: boolean;
 }) => {
   const references = resume.references;
   if (references.length === 0) return null;
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionHeading}>References</Text>
+    <RenderSection sectionName="references" defaultLabel="References">
       {references.map((reference, index) => (
-        <View key={index} style={styles.sectionContainer}>
-          <Text style={styles.subsectionHeading}>
+        <View key={index}>
+          <Text style={undefined}>
             {withIdentifiers && reference.id && <>[{reference.id}] </>}
             {typeof reference === "string" ? reference : reference.name}
           </Text>
           {typeof reference !== "string" && reference.position && (
-            <Text style={styles.metadata}>{reference.position}</Text>
+            <Text style={undefined}>{reference.position}</Text>
           )}
           {typeof reference !== "string" && reference.company && (
-            <Text style={styles.metadata}>{reference.company}</Text>
+            <Text style={undefined}>{reference.company}</Text>
           )}
           {typeof reference !== "string" && reference.email && (
-            <Text style={styles.metadata}>{reference.email}</Text>
+            <Text style={undefined}>{reference.email}</Text>
           )}
           {typeof reference !== "string" && reference.phone && (
-            <Text style={styles.metadata}>{reference.phone}</Text>
+            <Text style={undefined}>{reference.phone}</Text>
           )}
         </View>
       ))}
-    </View>
+    </RenderSection>
   );
 };
