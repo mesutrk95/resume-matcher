@@ -13,7 +13,7 @@ import {
   analyzeResumeItemsScores,
   deleteJobResume,
 } from "@/actions/job-resume";
-import CVPreview from "@/components/job-resumes/resume-pdf-preview";
+import {ResumePreview} from "@/components/job-resumes/resume-pdf-preview";
 import { updateResumeTemplateContent } from "@/actions/resume-template";
 import {
   BotMessageSquare,
@@ -289,7 +289,7 @@ export const JobMatcher = ({
                         className="shrink-0 pt-0 relative overflow-auto h-full p-0 m-0"
                         value="preview"
                       >
-                        <CVPreview data={resume} jobResume={jobResume} />
+                        <ResumePreview data={resume} jobResume={jobResume} />
                       </TabsContent>
 
                       <TabsContent className="flex-auto h-0 p-0 m-0" value="jd">

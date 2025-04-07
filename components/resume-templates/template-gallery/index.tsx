@@ -184,7 +184,7 @@ export const TemplateGallery = () => {
         <div>
           <h2 className="text-xl font-bold">Resume Templates</h2>
           <p className="text-muted-foreground">
-            Choose from one of your already designed templates
+            Choose one of our designed templates
           </p>
         </div>
         <div className="flex gap-2 self-end">

@@ -36,12 +36,16 @@ const resumeProfessionalSummarySchema = z.object({
   enabled: z.boolean(),
 });
 
-// Define the resumeSkill schema
-const resumeSkillSchema = z.object({
+const resumeSkillItemSchema = z.object({
   id: z.string(),
   content: z.string(),
+  enabled: z.boolean(),
+});
+// Define the resumeSkill schema
+const resumeSkillSetSchema = z.object({
   category: z.string(),
   enabled: z.boolean(),
+  skills: z.array(resumeSkillItemSchema),
 });
 
 // Define the resumeProject schema
@@ -95,7 +99,7 @@ const resumeContentSchema = z.object({
   titles: z.array(resumeTargetTitleSchema),
   summaries: z.array(resumeProfessionalSummarySchema),
   educations: z.array(resumeEducationSchema),
-  skills: z.array(resumeSkillSchema),
+  skills: z.array(resumeSkillSetSchema),
   projects: z.array(resumeProjectSchema),
   contactInfo: resumeContactInfoSchema,
   version: z.number().optional(),
@@ -138,7 +142,8 @@ export {
   experienceItemSchema,
   experienceSchema,
   resumeProfessionalSummarySchema,
-  resumeSkillSchema,
+  resumeSkillItemSchema,
+  resumeSkillSetSchema,
   resumeProjectSchema,
   resumeContactInfoSchema,
   resumeTargetTitleSchema,

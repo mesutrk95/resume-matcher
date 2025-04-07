@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { LucideLoader2 } from "lucide-react";
 import { useState, useRef, useMemo } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -20,7 +21,7 @@ function LoadingPdf() {
   return (
     <div className="flex justify-center items-center text-xs gap-1 py-10 font-semibold text-muted-foreground">
       <LucideLoader2 className="animate-spin" size={16} />
-      Building Resume ...
+      Loading Resume ...
     </div>
   );
 }
@@ -28,9 +29,11 @@ function LoadingPdf() {
 function PDFViewer({
   pdfBlob,
   maxPages,
+  className,
 }: {
   pdfBlob: Blob | null;
   maxPages?: number;
+  className?: string;
 }) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -49,7 +52,7 @@ function PDFViewer({
   const loadingIndicator = useMemo(() => <LoadingPdf />, []);
 
   return (
-    <div className="relative h-full w-full bg-slate-2001 p-2 overflow-hidden">
+    <div className={clsx("relative", className)}>
       <div className="" ref={ref}>
         {pdfBlob && (
           <Document

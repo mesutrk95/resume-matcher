@@ -19,7 +19,7 @@ import { askCustomQuestionFromAI } from "@/actions/job-resume";
 import type { JobResume } from "@prisma/client";
 import type { ResumeContent } from "@/types/resume";
 import { pdf } from "@react-pdf/renderer";
-import { ResumeDocument } from "../job-resumes/resume-document";
+import { ResumeDocument } from "../job-resumes/resume-renderer/resume-document";
 import { toast } from "sonner";
 import { randomNDigits } from "@/lib/utils";
 import { ContentWithMeta } from "./types";

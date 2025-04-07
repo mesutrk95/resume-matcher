@@ -1,4 +1,4 @@
-import { ResumeDocument } from "@/components/job-resumes/resume-document";
+import { ResumeDocument } from "@/components/job-resumes/resume-renderer/resume-document";
 import { ResumeContent } from "@/types/resume";
 import { usePDF, UsePDFInstance } from "@react-pdf/renderer";
 import React, { createContext, ReactNode, useContext } from "react";

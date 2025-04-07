@@ -30,7 +30,7 @@ import { LinkableTableCell } from "../ui/linkable-table-cell";
 
 type JobResumeItem = Omit<
   JobResume & { job: Pick<Job, "companyName"> | null },
-  "analyzeResults" | "content" | "jobId" | "userId" | "baseResumeTemplateId"
+  "analyzeResults" | "content" | "jobId" | "userId" | "baseResumeTemplateId" | "design"
 >;
 
 interface JobResumesDataTableProps {

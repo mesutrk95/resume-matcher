@@ -35,7 +35,8 @@ export const resumeExperiencesToString = (
 export const resumeSkillsToString = (resume: ResumeContent) => {
   return resume.skills
     .filter((e) => e.enabled)
-    .map((s) => s.content)
+    .map((s) => s.skills.filter((s) => s.enabled))
+    .flat()
     .join(", ")
     .replace(/\u200B/g, "");
 };
@@ -74,30 +75,3 @@ export const convertResumeObjectToString = (
   content += "Skills: " + resumeSkillsToString(resume) + "\n";
   return content;
 };
-
-export function migrateResumeContent(resume: ResumeContent): ResumeContent {
-  if (resume.version === 2) return resume;
-
-  function migrateV1(data: any): any {
-    if (Array.isArray(data)) {
-      return data.map((item) => migrateV1(item));
-    } else if (typeof data === "object" && data !== null) {
-      for (const key in data) {
-        if (data.hasOwnProperty(key)) {
-          if (key === "id" && typeof data[key] === "string") {
-            let prefix = data[key].replace(/\d+/g, "");
-            if (prefix.startsWith("skill")) prefix = "skill";
-            data[key] = `${prefix}_${randomNDigits()}`;
-          } else {
-            data[key] = migrateV1(data[key]);
-          }
-        }
-      }
-      return data;
-    }
-    return data;
-  }
-  const newResume = migrateV1(resume);
-  newResume.version = 2;
-  return newResume;
-}

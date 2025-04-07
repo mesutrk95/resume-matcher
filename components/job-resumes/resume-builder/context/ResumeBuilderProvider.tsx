@@ -1,6 +1,7 @@
 "use client";
 
 import { ResumeAnalyzeResults, ResumeContent } from "@/types/resume";
+import { migrateResumeContent } from "@/utils/resume-migration";
 import React, { createContext, useState } from "react";
 
 export type IResumeTemplateEditor = {
@@ -29,10 +30,12 @@ export const ResumeBuilderProvider = ({
   children: React.ReactNode;
   initialResume: ResumeContent;
   initialResumeAnalyzeResults?: ResumeAnalyzeResults;
-  scheme?: "cards" | "accordion",
+  scheme?: "cards" | "accordion";
   onUpdated?: (resume: ResumeContent) => void;
 }) => {
-  const [resume, setResume] = useState<ResumeContent>(initialResume);
+  const migratedResume = migrateResumeContent(initialResume);
+
+  const [resume, setResume] = useState<ResumeContent>(migratedResume);
   const [resumeAnalyzeResults, setResumeAnalyzeResults] = useState<
     ResumeAnalyzeResults | undefined
   >(initialResumeAnalyzeResults);

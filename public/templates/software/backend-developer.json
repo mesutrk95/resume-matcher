@@ -1,434 +1,555 @@
 {
-  "experiences": [
+  "awards": [
     {
-      "id": "exp-1",
-      "companyName": "Resume Worded",
-      "role": "Backend Developer",
-      "startDate": "January 2022",
-      "endDate": "Present",
-      "enabled": true,
-      "items": [
-        {
-          "id": "exp-1-item-1",
-          "description": "Optimized database queries, reducing server response time by 40%, which improved user experience and decreased page load times by 2 seconds on average",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-1-item-1-var-1",
-              "content": "Optimized database queries, reducing server response time by 40%, which improved user experience and decreased page load times by 2 seconds on average",
-              "enabled": true
-            }
-          ],
-          "skills": ["Database Optimization", "Performance Tuning"]
-        },
-        {
-          "id": "exp-1-item-2",
-          "description": "Led a team of 5 developers to implement a new microservices architecture, resulting in a 35% increase in system scalability and a 25% reduction in server costs",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-1-item-2-var-1",
-              "content": "Led a team of 5 developers to implement a new microservices architecture, resulting in a 35% increase in system scalability and a 25% reduction in server costs",
-              "enabled": true
-            }
-          ],
-          "skills": ["Team Leadership", "Microservices", "System Architecture"]
-        },
-        {
-          "id": "exp-1-item-3",
-          "description": "Developed a comprehensive API documentation, enhancing cross-team collaboration and reducing integration errors by 20%",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-1-item-3-var-1",
-              "content": "Developed a comprehensive API documentation, enhancing cross-team collaboration and reducing integration errors by 20%",
-              "enabled": true
-            }
-          ],
-          "skills": ["API Documentation", "Cross-team Collaboration"]
-        },
-        {
-          "id": "exp-1-item-4",
-          "description": "Automated deployment processes using Jenkins, decreasing deployment time by 30% and reducing human error in the release pipeline",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-1-item-4-var-1",
-              "content": "Automated deployment processes using Jenkins, decreasing deployment time by 30% and reducing human error in the release pipeline",
-              "enabled": true
-            }
-          ],
-          "skills": ["Jenkins", "CI/CD", "Automation"]
-        },
-        {
-          "id": "exp-1-item-5",
-          "description": "Integrated a Redis caching system, which resulted in a 60% decrease in data retrieval times and significantly improved application performance",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-1-item-5-var-1",
-              "content": "Integrated a Redis caching system, which resulted in a 60% decrease in data retrieval times and significantly improved application performance",
-              "enabled": true
-            }
-          ],
-          "skills": ["Redis", "Caching", "Performance Optimization"]
-        }
-      ],
-      "location": "City, Country",
-      "type": "Full-time"
+      "id": "award_a3d4hz",
+      "date": "2018",
+      "name": "Finalist in Minova Global Hackathon 2018",
+      "issuer": "Minova",
+      "enabled": true
     },
     {
-      "id": "exp-2",
-      "companyName": "Google",
-      "role": "Backend Developer",
-      "startDate": "August 2019",
-      "endDate": "December 2021",
-      "enabled": true,
-      "items": [
-        {
-          "id": "exp-2-item-1",
-          "description": "Implemented load balancing techniques, which led to a 50% improvement in server uptime during peak traffic hours",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-2-item-1-var-1",
-              "content": "Implemented load balancing techniques, which led to a 50% improvement in server uptime during peak traffic hours",
-              "enabled": true
-            }
-          ],
-          "skills": ["Load Balancing", "Server Management"]
-        },
-        {
-          "id": "exp-2-item-2",
-          "description": "Reduced server downtimes by 75% through proactive monitoring and automated alerts using Prometheus and Grafana",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-2-item-2-var-1",
-              "content": "Reduced server downtimes by 75% through proactive monitoring and automated alerts using Prometheus and Grafana",
-              "enabled": true
-            }
-          ],
-          "skills": ["Prometheus", "Grafana", "Monitoring", "Alerts"]
-        },
-        {
-          "id": "exp-2-item-3",
-          "description": "Refactored existing codebase to improve readability and maintainability, leading to a 20% increase in development speed for new features",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-2-item-3-var-1",
-              "content": "Refactored existing codebase to improve readability and maintainability, leading to a 20% increase in development speed for new features",
-              "enabled": true
-            }
-          ],
-          "skills": ["Code Refactoring", "Maintainability"]
-        }
-      ],
-      "location": "City, Country",
-      "type": "Full-time"
+      "id": "award_7z8og3",
+      "date": "2016",
+      "name": "Participated in Google Code Jam 2016",
+      "issuer": "Google",
+      "enabled": true
     },
     {
-      "id": "exp-3",
-      "companyName": "Amazon",
-      "role": "Junior Backend Developer",
-      "startDate": "May 2017",
-      "endDate": "July 2019",
-      "enabled": true,
-      "items": [
+      "id": "award_92k7lm",
+      "date": "2019",
+      "name": "Outstanding Technical Achievement Award",
+      "issuer": "Tech Innovation Summit",
+      "enabled": true
+    }
+  ],
+  "skills": [
+    {
+      "skills": [
         {
-          "id": "exp-3-item-1",
-          "description": "Developed RESTful APIs, enabling seamless integration between frontend and backend systems and reducing bug occurrences by 15%",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-3-item-1-var-1",
-              "content": "Developed RESTful APIs, enabling seamless integration between frontend and backend systems and reducing bug occurrences by 15%",
-              "enabled": true
-            }
-          ],
-          "skills": ["RESTful APIs", "System Integration"]
+          "id": "undefined6lvfda",
+          "content": "MySQL (Advanced)",
+          "enabled": true
         },
         {
-          "id": "exp-3-item-2",
-          "description": "Migrated legacy systems to a modern microservices architecture, resulting in a 30% increase in system reliability and performance",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-3-item-2-var-1",
-              "content": "Migrated legacy systems to a modern microservices architecture, resulting in a 30% increase in system reliability and performance",
-              "enabled": true
-            }
-          ],
-          "skills": ["System Migration", "Microservices", "Legacy Systems"]
+          "id": "undefinedzhc0p4",
+          "content": "PostgreSQL (Advanced)",
+          "enabled": true
+        },
+        {
+          "id": "undefined0ujv83",
+          "content": "MongoDB (Expert)",
+          "enabled": true
+        },
+        {
+          "id": "undefinedatzsep",
+          "content": "Redis (Expert)",
+          "enabled": true
+        },
+        {
+          "id": "undefinedcmtp8u",
+          "content": "Cassandra (Intermediate)",
+          "enabled": true
         }
       ],
-      "location": "City, Country",
-      "type": "Full-time"
+      "enabled": true,
+      "category": "Databases"
     },
     {
-      "id": "exp-4",
-      "companyName": "Coached.com",
-      "role": "Software Engineer Intern",
-      "startDate": "June 2016",
-      "endDate": "April 2017",
-      "enabled": true,
-      "items": [
+      "skills": [
         {
-          "id": "exp-4-item-1",
-          "description": "Assisted in the design and implementation of backend systems using Node.js, contributing to a 20% improvement in application efficiency and load times",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-4-item-1-var-1",
-              "content": "Assisted in the design and implementation of backend systems using Node.js, contributing to a 20% improvement in application efficiency and load times",
-              "enabled": true
-            }
-          ],
-          "skills": ["Node.js", "Backend Development"]
+          "id": "undefinedofcxbu",
+          "content": "Java (Expert)",
+          "enabled": true
         },
         {
-          "id": "exp-4-item-2",
-          "description": "Collaborated with senior developers to debug and optimize SQL queries, reducing data retrieval times by 25%",
-          "enabled": true,
-          "variations": [
-            {
-              "id": "exp-4-item-2-var-1",
-              "content": "Collaborated with senior developers to debug and optimize SQL queries, reducing data retrieval times by 25%",
-              "enabled": true
-            }
-          ],
-          "skills": ["SQL", "Query Optimization", "Debugging"]
+          "id": "undefinedgiyoz5",
+          "content": "Python (Expert)",
+          "enabled": true
+        },
+        {
+          "id": "undefined5p57gc",
+          "content": "Ruby (Intermediate)",
+          "enabled": true
+        },
+        {
+          "id": "undefined2kute4",
+          "content": "Scala (Intermediate)",
+          "enabled": true
+        },
+        {
+          "id": "undefined9gvgk5",
+          "content": "PHP (Intermediate)",
+          "enabled": true
+        },
+        { "id": "undefinedsm4qaj", "content": "C# (Basic)", "enabled": true }
+      ],
+      "enabled": true,
+      "category": "Programming Languages"
+    },
+    {
+      "skills": [
+        { "id": "undefinedy9kbtz", "content": "Node.js", "enabled": true },
+        { "id": "undefined0lx0vu", "content": "Express.js", "enabled": true },
+        { "id": "undefined83jjim", "content": "Django", "enabled": true },
+        { "id": "undefined7wotqr", "content": "Flask", "enabled": true },
+        {
+          "id": "undefinedd00veb",
+          "content": ".NET Framework",
+          "enabled": true
+        },
+        { "id": "undefinedb43oh3", "content": "Ruby on Rails", "enabled": true }
+      ],
+      "enabled": true,
+      "category": "Frameworks & Libraries"
+    },
+    {
+      "skills": [
+        {
+          "id": "undefined1voejt",
+          "content": "Docker (Proficient)",
+          "enabled": true
+        },
+        {
+          "id": "undefined52a24f",
+          "content": "Kubernetes (Proficient)",
+          "enabled": true
+        },
+        {
+          "id": "undefinedh2mc9r",
+          "content": "AWS (Proficient)",
+          "enabled": true
+        },
+        {
+          "id": "undefinedfn5w14",
+          "content": "Git (Advanced)",
+          "enabled": true
+        },
+        {
+          "id": "undefined90tko2",
+          "content": "CI/CD (Advanced)",
+          "enabled": true
+        },
+        {
+          "id": "undefinedmzxtqd",
+          "content": "Agile/Scrum (Advanced)",
+          "enabled": true
         }
       ],
-      "location": "City, Country",
-      "type": "Internship"
+      "enabled": true,
+      "category": "Development Tools & Practices"
+    },
+    {
+      "skills": [
+        {
+          "id": "undefinedj3mp9q",
+          "content": "Elasticsearch (Advanced)",
+          "enabled": true
+        },
+        {
+          "id": "undefined4sv72t",
+          "content": "Kafka (Intermediate)",
+          "enabled": true
+        },
+        {
+          "id": "undefinedp9k48r",
+          "content": "GraphQL (Intermediate)",
+          "enabled": true
+        }
+      ],
+      "enabled": true,
+      "category": "Data Technologies"
     }
   ],
   "titles": [
     {
-      "id": "title-1",
+      "id": "title_gen3ob",
       "content": "Backend Developer",
+      "enabled": true
+    }
+  ],
+  "version": 3,
+  "projects": [
+    {
+      "id": "project_1q6f1z",
+      "link": "https://joo.nz",
+      "name": "Joonz",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non.",
+      "enabled": true,
+      "endDate": "03/2025",
+      "startDate": "05/2025"
+    },
+    {
+      "id": "project_7k3g9p",
+      "link": "https://github.com/yourusername/scalable-api",
+      "name": "Scalable API Framework",
+      "content": "Developed a highly scalable API framework with automatic load balancing and failover capabilities. Implemented JWT authentication, request rate limiting, and comprehensive logging. Supports multiple database backends and horizontal scaling.",
+      "enabled": true,
+      "endDate": "01/2024",
+      "startDate": "08/2023"
+    },
+    {
+      "id": "project_2d9h4j",
+      "link": "https://github.com/yourusername/redis-cache-manager",
+      "name": "Redis Cache Manager",
+      "content": "Created an open-source Redis cache management library that simplifies implementation of distributed caching in applications. Features include automatic cache invalidation, cache statistics, and integration with popular frameworks.",
+      "enabled": true,
+      "endDate": "06/2023",
+      "startDate": "02/2023"
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_3f8j2p",
+      "content": "Distributed Systems Architecture",
+      "enabled": true
+    },
+    {
+      "id": "interest_9d7k3l",
+      "content": "Machine Learning Applications",
+      "enabled": true
+    },
+    {
+      "id": "interest_5h2g8m",
+      "content": "Open Source Development",
+      "enabled": true
+    },
+    {
+      "id": "interest_1p6s9n",
+      "content": "Cloud Computing Optimization",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_4j7k2p",
+      "name": "English",
+      "level": "Fluent",
+      "enabled": true
+    },
+    {
+      "id": "lang_8m3n6s",
+      "name": "Persian",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_2f5g7h",
+      "name": "French",
+      "level": "Intermediate",
       "enabled": true
     }
   ],
   "summaries": [
     {
-      "id": "summary-1",
+      "id": "summary_vkz4e5",
       "content": "Experienced Backend Developer with a proven track record in optimizing database performance, implementing microservices architectures, and enhancing system scalability. Skilled in various programming languages and development tools with a focus on creating efficient, robust backend solutions.",
       "enabled": true
     }
   ],
   "educations": [
     {
-      "id": "edu-1",
+      "id": "edu_1jm4f0",
+      "degree": "Master of Science in Software Engineering",
       "content": "Master of Science in Software Engineering with a focus on Distributed Systems and Machine Learning Applications",
       "enabled": true,
-      "startDate": "",
       "endDate": "May 2017",
-      "institution": "Resume Worded Academic Center",
       "location": "City, Country",
-      "degree": "Master of Science in Software Engineering"
+      "startDate": "September 2015",
+      "institution": "Minova Academic Center"
     },
     {
-      "id": "edu-2",
+      "id": "edu_9d5hk2",
+      "degree": "Bachelor of Science in Computer Science",
       "content": "Bachelor of Science in Computer Science, Graduated Summa Cum Laude. Relevant Coursework: Advanced Data Structures, Database Management Systems",
       "enabled": true,
-      "startDate": "",
       "endDate": "May 2015",
-      "institution": "Resume Worded University",
       "location": "City, Country",
-      "degree": "Bachelor of Science in Computer Science"
+      "startDate": "September 2011",
+      "institution": "Minova University"
     }
   ],
-  "skills": [
+  "references": [
     {
-      "id": "skill-1",
-      "content": "MySQL (Advanced)",
-      "category": "Databases",
+      "id": "ref_7j2k5p",
+      "name": "Dr. Jane Smith",
+      "title": "CTO at Minova",
+      "company": "Minova",
+      "email": "jsmith@resumeworded.com",
+      "phone": "+1 (555) 123-4567",
+      "relationship": "Direct Manager",
+      "content": "Masoud is an exceptional developer with deep technical knowledge and outstanding problem-solving skills.",
       "enabled": true
     },
     {
-      "id": "skill-2",
-      "content": "PostgreSQL (Advanced)",
-      "category": "Databases",
+      "id": "ref_2p9s4m",
+      "name": "Michael Johnson",
+      "title": "Senior Engineering Manager",
+      "company": "Google",
+      "email": "mjohnson@google.com",
+      "phone": "+1 (555) 987-6543",
+      "relationship": "Former Supervisor",
+      "content": "One of the most reliable and innovative backend developers I've had the pleasure to work with.",
       "enabled": true
     },
     {
-      "id": "skill-3",
-      "content": "MongoDB (Expert)",
-      "category": "Databases",
-      "enabled": true
-    },
-    {
-      "id": "skill-4",
-      "content": "Redis (Expert)",
-      "category": "Databases",
-      "enabled": true
-    },
-    {
-      "id": "skill-5",
-      "content": "Cassandra (Intermediate)",
-      "category": "Databases",
-      "enabled": true
-    },
-    {
-      "id": "skill-6",
-      "content": "Java (Expert)",
-      "category": "Programming Languages",
-      "enabled": true
-    },
-    {
-      "id": "skill-7",
-      "content": "Python (Expert)",
-      "category": "Programming Languages",
-      "enabled": true
-    },
-    {
-      "id": "skill-8",
-      "content": "Ruby (Intermediate)",
-      "category": "Programming Languages",
-      "enabled": true
-    },
-    {
-      "id": "skill-9",
-      "content": "Scala (Intermediate)",
-      "category": "Programming Languages",
-      "enabled": true
-    },
-    {
-      "id": "skill-10",
-      "content": "PHP (Intermediate)",
-      "category": "Programming Languages",
-      "enabled": true
-    },
-    {
-      "id": "skill-11",
-      "content": "C# (Basic)",
-      "category": "Programming Languages",
-      "enabled": true
-    },
-    {
-      "id": "skill-12",
-      "content": "Node.js",
-      "category": "Frameworks & Libraries",
-      "enabled": true
-    },
-    {
-      "id": "skill-13",
-      "content": "Express.js",
-      "category": "Frameworks & Libraries",
-      "enabled": true
-    },
-    {
-      "id": "skill-14",
-      "content": "Django",
-      "category": "Frameworks & Libraries",
-      "enabled": true
-    },
-    {
-      "id": "skill-15",
-      "content": "Flask",
-      "category": "Frameworks & Libraries",
-      "enabled": true
-    },
-    {
-      "id": "skill-16",
-      "content": ".NET Framework",
-      "category": "Frameworks & Libraries",
-      "enabled": true
-    },
-    {
-      "id": "skill-17",
-      "content": "Ruby on Rails",
-      "category": "Frameworks & Libraries",
-      "enabled": true
-    },
-    {
-      "id": "skill-18",
-      "content": "Docker (Proficient)",
-      "category": "Development Tools & Practices",
-      "enabled": true
-    },
-    {
-      "id": "skill-19",
-      "content": "Kubernetes (Proficient)",
-      "category": "Development Tools & Practices",
-      "enabled": true
-    },
-    {
-      "id": "skill-20",
-      "content": "AWS (Proficient)",
-      "category": "Development Tools & Practices",
-      "enabled": true
-    },
-    {
-      "id": "skill-21",
-      "content": "Git (Advanced)",
-      "category": "Development Tools & Practices",
-      "enabled": true
-    },
-    {
-      "id": "skill-22",
-      "content": "CI/CD (Advanced)",
-      "category": "Development Tools & Practices",
-      "enabled": true
-    },
-    {
-      "id": "skill-23",
-      "content": "Agile/Scrum (Advanced)",
-      "category": "Development Tools & Practices",
+      "id": "ref_8h3f6g",
+      "name": "Dr. Robert Chen",
+      "title": "Professor of Computer Science",
+      "company": "Minova University",
+      "email": "rchen@rwu.edu",
+      "phone": "+1 (555) 246-8135",
+      "relationship": "Academic Advisor",
+      "content": "Masoud demonstrated exceptional aptitude in advanced computing concepts during his academic career.",
       "enabled": true
     }
   ],
-  "projects": [],
   "contactInfo": {
-    "firstName": "Your",
-    "lastName": "Name",
+    "email": "yourname@minova.ai",
     "phone": "(123) 456-789",
-    "email": "yourname@resumeworded.com",
-    "linkedIn": "linkedin.com/in/your-profile",
-    "github": "",
-    "website": "",
-    "twitter": "",
+    "github": "github.com/masoudrk",
     "address": "City, Country",
-    "country": "",
-    "pronouns": ""
+    "country": "Armenia",
+    "twitter": "@masoudrk",
+    "website": "www.masoudrk.dev",
+    "lastName": "Reza khanlou",
+    "linkedIn": "https://www.linkedin.com/in/masoud-rezakhanlou/",
+    "pronouns": "He/Him",
+    "firstName": "Masoud"
   },
-  "version": 1,
-  "languages": [],
+  "experiences": [
+    {
+      "id": "exp_dvgkb3",
+      "role": "Backend Developer",
+      "type": "Full-time",
+      "items": [
+        {
+          "id": "expitem_t9qi9h",
+          "skills": ["Database Optimization", "Performance Tuning"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_zfh31z",
+              "content": "Optimized database queries, reducing server response time by 40%, which improved user experience and decreased page load times by 2 seconds on average",
+              "enabled": true
+            }
+          ],
+          "description": "Optimized database queries, reducing server response time by 40%, which improved user experience and decreased page load times by 2 seconds on average"
+        },
+        {
+          "id": "expitem_zx50zg",
+          "skills": ["Team Leadership", "Microservices", "System Architecture"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_wqyjpb",
+              "content": "Led a team of 5 developers to implement a new microservices architecture, resulting in a 35% increase in system scalability and a 25% reduction in server costs",
+              "enabled": true
+            }
+          ],
+          "description": "Led a team of 5 developers to implement a new microservices architecture, resulting in a 35% increase in system scalability and a 25% reduction in server costs"
+        },
+        {
+          "id": "expitem_q0ymbi",
+          "skills": ["API Documentation", "Cross-team Collaboration"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_ikqpop",
+              "content": "Developed a comprehensive API documentation, enhancing cross-team collaboration and reducing integration errors by 20%",
+              "enabled": true
+            }
+          ],
+          "description": "Developed a comprehensive API documentation, enhancing cross-team collaboration and reducing integration errors by 20%"
+        },
+        {
+          "id": "expitem_o1ac4s",
+          "skills": ["Jenkins", "CI/CD", "Automation"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_g7j78n",
+              "content": "Automated deployment processes using Jenkins, decreasing deployment time by 30% and reducing human error in the release pipeline",
+              "enabled": true
+            }
+          ],
+          "description": "Automated deployment processes using Jenkins, decreasing deployment time by 30% and reducing human error in the release pipeline"
+        },
+        {
+          "id": "expitem_dmd8j1",
+          "skills": ["Redis", "Caching", "Performance Optimization"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_tbon9y",
+              "content": "Integrated a Redis caching system, which resulted in a 60% decrease in data retrieval times and significantly improved application performance",
+              "enabled": true
+            }
+          ],
+          "description": "Integrated a Redis caching system, which resulted in a 60% decrease in data retrieval times and significantly improved application performance"
+        }
+      ],
+      "enabled": true,
+      "endDate": "Present",
+      "location": "City, Country",
+      "startDate": "January 2022",
+      "companyName": "Minova"
+    },
+    {
+      "id": "exp_ok8fxn",
+      "role": "Backend Developer",
+      "type": "Full-time",
+      "items": [
+        {
+          "id": "expitem_btjhnp",
+          "skills": ["Load Balancing", "Server Management"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_b6fysz",
+              "content": "Implemented load balancing techniques, which led to a 50% improvement in server uptime during peak traffic hours",
+              "enabled": true
+            }
+          ],
+          "description": "Implemented load balancing techniques, which led to a 50% improvement in server uptime during peak traffic hours"
+        },
+        {
+          "id": "expitem_1aillx",
+          "skills": ["Prometheus", "Grafana", "Monitoring", "Alerts"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_ab0nc7",
+              "content": "Reduced server downtimes by 75% through proactive monitoring and automated alerts using Prometheus and Grafana",
+              "enabled": true
+            }
+          ],
+          "description": "Reduced server downtimes by 75% through proactive monitoring and automated alerts using Prometheus and Grafana"
+        },
+        {
+          "id": "expitem_1yt0rc",
+          "skills": ["Code Refactoring", "Maintainability"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_ibln42",
+              "content": "Refactored existing codebase to improve readability and maintainability, leading to a 20% increase in development speed for new features",
+              "enabled": true
+            }
+          ],
+          "description": "Refactored existing codebase to improve readability and maintainability, leading to a 20% increase in development speed for new features"
+        }
+      ],
+      "enabled": true,
+      "endDate": "December 2021",
+      "location": "City, Country",
+      "startDate": "August 2019",
+      "companyName": "Google"
+    },
+    {
+      "id": "exp_w40o2i",
+      "role": "Junior Backend Developer",
+      "type": "Full-time",
+      "items": [
+        {
+          "id": "expitem_bmhlyi",
+          "skills": ["RESTful APIs", "System Integration"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_uadu4e",
+              "content": "Developed RESTful APIs, enabling seamless integration between frontend and backend systems and reducing bug occurrences by 15%",
+              "enabled": true
+            }
+          ],
+          "description": "Developed RESTful APIs, enabling seamless integration between frontend and backend systems and reducing bug occurrences by 15%"
+        },
+        {
+          "id": "expitem_fizi2i",
+          "skills": ["System Migration", "Microservices", "Legacy Systems"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_b2yys4",
+              "content": "Migrated legacy systems to a modern microservices architecture, resulting in a 30% increase in system reliability and performance",
+              "enabled": true
+            }
+          ],
+          "description": "Migrated legacy systems to a modern microservices architecture, resulting in a 30% increase in system reliability and performance"
+        }
+      ],
+      "enabled": true,
+      "endDate": "July 2019",
+      "location": "City, Country",
+      "startDate": "May 2017",
+      "companyName": "Amazon"
+    },
+    {
+      "id": "exp_ypw464",
+      "role": "Software Engineer Intern",
+      "type": "Internship",
+      "items": [
+        {
+          "id": "expitem_j4sx2w",
+          "skills": ["Node.js", "Backend Development"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_tpuys3",
+              "content": "Assisted in the design and implementation of backend systems using Node.js, contributing to a 20% improvement in application efficiency and load times",
+              "enabled": true
+            }
+          ],
+          "description": "Assisted in the design and implementation of backend systems using Node.js, contributing to a 20% improvement in application efficiency and load times"
+        },
+        {
+          "id": "expitem_z0ih20",
+          "skills": ["SQL", "Query Optimization", "Debugging"],
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_z4b4co",
+              "content": "Collaborated with senior developers to debug and optimize SQL queries, reducing data retrieval times by 25%",
+              "enabled": true
+            }
+          ],
+          "description": "Collaborated with senior developers to debug and optimize SQL queries, reducing data retrieval times by 25%"
+        }
+      ],
+      "enabled": true,
+      "endDate": "April 2017",
+      "location": "City, Country",
+      "startDate": "June 2016",
+      "companyName": "Coached.com"
+    }
+  ],
   "certifications": [
     {
-      "id": "cert-1",
+      "id": "cert_hfnpns",
+      "date": "2018",
       "name": "Oracle Certified Professional, Java SE 8 Programmer",
       "issuer": "Oracle",
-      "date": "",
       "enabled": true
     },
     {
-      "id": "cert-2",
+      "id": "cert_xn8usp",
+      "date": "2020",
       "name": "AWS Certified Developer – Associate",
       "issuer": "Amazon Web Services",
-      "date": "2020",
-      "enabled": true
-    }
-  ],
-  "awards": [
-    {
-      "id": "award-1",
-      "name": "Finalist in Resume Worded Global Hackathon 2018",
-      "issuer": "Resume Worded",
-      "date": "2018",
       "enabled": true
     },
     {
-      "id": "award-2",
-      "name": "Participated in Google Code Jam 2016",
-      "issuer": "Google",
-      "date": "2016",
+      "id": "cert_p2l7mj",
+      "date": "2022",
+      "name": "Google Professional Cloud Developer",
+      "issuer": "Google Cloud",
+      "enabled": true
+    },
+    {
+      "id": "cert_f9k3jh",
+      "date": "2023",
+      "name": "MongoDB Certified Developer Associate",
+      "issuer": "MongoDB Inc.",
       "enabled": true
     }
-  ],
-  "interests": [],
-  "references": []
+  ]
 }

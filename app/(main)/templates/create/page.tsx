@@ -36,10 +36,10 @@ export default async function CreateResumeTemplate({
         </Breadcrumb>
       </div>
 
-      <Card>
+      <Card className="border-dashed border-2 ">
         <CardContent className="flex justify-between items-center p-6">
           <div className="">
-            <h3 className="text-xl font-bold ">Start Fresh</h3>
+            <h3 className="text-xl font-bold ">Start Fresh 🌿</h3>
             <p>
               Create a completely customized resume template without content
             </p>

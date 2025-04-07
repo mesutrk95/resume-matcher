@@ -45,7 +45,7 @@ export const CreateTemplateButton = ({
       className="flex gap-2 items-center"
       onClick={handleCreateBlankResume}
       loading={isPending}
-      loadingText="Creating Resume ..."
+      loadingText="Creating Resume Template ..."
       disabled={disabled}
     >
       <MousePointerClick />
