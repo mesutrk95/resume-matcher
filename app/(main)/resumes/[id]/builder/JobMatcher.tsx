@@ -13,7 +13,7 @@ import {
   analyzeResumeItemsScores,
   deleteJobResume,
 } from "@/actions/job-resume";
-import {ResumePreview} from "@/components/job-resumes/resume-pdf-preview";
+import { ResumePreview } from "@/components/job-resumes/resume-pdf-preview";
 import { updateResumeTemplateContent } from "@/actions/resume-template";
 import {
   BotMessageSquare,
@@ -48,7 +48,7 @@ export const JobMatcher = ({
   job,
 }: {
   jobResume: JobResume;
-  job?: Job;
+  job: Job | null;
 }) => {
   const router = useRouter();
   const { isTrialingBannerEnable } = useSubscription();

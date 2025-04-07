@@ -50,12 +50,18 @@ function PDFViewer({
   }
 
   const loadingIndicator = useMemo(() => <LoadingPdf />, []);
-
+  const opt = useMemo(() => {
+    return {
+      cMapUrl: "/bcmaps/",
+      cMapPacked: true,
+    };
+  }, []);
   return (
     <div className={clsx("relative", className)}>
       <div className="" ref={ref}>
         {pdfBlob && (
           <Document
+            options={opt}
             className={"relative flex flex-col gap-2"}
             file={pdfBlob}
             onLoadSuccess={onDocumentLoadSuccess}

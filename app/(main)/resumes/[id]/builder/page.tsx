@@ -1,12 +1,9 @@
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/auth";
-import { JobMatcher } from "./JobMatcher";
-import { ResumeAnalyzeResults, ResumeContent } from "@/types/resume";
+import { ResumeContent } from "@/types/resume";
 import { Metadata } from "next";
-import { ResumeBuilderProvider } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
-import { updateJobResume } from "@/actions/job-resume";
-import { toast } from "sonner";
+import { ResumeBuilderPage } from "./resume-builder-page";
 
 interface EditResumePageProps {
   params: {
@@ -38,26 +35,5 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
     notFound();
   }
 
-  const content = jobResume?.content as ResumeContent;
-
-  return (
-    <ResumeBuilderProvider
-      // scheme="accordion"
-      initialResume={content}
-      initialResumeAnalyzeResults={
-        jobResume.analyzeResults as ResumeAnalyzeResults
-      }
-      onUpdated={async (resume) => {
-        "use server";
-        // console.log("resume updateddddddddd");
-        try {
-          await updateJobResume({ id: jobResume.id, content: resume });
-        } catch (ex) {
-          // toast.error("Something went wrong when saving the resume changes.");
-        }
-      }}
-    >
-      <JobMatcher jobResume={jobResume} job={jobResume.job!}></JobMatcher>
-    </ResumeBuilderProvider>
-  );
+  return <ResumeBuilderPage jobResume={jobResume} />;
 }

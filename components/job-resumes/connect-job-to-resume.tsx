@@ -1,5 +1,5 @@
 import { getJobs } from "@/actions/job";
-import { connectJobResumeToJob, updateJobResume } from "@/actions/job-resume";
+import { connectJobResumeToJob } from "@/actions/job-resume";
 import { AsyncSelect } from "@/components/ui/async-select";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { Job } from "@prisma/client";

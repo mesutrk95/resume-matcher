@@ -53,6 +53,9 @@ export const JobForm = ({ initialData }: JobFormProps) => {
       action
         .then((data) => {
           if (!data) return;
+          if (data.error) {
+            return toast.error(data.error?.message || "Something went wrong!");
+          }
 
           toast.success(
             isEditing
@@ -154,7 +157,9 @@ export const JobForm = ({ initialData }: JobFormProps) => {
                 variant={"default"}
                 type="submit"
                 loading={isPending}
-                loadingText={isEditing ? "Updating Job ..." : "Creating Job ..."}
+                loadingText={
+                  isEditing ? "Updating Job ..." : "Creating Job ..."
+                }
               >
                 {isEditing ? "Update Job" : "Create Job"}
               </LoadingButton>
@@ -168,11 +173,10 @@ export const JobForm = ({ initialData }: JobFormProps) => {
                 label="Job Description"
                 placeholder="Describe the job role, responsibilities, and requirements..."
                 isPending={isPending}
-                config={{ height: "400px"}}
+                config={{ height: "400px" }}
               />
             </div>
           </div>
-
         </form>
       </Form>
     </div>

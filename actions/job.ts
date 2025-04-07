@@ -8,13 +8,13 @@ import { revalidatePath } from "next/cache";
 import { Job, JobStatus, Prisma } from "@prisma/client";
 import { getAIHtmlResponse, getAIJsonResponse } from "@/lib/ai";
 import { JobAnalyzeResult } from "@/types/job";
-import { withErrorHandling } from "./with-error-handling";
 
 import cheerio from "cheerio";
 import axios from "axios";
 import moment from "moment";
 import { downloadImageAsBase64 } from "@/lib/utils";
 import { PaginationParams } from "@/types/pagination-params";
+import { withErrorHandling } from "@/lib/api-error-handler";
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {

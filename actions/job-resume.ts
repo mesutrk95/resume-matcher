@@ -22,9 +22,14 @@ import {
   convertResumeObjectToString,
   resumeExperiencesToString,
 } from "@/lib/resume-content";
-import { BadRequestException, NotFoundException } from "@/lib/exceptions";
+import {
+  BadRequestException,
+  InvalidInputException,
+  NotFoundException,
+} from "@/lib/exceptions";
 import { resumeContentSchema } from "@/schemas/resume";
 import z from "zod";
+import { withErrorHandling } from "@/lib/api-error-handler";
 
 export const findJobResume = async (id: string) => {
   const user = await currentUser();
@@ -69,39 +74,42 @@ export const createJobResume = async (
   return resumeJob;
 };
 
-export const updateJobResume = async (
-  resume: Partial<JobResume>,
-  forceRevalidate = false
-) => {
-  const user = await currentUser();
-  const content = resume.content as ResumeContent;
+export const updateJobResume = withErrorHandling(
+  async (resume: Partial<JobResume>, forceRevalidate = false) => {
+    const user = await currentUser();
+    const content = resume.content as ResumeContent;
 
-  const updateJobSchema = z.object({
-    content: resumeContentSchema.optional(),
-    name: z.string().optional(),
-  });
+    const updateJobSchema = z.object({
+      content: resumeContentSchema.optional(),
+      name: z.string().optional(),
+    });
 
-  const validationResult = updateJobSchema.safeParse({ ...resume, content });
-  if (validationResult.error) {
-    throw new BadRequestException("Error in validating the resume data.");
+    const validationResult = updateJobSchema.safeParse({ ...resume, content });
+
+    if (validationResult.error) {
+      throw new InvalidInputException(
+        "Error in validating the resume data.",
+        validationResult.error.errors
+      );
+    }
+
+    const updatedJob = await db.jobResume.update({
+      where: {
+        id: resume.id,
+        userId: user?.id,
+      },
+      data: {
+        ...validationResult.data,
+        updatedAt: new Date(),
+      },
+    });
+
+    // revalidatePath("/resumes");
+    forceRevalidate && revalidatePath(`/resumes/${resume.id}/builder`);
+
+    // return updatedJob;
   }
-
-  const updatedJob = await db.jobResume.update({
-    where: {
-      id: resume.id,
-      userId: user?.id,
-    },
-    data: {
-      ...validationResult.data,
-      updatedAt: new Date(),
-    },
-  });
-
-  // revalidatePath("/resumes");
-  forceRevalidate && revalidatePath(`/resumes/${resume.id}/builder`);
-
-  return updatedJob;
-};
+);
 
 export const connectJobResumeToJob = async (
   jobResumeId: string,

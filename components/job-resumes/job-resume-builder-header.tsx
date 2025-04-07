@@ -36,14 +36,20 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({
 
     startTransition(async () => {
       try {
-        await updateJobResume({ id: jobResume.id, name: newName }, true);
-        toast.success("Resume name updated successfully!");
-        setIsDialogOpen(false);
+        const result = await updateJobResume(
+          { id: jobResume.id, name: newName },
+          true
+        );
 
-        // Call the optional onUpdate callback to refresh parent data if needed
-        if (onUpdate) {
-          onUpdate();
-        }
+        if (result.success) {
+          setIsDialogOpen(false);
+
+          // Call the optional onUpdate callback to refresh parent data if needed
+          if (onUpdate) {
+            onUpdate();
+          }
+          toast.success("Resume name updated successfully!");
+        } else toast.error("Failed to update resume name. Please try again.");
       } catch (error) {
         toast.error("Failed to update resume name. Please try again.");
       }
@@ -96,7 +102,8 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({
           <DialogHeader>
             <DialogTitle>Rename Resume</DialogTitle>
             <DialogDescription>
-              Enter a new name for your resume. Click save when you&apos;re done.
+              Enter a new name for your resume. Click save when you&apos;re
+              done.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
