@@ -87,6 +87,8 @@ function getIdPrefixV1(path?: string) {
       return "edu_";
     case "skills":
       return "skill_";
+    case "skills.skills":
+      return "skill_";
     case "projects":
       return "project_";
     case "awards":
@@ -102,9 +104,9 @@ function getIdPrefixV1(path?: string) {
   }
 }
 
-function updateResumeKeysLength(data: any, keyName?: string): any {
+export function shuffleResumeIds(data: any, keyName?: string): any {
   if (Array.isArray(data)) {
-    return data.map((item) => updateResumeKeysLength(item, keyName));
+    return data.map((item) => shuffleResumeIds(item, keyName));
   } else if (typeof data === "object" && data !== null) {
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
@@ -112,7 +114,7 @@ function updateResumeKeysLength(data: any, keyName?: string): any {
           let prefix = getIdPrefixV1(keyName);
           data[key] = `${prefix}${randomNDigits()}`;
         } else {
-          data[key] = updateResumeKeysLength(
+          data[key] = shuffleResumeIds(
             data[key],
             (keyName ? keyName + "." : "") + key
           );
@@ -130,7 +132,7 @@ export function migrateResumeContent(resume: ResumeContent): ResumeContent {
     if (typeof data.version !== "undefined" && data.version > 1) return data;
     console.info(`migrating resume to v2 ...`);
 
-    return { ...updateResumeKeysLength(data), version: 2 };
+    return { ...shuffleResumeIds(data), version: 2 };
   }
 
   function migrateV2(data: ResumeContent): any {
