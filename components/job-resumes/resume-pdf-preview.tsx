@@ -1,10 +1,13 @@
 import { ResumeContent } from "@/types/resume";
 import { JobResume } from "@prisma/client";
 import { ResumeDocument } from "./resume-renderer/resume-document";
-import { useEffect, useState } from "react";
-import { BlobProvider } from "@react-pdf/renderer";
+import { useEffect, useMemo, useState } from "react";
+import { BlobProvider, pdf } from "@react-pdf/renderer";
 import { Button } from "../ui/button";
 import PDFViewer from "./resume-renderer/pdf-viewer";
+import { ScrollArea } from "../ui/scroll-area";
+import { Download, Paintbrush } from "lucide-react";
+import { ChooseResumeDesignDialog } from "@/app/(main)/resumes/[id]/builder/ChooseResumeDesignDialog";
 
 // CV Preview Component with Download Button
 export const ResumePreview = ({
@@ -16,12 +19,28 @@ export const ResumePreview = ({
 }) => {
   // For client-side rendering only
   const [isClient, setIsClient] = useState(false);
+  const [pdfBlob, setPdfBlob] = useState<Blob | null>();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  if (!isClient) {
+  useEffect(() => {
+    async function load() {
+      console.log("changed", data);
+      const blob = await pdf(
+        <ResumeDocument
+          resume={data}
+          withIdentifiers={false}
+          skipFont={false}
+        />
+      ).toBlob();
+      setPdfBlob(blob);
+    }
+    load();
+  }, [data]);
+
+  if (!isClient || !pdfBlob) {
     return (
       <div className="flex justify-center items-center h-96">
         Loading CV preview...
@@ -30,57 +49,53 @@ export const ResumePreview = ({
   }
 
   return (
-    // <PDFViewer showToolbar={false} className="w-full h-full">
-    //   <ResumeDocument resume={data} withIdentifiers={false} />
-    // </PDFViewer>
-    <BlobProvider
-      document={
-        <ResumeDocument
-          resume={data}
-          withIdentifiers={false}
-          skipFont={false}
-        />
-      }
-    >
-      {({ blob, url, loading, error }) => {
-        // if (error) {
-        //   return <div>Error: {error}</div>;
-        // }
+    <div className=" h-full w-full pe-2 pt-2">
+      {/* <PDFViewer showToolbar={false} className="w-full h-full">
+         <ResumeDocument resume={data} withIdentifiers={false} /> 
+      </PDFViewer> */}
+      <div className="flex gap-2 justify-center absolute right-8 top-4">
+        {/* <Button
+          className="z-10 shadow-lg rounded-full"
+          size={'icon'}
+          variant="default-outline"
+          onClick={() => { 
+          }}
+        >
+          <Paintbrush size={16} />
+        </Button> */}
+        {/* <ChooseResumeDesignDialog /> */}
+        <Button
+          className="z-10 shadow-lg rounded-full"
+          size={"icon"}
+          variant="default-outline"
+          onClick={() => {
+            if (!pdfBlob) return;
+            const blobUrl = URL.createObjectURL(
+              new Blob([pdfBlob], { type: "application/pdf" })
+            );
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
 
-        return (
-          <>
-            <div className="flex justify-center absolute left-0 bottom-1 w-full">
-              <Button
-                className="z-10 shadow-lg "
-                variant="outline"
-                onClick={() => {
-                  if (!blob) return;
-                  const blobUrl = URL.createObjectURL(
-                    new Blob([blob], { type: "application/pdf" })
-                  );
-                  var a = document.createElement("a");
-                  document.body.appendChild(a);
-                  a.style = "display: none";
-
-                  a.href = blobUrl;
-                  a.download = `${(
-                    jobResume.name ||
-                    data.contactInfo.firstName + " " + data.contactInfo.lastName
-                  ).replace(/\s+/g, "_")}.pdf`;
-                  a.click();
-                  window.URL.revokeObjectURL(blobUrl);
-                }}
-              >
-                Download
-              </Button>
-            </div>
-            <PDFViewer
-              pdfBlob={blob}
-              className=" h-full w-full p-2 overflow-auto"
-            />
-          </>
-        );
-      }}
-    </BlobProvider>
+            a.href = blobUrl;
+            a.download = `${(
+              jobResume.name ||
+              data.contactInfo.firstName + " " + data.contactInfo.lastName
+            ).replace(/\s+/g, "_")}.pdf`;
+            a.click();
+            window.URL.revokeObjectURL(blobUrl);
+          }}
+        >
+          <Download size={16} />
+        </Button>
+      </div>
+      <ScrollArea
+        className=" h-full w-full "
+        viewportClassName=""
+        type="always"
+      >
+        <PDFViewer pdfBlob={pdfBlob} className="ps-2 pb-2 pe-4" />
+      </ScrollArea>
+    </div>
   );
 };

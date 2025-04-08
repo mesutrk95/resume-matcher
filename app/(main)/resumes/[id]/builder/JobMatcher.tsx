@@ -286,7 +286,7 @@ export const JobMatcher = ({
                   <Card className="col-span-5 overflow-hidden flex-auto h-0 mt-2">
                     <div className="flex flex-col h-full justify-stretch ">
                       <TabsContent
-                        className="shrink-0 pt-0 relative overflow-auto h-full p-0 m-0"
+                        className="shrink-0 pt-0 relative w-full h-full p-0 m-0"
                         value="preview"
                       >
                         <ResumePreview data={resume} jobResume={jobResume} />
