@@ -109,7 +109,7 @@ export const ResumeDocument = ({
   resume: ResumeContent;
   withIdentifiers?: boolean;
   skipFont?: boolean;
-  resumeDesign: ResumeDesign | null;
+  resumeDesign?: ResumeDesign | null;
 }) => {
   return (
     <ResumeRendererProvider

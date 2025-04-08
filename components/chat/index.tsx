@@ -124,7 +124,7 @@ export function ChatInterface({
       let file = null;
       if (shareResume) {
         const pdfBlob = await pdf(
-          <ResumeDocument resume={resume} skipFont={true} />
+          <ResumeDocument resume={resume} resumeDesign={null} skipFont={true} />
         ).toBlob();
         file = await blob2base64(pdfBlob!);
       }

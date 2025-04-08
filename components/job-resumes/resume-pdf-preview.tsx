@@ -6,9 +6,9 @@ import { pdf } from "@react-pdf/renderer";
 import { Button } from "../ui/button";
 import PDFViewer from "./resume-renderer/pdf-viewer";
 import { ScrollArea } from "../ui/scroll-area";
-import { Download, Paintbrush } from "lucide-react";
-import { ChooseResumeDesignDialog } from "@/app/(main)/resumes/[id]/builder/ChooseResumeDesignDialog";
+import { Download } from "lucide-react";
 import { useResumeBuilder } from "./resume-builder/context/useResumeBuilder";
+import { ChooseResumeDesignDialog } from "./choose-resume-design-dialog";
 
 // CV Preview Component with Download Button
 export const ResumePreview = ({
