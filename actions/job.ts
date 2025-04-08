@@ -14,7 +14,7 @@ import axios from "axios";
 import moment from "moment";
 import { downloadImageAsBase64 } from "@/lib/utils";
 import { PaginationParams } from "@/types/pagination-params";
-import { withErrorHandling } from "@/lib/api-error-handler";
+import { withErrorHandling } from "@/lib/with-error-handling";
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {

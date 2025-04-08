@@ -1,6 +1,6 @@
 import { HttpException } from "./exceptions";
 
-type ServerActionResponse<T> = {
+export type ServerActionResponse<T> = {
   success: boolean;
   data?: T;
   error?: { message: string; data?: unknown };

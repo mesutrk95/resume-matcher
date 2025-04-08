@@ -8,6 +8,7 @@ import { Edit, Save, X } from "lucide-react";
 import { ResumeTemplate } from "@prisma/client";
 import { updateResumeTemplate } from "@/actions/resume-template";
 import { LoadingButton } from "../ui/loading-button";
+import { runAction } from "@/app/_utils/runAction";
 
 export const ResumeTemplateForm = ({
   template,
@@ -29,9 +30,9 @@ export const ResumeTemplateForm = ({
   };
 
   const handleSaveTemplate = async () => {
-    startTransition(() => {
-      updateResumeTemplate(templateForm).then((data) => {});
-      setEditingTemplate(false);
+    startTransition(async () => {
+      const result = await runAction(updateResumeTemplate(templateForm));
+      if (result.success) setEditingTemplate(false);
     });
   };
 

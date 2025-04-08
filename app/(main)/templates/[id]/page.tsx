@@ -1,8 +1,3 @@
-import { updateResumeTemplate } from "@/actions/resume-template";
-import { ResumeBuilder } from "@/components/job-resumes/resume-builder";
-import { ResumeBuilderProvider } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
-import { ImportExportBar } from "@/components/resume-templates/import-export-bar";
-import { ResumeTemplateForm } from "@/components/resume-templates/resume-template-form";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,6 +9,8 @@ import {
 import { db } from "@/lib/db";
 import { ResumeContent } from "@/types/resume";
 import { Metadata } from "next";
+import { ResumeTemplatePage } from "./resume-template-page";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Resume Template Builder",
@@ -28,8 +25,7 @@ export default async function TemplateBuilderPage({
     where: { id: params.id },
   });
 
-  if (!resumeTemplate) return null;
-  const content = resumeTemplate?.content as ResumeContent;
+  if (!resumeTemplate) return notFound();
 
   return (
     <>
@@ -47,22 +43,7 @@ export default async function TemplateBuilderPage({
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <ResumeTemplateForm template={resumeTemplate} />
-      <ResumeBuilderProvider
-        initialResume={content}
-        onUpdated={async (resumeContent: ResumeContent) => {
-          "use server";
-
-          await updateResumeTemplate({
-            ...resumeTemplate,
-            content: resumeContent,
-          });
-        }}
-      >
-        <ResumeBuilder />
-      </ResumeBuilderProvider>
-
-      <ImportExportBar resumeTemplate={resumeTemplate} />
+      <ResumeTemplatePage resumeTemplate={resumeTemplate} />
     </>
   );
 }

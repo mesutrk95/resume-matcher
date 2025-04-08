@@ -6,7 +6,7 @@ import { ResumeBuilderProvider } from "@/components/job-resumes/resume-builder/c
 import { ResumeAnalyzeResults, ResumeContent } from "@/types/resume";
 import { Job, JobResume } from "@prisma/client";
 import { JobMatcher } from "./JobMatcher";
-import { toast } from "sonner";
+import { runAction } from "@/app/_utils/runAction";
 
 export const ResumeBuilderPage = ({
   jobResume,
@@ -14,14 +14,10 @@ export const ResumeBuilderPage = ({
   jobResume: JobResume & { job: Job | null };
 }) => {
   const handleUpdate = async (resume: ResumeContent) => {
-    const result = await updateJobResume({ id: jobResume.id, content: resume });
-    if (!result.success) {
-      console.log(result.error);
-      toast.error(
-        result.error?.message ||
-          "Something went wrong when saving the resume changes."
-      );
-    }
+    await runAction(updateJobResume, {
+      id: jobResume.id,
+      content: resume,
+    });
   };
 
   return (
@@ -32,7 +28,7 @@ export const ResumeBuilderPage = ({
       }
       onUpdated={handleUpdate}
     >
-      <JobMatcher jobResume={jobResume} job={jobResume.job}></JobMatcher>
+      <JobMatcher jobResume={jobResume} job={jobResume.job} />
     </ResumeBuilderProvider>
   );
 };

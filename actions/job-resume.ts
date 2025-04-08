@@ -29,7 +29,7 @@ import {
 } from "@/lib/exceptions";
 import { resumeContentSchema } from "@/schemas/resume";
 import z from "zod";
-import { withErrorHandling } from "@/lib/api-error-handler";
+import { withErrorHandling } from "@/lib/with-error-handling";
 
 export const findJobResume = async (id: string) => {
   const user = await currentUser();

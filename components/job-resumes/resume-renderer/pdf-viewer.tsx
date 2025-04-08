@@ -7,16 +7,6 @@ import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import { useResizeObserver } from "usehooks-ts";
 
-const workerSrc =
-  process.env.NODE_ENV === "production"
-    ? `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
-    : new URL(
-        "pdfjs-dist/build/pdf.worker.min.mjs",
-        import.meta.url
-      ).toString();
-
-pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
-
 function LoadingPdf() {
   return (
     <div className="flex justify-center items-center text-xs gap-1 py-10 font-semibold text-muted-foreground">
