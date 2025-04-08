@@ -1,25 +1,29 @@
-import { ResumeContent } from "@/types/resume";
+import { ResumeContent, ResumeDesign } from "@/types/resume";
 import { JobResume } from "@prisma/client";
 import { ResumeDocument } from "./resume-renderer/resume-document";
-import { useEffect, useMemo, useState } from "react";
-import { BlobProvider, pdf } from "@react-pdf/renderer";
+import { useEffect, useState } from "react";
+import { pdf } from "@react-pdf/renderer";
 import { Button } from "../ui/button";
 import PDFViewer from "./resume-renderer/pdf-viewer";
 import { ScrollArea } from "../ui/scroll-area";
 import { Download, Paintbrush } from "lucide-react";
 import { ChooseResumeDesignDialog } from "@/app/(main)/resumes/[id]/builder/ChooseResumeDesignDialog";
+import { useResumeBuilder } from "./resume-builder/context/useResumeBuilder";
 
 // CV Preview Component with Download Button
 export const ResumePreview = ({
-  data,
+  resume,
+  design,
   jobResume,
 }: {
-  data: ResumeContent;
+  resume: ResumeContent;
+  design: ResumeDesign | null;
   jobResume: JobResume;
 }) => {
   // For client-side rendering only
   const [isClient, setIsClient] = useState(false);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>();
+  const { saveDesign } = useResumeBuilder();
 
   useEffect(() => {
     setIsClient(true);
@@ -27,10 +31,10 @@ export const ResumePreview = ({
 
   useEffect(() => {
     async function load() {
-      console.log("changed", data);
       const blob = await pdf(
         <ResumeDocument
-          resume={data}
+          resume={resume}
+          resumeDesign={design}
           withIdentifiers={false}
           skipFont={false}
         />
@@ -38,7 +42,7 @@ export const ResumePreview = ({
       setPdfBlob(blob);
     }
     load();
-  }, [data]);
+  }, [resume, design]);
 
   if (!isClient || !pdfBlob) {
     return (
@@ -54,16 +58,12 @@ export const ResumePreview = ({
          <ResumeDocument resume={data} withIdentifiers={false} /> 
       </PDFViewer> */}
       <div className="flex gap-2 justify-center absolute right-8 top-4">
-        {/* <Button
-          className="z-10 shadow-lg rounded-full"
-          size={'icon'}
-          variant="default-outline"
-          onClick={() => { 
+        <ChooseResumeDesignDialog
+          resume={resume}
+          onDesignChange={(newDesign) => {
+            saveDesign(newDesign);
           }}
-        >
-          <Paintbrush size={16} />
-        </Button> */}
-        {/* <ChooseResumeDesignDialog /> */}
+        />
         <Button
           className="z-10 shadow-lg rounded-full"
           size={"icon"}
@@ -80,7 +80,7 @@ export const ResumePreview = ({
             a.href = blobUrl;
             a.download = `${(
               jobResume.name ||
-              data.contactInfo.firstName + " " + data.contactInfo.lastName
+              resume.contactInfo.firstName + " " + resume.contactInfo.lastName
             ).replace(/\s+/g, "_")}.pdf`;
             a.click();
             window.URL.revokeObjectURL(blobUrl);

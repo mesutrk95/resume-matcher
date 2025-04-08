@@ -26,6 +26,7 @@ export const ResumeTemplatePage = ({
       <ResumeTemplateForm template={resumeTemplate} />
       <ResumeBuilderProvider
         initialResume={resumeTemplate.content as ResumeContent}
+        initialDesign={null}
         onUpdated={handleResumeUpdate}
       >
         <ResumeBuilder />

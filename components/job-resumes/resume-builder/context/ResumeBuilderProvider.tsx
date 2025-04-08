@@ -1,6 +1,10 @@
 "use client";
 
-import { ResumeAnalyzeResults, ResumeContent } from "@/types/resume";
+import {
+  ResumeAnalyzeResults,
+  ResumeContent,
+  ResumeDesign,
+} from "@/types/resume";
 import { migrateResumeContent } from "@/utils/resume-migration";
 import React, { createContext, useState } from "react";
 
@@ -9,6 +13,9 @@ export type IResumeTemplateEditor = {
 
   resume: ResumeContent;
   saveResume: (resume: ResumeContent) => void;
+
+  design: ResumeDesign | null;
+  saveDesign: (design: ResumeDesign) => void;
 
   resumeAnalyzeResults?: ResumeAnalyzeResults;
   setResumeAnalyzeResults: React.Dispatch<
@@ -23,19 +30,25 @@ export const ResumeBuilderContext = createContext<IResumeTemplateEditor>({
 export const ResumeBuilderProvider = ({
   children,
   initialResume,
+  initialDesign,
   initialResumeAnalyzeResults,
   scheme,
   onUpdated,
+  onDesignUpdated,
 }: {
   children: React.ReactNode;
   initialResume: ResumeContent;
+  initialDesign: ResumeDesign | null;
   initialResumeAnalyzeResults?: ResumeAnalyzeResults;
   scheme?: "cards" | "accordion";
   onUpdated?: (resume: ResumeContent) => void;
+  onDesignUpdated?: (design: ResumeDesign) => void;
 }) => {
   const migratedResume = migrateResumeContent(initialResume);
 
   const [resume, setResume] = useState<ResumeContent>(migratedResume);
+  const [design, setDesign] = useState<ResumeDesign | null>(initialDesign);
+
   const [resumeAnalyzeResults, setResumeAnalyzeResults] = useState<
     ResumeAnalyzeResults | undefined
   >(initialResumeAnalyzeResults);
@@ -43,6 +56,11 @@ export const ResumeBuilderProvider = ({
   const saveResume = (resume: ResumeContent) => {
     setResume(resume);
     onUpdated?.(resume);
+  };
+
+  const saveDesign = (design: ResumeDesign) => {
+    setDesign(design);
+    onDesignUpdated?.(design);
   };
 
   return (
@@ -53,6 +71,8 @@ export const ResumeBuilderProvider = ({
         scheme,
         resume,
         saveResume,
+        design,
+        saveDesign,
         resumeAnalyzeResults,
         setResumeAnalyzeResults,
       }}

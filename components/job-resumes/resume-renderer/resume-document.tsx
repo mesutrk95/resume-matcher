@@ -103,16 +103,18 @@ const renderSection = (sectionName: string, resume: ResumeContent) => {
 };
 
 export const ResumeDocument = ({
-  resumeDesign = DEFAULT_RESUME_DESIGN,
+  resumeDesign,
   ...props
 }: {
   resume: ResumeContent;
   withIdentifiers?: boolean;
   skipFont?: boolean;
-  resumeDesign?: ResumeDesign;
+  resumeDesign: ResumeDesign | null;
 }) => {
   return (
-    <ResumeRendererProvider initialResumeDesign={DEFAULT_RESUME_DESIGN}>
+    <ResumeRendererProvider
+      initialResumeDesign={resumeDesign || DEFAULT_RESUME_DESIGN}
+    >
       <ResumeDocumentRenderer {...props} />
     </ResumeRendererProvider>
   );

@@ -8,6 +8,7 @@ import { DEFAULT_RESUME_CONTENT } from "./constants";
 import {
   ResumeAnalyzeResults,
   ResumeContent,
+  ResumeDesign,
   ResumeItemScoreAnalyze,
 } from "@/types/resume";
 import {
@@ -30,6 +31,7 @@ import {
 import { resumeContentSchema } from "@/schemas/resume";
 import z from "zod";
 import { withErrorHandling } from "@/lib/with-error-handling";
+import { resumeDesignSchema } from "@/schemas/resume-design.schema";
 
 export const findJobResume = async (id: string) => {
   const user = await currentUser();
@@ -78,13 +80,15 @@ export const updateJobResume = withErrorHandling(
   async (resume: Partial<JobResume>, forceRevalidate = false) => {
     const user = await currentUser();
     const content = resume.content as ResumeContent;
+    const design = resume.design as ResumeDesign;
 
     const updateJobSchema = z.object({
       content: resumeContentSchema.optional(),
+      design: resumeDesignSchema.optional(),
       name: z.string().optional(),
     });
 
-    const validationResult = updateJobSchema.safeParse({ ...resume, content });
+    const validationResult = updateJobSchema.safeParse({ ...resume, content, design });
 
     if (validationResult.error) {
       throw new InvalidInputException(
