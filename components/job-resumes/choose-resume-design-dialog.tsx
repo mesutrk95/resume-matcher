@@ -244,7 +244,7 @@ export const ChooseResumeDesignDialog = ({
         <DialogHeader>
           <DialogTitle className="text-xl">Resume Design & Style</DialogTitle>
           <DialogDescription>
-            Choose a design template for your resume. Preview each option and click save when you're done.
+            Choose a design template for your resume. Preview each option and click save when you are done.
           </DialogDescription>
         </DialogHeader>
 
