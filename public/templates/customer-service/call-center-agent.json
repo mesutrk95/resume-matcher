@@ -1,0 +1,275 @@
+{
+  "experiences": [
+    {
+      "id": "exp_zrap13",
+      "companyName": "ABC Company",
+      "role": "Call Center Agent",
+      "startDate": "06/2021",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_63knso",
+          "description": "Answered inbound calls and provided exceptional customer service.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_ldfgy6",
+              "content": "Handled a high volume of inbound calls, resolving customer inquiries efficiently and effectively.",
+              "enabled": true
+            },
+            {
+              "id": "var_x2y1wo",
+              "content": "Maintained a positive and professional demeanor while assisting customers with their needs.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Customer Service",
+            "Communication",
+            "Problem Solving"
+          ]
+        },
+        {
+          "id": "expitem_qb5a86",
+          "description": "Resolved customer complaints and escalated complex issues to supervisors.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_wceis7",
+              "content": "Successfully resolved a wide range of customer complaints, resulting in increased customer satisfaction.",
+              "enabled": true
+            },
+            {
+              "id": "var_fp6crv",
+              "content": "Identified and escalated complex issues to supervisors for prompt resolution.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Complaint Resolution",
+            "Escalation",
+            "Problem Solving"
+          ]
+        },
+        {
+          "id": "expitem_lsryy1",
+          "description": "Accurately documented customer interactions and maintained customer records.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_shs82d",
+              "content": "Maintained accurate and up-to-date customer records in the company's CRM system.",
+              "enabled": true
+            },
+            {
+              "id": "var_xvlyv5",
+              "content": "Documented all customer interactions thoroughly and accurately.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Data Entry",
+            "CRM",
+            "Documentation"
+          ]
+        }
+      ],
+      "location": "Anytown, USA",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_ulj9iu",
+      "companyName": "XYZ Corporation",
+      "role": "Customer Support Representative",
+      "startDate": "01/2020",
+      "endDate": "05/2021",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_mjtprw",
+          "description": "Provided technical support to customers via phone and email.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_w6ngk1",
+              "content": "Assisted customers with troubleshooting technical issues related to software and hardware.",
+              "enabled": true
+            },
+            {
+              "id": "var_5aowm5",
+              "content": "Provided clear and concise instructions to customers to resolve technical problems.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Technical Support",
+            "Troubleshooting",
+            "Communication"
+          ]
+        }
+      ],
+      "location": "Anytown, USA",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_y9wk2m",
+      "content": "Call Center Agent",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_ybdcsx",
+      "content": "Highly motivated and customer-focused call center agent with over 1 year of experience providing exceptional customer service and technical support. Proven ability to resolve customer issues efficiently and effectively. Excellent communication and problem-solving skills.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_7pdqht",
+      "content": "High School Diploma",
+      "enabled": true,
+      "startDate": "09/2016",
+      "endDate": "06/2020",
+      "institution": "Anytown High School",
+      "location": "Anytown, USA",
+      "degree": "High School Diploma"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Customer Service",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_cn88cb",
+          "content": "Active Listening",
+          "enabled": true
+        },
+        {
+          "id": "skill_ymrtrh",
+          "content": "Empathy",
+          "enabled": true
+        },
+        {
+          "id": "skill_gix2do",
+          "content": "Conflict Resolution",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Communication",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_penr0z",
+          "content": "Verbal Communication",
+          "enabled": true
+        },
+        {
+          "id": "skill_3n7ryz",
+          "content": "Written Communication",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Technical Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_q94rqu",
+          "content": "CRM Software",
+          "enabled": true
+        },
+        {
+          "id": "skill_705vib",
+          "content": "Microsoft Office Suite",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_09iktg",
+      "name": "Customer Satisfaction Improvement Initiative",
+      "link": "#",
+      "content": "Participated in a team project to improve customer satisfaction scores by implementing new call handling procedures.",
+      "startDate": "08/2020",
+      "endDate": "12/2020",
+      "enabled": false
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "john.doe@example.com",
+    "linkedIn": "linkedin.com/in/johndoe",
+    "github": "github.com/johndoe",
+    "website": "johndoe.com",
+    "twitter": "@johndoe",
+    "address": "123 Main St, Anytown, USA",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_tldsh6",
+      "description": "Employee of the Month",
+      "issuer": "ABC Company",
+      "date": "03/2022",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_1fys4p",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_w1j1zr",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_rxnfmi",
+      "description": "Certified Customer Service Professional",
+      "name": "CCSP",
+      "issuer": "Customer Service Institute of America",
+      "date": "07/2021",
+      "enabled": false
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_o00xa7",
+      "description": "Volunteering at local animal shelter",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_aacekl",
+      "name": "Jane Smith",
+      "title": "Supervisor",
+      "company": "ABC Company",
+      "email": "jane.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Former Supervisor",
+      "description": "Jane was my supervisor at ABC Company and can attest to my customer service skills.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

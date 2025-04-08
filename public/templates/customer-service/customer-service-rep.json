@@ -1,0 +1,266 @@
+{
+  "experiences": [
+    {
+      "id": "exp_4gsgpq",
+      "companyName": "Tech Solutions Inc.",
+      "role": "Customer Service Representative",
+      "startDate": "06/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_eyzmcz",
+          "description": "Provided exceptional customer support via phone, email, and chat.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_da6j07",
+              "content": "Responded to customer inquiries promptly and professionally.",
+              "enabled": true
+            },
+            {
+              "id": "var_dbpbvo",
+              "content": "Resolved customer issues effectively and efficiently.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Customer Service",
+            "Communication",
+            "Problem Solving"
+          ]
+        },
+        {
+          "id": "expitem_a10eyg",
+          "description": "Documented customer interactions and technical issues.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_o8hv3e",
+              "content": "Maintained accurate records of customer conversations.",
+              "enabled": true
+            },
+            {
+              "id": "var_dhu0p5",
+              "content": "Reported recurring technical problems to the development team.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Documentation",
+            "Technical Support"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_nvh36t",
+      "companyName": "Retail Giant Co.",
+      "role": "Sales Associate",
+      "startDate": "08/2018",
+      "endDate": "05/2020",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_5ou5sg",
+          "description": "Assisted customers with product selection and purchases.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_gtcvns",
+              "content": "Provided knowledgeable assistance to customers.",
+              "enabled": true
+            },
+            {
+              "id": "var_g5t4vr",
+              "content": "Processed transactions accurately and efficiently.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Sales",
+            "Customer Service"
+          ]
+        }
+      ],
+      "location": "Los Angeles, CA",
+      "type": "Part-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_sihw0s",
+      "content": "Customer Service Representative",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_af1qlv",
+      "content": "Enthusiastic and dedicated Customer Service Representative with 2+ years of experience providing excellent support to customers. Proven ability to resolve issues efficiently and effectively, ensuring customer satisfaction. Strong communication and problem-solving skills.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_wiev3u",
+      "content": "Bachelor of Arts in Communication",
+      "enabled": true,
+      "startDate": "09/2014",
+      "endDate": "05/2018",
+      "institution": "University of California, Los Angeles",
+      "location": "Los Angeles, CA",
+      "degree": "BA"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Customer Service",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_6fakdz",
+          "content": "Customer Support",
+          "enabled": true
+        },
+        {
+          "id": "skill_hh8fb8",
+          "content": "Problem Solving",
+          "enabled": true
+        },
+        {
+          "id": "skill_tprom3",
+          "content": "Conflict Resolution",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Communication",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_6hhf6v",
+          "content": "Verbal Communication",
+          "enabled": true
+        },
+        {
+          "id": "skill_8cbcj8",
+          "content": "Written Communication",
+          "enabled": true
+        },
+        {
+          "id": "skill_tdppn8",
+          "content": "Active Listening",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Technical Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_syrxvv",
+          "content": "CRM Software",
+          "enabled": true
+        },
+        {
+          "id": "skill_dl72yy",
+          "content": "Help Desk Ticketing Systems",
+          "enabled": true
+        },
+        {
+          "id": "skill_izk30b",
+          "content": "Microsoft Office Suite",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_he0ozp",
+      "name": "Customer Support Chatbot",
+      "link": "https://github.com/example/chatbot",
+      "content": "Developed a chatbot to handle common customer inquiries.",
+      "startDate": "01/2023",
+      "endDate": "03/2023",
+      "enabled": false
+    }
+  ],
+  "contactInfo": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "jane.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/janedoe",
+    "github": "https://github.com/janedoe",
+    "website": "https://janedoe.com",
+    "twitter": "https://twitter.com/janedoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "She/Her"
+  },
+  "awards": [
+    {
+      "id": "award_fb3anq",
+      "description": "Employee of the Month",
+      "issuer": "Tech Solutions Inc.",
+      "date": "08/2022",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_27da19",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_j3nr5f",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_l47ygk",
+      "description": "Certified Customer Service Professional",
+      "name": "CCSP",
+      "issuer": "Customer Service Institute",
+      "date": "07/2021",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_mjkvuj",
+      "description": "Volunteer Work",
+      "enabled": true
+    },
+    {
+      "id": "interest_099i6n",
+      "description": "Reading",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_5d2nxe",
+      "name": "John Smith",
+      "title": "Team Lead",
+      "company": "Tech Solutions Inc.",
+      "email": "john.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Manager",
+      "description": "John is a great leader and mentor.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

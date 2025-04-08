@@ -1,0 +1,310 @@
+{
+  "experiences": [
+    {
+      "id": "exp_7uaian",
+      "companyName": "Tech Solutions Inc.",
+      "role": "Digital Marketing Manager",
+      "startDate": "06/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_ntxzht",
+          "description": "Led the development and execution of digital marketing strategies across various channels, resulting in a 30% increase in lead generation.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_dgomts",
+              "content": "Developed and executed digital marketing strategies, increasing lead generation by 30%.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Digital Marketing",
+            "SEO",
+            "SEM",
+            "Social Media Marketing",
+            "Content Marketing"
+          ]
+        },
+        {
+          "id": "expitem_igo5nr",
+          "description": "Managed a team of digital marketing specialists, providing guidance and mentorship to ensure high performance and professional development.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_epaumw",
+              "content": "Managed a digital marketing team to ensure high performance.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Team Management",
+            "Mentorship",
+            "Leadership"
+          ]
+        },
+        {
+          "id": "expitem_5dctzu",
+          "description": "Oversaw the implementation and optimization of SEO/SEM campaigns, improving website ranking and driving organic traffic.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_s89sm9",
+              "content": "Optimized SEO/SEM campaigns to improve website ranking.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "SEO",
+            "SEM",
+            "Google Analytics"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_0ruop2",
+      "companyName": "Marketing Agency Co.",
+      "role": "Digital Marketing Specialist",
+      "startDate": "07/2018",
+      "endDate": "05/2020",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_uemqvc",
+          "description": "Developed and implemented social media strategies for multiple clients, increasing brand awareness and engagement.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_esvguw",
+              "content": "Implemented social media strategies for increased brand awareness.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Social Media Marketing",
+            "Content Creation",
+            "Brand Management"
+          ]
+        },
+        {
+          "id": "expitem_zas7zy",
+          "description": "Created engaging content for various digital platforms, including blog posts, articles, and social media updates.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_h6gbzq",
+              "content": "Created content for blogs and social media.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Content Marketing",
+            "Copywriting",
+            "Blogging"
+          ]
+        }
+      ],
+      "location": "Los Angeles, CA",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_qd1aof",
+      "content": "Digital Marketing Manager",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_kk7v9h",
+      "content": "Highly motivated and results-oriented Digital Marketing Manager with 5+ years of experience in developing and executing successful digital marketing strategies. Proven ability to drive lead generation, increase brand awareness, and improve website ranking.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_2glbca",
+      "content": "Master of Science in Marketing",
+      "enabled": true,
+      "startDate": "09/2016",
+      "endDate": "06/2018",
+      "institution": "University of California, Los Angeles",
+      "location": "Los Angeles, CA",
+      "degree": "MS"
+    },
+    {
+      "id": "edu_m72u9d",
+      "content": "Bachelor of Arts in Communications",
+      "enabled": true,
+      "startDate": "09/2012",
+      "endDate": "06/2016",
+      "institution": "University of Southern California",
+      "location": "Los Angeles, CA",
+      "degree": "BA"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Marketing Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_06df85",
+          "content": "SEO/SEM",
+          "enabled": true
+        },
+        {
+          "id": "skill_mjozbn",
+          "content": "Social Media Marketing",
+          "enabled": true
+        },
+        {
+          "id": "skill_xfqw0e",
+          "content": "Content Marketing",
+          "enabled": true
+        },
+        {
+          "id": "skill_gn0qg9",
+          "content": "Email Marketing",
+          "enabled": true
+        },
+        {
+          "id": "skill_xvwh8z",
+          "content": "Google Analytics",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Technical Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_251lq4",
+          "content": "Google Ads",
+          "enabled": true
+        },
+        {
+          "id": "skill_13klu5",
+          "content": "Facebook Ads Manager",
+          "enabled": true
+        },
+        {
+          "id": "skill_ji7o5a",
+          "content": "HubSpot",
+          "enabled": true
+        },
+        {
+          "id": "skill_1cybnr",
+          "content": "WordPress",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_mnbisw",
+      "name": "Website Redesign Project",
+      "link": "www.example.com",
+      "content": "Led the redesign of the company website, resulting in a 40% increase in website traffic and a 25% increase in conversion rates.",
+      "startDate": "01/2021",
+      "endDate": "06/2021",
+      "enabled": true
+    },
+    {
+      "id": "project_vbhak8",
+      "name": "Social Media Campaign",
+      "link": "www.socialmediacampaign.com",
+      "content": "Developed and executed a social media campaign that generated over 1 million impressions and increased brand followers by 50%.",
+      "startDate": "07/2020",
+      "endDate": "12/2020",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "john.doe@example.com",
+    "linkedIn": "linkedin.com/in/johndoe",
+    "github": "github.com/johndoe",
+    "website": "www.johndoe.com",
+    "twitter": "@johndoe",
+    "address": "123 Main St, Anytown, USA",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_m1x22j",
+      "description": "Digital Marketing Excellence Award",
+      "issuer": "Marketing Association",
+      "date": "12/2022",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_hm78a1",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_rez245",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_yeh0rp",
+      "description": "Google Ads Certified",
+      "name": "Google Ads Certification",
+      "issuer": "Google",
+      "date": "03/2023",
+      "enabled": true
+    },
+    {
+      "id": "cert_8uo3g9",
+      "description": "HubSpot Inbound Marketing Certified",
+      "name": "HubSpot Inbound Marketing Certification",
+      "issuer": "HubSpot",
+      "date": "05/2022",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_tnhw98",
+      "description": "Digital Marketing Trends",
+      "enabled": true
+    },
+    {
+      "id": "interest_d45h3h",
+      "description": "Social Media Management",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_qup0hf",
+      "name": "Jane Smith",
+      "title": "Marketing Director",
+      "company": "Tech Solutions Inc.",
+      "email": "jane.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Manager",
+      "description": "Jane was my manager at Tech Solutions Inc. She can speak to my skills in digital marketing and leadership.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

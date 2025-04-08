@@ -1,0 +1,295 @@
+{
+  "experiences": [
+    {
+      "id": "exp_jjry0t",
+      "companyName": "Tech Solutions Inc.",
+      "role": "Mobile App Developer",
+      "startDate": "06/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_keaz53",
+          "description": "Developed and maintained mobile applications for iOS and Android platforms.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_6z6n74",
+              "content": "Improved app performance by 30% through code optimization and efficient data management.",
+              "enabled": true
+            },
+            {
+              "id": "var_n0oxxc",
+              "content": "Collaborated with cross-functional teams to define, design, and ship new features.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Swift",
+            "Kotlin",
+            "React Native",
+            "REST APIs"
+          ]
+        },
+        {
+          "id": "expitem_8nkq6c",
+          "description": "Implemented UI/UX designs and ensured responsiveness across different devices and screen sizes.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_l0h5rs",
+              "content": "Utilized Storyboards and SwiftUI for iOS development and XML layouts for Android.",
+              "enabled": true
+            },
+            {
+              "id": "var_xiojwa",
+              "content": "Ensured seamless user experience by thoroughly testing and debugging applications.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "UI/UX Design",
+            "SwiftUI",
+            "XML",
+            "Mobile Testing"
+          ]
+        }
+      ],
+      "location": "San Francisco, CA",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_dyl39g",
+      "companyName": "Startup Innovations",
+      "role": "Junior Mobile App Developer",
+      "startDate": "01/2019",
+      "endDate": "05/2020",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_s03pmp",
+          "description": "Assisted senior developers in building and deploying mobile applications.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_h8jnfz",
+              "content": "Participated in code reviews and provided constructive feedback to improve code quality.",
+              "enabled": true
+            },
+            {
+              "id": "var_drmx9a",
+              "content": "Contributed to the development of a new mobile app that increased user engagement by 20%.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Java",
+            "Android SDK",
+            "Git",
+            "Agile Development"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Internship"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_hp00eg",
+      "content": "Mobile App Developer",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_f9ql21",
+      "content": "Highly motivated Mobile App Developer with 3+ years of experience in designing, developing, and deploying mobile applications for iOS and Android platforms. Proficient in Swift, Kotlin, React Native, and various mobile development frameworks. Passionate about creating innovative and user-friendly mobile experiences.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_dkmhq4",
+      "content": "Bachelor of Science in Computer Science",
+      "enabled": true,
+      "startDate": "09/2015",
+      "endDate": "12/2018",
+      "institution": "University of California, Berkeley",
+      "location": "Berkeley, CA",
+      "degree": "B.Sc. Computer Science"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Programming Languages",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_8ub5is",
+          "content": "Swift",
+          "enabled": true
+        },
+        {
+          "id": "skill_tqfw06",
+          "content": "Kotlin",
+          "enabled": true
+        },
+        {
+          "id": "skill_np9khv",
+          "content": "Java",
+          "enabled": true
+        },
+        {
+          "id": "skill_mx2veu",
+          "content": "React Native",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Mobile Development",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_qv8gkr",
+          "content": "iOS Development",
+          "enabled": true
+        },
+        {
+          "id": "skill_aa3k90",
+          "content": "Android Development",
+          "enabled": true
+        },
+        {
+          "id": "skill_1ndhsd",
+          "content": "Mobile UI/UX",
+          "enabled": true
+        },
+        {
+          "id": "skill_rtionk",
+          "content": "RESTful APIs",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Tools & Technologies",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_4tz6hp",
+          "content": "Git",
+          "enabled": true
+        },
+        {
+          "id": "skill_6rzn7r",
+          "content": "Xcode",
+          "enabled": true
+        },
+        {
+          "id": "skill_h2v8gb",
+          "content": "Android Studio",
+          "enabled": true
+        },
+        {
+          "id": "skill_pxwr3z",
+          "content": "Firebase",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_yrwjl3",
+      "name": "E-commerce Mobile App",
+      "link": "https://github.com/example/ecommerce-app",
+      "content": "Developed a fully functional e-commerce mobile app with features such as product browsing, shopping cart, secure payment integration, and order tracking.",
+      "startDate": "07/2021",
+      "endDate": "12/2021",
+      "enabled": true
+    },
+    {
+      "id": "project_fkbaup",
+      "name": "Social Media Mobile App",
+      "link": "https://github.com/example/social-media-app",
+      "content": "Developed a social media mobile app with features such as user authentication, profile creation, post sharing, and real-time messaging.",
+      "startDate": "01/2022",
+      "endDate": "06/2022",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "123-456-7890",
+    "email": "john.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/johndoe",
+    "github": "https://github.com/johndoe",
+    "website": "https://www.johndoe.com",
+    "twitter": "@johndoe",
+    "address": "123 Main St, Anytown, CA",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_nw899b",
+      "description": "Best Mobile App Developer",
+      "issuer": "Tech Solutions Inc.",
+      "date": "12/2021",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_vdgpdz",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_m8tpyy",
+      "name": "Spanish",
+      "level": "Fluent",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_4kbxvu",
+      "description": "Certified Mobile App Developer",
+      "name": "CMAD",
+      "issuer": "International Mobile App Association",
+      "date": "05/2020",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_qwl9f0",
+      "description": "Mobile Technology",
+      "enabled": true
+    },
+    {
+      "id": "interest_zws6z1",
+      "description": "Open Source Development",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_zpnftk",
+      "name": "Jane Smith",
+      "title": "Senior Mobile App Developer",
+      "company": "Tech Solutions Inc.",
+      "email": "jane.smith@example.com",
+      "phone": "987-654-3210",
+      "relationship": "Manager",
+      "description": "Jane is a highly skilled and experienced mobile app developer who consistently delivers high-quality work.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

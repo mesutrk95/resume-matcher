@@ -1,0 +1,264 @@
+{
+  "experiences": [
+    {
+      "id": "exp_bpglwr",
+      "companyName": "Tech Solutions Inc.",
+      "role": "Social Media Manager",
+      "startDate": "06/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_lg7u0o",
+          "description": "Developed and executed social media strategies across multiple platforms, resulting in a 40% increase in follower engagement.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_d33jja",
+              "content": "Increased follower engagement by 40% through strategic social media campaigns.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Social Media Marketing",
+            "Content Creation",
+            "Data Analysis"
+          ]
+        },
+        {
+          "id": "expitem_ra7m4r",
+          "description": "Managed social media budget and optimized ad campaigns to achieve a 25% reduction in cost per acquisition.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_i6ak80",
+              "content": "Reduced cost per acquisition by 25% through effective social media budget management and ad campaign optimization.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Budget Management",
+            "Paid Advertising",
+            "Campaign Optimization"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_6yguls",
+      "companyName": "Global Marketing Agency",
+      "role": "Social Media Specialist",
+      "startDate": "01/2018",
+      "endDate": "05/2020",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_k57zq5",
+          "description": "Created engaging content and managed social media communities for various clients in the tech and fashion industries.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_dngdci",
+              "content": "Managed social media communities and created content for clients in diverse industries like tech and fashion.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Community Management",
+            "Content Strategy",
+            "Social Media Analytics"
+          ]
+        },
+        {
+          "id": "expitem_p3wij7",
+          "description": "Conducted social media audits and provided recommendations to clients for improving their online presence.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_u5xcqe",
+              "content": "Improved clients' online presence by conducting social media audits and offering strategic recommendations.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Social Media Audits",
+            "Strategic Planning",
+            "Client Communication"
+          ]
+        }
+      ],
+      "location": "Los Angeles, CA",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_117qvj",
+      "content": "Social Media Manager",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_z3n0bt",
+      "content": "Highly creative and results-driven Social Media Manager with 5+ years of experience in developing and executing successful social media strategies. Proven ability to increase brand awareness, drive engagement, and generate leads through innovative content and targeted campaigns.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_fe5lqn",
+      "content": "Bachelor of Science in Marketing",
+      "enabled": true,
+      "startDate": "09/2014",
+      "endDate": "05/2018",
+      "institution": "University of California, Los Angeles",
+      "location": "Los Angeles, CA",
+      "degree": "B.S. Marketing"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Social Media Marketing",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_s555m2",
+          "content": "Social Media Strategy",
+          "enabled": true
+        },
+        {
+          "id": "skill_48yfiz",
+          "content": "Content Creation",
+          "enabled": true
+        },
+        {
+          "id": "skill_u8zilq",
+          "content": "Community Management",
+          "enabled": true
+        },
+        {
+          "id": "skill_sdf2u5",
+          "content": "Paid Advertising",
+          "enabled": true
+        },
+        {
+          "id": "skill_mq1d3j",
+          "content": "Social Media Analytics",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Tools & Technologies",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_slb83n",
+          "content": "Hootsuite",
+          "enabled": true
+        },
+        {
+          "id": "skill_wnehf5",
+          "content": "Buffer",
+          "enabled": true
+        },
+        {
+          "id": "skill_7zdi33",
+          "content": "Google Analytics",
+          "enabled": true
+        },
+        {
+          "id": "skill_j7ij9x",
+          "content": "Facebook Ads Manager",
+          "enabled": true
+        },
+        {
+          "id": "skill_ozteot",
+          "content": "Canva",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_l0l4gi",
+      "name": "Social Media Campaign for New Product Launch",
+      "link": "https://example.com/project1",
+      "content": "Developed and executed a social media campaign for a new product launch, resulting in a 30% increase in website traffic and a 15% increase in sales.",
+      "startDate": "07/2022",
+      "endDate": "09/2022",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "jane.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/janedoe",
+    "github": "https://github.com/janedoe",
+    "website": "https://www.janedoe.com",
+    "twitter": "@janedoe",
+    "address": "123 Main Street",
+    "country": "USA",
+    "pronouns": "She/Her"
+  },
+  "awards": [
+    {
+      "id": "award_h3lm43",
+      "description": "Awarded 'Social Media Innovator of the Year' for outstanding contributions to the field.",
+      "issuer": "Social Media Marketing Association",
+      "date": "12/2021",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_lq8di5",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_17guit",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_2w0kjq",
+      "description": "Certified Social Media Marketing Professional",
+      "name": "CSMMP",
+      "issuer": "Digital Marketing Institute",
+      "date": "06/2020",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_2o0ay7",
+      "description": "Photography, Travel, and Digital Art.",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_kt8owj",
+      "name": "John Smith",
+      "title": "Marketing Director",
+      "company": "Tech Solutions Inc.",
+      "email": "john.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Direct Supervisor",
+      "description": "John is a highly skilled marketing professional and a great leader.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

@@ -1,0 +1,280 @@
+{
+  "experiences": [
+    {
+      "id": "exp_vnge7k",
+      "companyName": "Tech Solutions Inc.",
+      "role": "UI Designer",
+      "startDate": "06/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_uu78p1",
+          "description": "Designed user interfaces for web and mobile applications, focusing on user experience and accessibility.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_z1m1hj",
+              "content": "Created wireframes, prototypes, and high-fidelity mockups using Figma and Adobe XD.",
+              "enabled": true
+            },
+            {
+              "id": "var_u4se99",
+              "content": "Collaborated with developers and product managers to ensure designs were implemented effectively and aligned with project goals.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "UI Design",
+            "UX Design",
+            "Figma",
+            "Adobe XD",
+            "Wireframing",
+            "Prototyping"
+          ]
+        },
+        {
+          "id": "expitem_kv5jj1",
+          "description": "Conducted user research and usability testing to gather feedback and identify areas for improvement.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_fdkxf7",
+              "content": "Analyzed user data and feedback to inform design decisions and improve user satisfaction.",
+              "enabled": true
+            },
+            {
+              "id": "var_dd8orv",
+              "content": "Developed user personas and user journey maps to better understand user needs and behaviors.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "User Research",
+            "Usability Testing",
+            "User Personas",
+            "User Journey Mapping"
+          ]
+        }
+      ],
+      "location": "San Francisco, CA",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_p1auk3",
+      "companyName": "Design Agency Co.",
+      "role": "Junior UI Designer",
+      "startDate": "01/2019",
+      "endDate": "05/2020",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_qi3ub3",
+          "description": "Assisted senior designers in creating visually appealing and user-friendly interfaces for various clients.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_huk7c5",
+              "content": "Developed UI elements and components for web and mobile applications.",
+              "enabled": true
+            },
+            {
+              "id": "var_z5dxwc",
+              "content": "Participated in design reviews and provided feedback on design concepts.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "UI Design",
+            "Adobe Photoshop",
+            "Adobe Illustrator"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_x8brzm",
+      "content": "UI Designer",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_vc8d4m",
+      "content": "A highly creative and experienced UI Designer with a passion for creating user-centered designs. Proven ability to develop visually appealing and intuitive interfaces for web and mobile applications. Proficient in Figma, Adobe XD, and other design tools. Strong understanding of user research and usability testing methodologies.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_j15t9f",
+      "content": "Bachelor of Science in Graphic Design",
+      "enabled": true,
+      "startDate": "09/2015",
+      "endDate": "12/2018",
+      "institution": "University of California, Los Angeles",
+      "location": "Los Angeles, CA",
+      "degree": "B.S. Graphic Design"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Design Tools",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_wdyy2y",
+          "content": "Figma",
+          "enabled": true
+        },
+        {
+          "id": "skill_yukf5k",
+          "content": "Adobe XD",
+          "enabled": true
+        },
+        {
+          "id": "skill_m54wpg",
+          "content": "Adobe Photoshop",
+          "enabled": true
+        },
+        {
+          "id": "skill_ttyidu",
+          "content": "Adobe Illustrator",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "UI/UX Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_zh0vej",
+          "content": "UI Design",
+          "enabled": true
+        },
+        {
+          "id": "skill_7zq16p",
+          "content": "UX Design",
+          "enabled": true
+        },
+        {
+          "id": "skill_ijz8uy",
+          "content": "Wireframing",
+          "enabled": true
+        },
+        {
+          "id": "skill_p85xp3",
+          "content": "Prototyping",
+          "enabled": true
+        },
+        {
+          "id": "skill_myvzlo",
+          "content": "User Research",
+          "enabled": true
+        },
+        {
+          "id": "skill_1v72n9",
+          "content": "Usability Testing",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_wyp1ha",
+      "name": "Mobile App Redesign",
+      "link": "https://example.com/project1",
+      "content": "Redesigned the user interface of a mobile app to improve user experience and engagement.",
+      "startDate": "07/2021",
+      "endDate": "09/2021",
+      "enabled": true
+    },
+    {
+      "id": "project_75ws5u",
+      "name": "Website Redesign",
+      "link": "https://example.com/project2",
+      "content": "Led the redesign of a website to create a more modern and user-friendly experience.",
+      "startDate": "02/2022",
+      "endDate": "04/2022",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "jane.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/janedoe",
+    "github": "https://github.com/janedoe",
+    "website": "https://janedoe.com",
+    "twitter": "https://twitter.com/janedoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "she/her"
+  },
+  "awards": [
+    {
+      "id": "award_x0kflo",
+      "description": "Best UI Design Award",
+      "issuer": "Design Magazine",
+      "date": "12/2021",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_sgmhqj",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_4ym2hi",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_i4737t",
+      "description": "Certified UI/UX Designer",
+      "name": "UI/UX Certification",
+      "issuer": "UX Design Institute",
+      "date": "05/2020",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_oiid3x",
+      "description": "User interface design",
+      "enabled": true
+    },
+    {
+      "id": "interest_qfh2km",
+      "description": "Web development",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_qexdj7",
+      "name": "John Smith",
+      "title": "Senior UI Designer",
+      "company": "Tech Solutions Inc.",
+      "email": "john.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Manager",
+      "description": "John is a highly skilled and experienced UI designer. He is a great team player and always goes above and beyond to deliver high-quality work.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

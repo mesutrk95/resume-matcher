@@ -1,0 +1,271 @@
+{
+  "experiences": [
+    {
+      "id": "exp_p4gl6v",
+      "companyName": "ABC Construction",
+      "role": "Construction Worker",
+      "startDate": "06/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_u18czz",
+          "description": "Performed a variety of tasks involving physical labor at construction sites.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_68v057",
+              "content": "Assisted skilled tradespeople in their duties, such as carpenters, electricians, and plumbers.",
+              "enabled": true
+            },
+            {
+              "id": "var_si7gh5",
+              "content": "Operated and maintained construction equipment, including jackhammers, compactors, and generators.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Physical Labor",
+            "Teamwork",
+            "Equipment Operation"
+          ]
+        },
+        {
+          "id": "expitem_ts82ca",
+          "description": "Ensured safety and compliance with all company and regulatory requirements.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_fqqhb0",
+              "content": "Followed safety protocols and procedures to prevent accidents and injuries.",
+              "enabled": true
+            },
+            {
+              "id": "var_bt1wp6",
+              "content": "Participated in safety meetings and training sessions.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Safety Compliance",
+            "Risk Assessment"
+          ]
+        },
+        {
+          "id": "expitem_6bxvln",
+          "description": "Prepared construction sites for building, including clearing debris and setting up scaffolding.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_s1tsfs",
+              "content": "Loaded and unloaded construction materials and equipment.",
+              "enabled": true
+            },
+            {
+              "id": "var_yf8s9f",
+              "content": "Dug trenches and foundations, and backfilled excavations.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Site Preparation",
+            "Material Handling"
+          ]
+        }
+      ],
+      "location": "Anytown, USA",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_b9d87q",
+      "companyName": "XYZ Renovations",
+      "role": "Demolition Worker",
+      "startDate": "01/2019",
+      "endDate": "05/2020",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_udmyar",
+          "description": "Performed demolition of existing structures and buildings.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_karmeh",
+              "content": "Removed debris and hazardous materials from demolition sites.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Demolition",
+            "Hazardous Material Handling"
+          ]
+        }
+      ],
+      "location": "Anytown, USA",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_orisk1",
+      "content": "Construction Worker",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_nvh814",
+      "content": "Highly motivated and experienced construction worker with a proven track record of performing a variety of physical labor tasks at construction sites.  Dedicated to safety and compliance, and skilled in operating and maintaining construction equipment.  Experience in demolition and site preparation.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_c1w73f",
+      "content": "High School Diploma",
+      "enabled": true,
+      "startDate": "09/2015",
+      "endDate": "06/2019",
+      "institution": "Anytown High School",
+      "location": "Anytown, USA",
+      "degree": "High School Diploma"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Construction Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_yjy7iw",
+          "content": "Physical Labor",
+          "enabled": true
+        },
+        {
+          "id": "skill_ti5l2k",
+          "content": "Equipment Operation",
+          "enabled": true
+        },
+        {
+          "id": "skill_zco2gx",
+          "content": "Demolition",
+          "enabled": true
+        },
+        {
+          "id": "skill_mmljtv",
+          "content": "Site Preparation",
+          "enabled": true
+        },
+        {
+          "id": "skill_vvkozj",
+          "content": "Material Handling",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Safety Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_vnske9",
+          "content": "Safety Compliance",
+          "enabled": true
+        },
+        {
+          "id": "skill_n6btw4",
+          "content": "Risk Assessment",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Soft Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_0kuqxn",
+          "content": "Teamwork",
+          "enabled": true
+        },
+        {
+          "id": "skill_bb59iw",
+          "content": "Communication",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_gtkblk",
+      "name": "Community Build Project",
+      "link": "https://example.com/communitybuild",
+      "content": "Participated in a community build project to construct a new playground for local children.",
+      "startDate": "07/2021",
+      "endDate": "08/2021",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "john.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/johndoe",
+    "github": "https://github.com/johndoe",
+    "website": "https://johndoe.example.com",
+    "twitter": "https://twitter.com/johndoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_wl58yy",
+      "description": "Employee of the Month",
+      "issuer": "ABC Construction",
+      "date": "12/2021",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_teyiyl",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_ihvq2u",
+      "description": "OSHA 30-Hour Construction",
+      "name": "OSHA 30",
+      "issuer": "OSHA",
+      "date": "05/2020",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_3g3qnw",
+      "description": "Home Improvement",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_c9i4im",
+      "name": "Jane Smith",
+      "title": "Construction Foreman",
+      "company": "ABC Construction",
+      "email": "jane.smith@example.com",
+      "phone": "555-789-0123",
+      "relationship": "Supervisor",
+      "description": "John is a reliable and hardworking construction worker.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

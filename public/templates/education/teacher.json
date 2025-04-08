@@ -1,0 +1,295 @@
+{
+  "experiences": [
+    {
+      "id": "exp_v0sex4",
+      "companyName": "Springfield Elementary School",
+      "role": "5th Grade Teacher",
+      "startDate": "08/2018",
+      "endDate": "06/2023",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_5g9h7v",
+          "description": "Developed and implemented engaging lesson plans aligned with state standards, resulting in a 15% improvement in student test scores.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_73bsry",
+              "content": "Created standards-based lesson plans focused on student engagement and improved test scores.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Curriculum Development",
+            "Lesson Planning",
+            "Classroom Management"
+          ]
+        },
+        {
+          "id": "expitem_y0awdl",
+          "description": "Utilized differentiated instruction techniques to cater to diverse learning styles and needs of students.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_tc1x2t",
+              "content": "Employed differentiated instruction to address various learning styles and student needs.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Differentiated Instruction",
+            "Special Education",
+            "Student Assessment"
+          ]
+        },
+        {
+          "id": "expitem_awvhym",
+          "description": "Managed a classroom of 25 students, fostering a positive and collaborative learning environment.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_wa7j4m",
+              "content": "Managed a classroom environment, promoting collaboration and positive learning experiences.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Classroom Management",
+            "Conflict Resolution",
+            "Communication"
+          ]
+        }
+      ],
+      "location": "Springfield, USA",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_4s7i12",
+      "companyName": "Summerfield Middle School",
+      "role": "Student Teacher",
+      "startDate": "01/2018",
+      "endDate": "05/2018",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_quvdlj",
+          "description": "Assisted lead teacher in delivering instruction and managing classroom activities.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_mmqfyt",
+              "content": "Supported lead teacher with instruction and classroom management tasks.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Classroom Assistance",
+            "Instructional Support",
+            "Lesson Plan Implementation"
+          ]
+        }
+      ],
+      "location": "Summerfield, USA",
+      "type": "Internship"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_imcfl0",
+      "content": "Elementary School Teacher",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_lin9gx",
+      "content": "Enthusiastic and dedicated elementary school teacher with 5+ years of experience fostering a positive and engaging learning environment for students. Proven ability to develop and implement effective lesson plans aligned with state standards and cater to diverse learning styles.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_ag9kv7",
+      "content": "Master of Education (M.Ed.) in Elementary Education",
+      "enabled": true,
+      "startDate": "08/2016",
+      "endDate": "05/2018",
+      "institution": "University of Education",
+      "location": "Anytown, USA",
+      "degree": "Master of Education"
+    },
+    {
+      "id": "edu_nzyq6d",
+      "content": "Bachelor of Arts (B.A.) in English Literature",
+      "enabled": true,
+      "startDate": "08/2012",
+      "endDate": "05/2016",
+      "institution": "State University",
+      "location": "Anytown, USA",
+      "degree": "Bachelor of Arts"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Teaching Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_v8lnwt",
+          "content": "Curriculum Development",
+          "enabled": true
+        },
+        {
+          "id": "skill_i2d5uk",
+          "content": "Lesson Planning",
+          "enabled": true
+        },
+        {
+          "id": "skill_vxfbw9",
+          "content": "Classroom Management",
+          "enabled": true
+        },
+        {
+          "id": "skill_jpg07a",
+          "content": "Differentiated Instruction",
+          "enabled": true
+        },
+        {
+          "id": "skill_mhkvrv",
+          "content": "Student Assessment",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Software & Technology",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_agjuhh",
+          "content": "Google Classroom",
+          "enabled": true
+        },
+        {
+          "id": "skill_j5fk9q",
+          "content": "Microsoft Office Suite",
+          "enabled": true
+        },
+        {
+          "id": "skill_pumlz0",
+          "content": "Educational Apps",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Soft Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_kqcca9",
+          "content": "Communication",
+          "enabled": true
+        },
+        {
+          "id": "skill_b1qg9h",
+          "content": "Collaboration",
+          "enabled": true
+        },
+        {
+          "id": "skill_jsp5u3",
+          "content": "Problem-Solving",
+          "enabled": true
+        },
+        {
+          "id": "skill_ivj5ce",
+          "content": "Patience",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_32ik61",
+      "name": "Interactive Reading Program",
+      "link": "https://example.com/reading-program",
+      "content": "Developed an interactive reading program to improve students' reading comprehension skills.",
+      "startDate": "09/2022",
+      "endDate": "12/2022",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "jane.doe@email.com",
+    "linkedIn": "linkedin.com/in/janedoe",
+    "github": null,
+    "website": null,
+    "twitter": null,
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "She/Her"
+  },
+  "awards": [
+    {
+      "id": "award_c9ctan",
+      "description": "Teacher of the Year",
+      "issuer": "Springfield Elementary School",
+      "date": "06/2022",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_3eqsw1",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_wba7jd",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_2ro32p",
+      "description": "Elementary Education Certification",
+      "name": "Elementary Education",
+      "issuer": "State Department of Education",
+      "date": "07/2018",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_b0vpvj",
+      "description": "Reading",
+      "enabled": true
+    },
+    {
+      "id": "interest_t5kg3i",
+      "description": "Hiking",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_qmolky",
+      "name": "John Smith",
+      "title": "Principal",
+      "company": "Springfield Elementary School",
+      "email": "john.smith@email.com",
+      "phone": "555-987-6543",
+      "relationship": "Supervisor",
+      "description": "John was my supervisor and can attest to my teaching abilities.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

@@ -1,0 +1,302 @@
+{
+  "experiences": [
+    {
+      "id": "exp_ftpx80",
+      "companyName": "Acme Corp",
+      "role": "HR Manager",
+      "startDate": "06/2018",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_0ehi34",
+          "description": "Managed full-cycle recruitment process, from sourcing to onboarding.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_wu66xp",
+              "content": "Implemented a new applicant tracking system (ATS), resulting in a 30% reduction in time-to-hire.",
+              "enabled": true
+            },
+            {
+              "id": "var_vr7svp",
+              "content": "Developed and implemented a comprehensive onboarding program to improve employee retention.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Recruiting",
+            "Onboarding",
+            "ATS",
+            "HR Management"
+          ]
+        },
+        {
+          "id": "expitem_lez7o8",
+          "description": "Developed and implemented HR policies and procedures.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_c8scy5",
+              "content": "Ensured compliance with all applicable employment laws and regulations.",
+              "enabled": true
+            },
+            {
+              "id": "var_o1cis6",
+              "content": "Revised employee handbook to reflect current best practices.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "HR Policies",
+            "Compliance",
+            "Employee Relations"
+          ]
+        },
+        {
+          "id": "expitem_de0837",
+          "description": "Managed employee relations, including conflict resolution and performance management.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_tsxhd1",
+              "content": "Conducted investigations into employee complaints and resolved disputes fairly and effectively.",
+              "enabled": true
+            },
+            {
+              "id": "var_5cg1fp",
+              "content": "Provided coaching and counseling to employees and managers on performance issues.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Employee Relations",
+            "Conflict Resolution",
+            "Performance Management",
+            "Coaching"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_9u3xck",
+      "companyName": "Beta Inc",
+      "role": "HR Generalist",
+      "startDate": "01/2016",
+      "endDate": "05/2018",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_l6p28v",
+          "description": "Supported the HR Manager in all aspects of HR operations.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_mn8ucu",
+              "content": "Assisted with recruitment, onboarding, and training programs.",
+              "enabled": true
+            },
+            {
+              "id": "var_o136ui",
+              "content": "Administered employee benefits programs.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "HR Operations",
+            "Recruiting",
+            "Onboarding",
+            "Benefits Administration"
+          ]
+        }
+      ],
+      "location": "Los Angeles, CA",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_fzd048",
+      "content": "HR Manager",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_omzftk",
+      "content": "Highly motivated and experienced HR Manager with a proven track record of success in all aspects of human resources. Adept at developing and implementing HR policies and procedures, managing employee relations, and recruiting and retaining top talent.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_jfhhxa",
+      "content": "Master of Science in Human Resources Management",
+      "enabled": true,
+      "startDate": "09/2013",
+      "endDate": "05/2015",
+      "institution": "University of California, Los Angeles",
+      "location": "Los Angeles, CA",
+      "degree": "MS"
+    },
+    {
+      "id": "edu_sojlvw",
+      "content": "Bachelor of Arts in Psychology",
+      "enabled": true,
+      "startDate": "09/2009",
+      "endDate": "05/2013",
+      "institution": "University of California, Berkeley",
+      "location": "Berkeley, CA",
+      "degree": "BA"
+    }
+  ],
+  "skills": [
+    {
+      "category": "HR Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_2t2y7v",
+          "content": "Recruiting",
+          "enabled": true
+        },
+        {
+          "id": "skill_z6hjoq",
+          "content": "Onboarding",
+          "enabled": true
+        },
+        {
+          "id": "skill_7ybnw3",
+          "content": "Employee Relations",
+          "enabled": true
+        },
+        {
+          "id": "skill_cims82",
+          "content": "Performance Management",
+          "enabled": true
+        },
+        {
+          "id": "skill_46nkb9",
+          "content": "Compensation & Benefits",
+          "enabled": true
+        },
+        {
+          "id": "skill_ju3rdu",
+          "content": "HR Policies & Procedures",
+          "enabled": true
+        },
+        {
+          "id": "skill_q38qy7",
+          "content": "Compliance",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Software Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_zxhc9z",
+          "content": "Microsoft Office Suite",
+          "enabled": true
+        },
+        {
+          "id": "skill_zxho9z",
+          "content": "Applicant Tracking Systems (ATS)",
+          "enabled": true
+        },
+        {
+          "id": "skill_0qm9b9",
+          "content": "HRIS Systems",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_yojsg7",
+      "name": "Employee Engagement Survey",
+      "link": "www.example.com/engagement",
+      "content": "Developed and implemented an employee engagement survey to identify areas for improvement.",
+      "startDate": "07/2021",
+      "endDate": "09/2021",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "jane.doe@example.com",
+    "linkedIn": "linkedin.com/in/janedoe",
+    "github": "github.com/janedoe",
+    "website": "www.janedoe.com",
+    "twitter": "twitter.com/janedoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "She/Her"
+  },
+  "awards": [
+    {
+      "id": "award_0zqn8e",
+      "description": "HR Professional of the Year",
+      "issuer": "SHRM",
+      "date": "12/2020",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_a3skpk",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_8p3fk3",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_93lz4f",
+      "description": "Senior Professional in Human Resources (SPHR)",
+      "name": "SPHR",
+      "issuer": "HRCI",
+      "date": "06/2020",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_759qx7",
+      "description": "Reading",
+      "enabled": true
+    },
+    {
+      "id": "interest_chs7w8",
+      "description": "Hiking",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_1vvxig",
+      "name": "John Smith",
+      "title": "CEO",
+      "company": "Acme Corp",
+      "email": "john.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Former Manager",
+      "description": "John was my manager at Acme Corp and can speak to my skills and experience.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

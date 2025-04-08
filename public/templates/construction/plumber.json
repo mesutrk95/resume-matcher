@@ -1,0 +1,277 @@
+{
+  "experiences": [
+    {
+      "id": "exp_yoihus",
+      "companyName": "ABC Plumbing Inc.",
+      "role": "Lead Plumber",
+      "startDate": "06/2018",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_6iajoj",
+          "description": "Oversaw and managed plumbing projects for residential and commercial clients.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_3awi5z",
+              "content": "Managed a team of 4 junior plumbers, delegating tasks and ensuring quality workmanship.",
+              "enabled": true
+            },
+            {
+              "id": "var_0p6s9l",
+              "content": "Successfully completed over 200 plumbing projects, ranging from minor repairs to full system installations.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Plumbing",
+            "Team Management",
+            "Project Management"
+          ]
+        },
+        {
+          "id": "expitem_dfqd57",
+          "description": "Performed plumbing repairs, installations, and maintenance according to code.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_m7nj8c",
+              "content": "Expertise in installing and repairing pipes, fixtures, and drainage systems.",
+              "enabled": true
+            },
+            {
+              "id": "var_ti2i2m",
+              "content": "Proficient in using plumbing tools and equipment, including pipe cutters, threaders, and soldering torches.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Plumbing Repairs",
+            "Installation",
+            "Maintenance",
+            "Soldering"
+          ]
+        }
+      ],
+      "location": "Anytown, USA",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_v6gjg0",
+      "companyName": "XYZ Plumbing Services",
+      "role": "Journeyman Plumber",
+      "startDate": "01/2015",
+      "endDate": "05/2018",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_75gxef",
+          "description": "Assisted senior plumbers with complex plumbing installations and repairs.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_pfa1k6",
+              "content": "Gained experience in working with various plumbing materials, including copper, PVC, and PEX.",
+              "enabled": true
+            },
+            {
+              "id": "var_sa2i7b",
+              "content": "Developed strong problem-solving skills in diagnosing and resolving plumbing issues.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Plumbing",
+            "Problem-solving"
+          ]
+        },
+        {
+          "id": "expitem_m4fbxm",
+          "description": "Responded to emergency plumbing calls and provided timely and effective solutions.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_237pm3",
+              "content": "Maintained a high level of customer satisfaction by providing excellent service and clear communication.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Customer Service",
+            "Emergency Repairs"
+          ]
+        }
+      ],
+      "location": "Anytown, USA",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_7i9vlj",
+      "content": "Lead Plumber",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_97kdr7",
+      "content": "Highly skilled and experienced Lead Plumber with a proven track record of successfully managing plumbing projects and providing excellent customer service. Expertise in plumbing repairs, installations, and maintenance, with a strong understanding of plumbing codes and regulations.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_949k9y",
+      "content": "Plumbing Apprenticeship",
+      "enabled": true,
+      "startDate": "09/2013",
+      "endDate": "12/2014",
+      "institution": "Anytown Technical College",
+      "location": "Anytown, USA",
+      "degree": "Certificate of Completion"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Technical Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_yjkhy8",
+          "content": "Plumbing Installation & Repair",
+          "enabled": true
+        },
+        {
+          "id": "skill_qxuwof",
+          "content": "Drain Cleaning",
+          "enabled": true
+        },
+        {
+          "id": "skill_5xyyfx",
+          "content": "Water Heater Installation & Repair",
+          "enabled": true
+        },
+        {
+          "id": "skill_izomkp",
+          "content": "Sewer Line Repair",
+          "enabled": true
+        },
+        {
+          "id": "skill_0df95q",
+          "content": "Pipe Fitting",
+          "enabled": true
+        },
+        {
+          "id": "skill_s44xbj",
+          "content": "Blueprint Reading",
+          "enabled": true
+        },
+        {
+          "id": "skill_n91l07",
+          "content": "Soldering",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Soft Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_cjy22h",
+          "content": "Problem Solving",
+          "enabled": true
+        },
+        {
+          "id": "skill_q49cux",
+          "content": "Customer Service",
+          "enabled": true
+        },
+        {
+          "id": "skill_4z7ziy",
+          "content": "Communication",
+          "enabled": true
+        },
+        {
+          "id": "skill_iery0n",
+          "content": "Teamwork",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_typ3uq",
+      "name": "Residential Plumbing Renovation",
+      "link": null,
+      "content": "Complete plumbing renovation of a residential property, including installation of new pipes, fixtures, and drainage systems.",
+      "startDate": "03/2021",
+      "endDate": "04/2021",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "john.doe@email.com",
+    "linkedIn": "linkedin.com/in/johndoe",
+    "github": null,
+    "website": null,
+    "twitter": null,
+    "address": "123 Main St, Anytown, USA",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_9maq7i",
+      "description": "Employee of the Month",
+      "issuer": "ABC Plumbing Inc.",
+      "date": "07/2020",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_b7n0l2",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_pv2v4r",
+      "description": "Licensed Plumber",
+      "name": "Journeyman Plumber License",
+      "issuer": "State Plumbing Board",
+      "date": "01/2015",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_72ik6u",
+      "description": "Home Improvement",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_g50326",
+      "name": "Jane Smith",
+      "title": "Project Manager",
+      "company": "ABC Plumbing Inc.",
+      "email": "jane.smith@abcplumbing.com",
+      "phone": "555-987-6543",
+      "relationship": "Supervisor",
+      "description": "Jane was my supervisor at ABC Plumbing. She can attest to my skills and work ethic.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

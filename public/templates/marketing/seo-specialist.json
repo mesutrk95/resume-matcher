@@ -1,0 +1,347 @@
+{
+  "experiences": [
+    {
+      "id": "exp_7jn1tx",
+      "companyName": "Acme Corp",
+      "role": "SEO Specialist",
+      "startDate": "01/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_me8y4r",
+          "description": "Conducted keyword research and analysis to identify high-value keywords for targeting.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_blfjrl",
+              "content": "Identified and analyzed relevant keywords using tools like SEMrush, Ahrefs, and Google Keyword Planner.",
+              "enabled": true
+            },
+            {
+              "id": "var_g71wev",
+              "content": "Prioritized keywords based on search volume, competition, and relevance to business goals.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "SEO",
+            "Keyword Research",
+            "SEMrush",
+            "Ahrefs",
+            "Google Keyword Planner"
+          ]
+        },
+        {
+          "id": "expitem_dri1je",
+          "description": "Optimized website content, meta descriptions, and header tags to improve search engine rankings.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_aovvve",
+              "content": "Improved on-page SEO by optimizing title tags, meta descriptions, and header tags for target keywords.",
+              "enabled": true
+            },
+            {
+              "id": "var_d8dyu9",
+              "content": "Ensured keyword density was appropriate and content was relevant and engaging for users.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "On-Page SEO",
+            "Content Optimization",
+            "HTML",
+            "Meta Descriptions",
+            "Header Tags"
+          ]
+        },
+        {
+          "id": "expitem_xspv36",
+          "description": "Built high-quality backlinks through outreach, guest blogging, and content promotion.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_o4i3pw",
+              "content": "Implemented link building strategies to acquire backlinks from reputable and relevant websites.",
+              "enabled": true
+            },
+            {
+              "id": "var_tkhmpa",
+              "content": "Conducted outreach to potential link partners and secured guest blogging opportunities.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Link Building",
+            "Outreach",
+            "Guest Blogging",
+            "Content Promotion"
+          ]
+        },
+        {
+          "id": "expitem_1nrx9j",
+          "description": "Tracked and analyzed website traffic, keyword rankings, and other key performance indicators (KPIs) using Google Analytics and Google Search Console.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_xy072l",
+              "content": "Monitored website performance and identified areas for improvement using Google Analytics and Google Search Console.",
+              "enabled": true
+            },
+            {
+              "id": "var_szd9rg",
+              "content": "Prepared reports on SEO performance and presented findings to stakeholders.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Google Analytics",
+            "Google Search Console",
+            "KPI Tracking",
+            "Data Analysis"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_53y1hz",
+      "companyName": "Beta Inc",
+      "role": "SEO Intern",
+      "startDate": "06/2019",
+      "endDate": "12/2019",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_qnvqcr",
+          "description": "Assisted with keyword research and competitor analysis.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_o17lqr",
+              "content": "Contributed to keyword research efforts and helped identify potential target keywords.",
+              "enabled": true
+            },
+            {
+              "id": "var_azyk97",
+              "content": "Analyzed competitor websites to identify their SEO strategies.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Keyword Research",
+            "Competitor Analysis"
+          ]
+        },
+        {
+          "id": "expitem_aa17f9",
+          "description": "Supported the SEO team with various tasks, including content optimization and link building.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_bhz6e1",
+              "content": "Assisted with on-page SEO optimization tasks, such as updating meta descriptions and header tags.",
+              "enabled": true
+            },
+            {
+              "id": "var_ezcgo0",
+              "content": "Participated in link building efforts by identifying potential link partners.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Content Optimization",
+            "Link Building"
+          ]
+        }
+      ],
+      "location": "Los Angeles, CA",
+      "type": "Internship"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_12ev73",
+      "content": "SEO Specialist",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_2rb5v2",
+      "content": "Highly motivated and results-oriented SEO Specialist with 2+ years of experience in optimizing websites for search engines. Proven ability to improve keyword rankings, increase organic traffic, and drive conversions. Proficient in keyword research, on-page optimization, link building, and data analysis.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_8cx0hu",
+      "content": "Bachelor of Science in Marketing",
+      "enabled": true,
+      "startDate": "09/2015",
+      "endDate": "05/2019",
+      "institution": "University of California, Los Angeles",
+      "location": "Los Angeles, CA",
+      "degree": "B.S. Marketing"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Technical Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_sm3ean",
+          "content": "SEO",
+          "enabled": true
+        },
+        {
+          "id": "skill_fn860b",
+          "content": "Keyword Research",
+          "enabled": true
+        },
+        {
+          "id": "skill_xjcggx",
+          "content": "On-Page Optimization",
+          "enabled": true
+        },
+        {
+          "id": "skill_uqcjup",
+          "content": "Link Building",
+          "enabled": true
+        },
+        {
+          "id": "skill_qgjkv8",
+          "content": "Google Analytics",
+          "enabled": true
+        },
+        {
+          "id": "skill_3mxzpd",
+          "content": "Google Search Console",
+          "enabled": true
+        },
+        {
+          "id": "skill_uccfln",
+          "content": "SEMrush",
+          "enabled": true
+        },
+        {
+          "id": "skill_2lhgf6",
+          "content": "Ahrefs",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Soft Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_rvr2td",
+          "content": "Communication",
+          "enabled": true
+        },
+        {
+          "id": "skill_6a7x9l",
+          "content": "Problem-solving",
+          "enabled": true
+        },
+        {
+          "id": "skill_tx4dph",
+          "content": "Analytical Skills",
+          "enabled": true
+        },
+        {
+          "id": "skill_7msgmo",
+          "content": "Teamwork",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_fpf9em",
+      "name": "Website SEO Audit",
+      "link": "https://example.com/audit",
+      "content": "Conducted a comprehensive SEO audit for a client website, identifying areas for improvement and providing actionable recommendations.",
+      "startDate": "03/2021",
+      "endDate": "04/2021",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "john.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/johndoe",
+    "github": "https://github.com/johndoe",
+    "website": "https://johndoe.com",
+    "twitter": "https://twitter.com/johndoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_oemlpf",
+      "description": "SEO Excellence Award",
+      "issuer": "Acme Corp",
+      "date": "12/2022",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_87bdnz",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_wefjht",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_9ovyp5",
+      "description": "Google Analytics Certified",
+      "name": "Google Analytics Certification",
+      "issuer": "Google",
+      "date": "01/2021",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_avq0s2",
+      "description": "Digital Marketing",
+      "enabled": true
+    },
+    {
+      "id": "interest_501w7y",
+      "description": "Web Analytics",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_s90x57",
+      "name": "Jane Smith",
+      "title": "Marketing Manager",
+      "company": "Acme Corp",
+      "email": "jane.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Manager",
+      "description": "Jane was my manager at Acme Corp and can speak to my SEO skills and work ethic.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

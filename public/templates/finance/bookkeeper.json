@@ -1,0 +1,298 @@
+{
+  "experiences": [
+    {
+      "id": "exp_fatkmj",
+      "companyName": "Acme Corp",
+      "role": "Senior Bookkeeper",
+      "startDate": "06/2018",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_2922u7",
+          "description": "Managed full cycle accounting processes, including accounts payable, accounts receivable, and general ledger.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_519cfc",
+              "content": "Oversaw all aspects of the accounting cycle.",
+              "enabled": true
+            },
+            {
+              "id": "var_97ekpo",
+              "content": "Responsible for accurate and timely financial reporting.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Accounting",
+            "Bookkeeping",
+            "General Ledger",
+            "Accounts Payable",
+            "Accounts Receivable"
+          ]
+        },
+        {
+          "id": "expitem_y8azeq",
+          "description": "Prepared and analyzed financial statements, including profit and loss statements, balance sheets, and cash flow statements.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_1yyuvs",
+              "content": "Created monthly financial reports for management review.",
+              "enabled": true
+            },
+            {
+              "id": "var_v9bnqt",
+              "content": "Identified and resolved discrepancies in financial data.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Financial Statements",
+            "Financial Reporting",
+            "Data Analysis"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_ggmedq",
+      "companyName": "Beta Industries",
+      "role": "Bookkeeper",
+      "startDate": "01/2016",
+      "endDate": "05/2018",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_cp9z7b",
+          "description": "Processed invoices, payments, and bank reconciliations.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_j3j4bc",
+              "content": "Managed vendor relationships and ensured timely payments.",
+              "enabled": true
+            },
+            {
+              "id": "var_zxnc6t",
+              "content": "Reconciled bank statements and resolved discrepancies.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Invoicing",
+            "Payments",
+            "Bank Reconciliation"
+          ]
+        },
+        {
+          "id": "expitem_o2ycm6",
+          "description": "Assisted with month-end and year-end closing procedures.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_k3tc6v",
+              "content": "Prepared schedules and work papers for audits.",
+              "enabled": true
+            },
+            {
+              "id": "var_gf7y2f",
+              "content": "Assisted with the preparation of tax returns.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Month-End Close",
+            "Year-End Close",
+            "Auditing",
+            "Tax Preparation"
+          ]
+        }
+      ],
+      "location": "Los Angeles, CA",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_2suy0f",
+      "content": "Bookkeeper",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_6zlsuh",
+      "content": "Highly skilled and detail-oriented bookkeeper with 5+ years of experience in managing financial records and ensuring accurate financial reporting. Proven ability to handle all aspects of the accounting cycle and assist with month-end and year-end closing procedures.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_smf9kz",
+      "content": "Bachelor of Science in Accounting",
+      "enabled": true,
+      "startDate": "09/2012",
+      "endDate": "05/2016",
+      "institution": "University of California, Los Angeles",
+      "location": "Los Angeles, CA",
+      "degree": "B.S. Accounting"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Accounting Software",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_7609w6",
+          "content": "QuickBooks",
+          "enabled": true
+        },
+        {
+          "id": "skill_r7cp6w",
+          "content": "Xero",
+          "enabled": true
+        },
+        {
+          "id": "skill_74uwlw",
+          "content": "NetSuite",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Bookkeeping Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_vr42c1",
+          "content": "Accounts Payable",
+          "enabled": true
+        },
+        {
+          "id": "skill_f2gktb",
+          "content": "Accounts Receivable",
+          "enabled": true
+        },
+        {
+          "id": "skill_1iuy2q",
+          "content": "General Ledger",
+          "enabled": true
+        },
+        {
+          "id": "skill_ssrgsu",
+          "content": "Bank Reconciliation",
+          "enabled": true
+        },
+        {
+          "id": "skill_dvpcrd",
+          "content": "Financial Reporting",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Other Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_hurtq0",
+          "content": "Microsoft Excel",
+          "enabled": true
+        },
+        {
+          "id": "skill_txw1xt",
+          "content": "Data Entry",
+          "enabled": true
+        },
+        {
+          "id": "skill_rpxr00",
+          "content": "Attention to Detail",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_ndzy47",
+      "name": "Financial Reporting System",
+      "link": "https://example.com/project1",
+      "content": "Developed a new financial reporting system using Excel to improve accuracy and efficiency.",
+      "startDate": "07/2020",
+      "endDate": "09/2020",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "jane.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/janedoe",
+    "github": "https://github.com/janedoe",
+    "website": "https://www.example.com",
+    "twitter": "https://twitter.com/janedoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "She/Her"
+  },
+  "awards": [
+    {
+      "id": "award_pipzot",
+      "description": "Employee of the Month",
+      "issuer": "Acme Corp",
+      "date": "03/2021",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_3vtizh",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_31duu5",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_k2vqcu",
+      "description": "Certified Bookkeeper",
+      "name": "Certified Bookkeeper",
+      "issuer": "American Institute of Professional Bookkeepers",
+      "date": "06/2017",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_3hbkad",
+      "description": "Financial Literacy",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_rzbw3u",
+      "name": "John Smith",
+      "title": "Accounting Manager",
+      "company": "Acme Corp",
+      "email": "john.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Manager",
+      "description": "John was my manager at Acme Corp.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

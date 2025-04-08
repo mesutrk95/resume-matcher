@@ -1,0 +1,405 @@
+{
+  "experiences": [
+    {
+      "id": "exp_owqzvt",
+      "companyName": "Tech Solutions Inc.",
+      "role": "DevOps Engineer",
+      "startDate": "06/2019",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_rl55q9",
+          "description": "Automated infrastructure deployment and management using Terraform and Ansible.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_9t8pky",
+              "content": "Developed and maintained Terraform modules for AWS infrastructure provisioning.",
+              "enabled": true
+            },
+            {
+              "id": "var_rmybel",
+              "content": "Configured and managed Ansible playbooks for application deployment and configuration management.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Terraform",
+            "Ansible",
+            "AWS",
+            "Infrastructure as Code"
+          ]
+        },
+        {
+          "id": "expitem_7f4wme",
+          "description": "Implemented and maintained CI/CD pipelines using Jenkins and GitLab CI.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_j9tvhh",
+              "content": "Designed and implemented Jenkins pipelines for automated build, test, and deployment processes.",
+              "enabled": true
+            },
+            {
+              "id": "var_n7el5k",
+              "content": "Integrated GitLab CI with Kubernetes clusters for containerized application deployments.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Jenkins",
+            "GitLab CI",
+            "CI/CD",
+            "Kubernetes",
+            "Docker"
+          ]
+        },
+        {
+          "id": "expitem_nxd4zi",
+          "description": "Monitored system performance and availability using Prometheus and Grafana.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_b1hmh1",
+              "content": "Configured Prometheus to collect metrics from various systems and applications.",
+              "enabled": true
+            },
+            {
+              "id": "var_432udu",
+              "content": "Created Grafana dashboards to visualize system performance and identify potential issues.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Prometheus",
+            "Grafana",
+            "Monitoring",
+            "Alerting"
+          ]
+        }
+      ],
+      "location": "San Francisco, CA",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_yfwwjq",
+      "companyName": "Cloud Services Corp.",
+      "role": "Cloud Engineer",
+      "startDate": "01/2017",
+      "endDate": "05/2019",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_uzou9z",
+          "description": "Managed and maintained cloud infrastructure on AWS and Azure.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_29wvs2",
+              "content": "Provisioned and managed virtual machines, storage, and networking resources on AWS and Azure.",
+              "enabled": true
+            },
+            {
+              "id": "var_9tex3p",
+              "content": "Implemented security best practices and compliance requirements in the cloud environment.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "AWS",
+            "Azure",
+            "Cloud Computing",
+            "Security"
+          ]
+        },
+        {
+          "id": "expitem_773hly",
+          "description": "Automated cloud infrastructure provisioning and configuration using scripting languages.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_q1h8p9",
+              "content": "Developed Python scripts to automate cloud resource provisioning and configuration.",
+              "enabled": true
+            },
+            {
+              "id": "var_9jv5lf",
+              "content": "Utilized Bash scripting for system administration and automation tasks.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Python",
+            "Bash",
+            "Automation",
+            "Scripting"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_ac4lhm",
+      "content": "DevOps Engineer",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_creil3",
+      "content": "Highly motivated and experienced DevOps Engineer with a strong background in cloud computing, automation, and CI/CD. Proven ability to design, implement, and maintain scalable and reliable infrastructure.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_oxmy11",
+      "content": "Master of Science in Computer Science",
+      "enabled": true,
+      "startDate": "09/2015",
+      "endDate": "12/2016",
+      "institution": "University of California, Berkeley",
+      "location": "Berkeley, CA",
+      "degree": "Master of Science"
+    },
+    {
+      "id": "edu_tz8jef",
+      "content": "Bachelor of Science in Computer Engineering",
+      "enabled": true,
+      "startDate": "09/2011",
+      "endDate": "05/2015",
+      "institution": "Stanford University",
+      "location": "Stanford, CA",
+      "degree": "Bachelor of Science"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Cloud Technologies",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_ws2snv",
+          "content": "AWS",
+          "enabled": true
+        },
+        {
+          "id": "skill_ldemsp",
+          "content": "Azure",
+          "enabled": true
+        },
+        {
+          "id": "skill_q24q1r",
+          "content": "Google Cloud Platform (GCP)",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Automation & Configuration Management",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_2hv2ls",
+          "content": "Terraform",
+          "enabled": true
+        },
+        {
+          "id": "skill_me01ec",
+          "content": "Ansible",
+          "enabled": true
+        },
+        {
+          "id": "skill_7vltap",
+          "content": "Chef",
+          "enabled": true
+        },
+        {
+          "id": "skill_8b2ihb",
+          "content": "Puppet",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "CI/CD",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_g5z0dh",
+          "content": "Jenkins",
+          "enabled": true
+        },
+        {
+          "id": "skill_2d1ez2",
+          "content": "GitLab CI",
+          "enabled": true
+        },
+        {
+          "id": "skill_l5lk8p",
+          "content": "CircleCI",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Containerization & Orchestration",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_gsfbht",
+          "content": "Docker",
+          "enabled": true
+        },
+        {
+          "id": "skill_ytwloq",
+          "content": "Kubernetes",
+          "enabled": true
+        },
+        {
+          "id": "skill_6msjdy",
+          "content": "Docker Compose",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Monitoring & Logging",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_vi5fgq",
+          "content": "Prometheus",
+          "enabled": true
+        },
+        {
+          "id": "skill_dbis1l",
+          "content": "Grafana",
+          "enabled": true
+        },
+        {
+          "id": "skill_zjwxxu",
+          "content": "ELK Stack (Elasticsearch, Logstash, Kibana)",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Scripting & Programming",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_6respr",
+          "content": "Python",
+          "enabled": true
+        },
+        {
+          "id": "skill_u12q9b",
+          "content": "Bash",
+          "enabled": true
+        },
+        {
+          "id": "skill_h73gvi",
+          "content": "Go",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_d9y4f2",
+      "name": "Automated Infrastructure Deployment",
+      "link": "https://github.com/example/terraform-aws",
+      "content": "Developed a Terraform module to automate the deployment of AWS infrastructure for a web application.",
+      "startDate": "07/2020",
+      "endDate": "09/2020",
+      "enabled": true
+    },
+    {
+      "id": "project_xtnjn8",
+      "name": "CI/CD Pipeline for Microservices",
+      "link": "https://github.com/example/gitlab-ci-kubernetes",
+      "content": "Implemented a CI/CD pipeline using GitLab CI and Kubernetes for deploying microservices.",
+      "startDate": "10/2021",
+      "endDate": "12/2021",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "123-456-7890",
+    "email": "john.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/johndoe",
+    "github": "https://github.com/johndoe",
+    "website": "https://www.example.com",
+    "twitter": "https://twitter.com/johndoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_es5rmo",
+      "description": "Employee of the Month",
+      "issuer": "Tech Solutions Inc.",
+      "date": "03/2021",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_m7ym4r",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_kq0n5j",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_5wnhvd",
+      "description": "AWS Certified DevOps Engineer - Professional",
+      "name": "AWS Certified DevOps Engineer",
+      "issuer": "Amazon Web Services",
+      "date": "06/2020",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_xznlpj",
+      "description": "Cloud Computing",
+      "enabled": true
+    },
+    {
+      "id": "interest_44h96w",
+      "description": "Automation",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_p1vudu",
+      "name": "Jane Smith",
+      "title": "Senior Software Engineer",
+      "company": "Tech Solutions Inc.",
+      "email": "jane.smith@example.com",
+      "phone": "456-789-0123",
+      "relationship": "Colleague",
+      "description": "John is a highly skilled and dedicated DevOps Engineer. He consistently delivers high-quality work and is a valuable asset to the team.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

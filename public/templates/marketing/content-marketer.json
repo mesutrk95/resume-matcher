@@ -1,0 +1,274 @@
+{
+  "experiences": [
+    {
+      "id": "exp_upqxji",
+      "companyName": "Acme Corp",
+      "role": "Content Marketing Manager",
+      "startDate": "01/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_ovigx9",
+          "description": "Developed and executed content strategies to drive brand awareness and generate leads.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_dyi6qe",
+              "content": "Created a content calendar and managed content creation across various platforms.",
+              "enabled": true
+            },
+            {
+              "id": "var_iaqrrn",
+              "content": "Analyzed content performance and optimized strategies based on data insights.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Content Strategy",
+            "SEO",
+            "Content Creation",
+            "Analytics"
+          ]
+        },
+        {
+          "id": "expitem_kd0hjz",
+          "description": "Managed a team of content writers and editors.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_hfsx5x",
+              "content": "Provided guidance and feedback to ensure high-quality content.",
+              "enabled": true
+            },
+            {
+              "id": "var_ubkumz",
+              "content": "Managed workload and deadlines for the content team.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Team Management",
+            "Editing",
+            "Communication"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_1mat56",
+      "companyName": "Beta Industries",
+      "role": "Content Marketing Specialist",
+      "startDate": "06/2018",
+      "endDate": "12/2019",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_i0e6g4",
+          "description": "Created blog posts, articles, and social media content.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_mc5190",
+              "content": "Researched industry trends to create engaging and informative content.",
+              "enabled": true
+            },
+            {
+              "id": "var_f5ykjc",
+              "content": "Optimized content for SEO and user experience.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Blog Writing",
+            "Social Media",
+            "SEO",
+            "Research"
+          ]
+        }
+      ],
+      "location": "Los Angeles, CA",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_vuw7o0",
+      "content": "Content Marketing Manager",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_xtbqal",
+      "content": "Highly motivated and results-oriented content marketing professional with 5+ years of experience in developing and executing successful content strategies. Proven ability to drive brand awareness, generate leads, and increase website traffic.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_snqrhx",
+      "content": "Bachelor of Arts in Marketing",
+      "enabled": true,
+      "startDate": "09/2014",
+      "endDate": "05/2018",
+      "institution": "University of California, Los Angeles",
+      "location": "Los Angeles, CA",
+      "degree": "BA"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Marketing",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_djwkut",
+          "content": "Content Strategy",
+          "enabled": true
+        },
+        {
+          "id": "skill_yszq08",
+          "content": "SEO",
+          "enabled": true
+        },
+        {
+          "id": "skill_3xqjov",
+          "content": "Social Media Marketing",
+          "enabled": true
+        },
+        {
+          "id": "skill_3r0wg4",
+          "content": "Email Marketing",
+          "enabled": true
+        },
+        {
+          "id": "skill_nhe8vc",
+          "content": "Content Creation",
+          "enabled": true
+        },
+        {
+          "id": "skill_zmo1d1",
+          "content": "Marketing Analytics",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Technical",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_op39st",
+          "content": "Google Analytics",
+          "enabled": true
+        },
+        {
+          "id": "skill_e2hwlr",
+          "content": "Google Search Console",
+          "enabled": true
+        },
+        {
+          "id": "skill_oh9cfw",
+          "content": "SEMrush",
+          "enabled": true
+        },
+        {
+          "id": "skill_2t9oln",
+          "content": "HubSpot",
+          "enabled": true
+        },
+        {
+          "id": "skill_ylwsn5",
+          "content": "WordPress",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_n1wyrg",
+      "name": "Website Redesign",
+      "link": "https://www.example.com",
+      "content": "Led the content strategy and creation for a website redesign project, resulting in a 30% increase in website traffic.",
+      "startDate": "01/2021",
+      "endDate": "06/2021",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "jane.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/janedoe",
+    "github": "https://github.com/janedoe",
+    "website": "https://www.example.com",
+    "twitter": "https://twitter.com/janedoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "She/Her"
+  },
+  "awards": [
+    {
+      "id": "award_mpnidl",
+      "description": "Marketing Excellence Award",
+      "issuer": "Acme Corp",
+      "date": "12/2022",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_oqtk9v",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_sbl7x2",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_5yf9w1",
+      "description": "HubSpot Content Marketing Certification",
+      "name": "Content Marketing",
+      "issuer": "HubSpot",
+      "date": "03/2021",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_jxj2px",
+      "description": "Travel",
+      "enabled": true
+    },
+    {
+      "id": "interest_m8jw19",
+      "description": "Photography",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_xr6du4",
+      "name": "John Smith",
+      "title": "Marketing Director",
+      "company": "Acme Corp",
+      "email": "john.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Manager",
+      "description": "John is a highly skilled and experienced marketing professional.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

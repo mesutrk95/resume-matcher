@@ -1,0 +1,273 @@
+{
+  "experiences": [
+    {
+      "id": "exp_o2hcqi",
+      "companyName": "Tech Solutions Inc.",
+      "role": "Senior Product Designer",
+      "startDate": "06/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_2skp9s",
+          "description": "Led the design of a new mobile application resulting in a 30% increase in user engagement.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_c6gmaq",
+              "content": "Improved user engagement by 30% through mobile app redesign.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "UI Design",
+            "UX Design",
+            "Mobile Design",
+            "User Research"
+          ]
+        },
+        {
+          "id": "expitem_rwdhmi",
+          "description": "Conducted user research and usability testing to identify pain points and improve product usability.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_wdguw2",
+              "content": "Improved product usability by conducting user research.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "User Research",
+            "Usability Testing",
+            "Data Analysis"
+          ]
+        }
+      ],
+      "location": "San Francisco, CA",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_hnjfuy",
+      "companyName": "Innovate Design Studio",
+      "role": "Product Designer",
+      "startDate": "07/2017",
+      "endDate": "05/2020",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_r9ex15",
+          "description": "Designed and prototyped user interfaces for web and mobile applications.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_7nuab9",
+              "content": "Designed user interfaces for web and mobile applications.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "UI Design",
+            "UX Design",
+            "Web Design",
+            "Mobile Design",
+            "Prototyping"
+          ]
+        },
+        {
+          "id": "expitem_0q9xsq",
+          "description": "Collaborated with cross-functional teams including engineers, product managers, and marketing to deliver high-quality products.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_jq6jfw",
+              "content": "Collaborated with cross-functional teams.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Teamwork",
+            "Communication",
+            "Agile Development"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_jgdbyb",
+      "content": "Product Designer",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_9ivkg3",
+      "content": "Highly creative and experienced Product Designer with a passion for creating user-centered designs. Proven ability to conduct user research, develop prototypes, and collaborate with cross-functional teams to deliver exceptional products.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_23szrg",
+      "content": "Bachelor of Science in Design",
+      "enabled": true,
+      "startDate": "09/2013",
+      "endDate": "06/2017",
+      "institution": "University of Design",
+      "location": "Chicago, IL",
+      "degree": "BSc"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Design Tools",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_zrjms4",
+          "content": "Figma",
+          "enabled": true
+        },
+        {
+          "id": "skill_ga24k8",
+          "content": "Sketch",
+          "enabled": true
+        },
+        {
+          "id": "skill_z765cp",
+          "content": "Adobe Creative Suite",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "UX Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_e7i52b",
+          "content": "User Research",
+          "enabled": true
+        },
+        {
+          "id": "skill_t5txmp",
+          "content": "Usability Testing",
+          "enabled": true
+        },
+        {
+          "id": "skill_qj9lk3",
+          "content": "Information Architecture",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "UI Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_2opj1d",
+          "content": "Interaction Design",
+          "enabled": true
+        },
+        {
+          "id": "skill_g7e6ja",
+          "content": "Visual Design",
+          "enabled": true
+        },
+        {
+          "id": "skill_qgv275",
+          "content": "Prototyping",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_yobq5o",
+      "name": "Mobile App Redesign",
+      "link": "www.example.com/project1",
+      "content": "Redesigned a mobile application to improve user experience and increase engagement.",
+      "startDate": "01/2021",
+      "endDate": "05/2021",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "phone": "123-456-7890",
+    "email": "jane.doe@example.com",
+    "linkedIn": "linkedin.com/in/janedoe",
+    "github": "github.com/janedoe",
+    "website": "www.janedoe.com",
+    "twitter": "twitter.com/janedoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "she/her"
+  },
+  "awards": [
+    {
+      "id": "award_yt80th",
+      "description": "Best Design Award",
+      "issuer": "Design Magazine",
+      "date": "12/2022",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_9wy87y",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_156iqn",
+      "name": "Spanish",
+      "level": "Intermediate",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_fvc16m",
+      "description": "Certified UX Designer",
+      "name": "UX Certification",
+      "issuer": "UX Institute",
+      "date": "06/2018",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_o7sm3d",
+      "description": "Photography",
+      "enabled": true
+    },
+    {
+      "id": "interest_hoti6l",
+      "description": "Travel",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_p91n96",
+      "name": "John Smith",
+      "title": "Design Manager",
+      "company": "Tech Solutions Inc.",
+      "email": "john.smith@example.com",
+      "phone": "987-654-3210",
+      "relationship": "Manager",
+      "description": "John is a great leader and mentor.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

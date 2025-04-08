@@ -1,0 +1,290 @@
+{
+  "experiences": [
+    {
+      "id": "exp_wtt4pq",
+      "companyName": "Acme Corp",
+      "role": "Web Designer",
+      "startDate": "06/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_l9jtx9",
+          "description": "Designed and developed user-friendly websites and web applications.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_cbrr8s",
+              "content": "Created visually appealing and functional website designs.",
+              "enabled": true
+            },
+            {
+              "id": "var_bgfhdh",
+              "content": "Developed responsive websites using HTML, CSS, and JavaScript.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "Adobe Photoshop",
+            "Adobe Illustrator"
+          ]
+        },
+        {
+          "id": "expitem_npxfy5",
+          "description": "Collaborated with cross-functional teams to deliver high-quality projects.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_qfu4zc",
+              "content": "Worked closely with developers, project managers, and other stakeholders.",
+              "enabled": true
+            },
+            {
+              "id": "var_kisv14",
+              "content": "Participated in brainstorming sessions and contributed creative ideas.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Teamwork",
+            "Communication",
+            "Collaboration"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_o2y055",
+      "companyName": "Beta Co.",
+      "role": "Junior Web Designer",
+      "startDate": "01/2019",
+      "endDate": "05/2020",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_ai0i8p",
+          "description": "Assisted senior designers with various web design projects.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_8yxu0v",
+              "content": "Created mockups and prototypes using Adobe Creative Suite.",
+              "enabled": true
+            },
+            {
+              "id": "var_awyq1v",
+              "content": "Conducted user research and usability testing.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Adobe Photoshop",
+            "Adobe Illustrator",
+            "User Research",
+            "Usability Testing"
+          ]
+        }
+      ],
+      "location": "Los Angeles, CA",
+      "type": "Internship"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_c27wca",
+      "content": "Web Designer",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_bga53m",
+      "content": "A highly creative and skilled web designer with 3+ years of experience in creating visually appealing and user-friendly websites and web applications.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_o8ejy7",
+      "content": "Bachelor of Fine Arts in Graphic Design",
+      "enabled": true,
+      "startDate": "09/2015",
+      "endDate": "05/2019",
+      "institution": "University of California, Los Angeles",
+      "location": "Los Angeles, CA",
+      "degree": "BFA"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Design Tools",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_osxyp8",
+          "content": "Adobe Photoshop",
+          "enabled": true
+        },
+        {
+          "id": "skill_fk7ydp",
+          "content": "Adobe Illustrator",
+          "enabled": true
+        },
+        {
+          "id": "skill_8r6ia8",
+          "content": "Figma",
+          "enabled": true
+        },
+        {
+          "id": "skill_ntccsq",
+          "content": "Sketch",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Web Development",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_bvdag7",
+          "content": "HTML",
+          "enabled": true
+        },
+        {
+          "id": "skill_92vxrn",
+          "content": "CSS",
+          "enabled": true
+        },
+        {
+          "id": "skill_hr8h2l",
+          "content": "JavaScript",
+          "enabled": true
+        },
+        {
+          "id": "skill_h728yd",
+          "content": "React",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Other",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_pvibk5",
+          "content": "User Interface (UI) Design",
+          "enabled": true
+        },
+        {
+          "id": "skill_bfd2ey",
+          "content": "User Experience (UX) Design",
+          "enabled": true
+        },
+        {
+          "id": "skill_jd0fbf",
+          "content": "Responsive Design",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_hqo9wc",
+      "name": "Personal Portfolio Website",
+      "link": "https://www.example.com",
+      "content": "Developed a personal portfolio website to showcase my web design skills and projects.",
+      "startDate": "06/2022",
+      "endDate": "07/2022",
+      "enabled": true
+    },
+    {
+      "id": "project_47tnb3",
+      "name": "E-commerce Website Redesign",
+      "link": "https://www.ecommerce.com",
+      "content": "Redesigned an e-commerce website to improve user experience and increase sales.",
+      "startDate": "01/2021",
+      "endDate": "03/2021",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "123-456-7890",
+    "email": "john.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/johndoe",
+    "github": "https://github.com/johndoe",
+    "website": "https://www.johndoe.com",
+    "twitter": "https://twitter.com/johndoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_nwv1i5",
+      "description": "Web Design Award",
+      "issuer": "Design Magazine",
+      "date": "12/2021",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_vo1upo",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_k9yirt",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_nnzr5h",
+      "description": "Certified Web Designer",
+      "name": "Web Design Certification",
+      "issuer": "Web Design Institute",
+      "date": "05/2020",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_u89549",
+      "description": "Photography",
+      "enabled": true
+    },
+    {
+      "id": "interest_ylw1uy",
+      "description": "Travel",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_k4z0nf",
+      "name": "Jane Smith",
+      "title": "Senior Web Designer",
+      "company": "Acme Corp",
+      "email": "jane.smith@example.com",
+      "phone": "987-654-3210",
+      "relationship": "Manager",
+      "description": "Jane is a highly skilled and experienced web designer who consistently delivers high-quality work.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

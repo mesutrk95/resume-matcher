@@ -1,0 +1,268 @@
+{
+  "experiences": [
+    {
+      "id": "exp_p9gw4v",
+      "companyName": "Tech Solutions Inc.",
+      "role": "QA Engineer",
+      "startDate": "06/2019",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_cdpi4e",
+          "description": "Automated testing of web applications using Selenium and Python.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_nye8ft",
+              "content": "Developed and maintained automated test scripts.",
+              "enabled": true
+            },
+            {
+              "id": "var_d063h0",
+              "content": "Integrated automated tests into CI/CD pipeline.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Selenium",
+            "Python",
+            "CI/CD",
+            "Test Automation"
+          ]
+        },
+        {
+          "id": "expitem_qylg7d",
+          "description": "Performed manual testing of web and mobile applications.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_f6cjip",
+              "content": "Executed test cases and documented results.",
+              "enabled": true
+            },
+            {
+              "id": "var_v20p57",
+              "content": "Identified and reported software defects.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Manual Testing",
+            "Test Cases",
+            "Defect Reporting"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_v9jfvb",
+      "companyName": "Software Development Co.",
+      "role": "Test Engineer Intern",
+      "startDate": "01/2019",
+      "endDate": "05/2019",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_xt4gw7",
+          "description": "Assisted in the development of test plans and test cases.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_67if45",
+              "content": "Created test cases based on requirements documents.",
+              "enabled": true
+            },
+            {
+              "id": "var_bmzx67",
+              "content": "Participated in test plan reviews.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Test Planning",
+            "Test Cases",
+            "Requirements Analysis"
+          ]
+        }
+      ],
+      "location": "Los Angeles, CA",
+      "type": "Internship"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_y4361g",
+      "content": "QA Engineer",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_ff6zpc",
+      "content": "Highly motivated QA Engineer with experience in automated and manual testing of web and mobile applications. Proficient in Selenium, Python, and various testing methodologies.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_l1px6t",
+      "content": "Bachelor of Science in Computer Science",
+      "enabled": true,
+      "startDate": "09/2015",
+      "endDate": "05/2019",
+      "institution": "University of California, Berkeley",
+      "location": "Berkeley, CA",
+      "degree": "B.S."
+    }
+  ],
+  "skills": [
+    {
+      "category": "Technical Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_e6f9to",
+          "content": "Selenium",
+          "enabled": true
+        },
+        {
+          "id": "skill_vvzjgl",
+          "content": "Python",
+          "enabled": true
+        },
+        {
+          "id": "skill_4li592",
+          "content": "Java",
+          "enabled": true
+        },
+        {
+          "id": "skill_zvqwmq",
+          "content": "SQL",
+          "enabled": true
+        },
+        {
+          "id": "skill_ruxt1l",
+          "content": "REST API Testing",
+          "enabled": true
+        },
+        {
+          "id": "skill_09hjif",
+          "content": "JIRA",
+          "enabled": true
+        },
+        {
+          "id": "skill_9m2gyl",
+          "content": "Postman",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Soft Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_9itwxi",
+          "content": "Communication",
+          "enabled": true
+        },
+        {
+          "id": "skill_d0mmh8",
+          "content": "Problem-solving",
+          "enabled": true
+        },
+        {
+          "id": "skill_qsg6hm",
+          "content": "Teamwork",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_2t4cee",
+      "name": "Automated Testing Framework",
+      "link": "https://github.com/example",
+      "content": "Developed an automated testing framework using Selenium and Python.",
+      "startDate": "07/2019",
+      "endDate": "09/2019",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "john.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/johndoe",
+    "github": "https://github.com/johndoe",
+    "website": "https://www.example.com",
+    "twitter": "https://twitter.com/johndoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_ec4akz",
+      "description": "Employee of the Month",
+      "issuer": "Tech Solutions Inc.",
+      "date": "01/2021",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_c85v82",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_41vbnr",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_uvg5y7",
+      "description": "ISTQB Certified Tester Foundation Level",
+      "name": "ISTQB",
+      "issuer": "ISTQB",
+      "date": "06/2020",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_0sntg4",
+      "description": "Software Testing",
+      "enabled": true
+    },
+    {
+      "id": "interest_sktk9u",
+      "description": "Automation",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_8kgev9",
+      "name": "Jane Smith",
+      "title": "Senior QA Engineer",
+      "company": "Tech Solutions Inc.",
+      "email": "jane.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Manager",
+      "description": "Jane is a highly skilled QA engineer and a great team player.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

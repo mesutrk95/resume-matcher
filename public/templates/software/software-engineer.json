@@ -1,0 +1,315 @@
+{
+  "experiences": [
+    {
+      "id": "exp_gy6nw6",
+      "companyName": "Tech Solutions Inc.",
+      "role": "Software Engineer",
+      "startDate": "06/2021",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_e2i1ax",
+          "description": "Developed and maintained web applications using React and Node.js.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_lpw8f9",
+              "content": "Implemented responsive user interfaces with React, focusing on performance and accessibility.",
+              "enabled": true
+            },
+            {
+              "id": "var_v5j5lq",
+              "content": "Developed RESTful APIs using Node.js and Express, ensuring scalability and security.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "React",
+            "Node.js",
+            "JavaScript",
+            "RESTful APIs"
+          ]
+        },
+        {
+          "id": "expitem_67alvp",
+          "description": "Collaborated with cross-functional teams to design, develop, and deploy software solutions.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_lu9oe7",
+              "content": "Worked closely with product managers and designers to understand requirements and translate them into technical specifications.",
+              "enabled": true
+            },
+            {
+              "id": "var_mtyli0",
+              "content": "Participated in code reviews, ensuring code quality and adherence to coding standards.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Agile Development",
+            "Teamwork",
+            "Communication"
+          ]
+        }
+      ],
+      "location": "San Francisco, CA",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_tj2dhu",
+      "companyName": "Innovation Labs",
+      "role": "Junior Software Developer",
+      "startDate": "07/2019",
+      "endDate": "05/2021",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_qikavi",
+          "description": "Assisted senior developers in building and testing software applications.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_m1wxh5",
+              "content": "Contributed to the development of new features and bug fixes for existing applications.",
+              "enabled": true
+            },
+            {
+              "id": "var_bd18l2",
+              "content": "Wrote unit tests and integration tests to ensure code quality.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Java",
+            "Python",
+            "Git",
+            "Testing"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Internship"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_m2ocgp",
+      "content": "Software Engineer",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_0jjtxu",
+      "content": "Highly motivated and results-oriented Software Engineer with 2+ years of experience in developing and maintaining web applications. Proven ability to collaborate effectively with cross-functional teams and deliver high-quality software solutions. Proficient in React, Node.js, and various other programming languages and technologies.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_8zzyxa",
+      "content": "Bachelor of Science in Computer Science",
+      "enabled": true,
+      "startDate": "09/2015",
+      "endDate": "06/2019",
+      "institution": "University of California, Berkeley",
+      "location": "Berkeley, CA",
+      "degree": "B.S."
+    }
+  ],
+  "skills": [
+    {
+      "category": "Programming Languages",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_161si8",
+          "content": "JavaScript",
+          "enabled": true
+        },
+        {
+          "id": "skill_7rf2ce",
+          "content": "Java",
+          "enabled": true
+        },
+        {
+          "id": "skill_6n0d9k",
+          "content": "Python",
+          "enabled": true
+        },
+        {
+          "id": "skill_dpmd19",
+          "content": "C++",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Frameworks & Libraries",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_xoa6cr",
+          "content": "React",
+          "enabled": true
+        },
+        {
+          "id": "skill_3rvjqa",
+          "content": "Node.js",
+          "enabled": true
+        },
+        {
+          "id": "skill_dcx1pe",
+          "content": "Express",
+          "enabled": true
+        },
+        {
+          "id": "skill_w1he7k",
+          "content": "Angular",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Databases",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_b4ue44",
+          "content": "MySQL",
+          "enabled": true
+        },
+        {
+          "id": "skill_6ct4cv",
+          "content": "PostgreSQL",
+          "enabled": true
+        },
+        {
+          "id": "skill_jgq7ge",
+          "content": "MongoDB",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Tools & Technologies",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_7d3vtw",
+          "content": "Git",
+          "enabled": true
+        },
+        {
+          "id": "skill_civm1i",
+          "content": "Docker",
+          "enabled": true
+        },
+        {
+          "id": "skill_txsqsk",
+          "content": "AWS",
+          "enabled": true
+        },
+        {
+          "id": "skill_qt2vq3",
+          "content": "Jenkins",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_ub5yja",
+      "name": "Personal Portfolio Website",
+      "link": "https://example.com/portfolio",
+      "content": "Developed a personal portfolio website using React to showcase skills and projects.",
+      "startDate": "01/2023",
+      "endDate": "02/2023",
+      "enabled": true
+    },
+    {
+      "id": "project_lz1evj",
+      "name": "E-commerce Application",
+      "link": "https://example.com/ecommerce",
+      "content": "Built an e-commerce application using Node.js and MongoDB.",
+      "startDate": "06/2022",
+      "endDate": "08/2022",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "123-456-7890",
+    "email": "john.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/johndoe",
+    "github": "https://github.com/johndoe",
+    "website": "https://johndoe.com",
+    "twitter": "https://twitter.com/johndoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_512x67",
+      "description": "Employee of the Month",
+      "issuer": "Tech Solutions Inc.",
+      "date": "12/2022",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_hw3sgh",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_arw57g",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_v3kpi1",
+      "description": "AWS Certified Developer - Associate",
+      "name": "AWS Certified Developer",
+      "issuer": "Amazon Web Services",
+      "date": "05/2022",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_ihrxeb",
+      "description": "Software Development",
+      "enabled": true
+    },
+    {
+      "id": "interest_1b3oip",
+      "description": "Machine Learning",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_yi0fdt",
+      "name": "Jane Smith",
+      "title": "Senior Software Engineer",
+      "company": "Tech Solutions Inc.",
+      "email": "jane.smith@example.com",
+      "phone": "987-654-3210",
+      "relationship": "Manager",
+      "description": "Jane is a highly skilled and experienced software engineer who is a pleasure to work with.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

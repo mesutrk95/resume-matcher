@@ -1,0 +1,277 @@
+{
+  "experiences": [
+    {
+      "id": "exp_nq25tv",
+      "companyName": "Deloitte",
+      "role": "Senior Auditor",
+      "startDate": "06/2018",
+      "endDate": "05/2022",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_9owztc",
+          "description": "Led audit engagements for publicly traded companies in the financial services industry.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_bu8d6h",
+              "content": "Managed audit teams of 3-5 members, providing guidance and mentorship.",
+              "enabled": true
+            },
+            {
+              "id": "var_bhrno1",
+              "content": "Reviewed financial statements and internal controls to ensure compliance with GAAP and SEC regulations.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Auditing",
+            "GAAP",
+            "SEC Regulations",
+            "Financial Statements",
+            "Internal Controls",
+            "Team Leadership"
+          ]
+        },
+        {
+          "id": "expitem_zptopx",
+          "description": "Identified and assessed risks related to financial reporting.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_owgt7p",
+              "content": "Developed and executed audit procedures to address identified risks.",
+              "enabled": true
+            },
+            {
+              "id": "var_c4pkkm",
+              "content": "Communicated audit findings and recommendations to management.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Risk Assessment",
+            "Audit Procedures",
+            "Communication",
+            "Problem Solving"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_2gkvve",
+      "companyName": "PwC",
+      "role": "Auditor",
+      "startDate": "06/2016",
+      "endDate": "05/2018",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_03mmcy",
+          "description": "Performed audit procedures in accordance with auditing standards.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_v1xio6",
+              "content": "Assisted in the preparation of audit reports.",
+              "enabled": true
+            },
+            {
+              "id": "var_vjo7ah",
+              "content": "Conducted testing of internal controls.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Auditing",
+            "Audit Reports",
+            "Internal Controls",
+            "Testing"
+          ]
+        }
+      ],
+      "location": "Chicago, IL",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_hbm5t9",
+      "content": "Auditor",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_h8h3qq",
+      "content": "Highly motivated and experienced auditor with a proven track record of conducting successful audit engagements. Expertise in financial reporting, internal controls, and risk assessment. Strong analytical and communication skills.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_bbxure",
+      "content": "Master of Accountancy",
+      "enabled": true,
+      "startDate": "08/2014",
+      "endDate": "05/2016",
+      "institution": "University of Illinois",
+      "location": "Champaign, IL",
+      "degree": "Master of Accountancy"
+    },
+    {
+      "id": "edu_7zt3if",
+      "content": "Bachelor of Science in Accounting",
+      "enabled": true,
+      "startDate": "08/2010",
+      "endDate": "05/2014",
+      "institution": "Indiana University",
+      "location": "Bloomington, IN",
+      "degree": "Bachelor of Science"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Technical Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_oehhnu",
+          "content": "GAAP",
+          "enabled": true
+        },
+        {
+          "id": "skill_096pcd",
+          "content": "SEC Regulations",
+          "enabled": true
+        },
+        {
+          "id": "skill_5vnga4",
+          "content": "Internal Controls",
+          "enabled": true
+        },
+        {
+          "id": "skill_9r4xjv",
+          "content": "Auditing Standards",
+          "enabled": true
+        },
+        {
+          "id": "skill_1uwdgq",
+          "content": "Data Analysis",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Soft Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_6x84zu",
+          "content": "Communication",
+          "enabled": true
+        },
+        {
+          "id": "skill_y1u2ed",
+          "content": "Teamwork",
+          "enabled": true
+        },
+        {
+          "id": "skill_bsnh8m",
+          "content": "Problem-solving",
+          "enabled": true
+        },
+        {
+          "id": "skill_yod8uc",
+          "content": "Analytical Skills",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_2vsq9h",
+      "name": "Internal Audit Process Improvement",
+      "link": "#",
+      "content": "Developed and implemented improvements to the internal audit process, resulting in increased efficiency and accuracy.",
+      "startDate": "07/2020",
+      "endDate": "09/2020",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "john.doe@email.com",
+    "linkedIn": "linkedin.com/in/johndoe",
+    "github": "github.com/johndoe",
+    "website": "johndoe.com",
+    "twitter": "twitter.com/johndoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_4kg1br",
+      "description": "Employee of the Year",
+      "issuer": "Deloitte",
+      "date": "12/2021",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_4ko94h",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_3e61zv",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_kj57rg",
+      "description": "Certified Public Accountant (CPA)",
+      "name": "CPA",
+      "issuer": "AICPA",
+      "date": "05/2018",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_s6o684",
+      "description": "Hiking",
+      "enabled": true
+    },
+    {
+      "id": "interest_jeltqk",
+      "description": "Reading",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_q9p8r6",
+      "name": "Jane Smith",
+      "title": "Audit Manager",
+      "company": "Deloitte",
+      "email": "jane.smith@email.com",
+      "phone": "555-987-6543",
+      "relationship": "Supervisor",
+      "description": "Jane was my supervisor at Deloitte and can speak to my skills and experience as an auditor.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

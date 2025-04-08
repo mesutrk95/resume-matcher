@@ -1,0 +1,286 @@
+{
+  "experiences": [
+    {
+      "id": "exp_eva30k",
+      "companyName": "Tech Solutions Inc.",
+      "role": "Marketing Manager",
+      "startDate": "06/2018",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_59xklr",
+          "description": "Developed and implemented marketing strategies to drive brand awareness and generate leads.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_qglzg1",
+              "content": "Spearheaded marketing campaigns that increased website traffic by 40% and lead generation by 30%.",
+              "enabled": true
+            },
+            {
+              "id": "var_je5ibm",
+              "content": "Managed a team of 5 marketing specialists, providing guidance and mentorship to achieve team goals.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Marketing Strategy",
+            "Lead Generation",
+            "Team Management"
+          ]
+        },
+        {
+          "id": "expitem_h5d3oe",
+          "description": "Managed the marketing budget and allocated resources effectively to maximize ROI.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_ll30yu",
+              "content": "Reduced marketing expenses by 15% while maintaining the same level of lead generation.",
+              "enabled": true
+            },
+            {
+              "id": "var_e5mnfx",
+              "content": "Implemented marketing automation tools to streamline processes and improve efficiency.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Budget Management",
+            "ROI Analysis",
+            "Marketing Automation"
+          ]
+        }
+      ],
+      "location": "San Francisco, CA",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_xt5ydj",
+      "companyName": "Global Marketing Agency",
+      "role": "Marketing Specialist",
+      "startDate": "07/2016",
+      "endDate": "05/2018",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_ocd18y",
+          "description": "Supported the development and execution of marketing campaigns for various clients.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_l9f2sj",
+              "content": "Conducted market research and analyzed data to identify trends and opportunities.",
+              "enabled": true
+            },
+            {
+              "id": "var_h9vz2y",
+              "content": "Created engaging content for social media, email marketing, and website copy.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Market Research",
+            "Content Creation",
+            "Social Media Marketing"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_uuqhu4",
+      "content": "Marketing Manager",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_eff0sw",
+      "content": "Results-driven Marketing Manager with 5+ years of experience developing and implementing successful marketing strategies. Proven ability to increase brand awareness, generate leads, and manage marketing budgets effectively.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_yblb5o",
+      "content": "Master of Business Administration (MBA)",
+      "enabled": true,
+      "startDate": "09/2014",
+      "endDate": "06/2016",
+      "institution": "University of California, Berkeley",
+      "location": "Berkeley, CA",
+      "degree": "MBA"
+    },
+    {
+      "id": "edu_lg386y",
+      "content": "Bachelor of Science in Marketing",
+      "enabled": true,
+      "startDate": "09/2010",
+      "endDate": "06/2014",
+      "institution": "Stanford University",
+      "location": "Stanford, CA",
+      "degree": "BS Marketing"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Marketing Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_oo0xel",
+          "content": "Marketing Strategy",
+          "enabled": true
+        },
+        {
+          "id": "skill_ppxcjx",
+          "content": "Digital Marketing",
+          "enabled": true
+        },
+        {
+          "id": "skill_qxqyu7",
+          "content": "Social Media Marketing",
+          "enabled": true
+        },
+        {
+          "id": "skill_yb3q0e",
+          "content": "Content Marketing",
+          "enabled": true
+        },
+        {
+          "id": "skill_ig0pxh",
+          "content": "SEO/SEM",
+          "enabled": true
+        },
+        {
+          "id": "skill_4yrdrj",
+          "content": "Email Marketing",
+          "enabled": true
+        },
+        {
+          "id": "skill_n8t56x",
+          "content": "Data Analysis",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Management Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_ui0s30",
+          "content": "Team Leadership",
+          "enabled": true
+        },
+        {
+          "id": "skill_qhz9t6",
+          "content": "Budget Management",
+          "enabled": true
+        },
+        {
+          "id": "skill_t50o44",
+          "content": "Project Management",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_1kszj0",
+      "name": "Website Redesign Project",
+      "link": "https://example.com/project1",
+      "content": "Led the redesign of the company website, resulting in a 25% increase in conversion rates.",
+      "startDate": "01/2020",
+      "endDate": "03/2020",
+      "enabled": true
+    },
+    {
+      "id": "project_sq8akj",
+      "name": "Social Media Campaign",
+      "link": "https://example.com/project2",
+      "content": "Developed and executed a social media campaign that generated over 1 million impressions.",
+      "startDate": "07/2019",
+      "endDate": "09/2019",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "john.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/johndoe",
+    "github": "https://github.com/johndoe",
+    "website": "https://www.example.com",
+    "twitter": "https://twitter.com/johndoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_zvsvwp",
+      "description": "Marketing Excellence Award",
+      "issuer": "Marketing Association",
+      "date": "12/2019",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_qr6rfg",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_as4fjh",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_q6yp7p",
+      "description": "Google Analytics Certified",
+      "name": "Google Analytics Certification",
+      "issuer": "Google",
+      "date": "05/2020",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_rnoqgo",
+      "description": "Travel",
+      "enabled": true
+    },
+    {
+      "id": "interest_lpgpgt",
+      "description": "Photography",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_9cgdtt",
+      "name": "Jane Smith",
+      "title": "Director of Marketing",
+      "company": "Tech Solutions Inc.",
+      "email": "jane.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Former Manager",
+      "description": "Jane is a highly skilled marketing professional and a great team leader.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

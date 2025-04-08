@@ -1,0 +1,307 @@
+{
+  "experiences": [
+    {
+      "id": "exp_ssmh1o",
+      "companyName": "Tech Solutions Inc.",
+      "role": "Support Specialist",
+      "startDate": "06/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_7ox5ye",
+          "description": "Provide technical support to customers via phone, email, and chat.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_qv1gsz",
+              "content": "Resolved customer issues related to software and hardware malfunctions.",
+              "enabled": true
+            },
+            {
+              "id": "var_s7jbou",
+              "content": "Troubleshooted network connectivity problems for remote users.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Troubleshooting",
+            "Customer Service",
+            "Technical Support"
+          ]
+        },
+        {
+          "id": "expitem_btw7rq",
+          "description": "Documented customer interactions and solutions in a knowledge base.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_yg7iqa",
+              "content": "Created detailed guides and FAQs to assist customers with common issues.",
+              "enabled": true
+            },
+            {
+              "id": "var_voa58f",
+              "content": "Maintained and updated the knowledge base to ensure accuracy and relevance.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Documentation",
+            "Knowledge Base Management"
+          ]
+        },
+        {
+          "id": "expitem_rgowke",
+          "description": "Escalated complex issues to senior support engineers.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_941qe7",
+              "content": "Collaborated with engineering teams to resolve critical customer problems.",
+              "enabled": true
+            },
+            {
+              "id": "var_ginkm7",
+              "content": "Tracked escalated issues to ensure timely resolution.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Escalation Management",
+            "Collaboration"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_2ced73",
+      "companyName": "HelpDesk Solutions",
+      "role": "Technical Support Intern",
+      "startDate": "01/2020",
+      "endDate": "05/2020",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_8a725m",
+          "description": "Assisted senior support specialists with resolving customer inquiries.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_3c9hfv",
+              "content": "Provided first-level support for software and hardware issues.",
+              "enabled": true
+            },
+            {
+              "id": "var_v9smzw",
+              "content": "Assisted in troubleshooting network and system problems.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Technical Support",
+            "Customer Service"
+          ]
+        },
+        {
+          "id": "expitem_vtabqd",
+          "description": "Created and maintained user documentation.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_aub86u",
+              "content": "Developed user manuals and training materials.",
+              "enabled": true
+            },
+            {
+              "id": "var_np2nau",
+              "content": "Updated existing documentation to reflect new features and changes.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Documentation",
+            "Training"
+          ]
+        }
+      ],
+      "location": "Los Angeles, CA",
+      "type": "Internship"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_0jpkla",
+      "content": "Support Specialist",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_an41ky",
+      "content": "Highly motivated and experienced Support Specialist with a proven track record of providing excellent technical support to customers. Skilled in troubleshooting software and hardware issues, documenting solutions, and escalating complex problems to senior engineers. Passionate about helping customers resolve their issues and ensuring their satisfaction.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_rsv4aw",
+      "content": "Bachelor of Science in Computer Science",
+      "enabled": true,
+      "startDate": "09/2016",
+      "endDate": "05/2020",
+      "institution": "University of California, Los Angeles",
+      "location": "Los Angeles, CA",
+      "degree": "B.S."
+    }
+  ],
+  "skills": [
+    {
+      "category": "Technical Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_v93f1n",
+          "content": "Troubleshooting",
+          "enabled": true
+        },
+        {
+          "id": "skill_e1nk81",
+          "content": "Operating Systems (Windows, macOS, Linux)",
+          "enabled": true
+        },
+        {
+          "id": "skill_y5oi4c",
+          "content": "Networking",
+          "enabled": true
+        },
+        {
+          "id": "skill_fbt5e7",
+          "content": "Hardware Support",
+          "enabled": true
+        },
+        {
+          "id": "skill_up3rez",
+          "content": "Software Installation and Configuration",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Soft Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_pd7mvb",
+          "content": "Customer Service",
+          "enabled": true
+        },
+        {
+          "id": "skill_uw5z85",
+          "content": "Communication (Written and Verbal)",
+          "enabled": true
+        },
+        {
+          "id": "skill_vxqg3y",
+          "content": "Problem Solving",
+          "enabled": true
+        },
+        {
+          "id": "skill_7exhl7",
+          "content": "Time Management",
+          "enabled": true
+        },
+        {
+          "id": "skill_99012o",
+          "content": "Teamwork",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_g4ty0v",
+      "name": "Help Desk Ticketing System",
+      "link": "https://github.com/example/helpdesk",
+      "content": "Developed a help desk ticketing system using Python and Django to manage customer support requests.",
+      "startDate": "07/2019",
+      "endDate": "12/2019",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "john.doe@example.com",
+    "linkedIn": "https://www.linkedin.com/in/johndoe",
+    "github": "https://github.com/johndoe",
+    "website": "https://www.johndoe.com",
+    "twitter": "https://twitter.com/johndoe",
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_chrsxg",
+      "description": "Employee of the Month",
+      "issuer": "Tech Solutions Inc.",
+      "date": "03/2021",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_fzkpem",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_re8d6r",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_8oadzq",
+      "description": "CompTIA A+ Certification",
+      "name": "CompTIA A+",
+      "issuer": "CompTIA",
+      "date": "06/2020",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_y4pb1g",
+      "description": "Technology",
+      "enabled": true
+    },
+    {
+      "id": "interest_uu85v6",
+      "description": "Gaming",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_widsxz",
+      "name": "Jane Smith",
+      "title": "Senior Support Engineer",
+      "company": "Tech Solutions Inc.",
+      "email": "jane.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Supervisor",
+      "description": "Jane was my supervisor at Tech Solutions. She can attest to my technical skills and customer service abilities.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

@@ -1,0 +1,305 @@
+{
+  "experiences": [
+    {
+      "id": "exp_6mxzqs",
+      "companyName": "Rehab Solutions Inc.",
+      "role": "Senior Physical Therapist",
+      "startDate": "06/2018",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_3wjkp9",
+          "description": "Managed a diverse caseload of patients with musculoskeletal, neurological, and orthopedic conditions.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_1g3nlv",
+              "content": "Successfully treated patients with back pain, neck pain, arthritis, and stroke.",
+              "enabled": true
+            },
+            {
+              "id": "var_xebk9i",
+              "content": "Developed and implemented individualized treatment plans based on patient evaluations and goals.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Manual Therapy",
+            "Therapeutic Exercise",
+            "Neurological Rehabilitation",
+            "Orthopedic Rehabilitation"
+          ]
+        },
+        {
+          "id": "expitem_23qy3t",
+          "description": "Supervised and mentored junior physical therapists and students.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_pq2oja",
+              "content": "Provided guidance and feedback on patient care, documentation, and professional development.",
+              "enabled": true
+            },
+            {
+              "id": "var_4kshlk",
+              "content": "Conducted performance evaluations and identified areas for improvement.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Mentoring",
+            "Supervision",
+            "Performance Management"
+          ]
+        }
+      ],
+      "location": "Chicago, IL",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_c8hy1g",
+      "companyName": "Peak Performance Physical Therapy",
+      "role": "Physical Therapist",
+      "startDate": "07/2016",
+      "endDate": "05/2018",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_49nxhy",
+          "description": "Provided comprehensive physical therapy services to athletes and active individuals.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_ped5r3",
+              "content": "Specialized in sports-related injuries, post-operative rehabilitation, and injury prevention.",
+              "enabled": true
+            },
+            {
+              "id": "var_5zo5co",
+              "content": "Utilized a variety of techniques, including manual therapy, exercise prescription, and functional training.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Sports Rehabilitation",
+            "Manual Therapy",
+            "Exercise Prescription",
+            "Functional Training"
+          ]
+        }
+      ],
+      "location": "Denver, CO",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_sh3e2p",
+      "content": "Physical Therapist",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_xr7vbz",
+      "content": "Highly motivated and experienced Physical Therapist with a passion for helping patients achieve their optimal level of function. Proven ability to develop and implement effective treatment plans for a wide range of conditions. Strong communication and interpersonal skills.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_k64xct",
+      "content": "Doctor of Physical Therapy (DPT)",
+      "enabled": true,
+      "startDate": "08/2013",
+      "endDate": "05/2016",
+      "institution": "University of Colorado",
+      "location": "Denver, CO",
+      "degree": "Doctor of Physical Therapy"
+    },
+    {
+      "id": "edu_pfce56",
+      "content": "Bachelor of Science in Kinesiology",
+      "enabled": true,
+      "startDate": "08/2009",
+      "endDate": "05/2013",
+      "institution": "Colorado State University",
+      "location": "Fort Collins, CO",
+      "degree": "Bachelor of Science"
+    }
+  ],
+  "skills": [
+    {
+      "category": "Clinical Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_zsnumm",
+          "content": "Manual Therapy",
+          "enabled": true
+        },
+        {
+          "id": "skill_3ih4qk",
+          "content": "Therapeutic Exercise",
+          "enabled": true
+        },
+        {
+          "id": "skill_r01lht",
+          "content": "Neurological Rehabilitation",
+          "enabled": true
+        },
+        {
+          "id": "skill_8ln5sl",
+          "content": "Orthopedic Rehabilitation",
+          "enabled": true
+        },
+        {
+          "id": "skill_boi372",
+          "content": "Sports Rehabilitation",
+          "enabled": true
+        },
+        {
+          "id": "skill_v113c1",
+          "content": "Pain Management",
+          "enabled": true
+        },
+        {
+          "id": "skill_9wthj3",
+          "content": "Wound Care",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Technical Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_hprmmf",
+          "content": "Electronic Health Records (EHR)",
+          "enabled": true
+        },
+        {
+          "id": "skill_9k6ese",
+          "content": "Gait Analysis Software",
+          "enabled": true
+        },
+        {
+          "id": "skill_ug54uc",
+          "content": "Microsoft Office Suite",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Soft Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_gkqsv4",
+          "content": "Communication",
+          "enabled": true
+        },
+        {
+          "id": "skill_m59wfq",
+          "content": "Empathy",
+          "enabled": true
+        },
+        {
+          "id": "skill_8d58k3",
+          "content": "Problem-solving",
+          "enabled": true
+        },
+        {
+          "id": "skill_0co3uj",
+          "content": "Teamwork",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_4dpbr0",
+      "name": "Development of a Home Exercise Program for Patients with Knee Osteoarthritis",
+      "link": "https://www.example.com/project1",
+      "content": "Developed a comprehensive home exercise program for patients with knee osteoarthritis, including exercises for strengthening, flexibility, and balance.",
+      "startDate": "01/2023",
+      "endDate": "03/2023",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "jane.doe@email.com",
+    "linkedIn": "https://www.linkedin.com/in/janedoe",
+    "github": null,
+    "website": null,
+    "twitter": null,
+    "address": "123 Main St",
+    "country": "USA",
+    "pronouns": "She/Her"
+  },
+  "awards": [
+    {
+      "id": "award_tivzew",
+      "description": "Employee of the Month",
+      "issuer": "Rehab Solutions Inc.",
+      "date": "12/2020",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_3kyhgx",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_qwd1z5",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_qbpn4c",
+      "description": "Board Certified Orthopedic Clinical Specialist (OCS)",
+      "name": "OCS",
+      "issuer": "American Board of Physical Therapy Specialties",
+      "date": "06/2020",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_z84ugt",
+      "description": "Hiking",
+      "enabled": true
+    },
+    {
+      "id": "interest_wt45su",
+      "description": "Yoga",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_c897dz",
+      "name": "John Smith",
+      "title": "Clinic Director",
+      "company": "Rehab Solutions Inc.",
+      "email": "john.smith@email.com",
+      "phone": "555-987-6543",
+      "relationship": "Supervisor",
+      "description": "John was my supervisor at Rehab Solutions. He can speak to my clinical skills and work ethic.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}

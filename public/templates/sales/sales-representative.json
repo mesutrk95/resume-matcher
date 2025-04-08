@@ -1,0 +1,253 @@
+{
+  "experiences": [
+    {
+      "id": "exp_lhsd4f",
+      "companyName": "Acme Corp",
+      "role": "Sales Representative",
+      "startDate": "06/2020",
+      "endDate": "Present",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_vrq7ff",
+          "description": "Managed a portfolio of 50+ clients, consistently exceeding sales targets by 15% each quarter.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_zb19eq",
+              "content": "Exceeded sales quota by 15% consistently.",
+              "enabled": true
+            },
+            {
+              "id": "var_q98fsu",
+              "content": "Successfully managed and grew a portfolio of over 50 clients.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Sales",
+            "Account Management",
+            "CRM",
+            "Negotiation"
+          ]
+        },
+        {
+          "id": "expitem_e0483x",
+          "description": "Developed and implemented a new sales strategy that increased lead generation by 20%.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_ragtir",
+              "content": "Implemented new sales strategies.",
+              "enabled": true
+            },
+            {
+              "id": "var_mu2xgn",
+              "content": "Increased lead generation by 20% through innovative strategies.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Sales Strategy",
+            "Lead Generation",
+            "Marketing"
+          ]
+        }
+      ],
+      "location": "New York, NY",
+      "type": "Full-time"
+    },
+    {
+      "id": "exp_2ehlwu",
+      "companyName": "Beta Industries",
+      "role": "Junior Sales Associate",
+      "startDate": "01/2019",
+      "endDate": "05/2020",
+      "enabled": true,
+      "items": [
+        {
+          "id": "expitem_a60jes",
+          "description": "Supported senior sales representatives in managing client relationships and closing deals.",
+          "enabled": true,
+          "variations": [
+            {
+              "id": "var_9gbyak",
+              "content": "Supported senior sales staff.",
+              "enabled": true
+            },
+            {
+              "id": "var_qndpwb",
+              "content": "Assisted in closing deals and managing client relations.",
+              "enabled": true
+            }
+          ],
+          "skills": [
+            "Sales Support",
+            "Client Relations",
+            "Communication"
+          ]
+        }
+      ],
+      "location": "Los Angeles, CA",
+      "type": "Full-time"
+    }
+  ],
+  "titles": [
+    {
+      "id": "title_va0yyy",
+      "content": "Sales Representative",
+      "enabled": true
+    }
+  ],
+  "summaries": [
+    {
+      "id": "summary_6d74vx",
+      "content": "Results-driven Sales Representative with 3+ years of experience exceeding sales targets and building strong client relationships. Proven ability to develop and implement effective sales strategies to drive revenue growth.",
+      "enabled": true
+    }
+  ],
+  "educations": [
+    {
+      "id": "edu_5n7p0i",
+      "content": "Bachelor of Science in Business Administration",
+      "enabled": true,
+      "startDate": "09/2015",
+      "endDate": "12/2018",
+      "institution": "University of California, Los Angeles",
+      "location": "Los Angeles, CA",
+      "degree": "B.S."
+    }
+  ],
+  "skills": [
+    {
+      "category": "Sales Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_zhqmpb",
+          "content": "Sales Management",
+          "enabled": true
+        },
+        {
+          "id": "skill_0db60u",
+          "content": "Account Management",
+          "enabled": true
+        },
+        {
+          "id": "skill_0gpjf7",
+          "content": "Lead Generation",
+          "enabled": true
+        },
+        {
+          "id": "skill_8ovtyb",
+          "content": "Negotiation",
+          "enabled": true
+        },
+        {
+          "id": "skill_76hetg",
+          "content": "Closing",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "category": "Software Skills",
+      "enabled": true,
+      "skills": [
+        {
+          "id": "skill_u31koq",
+          "content": "CRM (Salesforce, HubSpot)",
+          "enabled": true
+        },
+        {
+          "id": "skill_gjwbr7",
+          "content": "Microsoft Office Suite",
+          "enabled": true
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "project_kzzea7",
+      "name": "Sales Automation Project",
+      "link": "https://example.com/sales-automation",
+      "content": "Developed and implemented a sales automation system that reduced manual tasks by 30% and improved sales efficiency.",
+      "startDate": "03/2021",
+      "endDate": "06/2021",
+      "enabled": true
+    }
+  ],
+  "contactInfo": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "555-123-4567",
+    "email": "john.doe@example.com",
+    "linkedIn": "https://linkedin.com/in/johndoe",
+    "github": "https://github.com/johndoe",
+    "website": "https://johndoe.com",
+    "twitter": "https://twitter.com/johndoe",
+    "address": "123 Main St, Anytown, USA",
+    "country": "USA",
+    "pronouns": "He/Him"
+  },
+  "awards": [
+    {
+      "id": "award_vqwntj",
+      "description": "Top Sales Performer",
+      "issuer": "Acme Corp",
+      "date": "12/2022",
+      "enabled": true
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang_7lj8vv",
+      "name": "English",
+      "level": "Native",
+      "enabled": true
+    },
+    {
+      "id": "lang_ger9gc",
+      "name": "Spanish",
+      "level": "Conversational",
+      "enabled": true
+    }
+  ],
+  "certifications": [
+    {
+      "id": "cert_nd2u09",
+      "description": "Certified Sales Professional",
+      "name": "CSP",
+      "issuer": "Sales Association",
+      "date": "05/2021",
+      "enabled": true
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest_65835x",
+      "description": "Hiking",
+      "enabled": true
+    },
+    {
+      "id": "interest_nhdqjv",
+      "description": "Traveling",
+      "enabled": true
+    }
+  ],
+  "references": [
+    {
+      "id": "ref_uvtrnn",
+      "name": "Jane Smith",
+      "title": "Sales Manager",
+      "company": "Acme Corp",
+      "email": "jane.smith@example.com",
+      "phone": "555-987-6543",
+      "relationship": "Manager",
+      "description": "Jane was my manager at Acme Corp and can attest to my sales skills and work ethic.",
+      "enabled": true
+    }
+  ],
+  "version": 1
+}
