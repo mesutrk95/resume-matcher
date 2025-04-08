@@ -138,7 +138,7 @@ const ResumeDocumentRenderer = ({
 
   // Generate styles based on the resume design configuration
   const styles = useMemo(() => {
-    const spacing = (units: number) => units * design.spacing.unit;
+    // const spacing = (units: number) => units * design.spacing.unit;
 
     const styles = StyleSheet.create({
       page: {
