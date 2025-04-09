@@ -10,6 +10,7 @@ import { withErrorHandling } from "@/lib/with-error-handling";
 import { getAIJsonResponse } from "@/lib/ai";
 import { resumeContentSchema } from "@/schemas/resume";
 import { zodSchemaToString } from "@/lib/zod";
+import { getMimeType } from "@/lib/utils";
 
 export const deleteResumeTemplate = async (id: string) => {
   const user = await currentUser();
@@ -96,6 +97,7 @@ export const createResumeTemplateFromResumePdf = withErrorHandling(
     // throw new NotFoundException();
     const bytes = await file.arrayBuffer();
     const pdfBuffer = Buffer.from(bytes);
+
     const systemInstructions = `Your task is importing user resume data from the provided pdf resume file and convert it to the following schema format: \n ${zodSchemaToString(
       resumeContentSchema
     )} \n 
@@ -106,10 +108,10 @@ export const createResumeTemplateFromResumePdf = withErrorHandling(
   - For each experience item in resume file, add one experience item with a variation item and fill its content by resume file experience item
   
   make sure your output is complete in json format without any extra character!`;
-    const prompt = "";
+    const prompt = "Convert it!";
     const { result } = await getAIJsonResponse(
       prompt,
-      [pdfBuffer],
+      [{ data: pdfBuffer, mimeType: getMimeType(file.name) }],
       systemInstructions
     );
 
@@ -124,7 +126,7 @@ export const createResumeTemplateFromResumePdf = withErrorHandling(
       },
     });
 
-    // revalidatePath("/templates");
+    revalidatePath("/templates");
 
     return template;
   }

@@ -27,6 +27,8 @@ export function withErrorHandling<T extends (...args: any[]) => Promise<any>>(
       } else {
         errObj = { message: "An unknown error occurred" };
       }
+      console.error(err);
+      
       return { success: false, error: errObj };
     }
   };

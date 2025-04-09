@@ -62,10 +62,7 @@ export const CreateTemplateOptions = () => {
           description: `Your resume "${result.data?.name}" imported successfully.`,
         });
         router.push("/templates/" + result.data?.id);
-      } else {
-        toast.error("Error importing the resume, please try again.");
       }
-      console.log(result);
     });
   };
 
@@ -90,7 +87,8 @@ export const CreateTemplateOptions = () => {
           <div className="">
             <h3 className="text-xl font-bold">Import PDF Resume 📄</h3>
             <p>
-              Upload your existing resume file to extract and edit your professional information
+              Upload your existing resume file to extract and edit your
+              professional information
             </p>
           </div>
         </CardContent>
@@ -99,7 +97,7 @@ export const CreateTemplateOptions = () => {
             onFileSelected={handleImportFile}
             loading={isImportingResumeFile}
             loadingText="Importing Resume ..."
-            accept=".pdf,.doc,.docx,.txt,.rtf,.odt"
+            accept=".pdf,.txt"
           >
             <UploadIcon className="mr-2 h-4 w-4" />
             Select Resume
@@ -111,7 +109,8 @@ export const CreateTemplateOptions = () => {
           <div className="">
             <h3 className="text-xl font-bold">Import from Linkedin 🧑‍💼</h3>
             <p>
-              Transfer your professional profile directly from LinkedIn to save time
+              Transfer your professional profile directly from LinkedIn to save
+              time
             </p>
           </div>
           <div></div>

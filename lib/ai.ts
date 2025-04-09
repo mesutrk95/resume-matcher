@@ -9,7 +9,7 @@ export interface ContentWithMeta extends Content {
 
 export const getAIJsonResponse = async (
   prompt: string,
-  content?: (string | Buffer)[],
+  content?: (string | { mimeType: string; data: Buffer })[],
   systemInstructions?: string
 ) => {
   const response = await getGeminiResponse(prompt, content, systemInstructions);
@@ -20,7 +20,7 @@ export const getAIJsonResponse = async (
 
 export const getAIHtmlResponse = async (
   prompt: string,
-  content?: (string | Buffer)[]
+  content?: (string | { mimeType: string; data: Buffer })[]
 ) => {
   const response = await getGeminiResponse(prompt, content);
   const result = parseHtml(response);
@@ -28,7 +28,7 @@ export const getAIHtmlResponse = async (
 };
 export const getAIRawResponse = async (
   prompt: string,
-  content?: (string | Buffer)[]
+  content?: (string | { mimeType: string; data: Buffer })[]
 ) => {
   const response = await getGeminiResponse(prompt, content);
   return { result: response, prompt, content };
@@ -56,7 +56,7 @@ const getDeepSeekResponse = async (
 
 const getGeminiResponse = async (
   prompt: string,
-  contents?: (string | Buffer)[],
+  contents?: (string | { mimeType: string; data: Buffer })[],
   systemInstruction?: string
 ) => {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -72,8 +72,8 @@ const getGeminiResponse = async (
         ? { text: c }
         : {
             inlineData: {
-              data: c.toString("base64"),
-              mimeType: "application/pdf",
+              data: c.data.toString("base64"),
+              mimeType: c.mimeType || "application/pdf",
             },
           }
     ) || []),

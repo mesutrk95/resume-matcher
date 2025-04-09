@@ -88,7 +88,11 @@ export const updateJobResume = withErrorHandling(
       name: z.string().optional(),
     });
 
-    const validationResult = updateJobSchema.safeParse({ ...resume, content, design });
+    const validationResult = updateJobSchema.safeParse({
+      ...resume,
+      content,
+      design,
+    });
 
     if (validationResult.error) {
       throw new InvalidInputException(
@@ -306,7 +310,11 @@ IMPORTANT:
     }
     Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
 
-    return getAIJsonResponse(prompt, [pdfBuffer], systemInstructions);
+    return getAIJsonResponse(
+      prompt,
+      [{ data: pdfBuffer, mimeType: "application/pdf" }],
+      systemInstructions
+    );
   };
 
   const getMatchedKeywords = async () => {

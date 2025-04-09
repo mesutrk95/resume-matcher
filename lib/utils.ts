@@ -94,7 +94,7 @@ export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
   );
 }
 export function randomNDigits(n?: number) {
-  return Math.random().toString(36).substring(2, 8)
+  return Math.random().toString(36).substring(2, 8);
   // return (
   //   Math.floor(Math.random() * (9 * Math.pow(10, n || 5))) +
   //   Math.pow(10, n || 5)
@@ -105,28 +105,50 @@ export async function downloadImageAsBase64(imageUrl: string): Promise<string> {
   try {
     // Fetch the image
     const response = await fetch(imageUrl);
-    
+
     // Check if the request was successful
     if (!response.ok) {
-      throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch image: ${response.status} ${response.statusText}`
+      );
     }
-    
+
     // Get the content type
-    const contentType = response.headers.get('content-type') || 'image/jpeg';
-    
+    const contentType = response.headers.get("content-type") || "image/jpeg";
+
     // Get the image as an ArrayBuffer
     const arrayBuffer = await response.arrayBuffer();
-    
+
     // Convert ArrayBuffer to Buffer
     const buffer = Buffer.from(arrayBuffer);
-    
+
     // Convert to Base64
-    const base64String = buffer.toString('base64');
-    
+    const base64String = buffer.toString("base64");
+
     // Return as data URL
     return `data:${contentType};base64,${base64String}`;
   } catch (error) {
-    console.error('Error downloading image:', error);
+    console.error("Error downloading image:", error);
     throw error;
   }
 }
+
+export const getMimeType = (filename: string) => {
+  const fileExtension = filename.split(".").pop()?.toLowerCase();
+  switch (fileExtension) {
+    case "pdf":
+      return "application/pdf";
+    case "doc":
+      return "application/msword";
+    case "docx":
+      return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    case "txt":
+      return "text/plain";
+    case "rtf":
+      return "application/rtf";
+    case "odt":
+      return "application/vnd.oasis.opendocument.text";
+  }
+
+  return "application/pdf";
+};
