@@ -182,7 +182,7 @@ export const TemplateGallery = () => {
     <div className="">
       <div className="mt-5 flex justify-between">
         <div>
-          <h2 className="text-xl font-bold">Resume Templates</h2>
+          <h2 className="text-xl font-bold">Featured Templates</h2>
           <p className="text-muted-foreground">
             Choose one of our designed templates
           </p>

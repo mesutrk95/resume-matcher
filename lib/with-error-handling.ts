@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { HttpException } from "./exceptions";
 
 export type ServerActionResponse<T> = {
@@ -21,6 +22,8 @@ export function withErrorHandling<T extends (...args: any[]) => Promise<any>>(
       let errObj = undefined;
       if (err instanceof HttpException) {
         errObj = err.serialize();
+      } else if (err instanceof AxiosError) {
+        errObj = { message: "An unknown error occurred", data: err.message };
       } else {
         errObj = { message: "An unknown error occurred" };
       }

@@ -1,6 +1,3 @@
-import { db } from "@/lib/db";
-import { currentUser } from "@/lib/auth";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,8 +6,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { CreateNewTemplateForm } from "@/components/resume-templates/create-new-template-button";
 import { TemplateGallery } from "@/components/resume-templates/template-gallery";
+import { CreateTemplateOptions } from "./create-template-options";
 
 interface CreateResumePageProps {
   params: {};
@@ -34,23 +31,15 @@ export default async function CreateResumeTemplate({
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+        {/* <p className="text-muted-foreground mt-4">
+          With resume templates, you only need to build your resume once. Easily
+          clone and customize it for each job application, ensuring every
+          submission is tailored and professional. Save time and stay organized
+          with a dedicated resume for every opportunity.
+        </p> */}
       </div>
 
-      <Card className="border-dashed border-2 ">
-        <CardContent className="flex justify-between items-center p-6">
-          <div className="">
-            <h3 className="text-xl font-bold ">Start Fresh 🌿</h3>
-            <p>
-              Create a completely customized resume template without content
-            </p>
-          </div>
-          <div>
-            {/* <CreateResumeButton /> */}
-            <CreateNewTemplateForm blank />
-          </div>
-        </CardContent>
-      </Card>
-
+      <CreateTemplateOptions />
       <TemplateGallery />
     </div>
   );
