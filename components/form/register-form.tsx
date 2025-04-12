@@ -1,17 +1,18 @@
-"use client";
+'use client';
 
-import { CardWrapper } from "@/components/shared/card-wrapper";
-import { Form } from "@/components/ui/form";
-import { registerSchema } from "@/schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { FormInput } from "@/components/shared/form-input";
-import { Button } from "@/components/ui/button";
-import { useTransition } from "react";
-import { register } from "@/actions/register";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { CardWrapper } from '@/components/shared/card-wrapper';
+import { FormToggle } from '@/components/shared/form-toggle';
+import { Form } from '@/components/ui/form';
+import { registerSchema } from '@/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { FormInput } from '@/components/shared/form-input';
+import { Button } from '@/components/ui/button';
+import { useTransition } from 'react';
+import { register } from '@/actions/register';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export const RegisterForm = () => {
   const router = useRouter();
@@ -19,17 +20,18 @@ export const RegisterForm = () => {
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
+      name: '',
+      email: '',
+      password: '',
+      marketingEmails: false,
     },
   });
 
-  const handleSubmit = form.handleSubmit((values) => {
+  const handleSubmit = form.handleSubmit(values => {
     startTransition(() => {
-      register(values).then((data) => {
+      register(values).then(data => {
         if (data.success) {
-          router.push("/login");
+          router.push('/login');
           return toast.success(data.message);
         }
         return toast.error(data.error.message);
@@ -69,6 +71,13 @@ export const RegisterForm = () => {
               label="Password"
               type="password"
               placeholder="******"
+              isPending={isPending}
+            />
+            <FormToggle
+              control={form.control}
+              name="marketingEmails"
+              label="Marketing Emails"
+              description="Receive updates, tips, and promotional emails about our services."
               isPending={isPending}
             />
           </div>

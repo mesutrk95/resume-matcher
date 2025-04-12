@@ -1,20 +1,17 @@
-"use client";
+'use client';
 
-import React, { useMemo, useTransition } from "react";
-import {
-  AccordionResumeBuilder,
-  ResumeBuilder,
-} from "@/components/job-resumes/resume-builder";
-import { Job, JobResume } from "@prisma/client";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "sonner";
-import { useParams, useRouter } from "next/navigation";
+import React, { useMemo, useTransition } from 'react';
+import { ResumeBuilder } from '@/components/job-resumes/resume-builder';
+import { Job, JobResume } from '@prisma/client';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner';
+import { useParams, useRouter } from 'next/navigation';
 import {
   analyzeResumeItemsScores,
   deleteJobResume,
-} from "@/actions/job-resume";
-import { ResumePreview } from "@/components/job-resumes/resume-pdf-preview";
-import { updateResumeTemplateContent } from "@/actions/resume-template";
+} from '@/actions/job-resume';
+import { ResumePreview } from '@/components/job-resumes/resume-pdf-preview';
+import { updateResumeTemplateContent } from '@/actions/resume-template';
 import {
   BotMessageSquare,
   Briefcase,
@@ -25,23 +22,23 @@ import {
   RefreshCw,
   ScanEye,
   Trash,
-} from "lucide-react";
-import { JobPostPreview } from "@/components/jobs/job-post-preview";
+} from 'lucide-react';
+import { JobPostPreview } from '@/components/jobs/job-post-preview';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { confirmDialog } from "@/components/shared/confirm-dialog";
-import { ChatInterface } from "@/components/chat";
-import { useResumeBuilder } from "@/components/job-resumes/resume-builder/context/useResumeBuilder";
-import { ResumeScoreTab } from "./ResumeScoreTab";
-import { Card, CardContent } from "@/components/ui/card";
-import { useSubscription } from "@/providers/SubscriptionProvider";
-import { ConnectJobToResume } from "@/components/job-resumes/connect-job-to-resume";
-import { ResumeHeader } from "../../../../../components/job-resumes/job-resume-builder-header";
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { confirmDialog } from '@/components/shared/confirm-dialog';
+import { ChatInterface } from '@/components/chat';
+import { useResumeBuilder } from '@/components/job-resumes/resume-builder/context/useResumeBuilder';
+import { ResumeScoreTab } from './ResumeScoreTab';
+import { Card, CardContent } from '@/components/ui/card';
+import { useSubscription } from '@/providers/SubscriptionProvider';
+import { ConnectJobToResume } from '@/components/job-resumes/connect-job-to-resume';
+import { ResumeHeader } from '../../../../../components/job-resumes/job-resume-builder-header';
 
 export const JobMatcher = ({
   jobResume,
@@ -60,30 +57,30 @@ export const JobMatcher = ({
   const [isAnalyzingScores, startAnalyzeScoresTransition] = useTransition();
   const handleAnalyzeScores = async (forceRefresh: boolean) => {
     startAnalyzeScoresTransition(async () => {
-      toast.info("Analyzing resume rates is in progress!");
+      toast.info('Analyzing resume rates is in progress!');
       try {
         const results = await analyzeResumeItemsScores(
           jobResumeId as string,
-          forceRefresh
+          forceRefresh,
         );
         setResumeAnalyzeResults(results);
         console.log(results);
-        toast.success("Analyze resume rates and scores are successfully done!");
+        toast.success('Analyze resume rates and scores are successfully done!');
       } catch (error) {
-        toast.error("Failed to analyze scores.");
+        toast.error('Failed to analyze scores.');
       }
     });
   };
   const handleSyncToTemplate = async () => {
     const templateId = jobResume.baseResumeTemplateId;
     if (!templateId) {
-      toast.error("This resume is not connected to any resume template!");
+      toast.error('This resume is not connected to any resume template!');
       return;
     }
     if (
       !(await confirmDialog({
-        confirmText: "Yes, Sync It!",
-        title: "Are you absolutely sure!?",
+        confirmText: 'Yes, Sync It!',
+        title: 'Are you absolutely sure!?',
         description: `By confirming this action, your resume template will be updated with the details from this job resume.`,
       }))
     )
@@ -92,16 +89,16 @@ export const JobMatcher = ({
     startSyncToTemplateTransition(async () => {
       try {
         await updateResumeTemplateContent(templateId, resume);
-        toast.success("Successfully synced to template!");
+        toast.success('Successfully synced to template!');
       } catch (error) {
-        toast.error("Failed to sync.");
+        toast.error('Failed to sync.');
       }
     });
   };
   const handleDeleteJobResume = async () => {
     if (
       !(await confirmDialog({
-        title: "Are you absolutely sure!?",
+        title: 'Are you absolutely sure!?',
         description: `You are deleting the resume "${jobResume.name}".`,
       }))
     )
@@ -110,10 +107,10 @@ export const JobMatcher = ({
     startDeletingTransition(async () => {
       try {
         await deleteJobResume(jobResume.id);
-        toast.success("Job resume deleted successfully");
-        router.push("/resumes");
+        toast.success('Job resume deleted successfully');
+        router.push('/resumes');
       } catch (error) {
-        toast.error(error?.toString() || "Something went wrong");
+        toast.error(error?.toString() || 'Something went wrong');
       }
     });
   };
@@ -204,15 +201,15 @@ export const JobMatcher = ({
               >
                 <div
                   className="pt-2 sticky z-10 bg-slate-50 rounded-xl-b"
-                  style={{ top: navbarHeight + "px" }}
+                  style={{ top: navbarHeight + 'px' }}
                 >
                   <TabsList
                     className="w-full shrink-0 border-b bg-background"
-                    variant={"outline"}
+                    variant={'outline'}
                   >
                     <TabsTrigger
                       value="builder"
-                      variant={"outline"}
+                      variant={'outline'}
                       className="px-5"
                     >
                       <NotebookPen className="me-2" size={18} />
@@ -220,7 +217,7 @@ export const JobMatcher = ({
                     </TabsTrigger>
                     <TabsTrigger
                       value="score"
-                      variant={"outline"}
+                      variant={'outline'}
                       className="px-5"
                     >
                       <Gauge className="me-2" size={18} />
@@ -228,7 +225,7 @@ export const JobMatcher = ({
                     </TabsTrigger>
                     <TabsTrigger
                       value="chat"
-                      variant={"outline"}
+                      variant={'outline'}
                       className="px-5"
                     >
                       <BotMessageSquare className="me-2" size={18} />
@@ -264,11 +261,11 @@ export const JobMatcher = ({
                 >
                   <TabsList
                     className="w-full border-b bg-white shrink-0"
-                    variant={"outline"}
+                    variant={'outline'}
                   >
                     <TabsTrigger
                       value="preview"
-                      variant={"outline"}
+                      variant={'outline'}
                       className="px-5"
                     >
                       <ScanEye className="me-2" size={18} />
@@ -276,11 +273,11 @@ export const JobMatcher = ({
                     </TabsTrigger>
                     <TabsTrigger
                       value="jd"
-                      variant={"outline"}
+                      variant={'outline'}
                       className="px-5"
                     >
                       <BriefcaseBusiness className="me-2" size={18} />
-                      {job ? "Job Description" : "Resume Job"}
+                      {job ? 'Job Description' : 'Resume Job'}
                     </TabsTrigger>
                   </TabsList>
                   <Card className="col-span-5 overflow-hidden flex-auto h-0 mt-2">

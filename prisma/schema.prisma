@@ -43,6 +43,7 @@ model User {
   image                 String? // You can use gravatar.com to get image profile
   password              String?
   role                  UserRole               @default(User)
+  marketingEmails       Boolean                @default(false)
   accounts              Account[]
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
