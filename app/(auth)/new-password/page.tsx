@@ -8,8 +8,10 @@ export const metadata: Metadata = {
 };
 
 export default async function NewPassword({ searchParams }: { searchParams: { token: string } }) {
-  if (!searchParams.token) redirect('/');
-  const resetPasswordToken = await getResetPasswordToken(searchParams.token);
+  // Await searchParams before accessing its properties
+  const params = await searchParams;
+  if (!params.token) redirect('/');
+  const resetPasswordToken = await getResetPasswordToken(params.token);
   if (!resetPasswordToken) redirect('/');
 
   return <NewPasswordForm token={resetPasswordToken.token} />;

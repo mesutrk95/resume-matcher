@@ -27,7 +27,8 @@ export default async function BillingPage({
     session_id?: string;
   };
 }) {
-  const { success, canceled, session_id: sessionId } = searchParams;
+  // Await searchParams before destructuring to fix Next.js dynamic API usage
+  const { success, canceled, session_id: sessionId } = await searchParams;
 
   if (sessionId && success === 'true') {
     try {

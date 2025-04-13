@@ -413,10 +413,8 @@ export const removeContactFromMarketingList = async (email: string) => {
 
       // Remove contact from list
       const removeContactFromList = new brevo.RemoveContactFromList();
-      const data = await apiInstance.removeContactFromList(
-        listId,
-        (removeContactFromList.emails = [email]),
-      );
+      removeContactFromList.emails = [email];
+      const data = await apiInstance.removeContactFromList(listId, removeContactFromList);
 
       logger.debug('Removed contact from marketing list', {
         email,

@@ -7,6 +7,8 @@ export const metadata: Metadata = {
 };
 
 export default async function LoginPage({ searchParams }: { searchParams: { error: string } }) {
-  if (searchParams.error) redirect(`/error?message=${searchParams.error}`);
+  // Await searchParams before accessing its properties
+  const params = await searchParams;
+  if (params.error) redirect(`/error?message=${params.error}`);
   return <LoginForm />;
 }

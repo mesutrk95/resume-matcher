@@ -18,10 +18,10 @@ interface JobsPageProps {
 }
 
 export default async function JobsPage({ searchParams }: JobsPageProps) {
-  const statuses = searchParams.status
-    ? (searchParams.status?.split(',') as JobStatus[])
-    : undefined;
-  const result = await getJobs({ ...searchParams, statuses });
+  // Await searchParams before accessing its properties
+  const params = await searchParams;
+  const statuses = params.status ? (params.status?.split(',') as JobStatus[]) : undefined;
+  const result = await getJobs({ ...params, statuses });
 
   return (
     <div className="">
@@ -36,7 +36,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         total={result.total}
         currentPage={result.page}
         pageSize={result.pageSize}
-        searchQuery={searchParams.search}
+        searchQuery={params.search}
         statusFilter={statuses}
       />
     </div>

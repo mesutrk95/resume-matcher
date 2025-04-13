@@ -12,8 +12,9 @@ export default async function NewVerificationPage({
 }: {
   searchParams: { token: string };
 }) {
-  if (!searchParams.token) redirect('/login');
-  const data = await newVerification(searchParams.token);
+  const params = await searchParams;
+  if (!params.token) redirect('/login');
+  const data = await newVerification(params.token);
 
   return <NewVerificationForm data={data} />;
 }

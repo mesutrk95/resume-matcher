@@ -20,9 +20,11 @@ interface TemplatesPageProps {
 export default async function TemplatesPage({ searchParams }: TemplatesPageProps) {
   const user = await currentUser();
 
-  const page = Number(searchParams.page) || 1;
-  const pageSize = Number(searchParams.pageSize) || 10;
-  const search = searchParams.search || '';
+  // Await searchParams before accessing its properties
+  const params = await searchParams;
+  const page = Number(params.page) || 1;
+  const pageSize = Number(params.pageSize) || 10;
+  const search = params.search || '';
   const skip = (page - 1) * pageSize;
 
   // Prepare search filter

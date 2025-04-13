@@ -17,7 +17,8 @@ interface SuccessPageProps {
 }
 
 export default async function SubscriptionSuccessPage({ searchParams }: SuccessPageProps) {
-  const { session_id: sessionId } = searchParams;
+  // Await searchParams before destructuring to fix Next.js dynamic API usage
+  const { session_id: sessionId } = await searchParams;
 
   if (!sessionId) {
     redirect('/settings/billing');
