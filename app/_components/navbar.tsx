@@ -109,7 +109,7 @@ function NavItem({ link, title, icon }: { link: string; title: string; icon: str
 
 export default function Navbar() {
   return (
-    <nav className="border-b bg-white top-0 w-full z-10 sticky shadow-sm">
+    <nav className="border-b bg-white top-0 w-full z-10 sticky shadow-xs">
       <div className="container ">
         {/* Include the CSS */}
         <div className="flex gap-x-4 items-center justify-between">

@@ -192,7 +192,7 @@ export function SubscriptionPlans({
       {/* Subscription card */}
       <div className="max-w-md mx-auto">
         <Card className="border-2 border-primary shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
+          <CardHeader className="bg-linear-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
             <CardTitle className="flex items-center justify-between">
               <span>{productInfo?.name || 'Resume Matcher Pro'}</span>
               {calculateDiscount(interval) > 0 && (

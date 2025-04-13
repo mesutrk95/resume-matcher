@@ -178,7 +178,7 @@ export function CurrentSubscription({
   if (!currentSubscription) {
     return (
       <Card className="w-full">
-        <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50">
+        <CardHeader className="bg-linear-to-r from-slate-50 to-blue-50">
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>No Subscription</CardTitle>
@@ -204,7 +204,7 @@ export function CurrentSubscription({
 
   return (
     <Card className="w-full">
-      <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-950 dark:to-blue-950">
+      <CardHeader className="bg-linear-to-r from-slate-50 to-blue-50 dark:from-slate-950 dark:to-blue-950">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>Your Subscription</CardTitle>

@@ -89,7 +89,7 @@ export const JobForm = ({ initialData }: JobFormProps) => {
             <div className="space-y-4">
               <div className="flex items-end gap-2">
                 <FormInput
-                  className="flex-grow"
+                  className="grow"
                   control={form.control}
                   name="url"
                   label="Job URL"
@@ -97,7 +97,7 @@ export const JobForm = ({ initialData }: JobFormProps) => {
                   isPending={isPending || isExtractingJD}
                 />
                 <LoadingButton
-                  className="flex-shrink-0 cursor-pointer"
+                  className="shrink-0 cursor-pointer"
                   loading={isExtractingJD}
                   loadingText="Extracting ..."
                   onClick={e => {

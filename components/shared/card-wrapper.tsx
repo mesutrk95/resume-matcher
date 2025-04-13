@@ -34,7 +34,7 @@ export const CardWrapper = (props: CardWrapperProps) => {
   } = props;
 
   return (
-    <Card className="w-[400px] shadow mx-4 md:mx-0" {...rest}>
+    <Card className="w-[400px] shadow-sm mx-4 md:mx-0" {...rest}>
       {heroImage ? (
         <div className="w-1/2 relative pt-6 mx-auto">
           <Image

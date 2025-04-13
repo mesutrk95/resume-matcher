@@ -192,7 +192,7 @@ export function ChatInterface({
                         onClick={() => handlePredefinedQuestion(question)}
                         disabled={isLoading}
                       >
-                        <MessageSquare className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <MessageSquare className="h-4 w-4 mr-2 shrink-0" />
                         <span className="truncate">{question}</span>
                       </Button>
                     </div>
