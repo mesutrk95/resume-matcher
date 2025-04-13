@@ -28,11 +28,11 @@ export function getCurrentRequestId(): string {
     if (requestId) {
       return requestId;
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error('Failed to get request ID from headers:', error);
+  }
 
-  return `generated-${Date.now().toString(36)}-${Math.random()
-    .toString(36)
-    .substring(2, 7)}`;
+  return `generated-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 7)}`;
 }
 
 export function runWithRequestContext<T>(requestId: string, fn: () => T): T {

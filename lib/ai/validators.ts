@@ -14,11 +14,7 @@ export const createDefaultHtmlValidator = (): Validator<string> => {
     } catch (error) {
       return {
         valid: false,
-        errors: [
-          `Invalid HTML: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
-        ],
+        errors: [`Invalid HTML: ${error instanceof Error ? error.message : String(error)}`],
       };
     }
   };
@@ -28,9 +24,7 @@ export const createDefaultHtmlValidator = (): Validator<string> => {
  * JSON schema validator using Zod
  * It validates that the response matches the expected schema
  */
-export const createJsonSchemaValidator = <T>(
-  schema: z.ZodType<T>,
-): Validator<T> => {
+export const createJsonSchemaValidator = <T>(schema: z.ZodType<T>): Validator<T> => {
   return (data: T): ValidationResult => {
     try {
       // Validate the data against the schema
@@ -54,9 +48,7 @@ export const createJsonSchemaValidator = <T>(
       return {
         valid: false,
         errors: [
-          `Schema validation error: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
+          `Schema validation error: ${error instanceof Error ? error.message : String(error)}`,
         ],
       };
     }

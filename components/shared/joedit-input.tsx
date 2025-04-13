@@ -1,7 +1,7 @@
-import dynamic from "next/dynamic";
-import React, { useMemo } from "react";
-import { Control, useController } from "react-hook-form";
-const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
+import dynamic from 'next/dynamic';
+import React, { useMemo } from 'react';
+import { Control, useController } from 'react-hook-form';
+const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
 
 interface JoeditInputProps {
   control: Control<any>;
@@ -29,7 +29,7 @@ export const JoeditInput = ({
   } = useController({
     name,
     control,
-    defaultValue: "", // Set a default value if needed
+    defaultValue: '', // Set a default value if needed
   });
 
   const conf = useMemo(
@@ -40,7 +40,7 @@ export const JoeditInput = ({
       // toolbarButtonSize: 'small',
       ...config,
     }),
-    [config, disabled]
+    [config, disabled],
   );
 
   return (
@@ -53,10 +53,10 @@ export const JoeditInput = ({
           value={value}
           config={conf}
           tabIndex={1} // tabIndex of textarea
-          onBlur={(newContent) => {
+          onBlur={newContent => {
             onChange(newContent);
           }}
-          onChange={(newContent) => {
+          onChange={newContent => {
             onChange(newContent);
           }}
         />

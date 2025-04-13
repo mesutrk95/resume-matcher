@@ -6,6 +6,8 @@ import { createUser, getUserByEmail } from '@/services/user';
 import { generateVerificationToken } from '@/services/verification-token';
 import { sendVerificationEmail } from '@/services/mail';
 import { hashPassword, response } from '@/lib/utils';
+import { updateContactMarketingPreferences } from '@/lib/brevo';
+import logger from '@/lib/logger';
 
 export const register = async (payload: z.infer<typeof registerSchema>) => {
   // Check if user input is not valid.
@@ -19,7 +21,7 @@ export const register = async (payload: z.infer<typeof registerSchema>) => {
       },
     });
   }
-  const { name, email, password } = validatedFields.data;
+  const { name, email, password, marketingEmails } = validatedFields.data;
 
   // Check if user already exist, then return an error.
   const existingUser = await getUserByEmail(email);
@@ -37,15 +39,26 @@ export const register = async (payload: z.infer<typeof registerSchema>) => {
   const hashedPassword = await hashPassword(password);
 
   // Create an user.
-  await createUser({ name, email, password: hashedPassword });
+  await createUser({ name, email, password: hashedPassword, marketingEmails });
+
+  // Add user to Brevo contact list based on marketing preferences
+  try {
+    await updateContactMarketingPreferences(email, marketingEmails, name);
+    logger.debug('Updated contact marketing preferences in Brevo', {
+      email,
+      marketingEmails,
+    });
+  } catch (error) {
+    // Don't fail registration if Brevo integration fails
+    logger.error('Failed to update contact marketing preferences in Brevo', {
+      error,
+      email,
+    });
+  }
 
   // Generate verification token, then send it to the email.
   const verificationToken = await generateVerificationToken(email);
-  await sendVerificationEmail(
-    verificationToken.email,
-    verificationToken.token,
-    name,
-  );
+  await sendVerificationEmail(verificationToken.email, verificationToken.token, name);
 
   // Return response success.
   return response({

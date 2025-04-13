@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-const jobKeywordTypeSchema = z.enum(["hard", "soft", "none"]);
+const jobKeywordTypeSchema = z.enum(['hard', 'soft', 'none']);
 
 const jobKeywordSchema = z.object({
   keyword: z.string(),

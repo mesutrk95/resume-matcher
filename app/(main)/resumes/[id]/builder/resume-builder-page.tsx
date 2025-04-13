@@ -1,16 +1,12 @@
-"use client";
+'use client';
 
-import React from "react";
-import { updateJobResume } from "@/actions/job-resume";
-import { ResumeBuilderProvider } from "@/components/job-resumes/resume-builder/context/ResumeBuilderProvider";
-import {
-  ResumeAnalyzeResults,
-  ResumeContent,
-  ResumeDesign,
-} from "@/types/resume";
-import { Job, JobResume } from "@prisma/client";
-import { JobMatcher } from "./JobMatcher";
-import { runAction } from "@/app/_utils/runAction";
+import React from 'react';
+import { updateJobResume } from '@/actions/job-resume';
+import { ResumeBuilderProvider } from '@/components/job-resumes/resume-builder/context/ResumeBuilderProvider';
+import { ResumeAnalyzeResults, ResumeContent, ResumeDesign } from '@/types/resume';
+import { Job, JobResume } from '@prisma/client';
+import { JobMatcher } from './JobMatcher';
+import { runAction } from '@/app/_utils/runAction';
 
 export const ResumeBuilderPage = ({
   jobResume,
@@ -34,9 +30,7 @@ export const ResumeBuilderPage = ({
     <ResumeBuilderProvider
       initialResume={jobResume.content as ResumeContent}
       initialDesign={jobResume.design as ResumeDesign}
-      initialResumeAnalyzeResults={
-        jobResume.analyzeResults as ResumeAnalyzeResults
-      }
+      initialResumeAnalyzeResults={jobResume.analyzeResults as ResumeAnalyzeResults}
       onUpdated={handleUpdate}
       onDesignUpdated={handleDesignUpdate}
     >

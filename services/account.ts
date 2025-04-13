@@ -1,5 +1,5 @@
 // Services for OAuth providers such as Google, Github, etc...
-import { db } from "@/lib/db";
+import { db } from '@/lib/db';
 
 export const getAccountByUserId = async (userId: string) => {
   try {

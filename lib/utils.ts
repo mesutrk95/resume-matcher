@@ -1,9 +1,9 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-import { sign, verify, type SignOptions, type Secret } from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import { Response, ResponseWithMessage } from "@/types";
-import crypto from "crypto";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { sign, verify, type SignOptions, type Secret } from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { Response, ResponseWithMessage } from '@/types';
+import crypto from 'crypto';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -38,13 +38,10 @@ export function setTokenExpiration(exp: number = 60 * 60) {
  * @return The token generated
  */
 
-export function signJwt(
-  payload: Record<string, unknown>,
-  options?: SignOptions
-) {
+export function signJwt(payload: Record<string, unknown>, options?: SignOptions) {
   return sign(payload, process.env.JWT_SECRET as Secret, {
     ...options,
-    algorithm: "HS256",
+    algorithm: 'HS256',
   });
 }
 
@@ -65,9 +62,7 @@ export const verifyJwtToken = <T extends object>(token: string) => {
 
 // Overload for response status in server action
 export function response(response: ResponseWithMessage): Response;
-export function response<T extends Record<string, unknown>>(
-  response: Response<T>
-): Response<T>;
+export function response<T extends Record<string, unknown>>(response: Response<T>): Response<T>;
 export function response<T extends object>(response: T): T {
   return response;
 }
@@ -77,20 +72,20 @@ export function capitalizeText(str: string) {
 }
 
 export function hashCode(s: string) {
-  return s.split("").reduce(function (a, b) {
+  return s.split('').reduce(function (a, b) {
     a = (a << 5) - a + b.charCodeAt(0);
     return a & a;
   }, 0);
 }
 
 export function hashString(str: string, length = 64) {
-  const hash = crypto.createHash("sha256").update(str).digest("hex");
+  const hash = crypto.createHash('sha256').update(str).digest('hex');
   return hash.substring(0, length);
 }
 
 export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
   return Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, i) =>
-    array.slice(i * chunkSize, i * chunkSize + chunkSize)
+    array.slice(i * chunkSize, i * chunkSize + chunkSize),
   );
 }
 export function randomNDigits(n?: number) {
@@ -108,13 +103,11 @@ export async function downloadImageAsBase64(imageUrl: string): Promise<string> {
 
     // Check if the request was successful
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch image: ${response.status} ${response.statusText}`
-      );
+      throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
     }
 
     // Get the content type
-    const contentType = response.headers.get("content-type") || "image/jpeg";
+    const contentType = response.headers.get('content-type') || 'image/jpeg';
 
     // Get the image as an ArrayBuffer
     const arrayBuffer = await response.arrayBuffer();
@@ -123,32 +116,32 @@ export async function downloadImageAsBase64(imageUrl: string): Promise<string> {
     const buffer = Buffer.from(arrayBuffer);
 
     // Convert to Base64
-    const base64String = buffer.toString("base64");
+    const base64String = buffer.toString('base64');
 
     // Return as data URL
     return `data:${contentType};base64,${base64String}`;
   } catch (error) {
-    console.error("Error downloading image:", error);
+    console.error('Error downloading image:', error);
     throw error;
   }
 }
 
 export const getMimeType = (filename: string) => {
-  const fileExtension = filename.split(".").pop()?.toLowerCase();
+  const fileExtension = filename.split('.').pop()?.toLowerCase();
   switch (fileExtension) {
-    case "pdf":
-      return "application/pdf";
-    case "doc":
-      return "application/msword";
-    case "docx":
-      return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-    case "txt":
-      return "text/plain";
-    case "rtf":
-      return "application/rtf";
-    case "odt":
-      return "application/vnd.oasis.opendocument.text";
+    case 'pdf':
+      return 'application/pdf';
+    case 'doc':
+      return 'application/msword';
+    case 'docx':
+      return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    case 'txt':
+      return 'text/plain';
+    case 'rtf':
+      return 'application/rtf';
+    case 'odt':
+      return 'application/vnd.oasis.opendocument.text';
   }
 
-  return "application/pdf";
+  return 'application/pdf';
 };

@@ -22,15 +22,10 @@ describe('AI Service Manager Integration Tests', () => {
   beforeAll(async () => {
     // Make sure GEMINI_API_KEY is set in environment or this will fail
     if (!process.env.GEMINI_API_KEY) {
-      throw new Error(
-        'GEMINI_API_KEY environment variable must be set for integration tests',
-      );
+      throw new Error('GEMINI_API_KEY environment variable must be set for integration tests');
     }
 
-    const geminiClient = new GeminiClient(
-      process.env.GEMINI_API_KEY,
-      'gemini-1.5-pro',
-    );
+    const geminiClient = new GeminiClient(process.env.GEMINI_API_KEY, 'gemini-1.5-pro');
 
     const usageService = new AIUsageService();
     const promptProcessors = createStandardPromptProcessors();
@@ -119,8 +114,7 @@ describe('AI Service Manager Integration Tests', () => {
     ];
 
     const request: AIRequestModel<string> = {
-      prompt:
-        'Can you give me some examples of popular URL shortening services?',
+      prompt: 'Can you give me some examples of popular URL shortening services?',
       responseFormat: 'text',
       chatHistory: history,
     };
@@ -162,8 +156,7 @@ describe('AI Service Manager Integration Tests', () => {
 
   it('should handle multiple content types together', async () => {
     const request: AIRequestModel<string> = {
-      prompt:
-        'Analyze the following information about URL shortening services.',
+      prompt: 'Analyze the following information about URL shortening services.',
       responseFormat: 'text',
       contents: [
         {
@@ -192,15 +185,10 @@ describe('AI Service Manager Additional Tests', () => {
   beforeAll(async () => {
     // Make sure GEMINI_API_KEY is set in environment or this will fail
     if (!process.env.GEMINI_API_KEY) {
-      throw new Error(
-        'GEMINI_API_KEY environment variable must be set for integration tests',
-      );
+      throw new Error('GEMINI_API_KEY environment variable must be set for integration tests');
     }
 
-    const geminiClient = new GeminiClient(
-      process.env.GEMINI_API_KEY,
-      'gemini-1.5-pro',
-    );
+    const geminiClient = new GeminiClient(process.env.GEMINI_API_KEY, 'gemini-1.5-pro');
 
     const usageService = new AIUsageService();
     const promptProcessors = createStandardPromptProcessors();
@@ -228,10 +216,7 @@ describe('AI Service Manager Additional Tests', () => {
     expect(typeof response).toBe('string');
     expect(response.length).toBeGreaterThan(50);
     expect(response).toMatch(/#{1,6}\s+.+/); // Should contain markdown headers
-    console.log(
-      'Markdown response excerpt:',
-      response.substring(0, 200) + '...',
-    );
+    console.log('Markdown response excerpt:', response.substring(0, 200) + '...');
   }, 30000);
 
   it('should handle structured data with nested objects', async () => {
@@ -344,8 +329,7 @@ describe('AI Service Manager Additional Tests', () => {
     });
 
     const request: AIRequestModel<any> = {
-      prompt:
-        'Generate a minimum URL shortening service test report with nested data.',
+      prompt: 'Generate a minimum URL shortening service test report with nested data.',
       responseFormat: 'json',
       zodSchema: urlServiceDetailedSchema,
     };

@@ -39,9 +39,7 @@ export abstract class BasePromptProcessor implements PromptProcessor {
   /**
    * Actual processing logic to be implemented by subclasses
    */
-  protected abstract processPrompt(
-    request: AIRequestModel<any>,
-  ): Promise<string>;
+  protected abstract processPrompt(request: AIRequestModel<any>): Promise<string>;
 
   /**
    * Check if this processor can handle the given request

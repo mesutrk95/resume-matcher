@@ -1,6 +1,6 @@
-import PDFViewer from "@/components/job-resumes/resume-renderer/pdf-viewer";
-import { ResumeDocument } from "@/components/job-resumes/resume-renderer/resume-document";
-import { Button } from "@/components/ui/button";
+import PDFViewer from '@/components/job-resumes/resume-renderer/pdf-viewer';
+import { ResumeDocument } from '@/components/job-resumes/resume-renderer/resume-document';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,15 +9,15 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { ResumeContent, ResumeDesign } from "@/types/resume";
-import { pdf } from "@react-pdf/renderer";
-import { Paintbrush, CheckCircle, AlertTriangle, CheckCheck, Check } from "lucide-react";
-import React, { useEffect, useState, useCallback } from "react";
+} from '@/components/ui/dialog';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { ResumeContent, ResumeDesign } from '@/types/resume';
+import { pdf } from '@react-pdf/renderer';
+import { Paintbrush, CheckCircle, AlertTriangle, CheckCheck, Check } from 'lucide-react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 /**
  * Individual resume design item with skeleton loading
@@ -36,33 +36,33 @@ const ResumeDesignItem = ({
   const [design, setDesign] = useState<ResumeDesign | null>(null);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false); 
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchDesign = async () => {
       try {
         setLoading(true);
         const res = await fetch(designUrl);
-        if (!res.ok) throw new Error("Failed to fetch design");
-        
-        const resumeDesign = await res.json() as ResumeDesign;
+        if (!res.ok) throw new Error('Failed to fetch design');
+
+        const resumeDesign = (await res.json()) as ResumeDesign;
         setDesign(resumeDesign);
-        
+
         const blob = await pdf(
-          <ResumeDocument resumeDesign={resumeDesign} resume={resume} />
+          <ResumeDocument resumeDesign={resumeDesign} resume={resume} />,
         ).toBlob();
-        
+
         setPdfBlob(blob);
         setError(false);
       } catch (err) {
-        console.error("Error loading resume design:", err);
+        console.error('Error loading resume design:', err);
         setError(true);
-        toast.error("Error loading design", {
+        toast.error('Error loading design', {
           description: `Failed to load design: ${designUrl}`,
           action: {
-            label: "Try again",
-            onClick: () => fetchDesign()
-          }
+            label: 'Try again',
+            onClick: () => fetchDesign(),
+          },
         });
       } finally {
         setLoading(false);
@@ -79,9 +79,9 @@ const ResumeDesignItem = ({
   }, [design, onSelect]);
 
   return (
-    <Card 
+    <Card
       className={`relative overflow-hidden transition-all duration-200 hover:shadow-md cursor-pointer ${
-        isSelected ? "ring-2 ring-primary" : ""
+        isSelected ? 'ring-2 ring-primary' : ''
       }`}
       onClick={handleSelect}
     >
@@ -101,14 +101,8 @@ const ResumeDesignItem = ({
         ) : (
           <>
             <div className="relative">
-              {pdfBlob && (
-                <PDFViewer
-                  pdfBlob={pdfBlob}
-                  className="w-full"
-                  maxPages={1}
-                />
-              )}
-              
+              {pdfBlob && <PDFViewer pdfBlob={pdfBlob} className="w-full" maxPages={1} />}
+
               {isSelected && (
                 <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full p-1">
                   <Check className="h-4 w-4" />
@@ -116,9 +110,7 @@ const ResumeDesignItem = ({
               )}
             </div>
             {design && (
-              <h5 className="font-medium text-center mt-2 text-sm truncate">
-                {design.name}
-              </h5>
+              <h5 className="font-medium text-center mt-2 text-sm truncate">{design.name}</h5>
             )}
           </>
         )}
@@ -130,10 +122,10 @@ const ResumeDesignItem = ({
 /**
  * Grid layout for resume designs with loading states
  */
-const ResumeDesignList = ({ 
-  resume, 
-  onSelectDesign 
-}: { 
+const ResumeDesignList = ({
+  resume,
+  onSelectDesign,
+}: {
   resume: ResumeContent;
   onSelectDesign?: (design: ResumeDesign) => void;
 }) => {
@@ -146,15 +138,15 @@ const ResumeDesignList = ({
     const fetchDesigns = async () => {
       try {
         setLoading(true);
-        const res = await fetch("/designs/all.json");
-        if (!res.ok) throw new Error("Failed to fetch design list");
-        
+        const res = await fetch('/designs/all.json');
+        if (!res.ok) throw new Error('Failed to fetch design list');
+
         const designUrls = await res.json();
         setItems(designUrls);
       } catch (err) {
-        console.error("Error loading design list:", err);
-        toast.error("Failed to load designs", {
-          description: "There was an error fetching the resume designs."
+        console.error('Error loading design list:', err);
+        toast.error('Failed to load designs', {
+          description: 'There was an error fetching the resume designs.',
         });
       } finally {
         setLoading(false);
@@ -164,12 +156,15 @@ const ResumeDesignList = ({
     fetchDesigns();
   }, [toast]);
 
-  const handleSelectDesign = useCallback((design: ResumeDesign, designUrl: string) => {
-    setSelectedDesignUrl(designUrl);
-    if (onSelectDesign) {
-      onSelectDesign(design);
-    }
-  }, [onSelectDesign]);
+  const handleSelectDesign = useCallback(
+    (design: ResumeDesign, designUrl: string) => {
+      setSelectedDesignUrl(designUrl);
+      if (onSelectDesign) {
+        onSelectDesign(design);
+      }
+    },
+    [onSelectDesign],
+  );
 
   return (
     <ScrollArea className="h-[450px] pr-4">
@@ -186,13 +181,13 @@ const ResumeDesignList = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
-          {items?.map((designUrl) => (
+          {items?.map(designUrl => (
             <ResumeDesignItem
               key={designUrl}
               designUrl={designUrl}
               resume={resume}
               isSelected={designUrl === selectedDesignUrl}
-              onSelect={(design) => handleSelectDesign(design, designUrl)}
+              onSelect={design => handleSelectDesign(design, designUrl)}
             />
           ))}
         </div>
@@ -218,13 +213,13 @@ export const ChooseResumeDesignDialog = ({
   const handleSave = useCallback(() => {
     if (selectedDesign && onDesignChange) {
       onDesignChange(selectedDesign);
-      toast.success("Design updated", {
-        description: `Your resume now uses the "${selectedDesign.name}" design.`
+      toast.success('Design updated', {
+        description: `Your resume now uses the "${selectedDesign.name}" design.`,
       });
       setOpen(false);
     } else if (!selectedDesign) {
-      toast.error("No design selected", {
-        description: "Please select a design first."
+      toast.error('No design selected', {
+        description: 'Please select a design first.',
       });
     }
   }, [selectedDesign, onDesignChange, toast]);
@@ -232,11 +227,7 @@ export const ChooseResumeDesignDialog = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          className="z-10 shadow-lg rounded-full"
-          size="icon"
-          variant="default-outline"
-        >
+        <Button className="z-10 shadow-lg rounded-full" size="icon" variant="default-outline">
           <Paintbrush className="h-4 w-4" />
         </Button>
       </DialogTrigger>
@@ -244,24 +235,18 @@ export const ChooseResumeDesignDialog = ({
         <DialogHeader>
           <DialogTitle className="text-xl">Resume Design & Style</DialogTitle>
           <DialogDescription>
-            Choose a design template for your resume. Preview each option and click save when you are done.
+            Choose a design template for your resume. Preview each option and click save when you
+            are done.
           </DialogDescription>
         </DialogHeader>
 
-        <ResumeDesignList 
-          resume={resume} 
-          onSelectDesign={setSelectedDesign}
-        />
-        
+        <ResumeDesignList resume={resume} onSelectDesign={setSelectedDesign} />
+
         <DialogFooter className="mt-4 gap-2">
           <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button 
-            type="submit" 
-            onClick={handleSave}
-            disabled={!selectedDesign}
-          >
+          <Button type="submit" onClick={handleSave} disabled={!selectedDesign}>
             Save changes
           </Button>
         </DialogFooter>

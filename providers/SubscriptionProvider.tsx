@@ -2,21 +2,9 @@
 
 import { getUserSubscription } from '@/actions/subscription/customer';
 import { createCustomerPortalSession } from '@/actions/subscription/session';
-import {
-  cancelUserSubscription,
-  reactivateUserSubscription,
-} from '@/actions/subscription/status';
-import {
-  Subscription as PrismaSubscription,
-  SubscriptionStatus,
-} from '@prisma/client';
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import { cancelUserSubscription, reactivateUserSubscription } from '@/actions/subscription/status';
+import { Subscription as PrismaSubscription, SubscriptionStatus } from '@prisma/client';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
 // Define the augmented type based on what getUserSubscription returns
@@ -64,8 +52,9 @@ export const SubscriptionProvider = ({
   children: React.ReactNode;
   initialSubscription?: SubscriptionWithPlanDetails | null; // Use augmented type
 }) => {
-  const [subscription, setSubscription] =
-    useState<SubscriptionWithPlanDetails | null>(initialSubscription); // Use augmented type
+  const [subscription, setSubscription] = useState<SubscriptionWithPlanDetails | null>(
+    initialSubscription,
+  ); // Use augmented type
   const [isLoading, setIsLoading] = useState(!initialSubscription);
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);
@@ -80,9 +69,7 @@ export const SubscriptionProvider = ({
 
       // If we have a subscription with customerId but no subscriptionId, it might be abandoned
       if (data?.customerId && !data?.subscriptionId) {
-        const { cleanupAbandonedSubscriptions } = await import(
-          '@/actions/subscription/cleanup'
-        );
+        const { cleanupAbandonedSubscriptions } = await import('@/actions/subscription/cleanup');
         const cleanedData = await cleanupAbandonedSubscriptions(data.userId);
         setSubscription(cleanedData);
         return cleanedData;
@@ -132,15 +119,11 @@ export const SubscriptionProvider = ({
       const response = await reactivateUserSubscription();
 
       if (response.success) {
-        toast.success(
-          response.message || 'Subscription reactivated successfully',
-        );
+        toast.success(response.message || 'Subscription reactivated successfully');
         await fetchSubscription();
         return true;
       } else {
-        toast.error(
-          response.error?.message || 'Failed to reactivate subscription',
-        );
+        toast.error(response.error?.message || 'Failed to reactivate subscription');
         return false;
       }
     } catch (error: any) {

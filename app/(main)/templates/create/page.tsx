@@ -5,17 +5,15 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { TemplateGallery } from "@/components/resume-templates/template-gallery";
-import { CreateTemplateOptions } from "./create-template-options";
+} from '@/components/ui/breadcrumb';
+import { TemplateGallery } from '@/components/resume-templates/template-gallery';
+import { CreateTemplateOptions } from './create-template-options';
 
 interface CreateResumePageProps {
-  params: {};
+  params: object;
 }
 
-export default async function CreateResumeTemplate({
-  params,
-}: CreateResumePageProps) {
+export default async function CreateResumeTemplate({ params }: CreateResumePageProps) {
   return (
     <div className="space-y-6">
       <div>

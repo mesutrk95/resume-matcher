@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { LoadingButton } from "../ui/loading-button";
-import { Plus } from "lucide-react";
-import { createResumeTemplate } from "@/actions/resume-template";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { LoadingButton } from '../ui/loading-button';
+import { Plus } from 'lucide-react';
+import { createResumeTemplate } from '@/actions/resume-template';
+import { useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export function CreateNewTemplateForm({ blank }: { blank?: boolean }) {
   const [isPending, startTransition] = useTransition();
@@ -14,14 +14,12 @@ export function CreateNewTemplateForm({ blank }: { blank?: boolean }) {
   const handleCreateNewResumeTemplate = async () => {
     startTransition(() => {
       createResumeTemplate()
-        .then((data) => {
+        .then(data => {
           const templateId = data?.id;
-          router.push("/templates/" + templateId);
-          toast.success("Resume template successfully created!");
+          router.push('/templates/' + templateId);
+          toast.success('Resume template successfully created!');
         })
-        .catch((err) =>
-          toast.error(err?.toString() || "Something went wrong.")
-        );
+        .catch(err => toast.error(err?.toString() || 'Something went wrong.'));
     });
   };
 
@@ -33,7 +31,7 @@ export function CreateNewTemplateForm({ blank }: { blank?: boolean }) {
       onClick={handleCreateNewResumeTemplate}
     >
       <Plus className="mr-2 h-4 w-4" />
-      {blank ? "Create Blank Template" : "Create Resume Template"}
+      {blank ? 'Create Blank Template' : 'Create Resume Template'}
     </LoadingButton>
   );
 }

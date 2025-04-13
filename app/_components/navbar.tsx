@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,13 +8,13 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CreditCard, LogOut, Settings2, User2, UserRound } from "lucide-react";
-import Link from "next/link";
-import { SubscriptionStatusIndicator } from "@/components/subscription/subscription-status-indicator";
-import { LottieAnimatedIcon } from "./lottie-animated-icon";
-import { useUser } from "@/providers/UserProvider";
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { CreditCard, LogOut, Settings2, User2, UserRound } from 'lucide-react';
+import Link from 'next/link';
+import { SubscriptionStatusIndicator } from '@/components/subscription/subscription-status-indicator';
+import { LottieAnimatedIcon } from './lottie-animated-icon';
+import { useUser } from '@/providers/UserProvider';
 
 function AuthNav() {
   const { user } = useUser();
@@ -79,7 +79,7 @@ function AuthNav() {
         <DropdownMenuSeparator />
         <form
           action={async () => {
-            const { handleSignOut } = await import("@/actions/signout");
+            const { handleSignOut } = await import('@/actions/signout');
             await handleSignOut();
           }}
         >
@@ -96,15 +96,7 @@ function AuthNav() {
   );
 }
 
-function NavItem({
-  link,
-  title,
-  icon,
-}: {
-  link: string;
-  title: string;
-  icon: string;
-}) {
+function NavItem({ link, title, icon }: { link: string; title: string; icon: string }) {
   return (
     <Link className="py-2 px-3" href={link}>
       <div className="effect-link flex items-center gap-1.5 ">
@@ -123,21 +115,9 @@ export default function Navbar() {
         <div className="flex gap-x-4 items-center justify-between">
           <div className="flex gap-2 items-center text-sm font-medium navbar-hover-effect">
             <img src="/logo.svg" className="h-[35px]" />
-            <NavItem
-              icon="/iconly/Inbox.json"
-              title="Resume Templates"
-              link="/templates"
-            />
-            <NavItem
-              icon="/iconly/Shoppingbag.json"
-              title="Jobs"
-              link="/jobs"
-            />
-            <NavItem
-              icon="/iconly/emaildocument1.json"
-              title="Resumes"
-              link="/resumes"
-            />
+            <NavItem icon="/iconly/Inbox.json" title="Resume Templates" link="/templates" />
+            <NavItem icon="/iconly/Shoppingbag.json" title="Jobs" link="/jobs" />
+            <NavItem icon="/iconly/emaildocument1.json" title="Resumes" link="/resumes" />
           </div>
           <div className="flex items-center gap-4">
             <SubscriptionStatusIndicator />

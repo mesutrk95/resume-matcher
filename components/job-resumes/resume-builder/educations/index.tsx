@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { ResumeContent, ResumeEducation } from "@/types/resume";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { useState } from 'react';
+import type { ResumeContent, ResumeEducation } from '@/types/resume';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Plus } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -12,22 +12,20 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { AddEducationForm } from "./add-education-form";
-import { EducationList } from "./education-list";
-import { randomNDigits } from "@/lib/utils";
-import { ResumeBuilderCard } from "../resume-builder-card";
-import { useResumeBuilder } from "../context/useResumeBuilder";
+} from '@dnd-kit/sortable';
+import { AddEducationForm } from './add-education-form';
+import { EducationList } from './education-list';
+import { randomNDigits } from '@/lib/utils';
+import { ResumeBuilderCard } from '../resume-builder-card';
+import { useResumeBuilder } from '../context/useResumeBuilder';
 
-type EducationsSectionProps = {};
-
-export function EducationsSection({}: EducationsSectionProps) {
+export function EducationsSection() {
   const { resume, saveResume } = useResumeBuilder();
   const [addingEducation, setAddingEducation] = useState(false);
 
@@ -36,7 +34,7 @@ export function EducationsSection({}: EducationsSectionProps) {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleAddEducation = () => {
@@ -73,8 +71,8 @@ export function EducationsSection({}: EducationsSectionProps) {
   const handleUpdateEducation = (updatedEducation: ResumeEducation) => {
     saveResume({
       ...resume,
-      educations: resume.educations.map((education) =>
-        education.id === updatedEducation.id ? updatedEducation : education
+      educations: resume.educations.map(education =>
+        education.id === updatedEducation.id ? updatedEducation : education,
       ),
     });
   };
@@ -82,9 +80,7 @@ export function EducationsSection({}: EducationsSectionProps) {
   const handleDeleteEducation = (educationId: string) => {
     saveResume({
       ...resume,
-      educations: resume.educations.filter(
-        (education) => education.id !== educationId
-      ),
+      educations: resume.educations.filter(education => education.id !== educationId),
     });
   };
 
@@ -92,12 +88,8 @@ export function EducationsSection({}: EducationsSectionProps) {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = resume.educations.findIndex(
-        (education) => education.id === active.id
-      );
-      const newIndex = resume.educations.findIndex(
-        (education) => education.id === over.id
-      );
+      const oldIndex = resume.educations.findIndex(education => education.id === active.id);
+      const newIndex = resume.educations.findIndex(education => education.id === over.id);
       saveResume({
         ...resume,
         educations: arrayMove(resume.educations, oldIndex, newIndex),
@@ -113,18 +105,11 @@ export function EducationsSection({}: EducationsSectionProps) {
       addButtonText="Add Education"
     >
       {addingEducation && (
-        <AddEducationForm
-          onSave={handleSaveNewEducation}
-          onCancel={handleCancelAddEducation}
-        />
+        <AddEducationForm onSave={handleSaveNewEducation} onCancel={handleCancelAddEducation} />
       )}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
-          items={resume.educations.map((education) => education.id)}
+          items={resume.educations.map(education => education.id)}
           strategy={verticalListSortingStrategy}
         >
           <EducationList

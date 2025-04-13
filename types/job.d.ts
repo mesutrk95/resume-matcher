@@ -1,9 +1,5 @@
-import { z } from "zod";
-import {
-  jobKeywordTypeSchema,
-  jobKeywordSchema,
-  jobAnalyzeResultSchema,
-} from "@/schemas/job";
+import { z } from 'zod';
+import { jobKeywordTypeSchema, jobKeywordSchema, jobAnalyzeResultSchema } from '@/schemas/job';
 
 // Infer types from Zod schemas
 type JobKeywordType = z.infer<typeof jobKeywordTypeSchema>; // "hard" | "soft" | "none"

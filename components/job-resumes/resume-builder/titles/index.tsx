@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { ResumeContent, ResumeTargetTitle } from "@/types/resume";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { useState } from 'react';
+import type { ResumeContent, ResumeTargetTitle } from '@/types/resume';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Plus } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -12,22 +12,20 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { AddTitleForm } from "./add-title-form";
-import { TitleList } from "./title-list";
-import { randomNDigits } from "@/lib/utils";
-import { ResumeBuilderCard } from "../resume-builder-card";
-import { useResumeBuilder } from "../context/useResumeBuilder";
+} from '@dnd-kit/sortable';
+import { AddTitleForm } from './add-title-form';
+import { TitleList } from './title-list';
+import { randomNDigits } from '@/lib/utils';
+import { ResumeBuilderCard } from '../resume-builder-card';
+import { useResumeBuilder } from '../context/useResumeBuilder';
 
-type TitlesSectionProps = {};
-
-export function TitlesSection({}: TitlesSectionProps) {
+export function TitlesSection() {
   const { resume, saveResume } = useResumeBuilder();
   const [addingTitle, setAddingTitle] = useState(false);
   const titles = resume.titles;
@@ -36,7 +34,7 @@ export function TitlesSection({}: TitlesSectionProps) {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleAddTitle = () => {
@@ -61,16 +59,14 @@ export function TitlesSection({}: TitlesSectionProps) {
   const handleUpdateTitle = (updatedTitle: ResumeTargetTitle) => {
     saveResume({
       ...resume,
-      titles: titles.map((title) =>
-        title.id === updatedTitle.id ? updatedTitle : title
-      ),
+      titles: titles.map(title => (title.id === updatedTitle.id ? updatedTitle : title)),
     });
   };
 
   const handleDeleteTitle = (titleId: string) => {
     saveResume({
       ...resume,
-      titles: titles.filter((title) => title.id !== titleId),
+      titles: titles.filter(title => title.id !== titleId),
     });
   };
 
@@ -78,8 +74,8 @@ export function TitlesSection({}: TitlesSectionProps) {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = titles.findIndex((title) => title.id === active.id);
-      const newIndex = titles.findIndex((title) => title.id === over.id);
+      const oldIndex = titles.findIndex(title => title.id === active.id);
+      const newIndex = titles.findIndex(title => title.id === over.id);
 
       saveResume({
         ...resume,
@@ -95,27 +91,14 @@ export function TitlesSection({}: TitlesSectionProps) {
       title="Target Titles"
       addButtonText="Add Title"
     >
-      {addingTitle && (
-        <AddTitleForm
-          onSave={handleSaveNewTitle}
-          onCancel={handleCancelAddTitle}
-        />
-      )}
+      {addingTitle && <AddTitleForm onSave={handleSaveNewTitle} onCancel={handleCancelAddTitle} />}
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
-          items={titles.map((title) => title.id)}
+          items={titles.map(title => title.id)}
           strategy={verticalListSortingStrategy}
         >
-          <TitleList
-            titles={titles}
-            onUpdate={handleUpdateTitle}
-            onDelete={handleDeleteTitle}
-          />
+          <TitleList titles={titles} onUpdate={handleUpdateTitle} onDelete={handleDeleteTitle} />
         </SortableContext>
       </DndContext>
     </ResumeBuilderCard>

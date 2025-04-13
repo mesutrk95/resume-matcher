@@ -1,42 +1,42 @@
-"use client";
+'use client';
 
-import { CardWrapper } from "@/components/shared/card-wrapper";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
-import { z } from "zod";
-import { loginSchema } from "@/schemas";
-import { Button } from "@/components/ui/button";
-import { useTransition } from "react";
-import { login } from "@/actions/login";
-import { FormInput } from "@/components/shared/form-input";
-import { toast } from "sonner";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { CardWrapper } from '@/components/shared/card-wrapper';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form } from '@/components/ui/form';
+import { z } from 'zod';
+import { loginSchema } from '@/schemas';
+import { Button } from '@/components/ui/button';
+import { useTransition } from 'react';
+import { login } from '@/actions/login';
+import { FormInput } from '@/components/shared/form-input';
+import { toast } from 'sonner';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export const LoginForm = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
-  const handleSubmit = form.handleSubmit((values) => {
+  const handleSubmit = form.handleSubmit(values => {
     startTransition(() => {
       login(values)
-        .then((data) => {
+        .then(data => {
           if (!data) return;
           if (!data.success) {
             return toast.error(data.error.message);
           }
-          return router.push("/two-factor");
+          return router.push('/two-factor');
         })
-        .catch(() => toast.error("Something went wrong."));
+        .catch(() => toast.error('Something went wrong.'));
     });
   });
 

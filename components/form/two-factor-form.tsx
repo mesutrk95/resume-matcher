@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { CardWrapper } from "@/components/shared/card-wrapper";
-import { loginSchema, twoFactorSchema } from "@/schemas";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Form } from "@/components/ui/form";
-import { FormInput } from "@/components/shared/form-input";
-import { Button } from "@/components/ui/button";
-import { useTransition } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { resendTwoFactor, twoFactor } from "@/actions/two-factor";
-import { toast } from "sonner";
+import { CardWrapper } from '@/components/shared/card-wrapper';
+import { loginSchema, twoFactorSchema } from '@/schemas';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Form } from '@/components/ui/form';
+import { FormInput } from '@/components/shared/form-input';
+import { Button } from '@/components/ui/button';
+import { useTransition } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { resendTwoFactor, twoFactor } from '@/actions/two-factor';
+import { toast } from 'sonner';
 
 type TwoFactorFormProps = {
   payload: z.infer<typeof loginSchema>;
@@ -21,13 +21,13 @@ export const TwoFactorForm = ({ payload }: TwoFactorFormProps) => {
   const form = useForm<z.infer<typeof twoFactorSchema>>({
     resolver: zodResolver(twoFactorSchema),
     defaultValues: {
-      code: "",
+      code: '',
     },
   });
 
-  const handleSubmit = form.handleSubmit((values) => {
+  const handleSubmit = form.handleSubmit(values => {
     startTransition(() => {
-      twoFactor(values, payload).then((data) => {
+      twoFactor(values, payload).then(data => {
         if (!data) return;
         if (!data.success) {
           return toast.error(data.error.message);
@@ -38,7 +38,7 @@ export const TwoFactorForm = ({ payload }: TwoFactorFormProps) => {
 
   const handleResend = () => {
     startTransition(() => {
-      resendTwoFactor(payload.email).then((data) => {
+      resendTwoFactor(payload.email).then(data => {
         if (data.success) {
           return toast.success(data.message);
         }

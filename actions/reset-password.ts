@@ -1,11 +1,11 @@
-"use server";
+'use server';
 
-import { z } from "zod";
-import { resetPasswordSchema } from "@/schemas";
-import { getUserByEmail } from "@/services/user";
-import { generateResetPasswordToken } from "@/services/reset-password-token";
-import { sendResetPasswordEmail } from "@/services/mail";
-import { response } from "@/lib/utils";
+import { z } from 'zod';
+import { resetPasswordSchema } from '@/schemas';
+import { getUserByEmail } from '@/services/user';
+import { generateResetPasswordToken } from '@/services/reset-password-token';
+import { sendResetPasswordEmail } from '@/services/mail';
+import { response } from '@/lib/utils';
 
 export const resetPassword = async (payload: z.infer<typeof resetPasswordSchema>) => {
   // Check if user input is not valid.
@@ -15,7 +15,7 @@ export const resetPassword = async (payload: z.infer<typeof resetPasswordSchema>
       success: false,
       error: {
         code: 422,
-        message: "Invalid fields.",
+        message: 'Invalid fields.',
       },
     });
   }
@@ -29,7 +29,7 @@ export const resetPassword = async (payload: z.infer<typeof resetPasswordSchema>
       success: false,
       error: {
         code: 401,
-        message: "Email address does not exist.",
+        message: 'Email address does not exist.',
       },
     });
   }
@@ -40,7 +40,7 @@ export const resetPassword = async (payload: z.infer<typeof resetPasswordSchema>
       success: false,
       error: {
         code: 401,
-        message: "Your email address is not verified yet. Please check your email.",
+        message: 'Your email address is not verified yet. Please check your email.',
       },
     });
   }
@@ -53,6 +53,6 @@ export const resetPassword = async (payload: z.infer<typeof resetPasswordSchema>
   return response({
     success: true,
     code: 201,
-    message: "Email has been sent. Please check to your email.",
+    message: 'Email has been sent. Please check to your email.',
   });
 };

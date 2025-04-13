@@ -1,4 +1,4 @@
-import { Content } from "@google/generative-ai";
+import { Content } from '@google/generative-ai';
 
 export interface ContentWithMeta extends Content {
   id: string;

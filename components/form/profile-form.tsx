@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { profileSchema } from "@/schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Form } from "@/components/ui/form";
-import { FormInput } from "@/components/shared/form-input";
-import { Button } from "@/components/ui/button";
-import { profile } from "@/actions/profile";
-import { toast } from "sonner";
-import { ExtendedUser } from "@/types/next-auth";
-import { FormToggle } from "@/components/shared/form-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UserRound } from "lucide-react";
+import { profileSchema } from '@/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Form } from '@/components/ui/form';
+import { FormInput } from '@/components/shared/form-input';
+import { Button } from '@/components/ui/button';
+import { profile } from '@/actions/profile';
+import { toast } from 'sonner';
+import { ExtendedUser } from '@/types/next-auth';
+import { FormToggle } from '@/components/shared/form-toggle';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { UserRound } from 'lucide-react';
 
 type ProfileFormProps = {
   user: ExtendedUser;
@@ -23,19 +23,20 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
-    mode: "onChange",
+    mode: 'onChange',
     values: {
       name: user.name || undefined,
       email: user.email || undefined,
       password: undefined,
       newPassword: undefined,
       isTwoFactorEnabled: user.isTwoFactorEnabled || undefined,
+      marketingEmails: user.marketingEmails || false,
     },
   });
 
-  const handleSubmit = form.handleSubmit((values) => {
+  const handleSubmit = form.handleSubmit(values => {
     startTransition(() => {
-      profile(values).then((data) => {
+      profile(values).then(data => {
         if (data.success) {
           form.reset();
           return toast.success(data.message);
@@ -49,7 +50,7 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
     <>
       <div className="col-span-2 col-start-2 flex justify-center">
         <Avatar className="w-64 h-64">
-          <AvatarImage src={user.image ?? ""} />
+          <AvatarImage src={user.image ?? ''} />
           <AvatarFallback>
             <UserRound size={128} />
           </AvatarFallback>
@@ -103,6 +104,13 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
                     description="Protect your account with additional security by enabling two-factor authentication for login. You will be required to enter both your credentials and an authentication code to login."
                     isPending={isPending}
                   /> */}
+                  <FormToggle
+                    control={form.control}
+                    name="marketingEmails"
+                    label="Marketing Emails"
+                    description="Receive updates, tips, and promotional emails about our services from Minova."
+                    isPending={isPending}
+                  />
                 </>
               )}
             </div>

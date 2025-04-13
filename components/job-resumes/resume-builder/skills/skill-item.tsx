@@ -1,12 +1,12 @@
 // components/job-resumes/resume-builder/skills/skill-item.tsx
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { ResumeSkillItem } from "@/types/resume";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { X } from "lucide-react";
+import { useState } from 'react';
+import type { ResumeSkillItem } from '@/types/resume';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { X } from 'lucide-react';
 
 type SkillItemProps = {
   skill: ResumeSkillItem;
@@ -35,7 +35,7 @@ export function SkillItem({
   } = useSortable({
     id: skill.id,
     data: {
-      type: "skill",
+      type: 'skill',
       id: skill.id,
       categoryId: categoryId,
     },
@@ -60,12 +60,8 @@ export function SkillItem({
       {...listeners}
       className={`
         inline-flex items-center gap-2 px-3 py-1 rounded-full border relative
-        ${isCurrentlyDragging ? "opacity-50 ring-2 ring-primary shadow-md" : ""}
-        ${
-          skill.enabled
-            ? "bg-primary/5 border-primary/20"
-            : "bg-muted border-muted-foreground/20"
-        }
+        ${isCurrentlyDragging ? 'opacity-50 ring-2 ring-primary shadow-md' : ''}
+        ${skill.enabled ? 'bg-primary/5 border-primary/20' : 'bg-muted border-muted-foreground/20'}
         cursor-grab hover:border-primary/40 transition-colors
       `}
       onMouseEnter={() => setIsHovered(true)}
@@ -75,18 +71,16 @@ export function SkillItem({
         id={`skill-${skill.id}`}
         checked={skill.enabled}
         onCheckedChange={handleToggleEnabled}
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       />
-      <span
-        className={`text-xs ${!skill.enabled ? "text-muted-foreground" : ""}`}
-      >
+      <span className={`text-xs ${!skill.enabled ? 'text-muted-foreground' : ''}`}>
         {skill.content}
       </span>
 
       {/* Delete button - absolute positioned to not affect layout */}
       {isHovered && !isCurrentlyDragging && (
         <button
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             e.preventDefault();
             onDelete();

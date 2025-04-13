@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { ResumeProfessionalSummary } from "@/types/resume";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { useState } from 'react';
+import type { ResumeProfessionalSummary } from '@/types/resume';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Edit, GripVertical, Save, Trash2, X } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 type SummaryItemProps = {
   summary: ResumeProfessionalSummary;
@@ -16,8 +16,9 @@ type SummaryItemProps = {
 };
 
 export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: summary.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: summary.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -77,17 +78,13 @@ export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
           {isEditing ? (
             <Textarea
               value={editForm.content}
-              onChange={(e) => setEditForm({ content: e.target.value })}
+              onChange={e => setEditForm({ content: e.target.value })}
               placeholder="Professional summary"
               className="mb-2"
               rows={3}
             />
           ) : (
-            <p
-              className={`text-sm ${
-                !summary.enabled ? "text-muted-foreground" : ""
-              }`}
-            >
+            <p className={`text-sm ${!summary.enabled ? 'text-muted-foreground' : ''}`}>
               {summary.content}
             </p>
           )}
@@ -108,11 +105,7 @@ export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
               <Button variant="outline" size="sm" onClick={handleEdit}>
                 <Edit className="h-4 w-4" />
               </Button>
-              <Button
-                variant="outline-destructive"
-                size="sm"
-                onClick={() => onDelete(summary.id)}
-              >
+              <Button variant="outline-destructive" size="sm" onClick={() => onDelete(summary.id)}>
                 <Trash2 className="h-4 w-4" />
               </Button>
             </>

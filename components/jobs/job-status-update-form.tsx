@@ -1,16 +1,10 @@
-"use client";
+'use client';
 
-import { Job, JobStatus } from "@prisma/client";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { updateJobStatus } from "@/actions/job";
-import { useTransition } from "react";
-import { toast } from "sonner";
+import { Job, JobStatus } from '@prisma/client';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { updateJobStatus } from '@/actions/job';
+import { useTransition } from 'react';
+import { toast } from 'sonner';
 
 export const JobStatusUpdateForm = ({ job }: { job: Job }) => {
   const [isPending, startTransition] = useTransition();
@@ -18,9 +12,9 @@ export const JobStatusUpdateForm = ({ job }: { job: Job }) => {
     startTransition(async () => {
       try {
         await updateJobStatus(job.id, value);
-        toast.success("Job status udpated.");
+        toast.success('Job status udpated.');
       } catch (error) {
-        toast.error("Failed to update job status.");
+        toast.error('Failed to update job status.');
       }
     });
   };
@@ -35,11 +29,9 @@ export const JobStatusUpdateForm = ({ job }: { job: Job }) => {
         <SelectValue placeholder="Select status" />
       </SelectTrigger>
       <SelectContent>
-        {Object.values(JobStatus).map((status) => (
+        {Object.values(JobStatus).map(status => (
           <SelectItem key={status} value={status}>
-            <span className="capitalize">
-              {status?.replaceAll("_", " ").toLowerCase()}
-            </span>
+            <span className="capitalize">{status?.replaceAll('_', ' ').toLowerCase()}</span>
           </SelectItem>
         ))}
       </SelectContent>

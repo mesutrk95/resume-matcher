@@ -1,8 +1,8 @@
-import { db } from "@/lib/db";
-import { currentUser } from "@/lib/auth";
-import { JobResumesDataTable } from "@/components/job-resumes/resumes-data-table";
-import { Job, JobResume, Prisma } from "@prisma/client";
-import { Metadata } from "next";
+import { db } from '@/lib/db';
+import { currentUser } from '@/lib/auth';
+import { JobResumesDataTable } from '@/components/job-resumes/resumes-data-table';
+import { Job, JobResume, Prisma } from '@prisma/client';
+import { Metadata } from 'next';
 
 interface ResumesPageProps {
   searchParams: {
@@ -13,23 +13,21 @@ interface ResumesPageProps {
 }
 
 export const metadata: Metadata = {
-  title: "Resumes List",
-  description: "List of all resumes.",
+  title: 'Resumes List',
+  description: 'List of all resumes.',
 };
 
 export default async function ResumesPage({ searchParams }: ResumesPageProps) {
   const user = await currentUser();
   const page = Number(searchParams.page) || 1;
   const pageSize = Number(searchParams.pageSize) || 10;
-  const search = searchParams.search || "";
+  const search = searchParams.search || '';
   const skip = (page - 1) * pageSize;
 
   // Prepare search filter
   const searchFilter = search
     ? {
-        OR: [
-          { name: { contains: search, mode: Prisma.QueryMode.insensitive } },
-        ],
+        OR: [{ name: { contains: search, mode: Prisma.QueryMode.insensitive } }],
       }
     : {};
 
@@ -52,7 +50,7 @@ export default async function ResumesPage({ searchParams }: ResumesPageProps) {
       },
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
     skip,
     take: pageSize,
@@ -70,9 +68,7 @@ export default async function ResumesPage({ searchParams }: ResumesPageProps) {
     <div className="space-y-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Your Resumes</h1>
-        <p className="text-muted-foreground mt-2">
-          Manage your resumes and applications
-        </p>
+        <p className="text-muted-foreground mt-2">Manage your resumes and applications</p>
       </div>
       <JobResumesDataTable
         data={jobResumes}

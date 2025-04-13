@@ -66,13 +66,10 @@ export const profileSchema = z
         .max(24, 'Maximum length of Name is 24 characters.'),
     ),
     email: z.optional(z.string().email()),
-    password: z.optional(
-      z.string().min(6, 'Password must be at least 6 characters.'),
-    ),
-    newPassword: z.optional(
-      z.string().min(6, 'New Password must be at least 6 characters.'),
-    ),
+    password: z.optional(z.string().min(6, 'Password must be at least 6 characters.')),
+    newPassword: z.optional(z.string().min(6, 'New Password must be at least 6 characters.')),
     isTwoFactorEnabled: z.optional(z.boolean()),
+    marketingEmails: z.optional(z.boolean()),
   })
   .refine(
     data => {

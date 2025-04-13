@@ -1,9 +1,9 @@
-import { notFound } from "next/navigation";
-import { db } from "@/lib/db";
-import { currentUser } from "@/lib/auth";
-import { ResumeContent } from "@/types/resume";
-import { Metadata } from "next";
-import { ResumeBuilderPage } from "./resume-builder-page";
+import { notFound } from 'next/navigation';
+import { db } from '@/lib/db';
+import { currentUser } from '@/lib/auth';
+import { ResumeContent } from '@/types/resume';
+import { Metadata } from 'next';
+import { ResumeBuilderPage } from './resume-builder-page';
 
 interface EditResumePageProps {
   params: {
@@ -12,8 +12,8 @@ interface EditResumePageProps {
 }
 
 export const metadata: Metadata = {
-  title: "Build Resume for job",
-  description: "Build your resume based on job description.",
+  title: 'Build Resume for job',
+  description: 'Build your resume based on job description.',
 };
 
 export default async function EditResumePage({ params }: EditResumePageProps) {

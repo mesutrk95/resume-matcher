@@ -1,12 +1,12 @@
-import { JobForm } from "@/components/jobs/job-form";
-import { LoginForm } from "@/components/form/login-form";
-import { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { JobForm } from '@/components/jobs/job-form';
+import { LoginForm } from '@/components/form/login-form';
+import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: "Create New Job",
+  title: 'Create New Job',
 };
 
-export default async function CreateJobPage( ) { 
+export default async function CreateJobPage() {
   return <JobForm />;
 }

@@ -15,8 +15,7 @@ import { BillingPageClient } from '@/components/subscription/billing-client';
 
 export const metadata: Metadata = {
   title: 'Subscription Management',
-  description:
-    'Manage your subscription, payment methods, and billing information',
+  description: 'Manage your subscription, payment methods, and billing information',
 };
 
 export default async function BillingPage({
@@ -42,24 +41,20 @@ export default async function BillingPage({
   }
 
   // Fetch all data in parallel
-  const [
-    subscriptionResponse,
-    pricingResponse,
-    paymentHistoryResponse,
-    isTrialEligible,
-  ] = await Promise.all([
-    getUserSubscription().catch(() => null),
-    getSubscriptionPrices().catch(() => ({
-      success: false,
-      prices: {},
-      product: null,
-    })),
-    getPaymentHistory().catch(() => ({
-      payments: [],
-      error: 'Failed to load payment history',
-    })),
-    checkTrialEligibility().catch(() => false),
-  ]);
+  const [subscriptionResponse, pricingResponse, paymentHistoryResponse, isTrialEligible] =
+    await Promise.all([
+      getUserSubscription().catch(() => null),
+      getSubscriptionPrices().catch(() => ({
+        success: false,
+        prices: {},
+        product: null,
+      })),
+      getPaymentHistory().catch(() => ({
+        payments: [],
+        error: 'Failed to load payment history',
+      })),
+      checkTrialEligibility().catch(() => false),
+    ]);
 
   // Prepare data for client components
   const subscription = subscriptionResponse;
@@ -81,9 +76,7 @@ export default async function BillingPage({
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">
-          Subscription Management
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight mb-2">Subscription Management</h1>
         <p className="text-muted-foreground">
           Manage your subscription, payment methods, and billing information
         </p>
@@ -98,29 +91,18 @@ export default async function BillingPage({
       )}
 
       {/* Client wrapper for handling toasts and tab state */}
-      <BillingPageClient
-        showSuccessToast={showSuccessToast}
-        showCanceledToast={showCanceledToast}
-      >
+      <BillingPageClient showSuccessToast={showSuccessToast} showCanceledToast={showCanceledToast}>
         <Tabs defaultValue={defaultTab} className="mt-8">
           <TabsList className="mb-6 border-b w-full" variant={'bottomline'}>
             {subscription && (
-              <TabsTrigger
-                id="current-tab"
-                value="current"
-                variant={'bottomline'}
-              >
+              <TabsTrigger id="current-tab" value="current" variant={'bottomline'}>
                 Current Subscription
               </TabsTrigger>
             )}
             <TabsTrigger id="plans-tab" value="plans" variant={'bottomline'}>
               Subscription Plans
             </TabsTrigger>
-            <TabsTrigger
-              id="payments-tab"
-              value="payments"
-              variant={'bottomline'}
-            >
+            <TabsTrigger id="payments-tab" value="payments" variant={'bottomline'}>
               Payment History
             </TabsTrigger>
           </TabsList>

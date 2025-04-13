@@ -6,23 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Subscription, SubscriptionStatus } from '@prisma/client';
 import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '../ui/card';
-import {
-  Check,
-  CheckCircle,
-  CreditCard,
-  Car,
-  Shield,
-  Star,
-  Zap,
-} from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
+import { Check, CheckCircle, CreditCard, Car, Shield, Star, Zap } from 'lucide-react';
 import { Badge } from '../ui/badge';
 
 // Features offered by the subscription
@@ -103,9 +88,7 @@ export function SubscriptionPlans({
   const handleSubscribe = async (interval: SubscriptionInterval) => {
     setIsLoading(true);
     try {
-      const { createSubscription } = await import(
-        '@/actions/subscription/session'
-      );
+      const { createSubscription } = await import('@/actions/subscription/session');
       const response = await createSubscription(interval);
 
       if (response.success && response.url) {
@@ -178,21 +161,14 @@ export function SubscriptionPlans({
     <div className="w-full">
       {isTrialEligible && (
         <div className="mb-6 p-3 bg-green-100 border border-green-300 rounded-md text-center">
-          <p className="font-bold text-green-800">
-            You&apos;re eligible for a FREE 3-day trial!
-          </p>
-          <p className="text-sm text-green-700">
-            No charge until your trial ends. Cancel anytime.
-          </p>
+          <p className="font-bold text-green-800">You&apos;re eligible for a FREE 3-day trial!</p>
+          <p className="text-sm text-green-700">No charge until your trial ends. Cancel anytime.</p>
         </div>
       )}
       <div className="mx-auto mb-10 max-w-md text-center">
-        <h2 className="text-3xl font-bold">
-          {productInfo?.name || 'Resume Matcher Pro'}
-        </h2>
+        <h2 className="text-3xl font-bold">{productInfo?.name || 'Resume Matcher Pro'}</h2>
         <p className="text-muted-foreground mt-2">
-          {productInfo?.description ||
-            'Boost your job search success with our premium tools'}
+          {productInfo?.description || 'Boost your job search success with our premium tools'}
         </p>
       </div>
 
@@ -205,11 +181,7 @@ export function SubscriptionPlans({
         >
           <TabsList className="grid grid-cols-5 w-full">
             {intervals.map(i => (
-              <TabsTrigger
-                key={i.value}
-                value={i.value}
-                className="text-xs sm:text-sm"
-              >
+              <TabsTrigger key={i.value} value={i.value} className="text-xs sm:text-sm">
                 {i.label}
               </TabsTrigger>
             ))}
@@ -224,35 +196,27 @@ export function SubscriptionPlans({
             <CardTitle className="flex items-center justify-between">
               <span>{productInfo?.name || 'Resume Matcher Pro'}</span>
               {calculateDiscount(interval) > 0 && (
-                <Badge
-                  variant="default"
-                  className="bg-green-500 hover:bg-green-600"
-                >
+                <Badge variant="default" className="bg-green-500 hover:bg-green-600">
                   Save {calculateDiscount(interval)}%
                 </Badge>
               )}
             </CardTitle>
             <CardDescription>
-              {productInfo?.description ||
-                'Full access to all premium features'}
+              {productInfo?.description || 'Full access to all premium features'}
             </CardDescription>
           </CardHeader>
 
           <CardContent className="pt-6">
             <div className="mb-6 flex items-end">
               <>
-                <span className="text-4xl font-bold">
-                  {formatPrice(PRICES[interval])}
-                </span>
+                <span className="text-4xl font-bold">{formatPrice(PRICES[interval])}</span>
                 <span className="text-muted-foreground ml-2 mb-1">
                   /{interval.replace('ly', '')}
                 </span>
               </>
               {isTrialEligible && (
                 <div className="ml-auto border border-green-200 bg-green-50 rounded px-2 py-1">
-                  <span className="text-xs text-green-700">
-                    3-day free trial
-                  </span>
+                  <span className="text-xs text-green-700">3-day free trial</span>
                 </div>
               )}
             </div>
@@ -265,9 +229,7 @@ export function SubscriptionPlans({
                   </div>
                   <div>
                     <p className="font-medium">{feature.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {feature.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{feature.description}</p>
                   </div>
                 </div>
               ))}
@@ -290,8 +252,8 @@ export function SubscriptionPlans({
                 {isLoading
                   ? 'Processing...'
                   : isTrialEligible
-                  ? 'Start Free Trial'
-                  : 'Subscribe Now'}
+                    ? 'Start Free Trial'
+                    : 'Subscribe Now'}
               </Button>
             )}
             <p className="w-full text-center text-xs text-muted-foreground mt-2">

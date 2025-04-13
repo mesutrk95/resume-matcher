@@ -1,30 +1,30 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Card } from "@/components/ui/card"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Card } from '@/components/ui/card';
 
 type AddSummaryFormProps = {
-  onSave: (content: string) => void
-  onCancel: () => void
-}
+  onSave: (content: string) => void;
+  onCancel: () => void;
+};
 
 export function AddSummaryForm({ onSave, onCancel }: AddSummaryFormProps) {
-  const [content, setContent] = useState("")
+  const [content, setContent] = useState('');
 
   const handleSubmit = () => {
     if (content.trim()) {
-      onSave(content)
+      onSave(content);
     }
-  }
+  };
 
   return (
     <Card className="mb-4 p-4">
       <h4 className="font-medium mb-2">New Professional Summary</h4>
       <Textarea
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={e => setContent(e.target.value)}
         placeholder="Enter professional summary"
         className="mb-3"
         rows={3}
@@ -38,6 +38,5 @@ export function AddSummaryForm({ onSave, onCancel }: AddSummaryFormProps) {
         </Button>
       </div>
     </Card>
-  )
+  );
 }
-

@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { ResumeProject } from "@/types/resume";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { format } from "date-fns";
-import { YearMonthPicker } from "@/components/ui/year-month-picker";
-import { useResumeBuilder } from "../context/useResumeBuilder";
-import { MatchPercentageIndicator } from "../match-percentage-indicator";
+import { useState } from 'react';
+import type { ResumeProject } from '@/types/resume';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Edit, GripVertical, Save, Trash2, X } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { format } from 'date-fns';
+import { YearMonthPicker } from '@/components/ui/year-month-picker';
+import { useResumeBuilder } from '../context/useResumeBuilder';
+import { MatchPercentageIndicator } from '../match-percentage-indicator';
 
 type ProjectItemProps = {
   project: ResumeProject;
@@ -22,8 +22,9 @@ type ProjectItemProps = {
 
 export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
   const { resumeAnalyzeResults } = useResumeBuilder();
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: project.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: project.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -37,11 +38,9 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
     link: project.link,
   });
 
-  const [startDate, setStartDate] = useState<string | undefined>(
-    project.startDate
-  );
+  const [startDate, setStartDate] = useState<string | undefined>(project.startDate);
   const [endDate, setEndDate] = useState<string | undefined>(project.endDate);
-  const [isPresent, setIsPresent] = useState(project.endDate === "Present");
+  const [isPresent, setIsPresent] = useState(project.endDate === 'Present');
 
   const handleEdit = () => {
     setEditForm({
@@ -51,7 +50,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
     });
     setStartDate(project.startDate);
     setEndDate(project.endDate);
-    setIsPresent(project.endDate === "Present");
+    setIsPresent(project.endDate === 'Present');
     setIsEditing(true);
   };
 
@@ -62,7 +61,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
       content: editForm.content,
       link: editForm.link,
       startDate,
-      endDate: isPresent ? "Present" : endDate,
+      endDate: isPresent ? 'Present' : endDate,
     });
     setIsEditing(false);
   };
@@ -109,35 +108,25 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
           {isEditing ? (
             <div className="space-y-3">
               <div>
-                <label className="text-sm font-medium mb-1 block">
-                  Project Name
-                </label>
+                <label className="text-sm font-medium mb-1 block">Project Name</label>
                 <Input
                   value={editForm.name}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({ ...prev, name: e.target.value }))
-                  }
+                  onChange={e => setEditForm(prev => ({ ...prev, name: e.target.value }))}
                   placeholder="Project name"
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-1 block">
-                  Project Link
-                </label>
+                <label className="text-sm font-medium mb-1 block">Project Link</label>
                 <Input
                   value={editForm.link}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({ ...prev, link: e.target.value }))
-                  }
+                  onChange={e => setEditForm(prev => ({ ...prev, link: e.target.value }))}
                   placeholder="Project link"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium mb-1 block">
-                    Start Date
-                  </label>
+                  <label className="text-sm font-medium mb-1 block">Start Date</label>
 
                   <YearMonthPicker
                     date={startDate}
@@ -146,9 +135,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-1 block">
-                    End Date
-                  </label>
+                  <label className="text-sm font-medium mb-1 block">End Date</label>
                   {isPresent ? (
                     <Input value="Present" disabled className="bg-muted" />
                   ) : (
@@ -165,10 +152,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
                       onCheckedChange={handlePresentToggle}
                       className="mr-2"
                     />
-                    <label
-                      htmlFor={`isPresent-${project.id}`}
-                      className="text-sm"
-                    >
+                    <label htmlFor={`isPresent-${project.id}`} className="text-sm">
                       Current project
                     </label>
                   </div>
@@ -176,13 +160,11 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
               </div>
 
               <div>
-                <label className="text-sm font-medium mb-1 block">
-                  Description
-                </label>
+                <label className="text-sm font-medium mb-1 block">Description</label>
                 <Textarea
                   value={editForm.content}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({
+                  onChange={e =>
+                    setEditForm(prev => ({
                       ...prev,
                       content: e.target.value,
                     }))
@@ -194,24 +176,14 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
             </div>
           ) : (
             <div>
-              <h3
-                className={`font-medium ${
-                  !project.enabled ? "text-muted-foreground" : ""
-                }`}
-              >
+              <h3 className={`font-medium ${!project.enabled ? 'text-muted-foreground' : ''}`}>
                 {project.name}
               </h3>
               <div className="text-sm text-muted-foreground  ">
                 {project.startDate} - {project.endDate}
               </div>
-              <div className="text-sm text-muted-foreground  ">
-                {project.link}
-              </div>
-              <p
-                className={`text-sm mt-2 ${
-                  !project.enabled ? "text-muted-foreground" : ""
-                }`}
-              >
+              <div className="text-sm text-muted-foreground  ">{project.link}</div>
+              <p className={`text-sm mt-2 ${!project.enabled ? 'text-muted-foreground' : ''}`}>
                 {project.content}
               </p>
               {score && (
@@ -222,10 +194,8 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
                           />
                         </div> */}
                   <div className="flex flex-wrap gap-1 mt-2">
-                    <MatchPercentageIndicator
-                      value={(score?.score || 0) * 100}
-                    />
-                    {score?.matched_keywords?.map((k) => (
+                    <MatchPercentageIndicator value={(score?.score || 0) * 100} />
+                    {score?.matched_keywords?.map(k => (
                       <span
                         key={k}
                         className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs"
@@ -255,11 +225,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
               <Button variant="outline" size="sm" onClick={handleEdit}>
                 <Edit className="h-4 w-4" />
               </Button>
-              <Button
-                variant="outline-destructive"
-                size="sm"
-                onClick={() => onDelete(project.id)}
-              >
+              <Button variant="outline-destructive" size="sm" onClick={() => onDelete(project.id)}>
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>

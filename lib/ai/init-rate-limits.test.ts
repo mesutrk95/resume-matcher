@@ -73,9 +73,7 @@ describe('Rate Limits Initialization', () => {
           requestsPerDay: 1000,
         },
       });
-      expect(Logger.info).toHaveBeenCalledWith(
-        'Initialized rate limits for client Test Client',
-      );
+      expect(Logger.info).toHaveBeenCalledWith('Initialized rate limits for client Test Client');
     });
 
     it('should create rate limits with custom values when provided', async () => {
@@ -146,12 +144,9 @@ describe('Rate Limits Initialization', () => {
       await initializeRateLimits(mockClient);
 
       // Verify
-      expect(Logger.error).toHaveBeenCalledWith(
-        'Error initializing rate limits',
-        {
-          error,
-        },
-      );
+      expect(Logger.error).toHaveBeenCalledWith('Error initializing rate limits', {
+        error,
+      });
       expect(db.aIRateLimit.create).not.toHaveBeenCalled();
     });
   });
@@ -195,9 +190,7 @@ describe('Rate Limits Initialization', () => {
           requestsPerDay: 1000,
         },
       });
-      expect(Logger.info).toHaveBeenCalledWith(
-        'Updated rate limits for client test-client-id',
-      );
+      expect(Logger.info).toHaveBeenCalledWith('Updated rate limits for client test-client-id');
     });
 
     it('should update multiple rate limit values when provided', async () => {
@@ -269,9 +262,7 @@ describe('Rate Limits Initialization', () => {
       };
 
       // Execute & Verify
-      await expect(
-        updateRateLimits('test-client-id', updateOptions),
-      ).rejects.toThrow(error);
+      await expect(updateRateLimits('test-client-id', updateOptions)).rejects.toThrow(error);
       expect(Logger.error).toHaveBeenCalledWith('Error updating rate limits', {
         error,
       });

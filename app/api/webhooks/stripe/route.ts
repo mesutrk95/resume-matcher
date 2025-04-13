@@ -21,11 +21,7 @@ export async function POST(req: Request) {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET!,
-    );
+    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!);
   } catch (error: any) {
     console.error(`Webhook signature verification failed: ${error.message}`);
     return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
@@ -45,13 +41,10 @@ export async function POST(req: Request) {
               ? session.subscription
               : session.subscription.id;
 
-          const subscription = await stripe.subscriptions.retrieve(
-            subscriptionId,
-          );
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
           // Get user ID from metadata
-          const userId =
-            subscription.metadata.userId || session.metadata?.userId;
+          const userId = subscription.metadata.userId || session.metadata?.userId;
 
           if (userId) {
             await updateSubscriptionInDatabase(
@@ -90,9 +83,7 @@ export async function POST(req: Request) {
               ? invoice.subscription
               : invoice.subscription.id;
 
-          const subscription = await stripe.subscriptions.retrieve(
-            subscriptionId,
-          );
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
           const userId = subscription.metadata.userId;
 
@@ -119,9 +110,7 @@ export async function POST(req: Request) {
               ? invoice.subscription
               : invoice.subscription.id;
 
-          const subscription = await stripe.subscriptions.retrieve(
-            subscriptionId,
-          );
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
           const userId = subscription.metadata.userId;
 
           if (userId) {
@@ -154,8 +143,7 @@ export async function POST(req: Request) {
 
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription;
-        const previousAttributes = event.data
-          .previous_attributes as Partial<Stripe.Subscription>;
+        const previousAttributes = event.data.previous_attributes as Partial<Stripe.Subscription>;
         const userId = subscription.metadata.userId;
 
         if (userId) {
@@ -203,9 +191,7 @@ export async function POST(req: Request) {
             // In a real application, you would use a CRON job or a task queue
 
             // For demo purposes, we'll just log it
-            console.log(
-              `Should send win-back email to ${user.email} in 7 days`,
-            );
+            console.log(`Should send win-back email to ${user.email} in 7 days`);
           }
         }
         break;

@@ -57,10 +57,7 @@ describe('AIRateLimitService', () => {
       });
 
       // Mock checkTimeframeLimit to return false (not exceeded)
-      const checkTimeframeLimitSpy = vi.spyOn(
-        service as any,
-        'checkTimeframeLimit',
-      );
+      const checkTimeframeLimitSpy = vi.spyOn(service as any, 'checkTimeframeLimit');
       checkTimeframeLimitSpy.mockResolvedValue(false);
 
       // Execute
@@ -85,15 +82,10 @@ describe('AIRateLimitService', () => {
       });
 
       // Mock checkTimeframeLimit to return true for minute (exceeded)
-      const checkTimeframeLimitSpy = vi.spyOn(
-        service as any,
-        'checkTimeframeLimit',
-      );
-      checkTimeframeLimitSpy.mockImplementation(
-        (userId, clientId, timeframe) => {
-          return Promise.resolve(timeframe === 'minute');
-        },
-      );
+      const checkTimeframeLimitSpy = vi.spyOn(service as any, 'checkTimeframeLimit');
+      checkTimeframeLimitSpy.mockImplementation((userId, clientId, timeframe) => {
+        return Promise.resolve(timeframe === 'minute');
+      });
 
       // Execute
       const result = await service.checkRateLimit('user123', 'client123');
@@ -120,15 +112,10 @@ describe('AIRateLimitService', () => {
       });
 
       // Mock checkTimeframeLimit to return true for hour (exceeded)
-      const checkTimeframeLimitSpy = vi.spyOn(
-        service as any,
-        'checkTimeframeLimit',
-      );
-      checkTimeframeLimitSpy.mockImplementation(
-        (userId, clientId, timeframe) => {
-          return Promise.resolve(timeframe === 'hour');
-        },
-      );
+      const checkTimeframeLimitSpy = vi.spyOn(service as any, 'checkTimeframeLimit');
+      checkTimeframeLimitSpy.mockImplementation((userId, clientId, timeframe) => {
+        return Promise.resolve(timeframe === 'hour');
+      });
 
       // Execute
       const result = await service.checkRateLimit('user123', 'client123');
@@ -155,18 +142,13 @@ describe('AIRateLimitService', () => {
       });
 
       // Mock checkTimeframeLimit to return true for day (exceeded)
-      const checkTimeframeLimitSpy = vi.spyOn(
-        service as any,
-        'checkTimeframeLimit',
-      );
-      checkTimeframeLimitSpy.mockImplementation(
-        (userId, clientId, timeframe) => {
-          if (timeframe === 'minute') return Promise.resolve(false);
-          if (timeframe === 'hour') return Promise.resolve(false);
-          if (timeframe === 'day') return Promise.resolve(true);
-          return Promise.resolve(false);
-        },
-      );
+      const checkTimeframeLimitSpy = vi.spyOn(service as any, 'checkTimeframeLimit');
+      checkTimeframeLimitSpy.mockImplementation((userId, clientId, timeframe) => {
+        if (timeframe === 'minute') return Promise.resolve(false);
+        if (timeframe === 'hour') return Promise.resolve(false);
+        if (timeframe === 'day') return Promise.resolve(true);
+        return Promise.resolve(false);
+      });
 
       // Execute
       const result = await service.checkRateLimit('user123', 'client123');
@@ -184,10 +166,7 @@ describe('AIRateLimitService', () => {
       vi.mocked(db.aIRateLimit.findUnique).mockResolvedValue(null);
 
       // Mock checkTimeframeLimit to return false (not exceeded)
-      const checkTimeframeLimitSpy = vi.spyOn(
-        service as any,
-        'checkTimeframeLimit',
-      );
+      const checkTimeframeLimitSpy = vi.spyOn(service as any, 'checkTimeframeLimit');
       checkTimeframeLimitSpy.mockResolvedValue(false);
 
       // Execute
@@ -197,24 +176,9 @@ describe('AIRateLimitService', () => {
       expect(result).toEqual({ allowed: true });
       expect(checkTimeframeLimitSpy).toHaveBeenCalledTimes(3);
       // Verify default limits were used
-      expect(checkTimeframeLimitSpy).toHaveBeenCalledWith(
-        'user123',
-        'client123',
-        'minute',
-        5,
-      );
-      expect(checkTimeframeLimitSpy).toHaveBeenCalledWith(
-        'user123',
-        'client123',
-        'hour',
-        100,
-      );
-      expect(checkTimeframeLimitSpy).toHaveBeenCalledWith(
-        'user123',
-        'client123',
-        'day',
-        1000,
-      );
+      expect(checkTimeframeLimitSpy).toHaveBeenCalledWith('user123', 'client123', 'minute', 5);
+      expect(checkTimeframeLimitSpy).toHaveBeenCalledWith('user123', 'client123', 'hour', 100);
+      expect(checkTimeframeLimitSpy).toHaveBeenCalledWith('user123', 'client123', 'day', 1000);
     });
 
     it('should allow requests when an error occurs and log the error', async () => {
@@ -227,10 +191,9 @@ describe('AIRateLimitService', () => {
 
       // Verify
       expect(result).toEqual({ allowed: true });
-      expect(Logger.error).toHaveBeenCalledWith(
-        'Error checking rate limit for user user123',
-        { error },
-      );
+      expect(Logger.error).toHaveBeenCalledWith('Error checking rate limit for user user123', {
+        error,
+      });
     });
   });
 
@@ -257,9 +220,7 @@ describe('AIRateLimitService', () => {
         requestCount: 5,
       };
 
-      vi.mocked(db.aIRateLimitUsage.findUnique).mockResolvedValue(
-        existingRecord,
-      );
+      vi.mocked(db.aIRateLimitUsage.findUnique).mockResolvedValue(existingRecord);
 
       // Execute
       await service.recordRequest('user123', 'client123');
@@ -360,18 +321,12 @@ describe('AIRateLimitService', () => {
       const hourAgo = new Date(now.getTime() - 60 * 60 * 1000);
       const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-      const getUsageInTimeframeSpy = vi.spyOn(
-        service as any,
-        'getUsageInTimeframe',
-      );
+      const getUsageInTimeframeSpy = vi.spyOn(service as any, 'getUsageInTimeframe');
       getUsageInTimeframeSpy.mockImplementation((...args: any[]) => {
         const startTime = args[2] as Date;
-        if (startTime.getTime() === minuteAgo.getTime())
-          return Promise.resolve(3);
-        if (startTime.getTime() === hourAgo.getTime())
-          return Promise.resolve(25);
-        if (startTime.getTime() === dayAgo.getTime())
-          return Promise.resolve(150);
+        if (startTime.getTime() === minuteAgo.getTime()) return Promise.resolve(3);
+        if (startTime.getTime() === hourAgo.getTime()) return Promise.resolve(25);
+        if (startTime.getTime() === dayAgo.getTime()) return Promise.resolve(150);
         return Promise.resolve(0);
       });
 
@@ -397,24 +352,9 @@ describe('AIRateLimitService', () => {
       });
 
       expect(getUsageInTimeframeSpy).toHaveBeenCalledTimes(3);
-      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith(
-        'user123',
-        'client123',
-        minuteAgo,
-        now,
-      );
-      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith(
-        'user123',
-        'client123',
-        hourAgo,
-        now,
-      );
-      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith(
-        'user123',
-        'client123',
-        dayAgo,
-        now,
-      );
+      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith('user123', 'client123', minuteAgo, now);
+      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith('user123', 'client123', hourAgo, now);
+      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith('user123', 'client123', dayAgo, now);
 
       vi.useRealTimers();
     });
@@ -423,10 +363,7 @@ describe('AIRateLimitService', () => {
   describe('checkTimeframeLimit', () => {
     it('should return true when usage exceeds limit', async () => {
       // Setup
-      const getUsageInTimeframeSpy = vi.spyOn(
-        service as any,
-        'getUsageInTimeframe',
-      );
+      const getUsageInTimeframeSpy = vi.spyOn(service as any, 'getUsageInTimeframe');
       getUsageInTimeframeSpy.mockResolvedValue(15); // Usage is 15
 
       // Execute
@@ -444,10 +381,7 @@ describe('AIRateLimitService', () => {
 
     it('should return false when usage does not exceed limit', async () => {
       // Setup
-      const getUsageInTimeframeSpy = vi.spyOn(
-        service as any,
-        'getUsageInTimeframe',
-      );
+      const getUsageInTimeframeSpy = vi.spyOn(service as any, 'getUsageInTimeframe');
       getUsageInTimeframeSpy.mockResolvedValue(5); // Usage is 5
 
       // Execute
@@ -469,28 +403,15 @@ describe('AIRateLimitService', () => {
       vi.useFakeTimers();
       vi.setSystemTime(now);
 
-      const getUsageInTimeframeSpy = vi.spyOn(
-        service as any,
-        'getUsageInTimeframe',
-      );
+      const getUsageInTimeframeSpy = vi.spyOn(service as any, 'getUsageInTimeframe');
       getUsageInTimeframeSpy.mockResolvedValue(5);
 
       // Execute
-      await (service as any).checkTimeframeLimit(
-        'user123',
-        'client123',
-        'minute',
-        10,
-      );
+      await (service as any).checkTimeframeLimit('user123', 'client123', 'minute', 10);
 
       // Verify
       const minuteAgo = new Date(now.getTime() - 60 * 1000);
-      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith(
-        'user123',
-        'client123',
-        minuteAgo,
-        now,
-      );
+      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith('user123', 'client123', minuteAgo, now);
 
       vi.useRealTimers();
     });
@@ -501,28 +422,15 @@ describe('AIRateLimitService', () => {
       vi.useFakeTimers();
       vi.setSystemTime(now);
 
-      const getUsageInTimeframeSpy = vi.spyOn(
-        service as any,
-        'getUsageInTimeframe',
-      );
+      const getUsageInTimeframeSpy = vi.spyOn(service as any, 'getUsageInTimeframe');
       getUsageInTimeframeSpy.mockResolvedValue(50);
 
       // Execute
-      await (service as any).checkTimeframeLimit(
-        'user123',
-        'client123',
-        'hour',
-        100,
-      );
+      await (service as any).checkTimeframeLimit('user123', 'client123', 'hour', 100);
 
       // Verify
       const hourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith(
-        'user123',
-        'client123',
-        hourAgo,
-        now,
-      );
+      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith('user123', 'client123', hourAgo, now);
 
       vi.useRealTimers();
     });
@@ -533,28 +441,15 @@ describe('AIRateLimitService', () => {
       vi.useFakeTimers();
       vi.setSystemTime(now);
 
-      const getUsageInTimeframeSpy = vi.spyOn(
-        service as any,
-        'getUsageInTimeframe',
-      );
+      const getUsageInTimeframeSpy = vi.spyOn(service as any, 'getUsageInTimeframe');
       getUsageInTimeframeSpy.mockResolvedValue(500);
 
       // Execute
-      await (service as any).checkTimeframeLimit(
-        'user123',
-        'client123',
-        'day',
-        1000,
-      );
+      await (service as any).checkTimeframeLimit('user123', 'client123', 'day', 1000);
 
       // Verify
       const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith(
-        'user123',
-        'client123',
-        dayAgo,
-        now,
-      );
+      expect(getUsageInTimeframeSpy).toHaveBeenCalledWith('user123', 'client123', dayAgo, now);
 
       vi.useRealTimers();
     });

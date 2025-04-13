@@ -4,10 +4,7 @@ import { db } from '@/lib/db';
 import { getStripeServer } from '@/lib/stripe';
 import { SubscriptionStatus } from '@prisma/client';
 import { mapStripeStatusToDBStatus } from './constants';
-import {
-  BadRequestException,
-  InternalServerErrorException,
-} from '@/lib/exceptions';
+import { BadRequestException, InternalServerErrorException } from '@/lib/exceptions';
 
 export const cleanupAbandonedSubscriptions = async (userId: string) => {
   if (!userId) {
@@ -46,12 +43,8 @@ export const cleanupAbandonedSubscriptions = async (userId: string) => {
         data: {
           subscriptionId: latestSubscription.id,
           status: mapStripeStatusToDBStatus(latestSubscription.status),
-          currentPeriodStart: new Date(
-            latestSubscription.current_period_start * 1000,
-          ),
-          currentPeriodEnd: new Date(
-            latestSubscription.current_period_end * 1000,
-          ),
+          currentPeriodStart: new Date(latestSubscription.current_period_start * 1000),
+          currentPeriodEnd: new Date(latestSubscription.current_period_end * 1000),
           cancelAtPeriodEnd: latestSubscription.cancel_at_period_end,
         },
       });

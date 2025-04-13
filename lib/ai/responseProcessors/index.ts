@@ -9,9 +9,5 @@ import { TextResponseProcessor } from '@/lib/ai/responseProcessors/textResponseP
 
 export function createStandardResponseProcessors() {
   // Return processors in order of precedence (more specific first)
-  return [
-    new JsonResponseProcessor(),
-    new HtmlResponseProcessor(),
-    new TextResponseProcessor(),
-  ];
+  return [new JsonResponseProcessor(), new HtmlResponseProcessor(), new TextResponseProcessor()];
 }

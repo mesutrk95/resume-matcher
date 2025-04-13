@@ -78,9 +78,7 @@ async function exampleWithResponseValidator() {
       if (!result.success) {
         return {
           valid: false,
-          errors: result.error.errors.map(
-            err => `${err.path.join('.')}: ${err.message}`,
-          ),
+          errors: result.error.errors.map(err => `${err.path.join('.')}: ${err.message}`),
         };
       }
       return { valid: true };

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 
 type AddItemFormProps = {
   onSave: (description: string) => void;
@@ -10,7 +10,7 @@ type AddItemFormProps = {
 };
 
 export function AddItemForm({ onSave, onCancel }: AddItemFormProps) {
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState('');
 
   const handleSubmit = () => {
     onSave(description);
@@ -21,7 +21,7 @@ export function AddItemForm({ onSave, onCancel }: AddItemFormProps) {
       <h4 className="font-medium mb-2">New Experience</h4>
       <Textarea
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        onChange={e => setDescription(e.target.value)}
         placeholder="Description"
         className="mb-3"
       />

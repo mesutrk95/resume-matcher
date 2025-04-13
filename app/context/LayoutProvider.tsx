@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from 'react';
 
 const LayoutContext = createContext({
   isFluid: false,
@@ -11,9 +11,7 @@ export function LayoutProvider({ children }: { children: React.ReactNode }) {
   const [isFluid, setIsFluid] = useState(false);
 
   return (
-    <LayoutContext.Provider value={{ isFluid, setIsFluid }}>
-      {children}
-    </LayoutContext.Provider>
+    <LayoutContext.Provider value={{ isFluid, setIsFluid }}>{children}</LayoutContext.Provider>
   );
 }
 

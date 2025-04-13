@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   closestCenter,
   DndContext,
@@ -6,32 +6,29 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { Plus } from "lucide-react";
-import { ExperienceList } from "./experience-list";
-import { Experience, ResumeContent } from "@/types/resume";
-import { useState } from "react";
-import { AddExperienceForm } from "./add-experience-form";
-import { randomNDigits } from "@/lib/utils";
-import { ResumeBuilderCard } from "../resume-builder-card";
-import { useResumeBuilder } from "../context/useResumeBuilder";
+} from '@dnd-kit/sortable';
+import { ExperienceList } from './experience-list';
+import { Experience } from '@/types/resume';
+import { useState } from 'react';
+import { AddExperienceForm } from './add-experience-form';
+import { randomNDigits } from '@/lib/utils';
+import { ResumeBuilderCard } from '../resume-builder-card';
+import { useResumeBuilder } from '../context/useResumeBuilder';
 
-type ExperiencesSectionProps = {};
-
-export function ExperiencesSection({}: ExperiencesSectionProps) {
+export function ExperiencesSection() {
   const { resume, saveResume } = useResumeBuilder();
   // DnD sensors
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const [addingExperience, setAddingExperience] = useState(false);
@@ -40,9 +37,7 @@ export function ExperiencesSection({}: ExperiencesSectionProps) {
     setAddingExperience(true);
   };
 
-  const handleSaveNewExperience = (
-    newExperience: Omit<Experience, "id" | "items" | "enabled">
-  ) => {
+  const handleSaveNewExperience = (newExperience: Omit<Experience, 'id' | 'items' | 'enabled'>) => {
     const newExp = {
       id: `exp_${randomNDigits()}`,
       ...newExperience,
@@ -66,12 +61,8 @@ export function ExperiencesSection({}: ExperiencesSectionProps) {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = resume.experiences.findIndex(
-        (exp) => exp.id === active.id
-      );
-      const newIndex = resume.experiences.findIndex(
-        (exp) => exp.id === over.id
-      );
+      const oldIndex = resume.experiences.findIndex(exp => exp.id === active.id);
+      const newIndex = resume.experiences.findIndex(exp => exp.id === over.id);
       const experiences = arrayMove(resume.experiences, oldIndex, newIndex);
       saveResume({
         ...resume,
@@ -83,8 +74,8 @@ export function ExperiencesSection({}: ExperiencesSectionProps) {
   const handleUpdateExperience = (updatedExperience: Experience) => {
     saveResume({
       ...resume,
-      experiences: resume.experiences.map((exp) =>
-        exp.id === updatedExperience.id ? updatedExperience : exp
+      experiences: resume.experiences.map(exp =>
+        exp.id === updatedExperience.id ? updatedExperience : exp,
       ),
     });
   };
@@ -92,7 +83,7 @@ export function ExperiencesSection({}: ExperiencesSectionProps) {
   const handleDeleteExperience = (experienceId: string) => {
     saveResume({
       ...resume,
-      experiences: resume.experiences.filter((exp) => exp.id !== experienceId),
+      experiences: resume.experiences.filter(exp => exp.id !== experienceId),
     });
   };
 
@@ -105,10 +96,7 @@ export function ExperiencesSection({}: ExperiencesSectionProps) {
     >
       {/* Add Experience Form */}
       {addingExperience && (
-        <AddExperienceForm
-          onSave={handleSaveNewExperience}
-          onCancel={handleCancelAddExperience}
-        />
+        <AddExperienceForm onSave={handleSaveNewExperience} onCancel={handleCancelAddExperience} />
       )}
 
       {/* Experiences List with Drag and Drop */}
@@ -118,7 +106,7 @@ export function ExperiencesSection({}: ExperiencesSectionProps) {
         onDragEnd={handleDragEndExperiences}
       >
         <SortableContext
-          items={resume.experiences.map((exp) => exp.id)}
+          items={resume.experiences.map(exp => exp.id)}
           strategy={verticalListSortingStrategy}
         >
           <ExperienceList

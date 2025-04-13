@@ -1,20 +1,20 @@
-"use server";
+'use server';
 
-import { db } from "@/lib/db";
-import { jobSchema } from "@/schemas";
-import { z } from "zod";
-import { currentUser } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
-import { Job, JobStatus, Prisma } from "@prisma/client";
-import { getAIHtmlResponse, getAIJsonResponse } from "@/lib/ai";
-import { JobAnalyzeResult } from "@/types/job";
+import { db } from '@/lib/db';
+import { jobSchema } from '@/schemas';
+import { z } from 'zod';
+import { currentUser } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
+import { Job, JobStatus, Prisma } from '@prisma/client';
+import { getAIHtmlResponse, getAIJsonResponse } from '@/lib/ai';
+import { JobAnalyzeResult } from '@/types/job';
 
-import cheerio from "cheerio";
-import axios from "axios";
-import moment from "moment";
-import { downloadImageAsBase64 } from "@/lib/utils";
-import { PaginationParams } from "@/types/pagination-params";
-import { withErrorHandling } from "@/lib/with-error-handling";
+import cheerio from 'cheerio';
+import axios from 'axios';
+import moment from 'moment';
+import { downloadImageAsBase64 } from '@/lib/utils';
+import { PaginationParams } from '@/types/pagination-params';
+import { withErrorHandling } from '@/lib/with-error-handling';
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {
@@ -32,21 +32,21 @@ export const createJob = withErrorHandling(
       },
     });
 
-    revalidatePath("/jobs");
+    revalidatePath('/jobs');
     return job;
-  }
+  },
 );
 
 export const getJobs = async (
   params: PaginationParams & {
     statuses?: JobStatus[] | undefined;
     search?: string;
-  }
+  },
 ) => {
   const user = await currentUser();
   const page = Number(params.page) || 1;
   const pageSize = Number(params.pageSize) || 10;
-  const search = params.search || "";
+  const search = params.search || '';
   // const statuses = params.status ? params.status.split(",") : undefined;
   const skip = (page - 1) * pageSize;
 
@@ -73,9 +73,7 @@ export const getJobs = async (
 
   // Prepare status filter
   const statusFilter =
-    params.statuses && params.statuses.length > 0
-      ? { status: { in: params.statuses } }
-      : {};
+    params.statuses && params.statuses.length > 0 ? { status: { in: params.statuses } } : {};
 
   // Get jobs with filters, pagination and sorting
   const jobs = await db.job.findMany({
@@ -95,7 +93,7 @@ export const getJobs = async (
       url: true,
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
     skip,
     take: pageSize,
@@ -137,11 +135,11 @@ export const updateJob = withErrorHandling(
       },
     });
 
-    revalidatePath("/jobs");
+    revalidatePath('/jobs');
     revalidatePath(`/jobs/${values.id}`);
 
     return updatedJob;
-  }
+  },
 );
 
 export const updateJobStatus = async (jobId: string, newStatus: JobStatus) => {
@@ -157,40 +155,36 @@ export const updateJobStatus = async (jobId: string, newStatus: JobStatus) => {
     },
   });
 
-  revalidatePath("/jobs");
+  revalidatePath('/jobs');
   revalidatePath(`/jobs/${jobId}`);
 
   return true;
 };
 
-export const deleteJob = withErrorHandling(
-  async (id: string): Promise<boolean> => {
-    const user = await currentUser();
-    const job = await db.job.findUnique({
-      where: {
-        id,
-        userId: user?.id,
-      },
-    });
+export const deleteJob = withErrorHandling(async (id: string): Promise<boolean> => {
+  const user = await currentUser();
+  const job = await db.job.findUnique({
+    where: {
+      id,
+      userId: user?.id,
+    },
+  });
 
-    if (!job) {
-      throw new Error(
-        "Job not found or you don't have permission to delete it"
-      );
-    }
-
-    // Delete the job
-    await db.job.delete({
-      where: {
-        id,
-      },
-    });
-
-    revalidatePath("/jobs");
-
-    return true;
+  if (!job) {
+    throw new Error("Job not found or you don't have permission to delete it");
   }
-);
+
+  // Delete the job
+  await db.job.delete({
+    where: {
+      id,
+    },
+  });
+
+  revalidatePath('/jobs');
+
+  return true;
+});
 
 const analyzeJobKeywords = async (job: Job) => {
   const prompt = `Analyze the following job description and extract important keywords. 
@@ -198,12 +192,12 @@ Categorize each keyword as either "hard", "soft", or "none" based on whether it 
 Additionally, assign a level of importance to each keyword on a scale from 0 to 1, where 1 is highly important and 0 is minimally important. 
 Provide the results in a structured JSON format as an array of objects, where each object contains the fields "keyword", "skill", and "level". 
 Ensure the response is in a valid JSON format with no extra text, without any additional formatting or explanations. catch whatever is important for ATSs, Here is the job:`;
-  return getAIJsonResponse(prompt, [job.description || ""]);
+  return getAIJsonResponse(prompt, [job.description || '']);
 };
 
 const analyzeJobSummary = async (job: Job) => {
   const prompt = `Analyze the following job description concise it, keep all important keywords as it is, you can use bullets for items and <b> <br /> tags, Ensure the response is in a valid HTML format with no extra text:`;
-  return getAIHtmlResponse(prompt, [job.description || ""]);
+  return getAIHtmlResponse(prompt, [job.description || '']);
 };
 
 export const analyzeJobByAI = async (jobId: string) => {
@@ -217,7 +211,7 @@ export const analyzeJobByAI = async (jobId: string) => {
   });
 
   if (!job) {
-    throw new Error("Job not found");
+    throw new Error('Job not found');
   }
 
   // await db.job.update({
@@ -232,13 +226,10 @@ export const analyzeJobByAI = async (jobId: string) => {
   //   },
   // });
 
-  const results = await Promise.all([
-    analyzeJobKeywords(job),
-    analyzeJobSummary(job),
-  ]);
+  const results = await Promise.all([analyzeJobKeywords(job), analyzeJobSummary(job)]);
 
-  if (results.some((r) => r.error)) {
-    throw new Error("Failed to analyze job");
+  if (results.some(r => r.error)) {
+    throw new Error('Failed to analyze job');
   }
   const keywords = results[0].result;
   const summary = results[1].result;
@@ -255,7 +246,7 @@ export const analyzeJobByAI = async (jobId: string) => {
 
   revalidatePath(`/jobs/${jobId}`);
 
-  return { status: "done", analyzeResults };
+  return { status: 'done', analyzeResults };
 };
 
 export const extractJobDescriptionFromUrl = async (url: string) => {
@@ -265,22 +256,15 @@ export const extractJobDescriptionFromUrl = async (url: string) => {
 
   // Load the HTML into cheerio
   const $ = cheerio.load(html);
-  const logoImage = $("img[data-delayed-url*='company-logo']")
-    .first()
-    .attr("data-delayed-url");
+  const logoImage = $("img[data-delayed-url*='company-logo']").first().attr('data-delayed-url');
 
-  const cardTop = $(".top-card-layout__entity-info-container").text().trim();
-  const description = $(".description__text--rich .show-more-less-html__markup")
-    .html()
-    ?.trim();
+  const cardTop = $('.top-card-layout__entity-info-container').text().trim();
+  const description = $('.description__text--rich .show-more-less-html__markup').html()?.trim();
 
-  const jd = `Banner: ${cardTop}, Description: ${description}`.replaceAll(
-    "\n",
-    ""
-  );
+  const jd = `Banner: ${cardTop}, Description: ${description}`.replaceAll('\n', '');
 
   const prompt = `Extract the following details from the given text, with this keys "description", "companyName", "location" , "title", "postedDate".keep the description in html format and make sure postedDate is in correct date format (YYYY/MM/DD HH:mm) (now: ${moment().format(
-    "YYYY/MM/DD HH:mm"
+    'YYYY/MM/DD HH:mm',
   )}). Ensure the response is in a valid JSON format with no extra text:\n ${jd}`;
 
   let image = null;

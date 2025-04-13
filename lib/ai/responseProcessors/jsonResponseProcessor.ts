@@ -17,10 +17,7 @@ export class JsonResponseProcessor extends BaseResponseProcessor<any> {
   /**
    * Process the JSON response by parsing it
    */
-  protected async processResponse(
-    response: string,
-    request: AIRequestModel<any>,
-  ): Promise<any> {
+  protected async processResponse(response: string, request: AIRequestModel<any>): Promise<any> {
     // Clean up markdown code blocks and whitespace
     const cleanJson = response
       .replace(/```json|```/g, '')
@@ -32,16 +29,14 @@ export class JsonResponseProcessor extends BaseResponseProcessor<any> {
       return JSON.parse(cleanJson);
     } catch (parseError) {
       Logger.error('JSON parsing error in response processor', {
-        error:
-          parseError instanceof Error ? parseError.message : String(parseError),
+        error: parseError instanceof Error ? parseError.message : String(parseError),
         response: cleanJson.substring(0, 500), // Log a portion of the response
       });
 
       // If parsing fails, return a structured error
       return {
         error: 'Failed to parse JSON response',
-        message:
-          parseError instanceof Error ? parseError.message : String(parseError),
+        message: parseError instanceof Error ? parseError.message : String(parseError),
         rawResponse: cleanJson,
       };
     }

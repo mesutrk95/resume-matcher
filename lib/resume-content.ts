@@ -1,5 +1,5 @@
-import { ResumeContent } from "@/types/resume";
-import { randomNDigits } from "./utils";
+import { ResumeContent } from '@/types/resume';
+import { randomNDigits } from './utils';
 
 export function findVariation(resume: ResumeContent, varId: string) {
   for (const exp of resume.experiences) {
@@ -14,64 +14,60 @@ export function findVariation(resume: ResumeContent, varId: string) {
 export const resumeExperiencesToString = (
   resume: ResumeContent,
   withIdentifiers?: boolean,
-  onlyEnabledItems?: boolean
+  onlyEnabledItems?: boolean,
 ) => {
-  let content = "";
-  resume.experiences.forEach((exp) => {
+  let content = '';
+  resume.experiences.forEach(exp => {
     if (onlyEnabledItems && !exp.enabled) return;
-    const items = onlyEnabledItems
-      ? exp.items.filter((i) => i.enabled)
-      : exp.items;
-    items.forEach((item) => {
-      const variation = item.variations.find((v) => v.enabled);
+    const items = onlyEnabledItems ? exp.items.filter(i => i.enabled) : exp.items;
+    items.forEach(item => {
+      const variation = item.variations.find(v => v.enabled);
       if (variation?.content)
-        content += `${(withIdentifiers && `[${variation.id}]`) || ""} ${
-          variation.content
-        }\n`;
+        content += `${(withIdentifiers && `[${variation.id}]`) || ''} ${variation.content}\n`;
     });
   });
   return content;
 };
 export const resumeSkillsToString = (resume: ResumeContent) => {
   return resume.skills
-    .filter((e) => e.enabled)
-    .map((s) => s.skills.filter((s) => s.enabled))
+    .filter(e => e.enabled)
+    .map(s => s.skills.filter(s => s.enabled))
     .flat()
-    .join(", ")
-    .replace(/\u200B/g, "");
+    .join(', ')
+    .replace(/\u200B/g, '');
 };
 
 export const convertResumeObjectToString = (
   resume: ResumeContent,
   withIdentifiers?: boolean,
-  onlyEnabledItems?: boolean
+  onlyEnabledItems?: boolean,
 ) => {
-  let content = "";
+  let content = '';
 
-  const title = resume.titles.find((t) => t.enabled)?.content;
+  const title = resume.titles.find(t => t.enabled)?.content;
   if (title) {
-    content += title + "\n";
+    content += title + '\n';
   }
 
-  const summary = resume.summaries.find((t) => t.enabled)?.content;
+  const summary = resume.summaries.find(t => t.enabled)?.content;
   if (summary) {
-    content += summary + "\n";
+    content += summary + '\n';
   }
 
   content += `Experiences:\n`;
   content += resumeExperiencesToString(resume, withIdentifiers, true);
 
   content += `Projects:\n`;
-  resume.projects.forEach((prj) => {
+  resume.projects.forEach(prj => {
     if (!prj.enabled) return;
     content += `${prj?.content}\n`;
   });
 
   content += `Educations:\n`;
-  const edu = resume.educations.find((e) => e.enabled);
+  const edu = resume.educations.find(e => e.enabled);
   if (edu) {
     content += `Education\n${edu.degree} • ${edu.institution} • ${edu.content} \n`;
   }
-  content += "Skills: " + resumeSkillsToString(resume) + "\n";
+  content += 'Skills: ' + resumeSkillsToString(resume) + '\n';
   return content;
 };

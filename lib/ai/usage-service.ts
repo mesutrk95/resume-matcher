@@ -26,10 +26,7 @@ export class AIUsageService {
    * Check if a user has enough tokens for their intended request
    * and record their intent to use tokens
    */
-  async checkAndRecordIntent(
-    userId: string,
-    estimatedTokens: number,
-  ): Promise<boolean> {
+  async checkAndRecordIntent(userId: string, estimatedTokens: number): Promise<boolean> {
     // In development, always allow requests
     if (isDevelopment) {
       return true;
@@ -69,12 +66,9 @@ export class AIUsageService {
 
       // Check if the request would exceed the limit
       if (currentUsage + estimatedTokens > tokenLimit) {
-        Logger.warn(
-          `User ${userId} exceeded token limit: ${currentUsage}/${tokenLimit}`,
-          {
-            estimatedRequest: estimatedTokens,
-          },
-        );
+        Logger.warn(`User ${userId} exceeded token limit: ${currentUsage}/${tokenLimit}`, {
+          estimatedRequest: estimatedTokens,
+        });
         return false;
       }
 
@@ -89,11 +83,7 @@ export class AIUsageService {
   /**
    * Record actual token usage after a successful request
    */
-  async recordUsage(
-    userId: string,
-    promptTokens: number,
-    completionTokens: number,
-  ): Promise<void> {
+  async recordUsage(userId: string, promptTokens: number, completionTokens: number): Promise<void> {
     try {
       // Still record usage in development mode for analytics,
       // but it won't count against limits
@@ -200,10 +190,7 @@ export class AIUsageService {
   /**
    * Get user's token usage statistics
    */
-  async getUserUsageStats(
-    userId: string,
-    timeframe: UsageTimeframe = 'daily',
-  ): Promise<any> {
+  async getUserUsageStats(userId: string, timeframe: UsageTimeframe = 'daily'): Promise<any> {
     try {
       let startDate: Date;
       const now = new Date();
@@ -277,9 +264,7 @@ export class AIUsageService {
   /**
    * Get token limit based on subscription status
    */
-  private getTokenLimitForUser(
-    subscriptionStatus?: SubscriptionStatus | null,
-  ): number {
+  private getTokenLimitForUser(subscriptionStatus?: SubscriptionStatus | null): number {
     // In development, always use unlimited tokens
     if (isDevelopment) {
       return TOKEN_LIMITS.DEV;

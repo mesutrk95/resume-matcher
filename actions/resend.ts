@@ -1,10 +1,13 @@
-"use server";
+'use server';
 
-import { response } from "@/lib/utils";
-import { resendSchema } from "@/schemas";
-import { sendVerificationEmail } from "@/services/mail";
-import { generateVerificationToken, getVerificationTokenByEmail } from "@/services/verification-token";
-import { z } from "zod";
+import { response } from '@/lib/utils';
+import { resendSchema } from '@/schemas';
+import { sendVerificationEmail } from '@/services/mail';
+import {
+  generateVerificationToken,
+  getVerificationTokenByEmail,
+} from '@/services/verification-token';
+import { z } from 'zod';
 
 export const resendToken = async (payload: z.infer<typeof resendSchema>) => {
   // Check if user input is not valid.
@@ -14,7 +17,7 @@ export const resendToken = async (payload: z.infer<typeof resendSchema>) => {
       success: false,
       error: {
         code: 422,
-        message: "Invalid fields.",
+        message: 'Invalid fields.',
       },
     });
   }
@@ -28,7 +31,7 @@ export const resendToken = async (payload: z.infer<typeof resendSchema>) => {
       success: false,
       error: {
         code: 422,
-        message: "Failed to resend verification email.",
+        message: 'Failed to resend verification email.',
       },
     });
   }
@@ -41,6 +44,6 @@ export const resendToken = async (payload: z.infer<typeof resendSchema>) => {
   return response({
     success: true,
     code: 201,
-    message: "Confirmation email sent. Please check your email.",
+    message: 'Confirmation email sent. Please check your email.',
   });
-}
+};

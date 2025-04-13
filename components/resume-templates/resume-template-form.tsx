@@ -1,20 +1,16 @@
-"use client";
+'use client';
 
-import React, { useState, useTransition } from "react";
-import { Card, CardHeader, CardTitle } from "../ui/card";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { Edit, Save, X } from "lucide-react";
-import { ResumeTemplate } from "@prisma/client";
-import { updateResumeTemplate } from "@/actions/resume-template";
-import { LoadingButton } from "../ui/loading-button";
-import { runAction } from "@/app/_utils/runAction";
+import React, { useState, useTransition } from 'react';
+import { Card, CardHeader, CardTitle } from '../ui/card';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
+import { Edit, Save, X } from 'lucide-react';
+import { ResumeTemplate } from '@prisma/client';
+import { updateResumeTemplate } from '@/actions/resume-template';
+import { LoadingButton } from '../ui/loading-button';
+import { runAction } from '@/app/_utils/runAction';
 
-export const ResumeTemplateForm = ({
-  template,
-}: {
-  template: ResumeTemplate;
-}) => {
+export const ResumeTemplateForm = ({ template }: { template: ResumeTemplate }) => {
   const [editingTemplate, setEditingTemplate] = useState(false);
   const [templateForm, setTemplateForm] = useState({ ...template });
   const [isPending, startTransition] = useTransition();
@@ -48,16 +44,14 @@ export const ResumeTemplateForm = ({
           <div className="w-full space-y-2">
             <Input
               value={templateForm.name}
-              onChange={(e) =>
-                setTemplateForm((prev) => ({ ...prev, name: e.target.value }))
-              }
+              onChange={e => setTemplateForm(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Template name"
               className="font-semibold text-lg"
             />
             <Input
-              value={templateForm.description || ""}
-              onChange={(e) =>
-                setTemplateForm((prev) => ({
+              value={templateForm.description || ''}
+              onChange={e =>
+                setTemplateForm(prev => ({
                   ...prev,
                   description: e.target.value,
                 }))

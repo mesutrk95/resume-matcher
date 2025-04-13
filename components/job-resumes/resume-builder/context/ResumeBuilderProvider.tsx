@@ -1,15 +1,11 @@
-"use client";
+'use client';
 
-import {
-  ResumeAnalyzeResults,
-  ResumeContent,
-  ResumeDesign,
-} from "@/types/resume";
-import { migrateResumeContent } from "@/utils/resume-migration";
-import React, { createContext, useState } from "react";
+import { ResumeAnalyzeResults, ResumeContent, ResumeDesign } from '@/types/resume';
+import { migrateResumeContent } from '@/utils/resume-migration';
+import React, { createContext, useState } from 'react';
 
 export type IResumeTemplateEditor = {
-  scheme?: "cards" | "accordion";
+  scheme?: 'cards' | 'accordion';
 
   resume: ResumeContent;
   saveResume: (resume: ResumeContent) => void;
@@ -18,13 +14,11 @@ export type IResumeTemplateEditor = {
   saveDesign: (design: ResumeDesign) => void;
 
   resumeAnalyzeResults?: ResumeAnalyzeResults;
-  setResumeAnalyzeResults: React.Dispatch<
-    React.SetStateAction<ResumeAnalyzeResults | undefined>
-  >;
+  setResumeAnalyzeResults: React.Dispatch<React.SetStateAction<ResumeAnalyzeResults | undefined>>;
 };
 
 export const ResumeBuilderContext = createContext<IResumeTemplateEditor>({
-  scheme: "cards",
+  scheme: 'cards',
 } as IResumeTemplateEditor);
 
 export const ResumeBuilderProvider = ({
@@ -40,7 +34,7 @@ export const ResumeBuilderProvider = ({
   initialResume: ResumeContent;
   initialDesign: ResumeDesign | null;
   initialResumeAnalyzeResults?: ResumeAnalyzeResults;
-  scheme?: "cards" | "accordion";
+  scheme?: 'cards' | 'accordion';
   onUpdated?: (resume: ResumeContent) => void;
   onDesignUpdated?: (design: ResumeDesign) => void;
 }) => {

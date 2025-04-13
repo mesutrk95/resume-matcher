@@ -10,5 +10,5 @@ export const ContentPlaceholder = ({
   if (!show) {
     return children;
   }
-  return placeholder
+  return placeholder;
 };

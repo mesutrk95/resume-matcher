@@ -1,4 +1,4 @@
-import { confirmable, ConfirmDialog, createConfirmation } from "react-confirm";
+import { confirmable, ConfirmDialog, createConfirmation } from 'react-confirm';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,14 +8,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../ui/alert-dialog";
-import React from "react";
+} from '../ui/alert-dialog';
+import React from 'react';
 
 export interface Props {
   title?: string;
   description?: string;
   confirmText?: string;
-  variant?: "destructive" | "default";
+  variant?: 'destructive' | 'default';
 }
 
 const AlertConfirmDialog: ConfirmDialog<Props, boolean> = ({
@@ -23,10 +23,10 @@ const AlertConfirmDialog: ConfirmDialog<Props, boolean> = ({
   proceed,
   dismiss,
   cancel,
-  title = "Are you absolutely sure?",
-  description = "This action cannot be undone.",
-  confirmText = "Yes!",
-  variant = "destructive",
+  title = 'Are you absolutely sure?',
+  description = 'This action cannot be undone.',
+  confirmText = 'Yes!',
+  variant = 'destructive',
 }) => {
   return (
     <AlertDialog open={show} onOpenChange={dismiss}>

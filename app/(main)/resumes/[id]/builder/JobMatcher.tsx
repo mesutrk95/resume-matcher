@@ -6,10 +6,7 @@ import { Job, JobResume } from '@prisma/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useParams, useRouter } from 'next/navigation';
-import {
-  analyzeResumeItemsScores,
-  deleteJobResume,
-} from '@/actions/job-resume';
+import { analyzeResumeItemsScores, deleteJobResume } from '@/actions/job-resume';
 import { ResumePreview } from '@/components/job-resumes/resume-pdf-preview';
 import { updateResumeTemplateContent } from '@/actions/resume-template';
 import {
@@ -40,13 +37,7 @@ import { useSubscription } from '@/providers/SubscriptionProvider';
 import { ConnectJobToResume } from '@/components/job-resumes/connect-job-to-resume';
 import { ResumeHeader } from '../../../../../components/job-resumes/job-resume-builder-header';
 
-export const JobMatcher = ({
-  jobResume,
-  job,
-}: {
-  jobResume: JobResume;
-  job: Job | null;
-}) => {
+export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job | null }) => {
   const router = useRouter();
   const { isTrialingBannerEnable } = useSubscription();
   const { id: jobResumeId } = useParams();
@@ -59,10 +50,7 @@ export const JobMatcher = ({
     startAnalyzeScoresTransition(async () => {
       toast.info('Analyzing resume rates is in progress!');
       try {
-        const results = await analyzeResumeItemsScores(
-          jobResumeId as string,
-          forceRefresh,
-        );
+        const results = await analyzeResumeItemsScores(jobResumeId as string, forceRefresh);
         setResumeAnalyzeResults(results);
         console.log(results);
         toast.success('Analyze resume rates and scores are successfully done!');
@@ -179,10 +167,7 @@ export const JobMatcher = ({
                         Sync to Template
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuItem
-                      disabled={isDeleting}
-                      onClick={handleDeleteJobResume}
-                    >
+                    <DropdownMenuItem disabled={isDeleting} onClick={handleDeleteJobResume}>
                       <Trash size={14} />
                       Delete Resume
                     </DropdownMenuItem>
@@ -203,31 +188,16 @@ export const JobMatcher = ({
                   className="pt-2 sticky z-10 bg-slate-50 rounded-xl-b"
                   style={{ top: navbarHeight + 'px' }}
                 >
-                  <TabsList
-                    className="w-full shrink-0 border-b bg-background"
-                    variant={'outline'}
-                  >
-                    <TabsTrigger
-                      value="builder"
-                      variant={'outline'}
-                      className="px-5"
-                    >
+                  <TabsList className="w-full shrink-0 border-b bg-background" variant={'outline'}>
+                    <TabsTrigger value="builder" variant={'outline'} className="px-5">
                       <NotebookPen className="me-2" size={18} />
                       Resume Builder
                     </TabsTrigger>
-                    <TabsTrigger
-                      value="score"
-                      variant={'outline'}
-                      className="px-5"
-                    >
+                    <TabsTrigger value="score" variant={'outline'} className="px-5">
                       <Gauge className="me-2" size={18} />
                       Resume Score
                     </TabsTrigger>
-                    <TabsTrigger
-                      value="chat"
-                      variant={'outline'}
-                      className="px-5"
-                    >
+                    <TabsTrigger value="chat" variant={'outline'} className="px-5">
                       <BotMessageSquare className="me-2" size={18} />
                       Ask AI
                     </TabsTrigger>
@@ -259,23 +229,12 @@ export const JobMatcher = ({
                   defaultValue="preview"
                   className="flex flex-col justify-stretch h-full w-full"
                 >
-                  <TabsList
-                    className="w-full border-b bg-white shrink-0"
-                    variant={'outline'}
-                  >
-                    <TabsTrigger
-                      value="preview"
-                      variant={'outline'}
-                      className="px-5"
-                    >
+                  <TabsList className="w-full border-b bg-white shrink-0" variant={'outline'}>
+                    <TabsTrigger value="preview" variant={'outline'} className="px-5">
                       <ScanEye className="me-2" size={18} />
                       Resume Preview
                     </TabsTrigger>
-                    <TabsTrigger
-                      value="jd"
-                      variant={'outline'}
-                      className="px-5"
-                    >
+                    <TabsTrigger value="jd" variant={'outline'} className="px-5">
                       <BriefcaseBusiness className="me-2" size={18} />
                       {job ? 'Job Description' : 'Resume Job'}
                     </TabsTrigger>
@@ -286,11 +245,7 @@ export const JobMatcher = ({
                         className="shrink-0 pt-0 relative w-full h-full p-0 m-0"
                         value="preview"
                       >
-                        <ResumePreview
-                          resume={resume}
-                          design={design}
-                          jobResume={jobResume}
-                        />
+                        <ResumePreview resume={resume} design={design} jobResume={jobResume} />
                       </TabsContent>
 
                       <TabsContent className="flex-auto h-0 p-0 m-0" value="jd">
@@ -303,16 +258,12 @@ export const JobMatcher = ({
                           {!job && (
                             <div className="p-4 flex justify-center items-center ">
                               <div className="text-center py-5">
-                                <h3 className="text-lg font-bold">
-                                  Target a Job!
-                                </h3>
+                                <h3 className="text-lg font-bold">Target a Job!</h3>
                                 <p className="text-muted-foreground text-xs mb-4">
-                                  Select the job you’re targeting so we can
-                                  personalize this resume for you!
+                                  Select the job you’re targeting so we can personalize this resume
+                                  for you!
                                 </p>
-                                <ConnectJobToResume
-                                  jobResumeId={jobResume.id}
-                                />
+                                <ConnectJobToResume jobResumeId={jobResume.id} />
                               </div>
                             </div>
                           )}

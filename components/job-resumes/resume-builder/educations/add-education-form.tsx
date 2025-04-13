@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Card } from "@/components/ui/card";
-import { formatDate } from "date-fns";
-import { YearMonthPicker } from "@/components/ui/year-month-picker";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Card } from '@/components/ui/card';
+import { formatDate } from 'date-fns';
+import { YearMonthPicker } from '@/components/ui/year-month-picker';
 
 type AddEducationFormProps = {
   onSave: (education: {
@@ -21,10 +21,10 @@ type AddEducationFormProps = {
 };
 
 export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
-  const [degree, setDegree] = useState("");
-  const [content, setContent] = useState("");
-  const [location, setLocation] = useState("");
-  const [institution, setInstitution] = useState("");
+  const [degree, setDegree] = useState('');
+  const [content, setContent] = useState('');
+  const [location, setLocation] = useState('');
+  const [institution, setInstitution] = useState('');
   const [startDate, setStartDate] = useState<string | undefined>(undefined);
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [isPresent, setIsPresent] = useState(false);
@@ -37,7 +37,7 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
         location,
         institution,
         startDate: startDate,
-        endDate: isPresent ? "Present" : endDate,
+        endDate: isPresent ? 'Present' : endDate,
       });
     }
   };
@@ -57,7 +57,7 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
           <label className="text-sm font-medium mb-1 block">Degree</label>
           <Input
             value={degree}
-            onChange={(e) => setDegree(e.target.value)}
+            onChange={e => setDegree(e.target.value)}
             placeholder="Enter degree"
           />
         </div>
@@ -66,7 +66,7 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
           <label className="text-sm font-medium mb-1 block">Institution</label>
           <Input
             value={institution}
-            onChange={(e) => setInstitution(e.target.value)}
+            onChange={e => setInstitution(e.target.value)}
             placeholder="Enter institution name"
           />
         </div>
@@ -75,7 +75,7 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
           <label className="text-sm font-medium mb-1 block">Location</label>
           <Input
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={e => setLocation(e.target.value)}
             placeholder="Enter location"
           />
         </div>
@@ -94,11 +94,7 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
             {isPresent ? (
               <Input value="Present" disabled className="bg-muted" />
             ) : (
-              <YearMonthPicker
-                date={endDate}
-                setDate={setEndDate}
-                placeholder="Select end date"
-              />
+              <YearMonthPicker date={endDate} setDate={setEndDate} placeholder="Select end date" />
             )}
             <div className="flex items-center mt-2">
               <Checkbox
@@ -118,7 +114,7 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
           <label className="text-sm font-medium mb-1 block">Description</label>
           <Input
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={e => setContent(e.target.value)}
             placeholder="Enter more details"
           />
         </div>
@@ -128,11 +124,7 @@ export function AddEducationForm({ onSave, onCancel }: AddEducationFormProps) {
         <Button variant="outline" size="sm" onClick={onCancel}>
           Cancel
         </Button>
-        <Button
-          size="sm"
-          onClick={handleSubmit}
-          disabled={!degree.trim() || !startDate}
-        >
+        <Button size="sm" onClick={handleSubmit} disabled={!degree.trim() || !startDate}>
           Save
         </Button>
       </div>

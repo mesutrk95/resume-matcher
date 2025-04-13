@@ -1,41 +1,31 @@
-import resolveConfig from "tailwindcss/resolveConfig";
-import tailwindConfig from "../../tailwind.config";
+import resolveConfig from 'tailwindcss/resolveConfig';
+import tailwindConfig from '../../tailwind.config';
 
 export type DefaultColors =
-  | "slate"
-  | "gray"
-  | "zinc"
-  | "neutral"
-  | "stone"
-  | "red"
-  | "orange"
-  | "amber"
-  | "yellow"
-  | "lime"
-  | "green"
-  | "emerald"
-  | "teal"
-  | "cyan"
-  | "sky"
-  | "blue"
-  | "indigo"
-  | "violet"
-  | "purple"
-  | "fuchsia"
-  | "pink"
-  | "rose";
+  | 'slate'
+  | 'gray'
+  | 'zinc'
+  | 'neutral'
+  | 'stone'
+  | 'red'
+  | 'orange'
+  | 'amber'
+  | 'yellow'
+  | 'lime'
+  | 'green'
+  | 'emerald'
+  | 'teal'
+  | 'cyan'
+  | 'sky'
+  | 'blue'
+  | 'indigo'
+  | 'violet'
+  | 'purple'
+  | 'fuchsia'
+  | 'pink'
+  | 'rose';
 
-export type ColorIntensity =
-  | 50
-  | 100
-  | 200
-  | 300
-  | 400
-  | 500
-  | 600
-  | 700
-  | 800
-  | 900;
+export type ColorIntensity = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
 
 const fullConfig = resolveConfig(tailwindConfig);
 const colors = fullConfig.theme.colors;
@@ -46,18 +36,13 @@ const colors = fullConfig.theme.colors;
  * @param intensity - The color intensity/shade (50-900)
  * @returns The hex color value
  */
-export function getColor(
-  colorName: DefaultColors,
-  intensity: ColorIntensity
-): string {
+export function getColor(colorName: DefaultColors, intensity: ColorIntensity): string {
   if (!colors[colorName]) {
     throw new Error(`Color "${colorName}" not found in Tailwind config`);
   }
 
   if (!colors[colorName][intensity]) {
-    throw new Error(
-      `Intensity "${intensity}" not available for color "${colorName}"`
-    );
+    throw new Error(`Intensity "${intensity}" not available for color "${colorName}"`);
   }
 
   return colors[colorName][intensity];

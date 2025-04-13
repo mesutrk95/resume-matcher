@@ -1,8 +1,8 @@
-import { currentUser } from "@/lib/auth";
-import { Metadata } from "next";
+import { currentUser } from '@/lib/auth';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Home",
+  title: 'Home',
 };
 
 export default async function Home() {

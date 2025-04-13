@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { CardWrapper } from "@/components/shared/card-wrapper";
-import { Form } from "@/components/ui/form";
-import { FormInput } from "@/components/shared/form-input";
-import { useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { newPasswordSchema } from "@/schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { newPassword } from "@/actions/new-password";
-import { toast } from "sonner";
+import { CardWrapper } from '@/components/shared/card-wrapper';
+import { Form } from '@/components/ui/form';
+import { FormInput } from '@/components/shared/form-input';
+import { useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { newPasswordSchema } from '@/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { newPassword } from '@/actions/new-password';
+import { toast } from 'sonner';
 
 type NewPasswordFormProps = {
   token: string;
@@ -23,16 +23,16 @@ export const NewPasswordForm = ({ token }: NewPasswordFormProps) => {
   const form = useForm<z.infer<typeof newPasswordSchema>>({
     resolver: zodResolver(newPasswordSchema),
     defaultValues: {
-      password: "",
-      confirmPassword: "",
+      password: '',
+      confirmPassword: '',
     },
   });
 
-  const handleSubmit = form.handleSubmit((values) => {
+  const handleSubmit = form.handleSubmit(values => {
     startTransition(() => {
-      newPassword(values, token).then((data) => {
+      newPassword(values, token).then(data => {
         if (data.success) {
-          router.push("/login");
+          router.push('/login');
           return toast.success(data.message);
         }
         return toast.error(data.error.message);

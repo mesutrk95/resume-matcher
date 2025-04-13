@@ -16,9 +16,7 @@ interface SuccessPageProps {
   searchParams: { session_id?: string };
 }
 
-export default async function SubscriptionSuccessPage({
-  searchParams,
-}: SuccessPageProps) {
+export default async function SubscriptionSuccessPage({ searchParams }: SuccessPageProps) {
   const { session_id: sessionId } = searchParams;
 
   if (!sessionId) {
@@ -65,12 +63,11 @@ export default async function SubscriptionSuccessPage({
           {success ? (
             <div className="text-center space-y-2">
               <p className="text-sm text-muted-foreground">
-                Your subscription has been successfully activated! You now have
-                full access to all premium features.
+                Your subscription has been successfully activated! You now have full access to all
+                premium features.
               </p>
               <p className="text-sm text-muted-foreground">
-                You will be automatically redirected to your billing dashboard
-                in a few seconds.
+                You will be automatically redirected to your billing dashboard in a few seconds.
               </p>
               <meta httpEquiv="refresh" content="5;url=/settings/billing" />
             </div>
@@ -78,8 +75,7 @@ export default async function SubscriptionSuccessPage({
             <div className="text-center space-y-2">
               <p className="text-sm text-red-500">{error}</p>
               <p className="text-sm text-muted-foreground">
-                If you believe this is an error, please contact our support
-                team.
+                If you believe this is an error, please contact our support team.
               </p>
             </div>
           )}

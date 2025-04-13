@@ -1,22 +1,22 @@
-"use server";
+'use server';
 
-import { loginSchema, twoFactorSchema } from "@/schemas";
-import { z } from "zod";
-import { getUserByEmail } from "@/services/user";
+import { loginSchema, twoFactorSchema } from '@/schemas';
+import { z } from 'zod';
+import { getUserByEmail } from '@/services/user';
 import {
   deleteTwoFactorTokenById,
   generateTwoFactorToken,
   getTwoFactorTokenByEmail,
-} from "@/services/two-factor-token";
-import { isExpired, response } from "@/lib/utils";
-import { generateTwoFactorConfirmation } from "@/services/two-factor-confirmation";
-import { signInCredentials } from "@/actions/login";
-import { cookies } from "next/headers";
-import { sendTwoFactorEmail } from "@/services/mail";
+} from '@/services/two-factor-token';
+import { isExpired, response } from '@/lib/utils';
+import { generateTwoFactorConfirmation } from '@/services/two-factor-confirmation';
+import { signInCredentials } from '@/actions/login';
+import { cookies } from 'next/headers';
+import { sendTwoFactorEmail } from '@/services/mail';
 
 export const twoFactor = async (
   payload: z.infer<typeof twoFactorSchema>,
-  credentials: z.infer<typeof loginSchema>
+  credentials: z.infer<typeof loginSchema>,
 ) => {
   // Check if user input is not valid.
   const validatedFields = twoFactorSchema.safeParse(payload);
@@ -25,7 +25,7 @@ export const twoFactor = async (
       success: false,
       error: {
         code: 422,
-        message: "Invalid fields.",
+        message: 'Invalid fields.',
       },
     });
   }
@@ -39,7 +39,7 @@ export const twoFactor = async (
       success: false,
       error: {
         code: 401,
-        message: "Email address does not exist.",
+        message: 'Email address does not exist.',
       },
     });
   }
@@ -51,7 +51,7 @@ export const twoFactor = async (
       success: false,
       error: {
         code: 422,
-        message: "Invalid code.",
+        message: 'Invalid code.',
       },
     });
   }
@@ -63,7 +63,7 @@ export const twoFactor = async (
       success: false,
       error: {
         code: 401,
-        message: "Code has been expired. Please resend the 2FA code to your email.",
+        message: 'Code has been expired. Please resend the 2FA code to your email.',
       },
     });
   }
@@ -74,7 +74,7 @@ export const twoFactor = async (
 
   // Delete credentials-session's payload from login page.
   const cookieStore = cookies();
-  cookieStore.delete("credentials-session");
+  cookieStore.delete('credentials-session');
 
   // Then try to sign in with next-auth credentials.
   return await signInCredentials(credentials.email, credentials.password);
@@ -89,7 +89,7 @@ export const resendTwoFactor = async (email: string) => {
       success: false,
       error: {
         code: 422,
-        message: "Failed to resend two factor authentication.",
+        message: 'Failed to resend two factor authentication.',
       },
     });
   }
@@ -99,6 +99,6 @@ export const resendTwoFactor = async (email: string) => {
   return response({
     success: true,
     code: 201,
-    message: "Two factor authentication code has been sent to your email.",
+    message: 'Two factor authentication code has been sent to your email.',
   });
 };

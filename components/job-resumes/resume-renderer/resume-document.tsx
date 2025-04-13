@@ -1,15 +1,8 @@
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  Font,
-} from "@react-pdf/renderer";
-import { ResumeContent, ResumeDesign } from "@/types/resume";
+import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { ResumeContent, ResumeDesign } from '@/types/resume';
 // import { ResumeDesign } from "@/types/resume-design";
 // import { SeperateList } from "../shared/seperate-list";
-import React, { useMemo } from "react";
+import React, { useMemo } from 'react';
 // import { DEFAULT_RESUME_DESIGN } from "@/config/resume-designs";
 import {
   AwardsSection,
@@ -25,23 +18,23 @@ import {
   SkillsSection,
   SummarySection,
   TitleSection,
-} from "./sections";
-import { DEFAULT_RESUME_DESIGN } from "@/schemas/resume-design.schema";
-import { ResumeRendererProvider, useResumeRenderer } from "./provider";
+} from './sections';
+import { DEFAULT_RESUME_DESIGN } from '@/schemas/resume-design.schema';
+import { ResumeRendererProvider, useResumeRenderer } from './provider';
 
 // Register fonts (optional but recommended for professional CVs)
 Font.register({
-  family: "Open Sans",
+  family: 'Open Sans',
   fonts: [
     {
-      src: "https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-regular.ttf",
+      src: 'https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-regular.ttf',
     },
     {
-      src: "https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-600.ttf",
+      src: 'https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-600.ttf',
       fontWeight: 600,
     },
     {
-      src: "https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-700.ttf",
+      src: 'https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-700.ttf',
       fontWeight: 700,
     },
   ],
@@ -51,7 +44,7 @@ Font.register({
 const registerFonts = (design: ResumeDesign) => {
   // If the design uses a different font than what we already registered, register it here
   if (
-    design.fonts.family !== "Open Sans" &&
+    design.fonts.family !== 'Open Sans' &&
     !Font.getRegisteredFontFamilies().includes(design.fonts.family)
   ) {
     // Logic to register additional fonts if needed
@@ -71,31 +64,31 @@ const registerFonts = (design: ResumeDesign) => {
 // Helper to dynamically render sections in order
 const renderSection = (sectionName: string, resume: ResumeContent) => {
   switch (sectionName) {
-    case "contactInfo":
+    case 'contactInfo':
       return <ContactInfoSection resume={resume} />;
-    case "fullname":
+    case 'fullname':
       return <FullNameSection resume={resume} />;
-    case "title":
+    case 'title':
       return <TitleSection resume={resume} />;
-    case "summary":
+    case 'summary':
       return <SummarySection resume={resume} />;
-    case "experiences":
+    case 'experiences':
       return <ExperienceSection resume={resume} />;
-    case "educations":
+    case 'educations':
       return <EducationSection resume={resume} />;
-    case "skills":
+    case 'skills':
       return <SkillsSection resume={resume} />;
-    case "projects":
+    case 'projects':
       return <ProjectsSection resume={resume} />;
-    case "languages":
+    case 'languages':
       return <LanguagesSection resume={resume} />;
-    case "certifications":
+    case 'certifications':
       return <CertificationsSection resume={resume} />;
-    case "awards":
+    case 'awards':
       return <AwardsSection resume={resume} />;
-    case "interests":
+    case 'interests':
       return <InterestsSection resume={resume} />;
-    case "references":
+    case 'references':
       return <ReferencesSection resume={resume} />;
     default:
       return null;
@@ -112,9 +105,7 @@ export const ResumeDocument = ({
   resumeDesign?: ResumeDesign | null;
 }) => {
   return (
-    <ResumeRendererProvider
-      initialResumeDesign={resumeDesign || DEFAULT_RESUME_DESIGN}
-    >
+    <ResumeRendererProvider initialResumeDesign={resumeDesign || DEFAULT_RESUME_DESIGN}>
       <ResumeDocumentRenderer {...props} />
     </ResumeRendererProvider>
   );
@@ -151,7 +142,7 @@ const ResumeDocumentRenderer = ({
         // color: design.colors.text,
       },
       twoColumnContainer: {
-        flexDirection: "row",
+        flexDirection: 'row',
         flexGrow: 1,
       },
       header: resolveStyle(design.header),
@@ -160,8 +151,8 @@ const ResumeDocumentRenderer = ({
       fullName: resolveStyle(design.sections.fullname),
 
       pageNumber: {
-        borderBottom: "",
-        position: "absolute",
+        borderBottom: '',
+        position: 'absolute',
         bottom: design.spacing.pagePadding.bottom / 2,
         right: design.spacing.pagePadding.right,
         fontSize: 9,
@@ -171,14 +162,10 @@ const ResumeDocumentRenderer = ({
   }, [design, skipFont]);
 
   // For single column layout
-  if (design.columnLayout === "single") {
+  if (design.columnLayout === 'single') {
     return (
       <Document>
-        <Page
-          size={design.pageSize}
-          style={styles.page}
-          orientation={design.orientation}
-        >
+        <Page size={design.pageSize} style={styles.page} orientation={design.orientation}>
           {design.sectionOrder?.map((sectionName, index) => (
             <React.Fragment key={sectionName}>
               {/* style={styles.section}  */}
@@ -189,9 +176,7 @@ const ResumeDocumentRenderer = ({
           {design.enablePageNumbers && (
             <Text
               style={styles.pageNumber}
-              render={({ pageNumber, totalPages }) =>
-                `${pageNumber} / ${totalPages}`
-              }
+              render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
               fixed
             />
           )}
@@ -202,11 +187,7 @@ const ResumeDocumentRenderer = ({
 
   return (
     <Document>
-      <Page
-        size={design.pageSize}
-        style={styles.page}
-        orientation={design.orientation}
-      >
+      <Page size={design.pageSize} style={styles.page} orientation={design.orientation}>
         {(design.header?.sections?.length || 0) > 0 && (
           <View style={styles.header}>
             {design.header?.sections?.map((sectionName, index) => (
@@ -239,9 +220,7 @@ const ResumeDocumentRenderer = ({
         {design.enablePageNumbers && (
           <Text
             style={styles.pageNumber}
-            render={({ pageNumber, totalPages }) =>
-              `${pageNumber} / ${totalPages}`
-            }
+            render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
             fixed
           />
         )}

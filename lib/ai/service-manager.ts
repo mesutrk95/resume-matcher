@@ -3,11 +3,7 @@ import { AIModelClient, AIRequestModel, ResponseFormat } from './types';
 import Logger from '@/lib/logger';
 import { getCurrentRequestId } from '@/lib/request-context';
 import { AIUsageService } from './usage-service';
-import {
-  TokenLimitExceededError,
-  AIServiceError,
-  RateLimitExceededError,
-} from './errors';
+import { TokenLimitExceededError, AIServiceError, RateLimitExceededError } from './errors';
 import { AIRateLimitService } from './rate-limit-service';
 import { PromptProcessor } from './promptProcessors/base';
 import { ResponseProcessor } from './responseProcessors/base';
@@ -40,8 +36,7 @@ export class AIServiceManager {
 
     // Initialize default client but allow it to be overridden for testing
     this.defaultClient =
-      config.defaultClient ||
-      new GeminiClient(process.env.GEMINI_API_KEY || '', 'gemini-1.5-pro');
+      config.defaultClient || new GeminiClient(process.env.GEMINI_API_KEY || '', 'gemini-1.5-pro');
   }
 
   /**
@@ -84,15 +79,10 @@ export class AIServiceManager {
         const client = this.getClientForRequest(request);
         const clientId = client.getClientId();
 
-        const rateLimitCheck = await this.rateLimitService.checkRateLimit(
-          userId,
-          clientId,
-        );
+        const rateLimitCheck = await this.rateLimitService.checkRateLimit(userId, clientId);
 
         if (!rateLimitCheck.allowed) {
-          throw new RateLimitExceededError(
-            rateLimitCheck.reason || 'Rate limit exceeded',
-          );
+          throw new RateLimitExceededError(rateLimitCheck.reason || 'Rate limit exceeded');
         }
       }
     }
@@ -135,44 +125,32 @@ export class AIServiceManager {
           // Record request for rate limiting if rate limit service is provided
           if (this.rateLimitService) {
             const client = this.getClientForRequest(request);
-            await this.rateLimitService.recordRequest(
-              userId,
-              client.getClientId(),
-            );
+            await this.rateLimitService.recordRequest(userId, client.getClientId());
           }
         }
 
         // Process the response
-        const processedResponse = await this.processResponse(
-          response.content,
-          request,
-        );
+        const processedResponse = await this.processResponse(response.content, request);
 
         // Validate the response if a validator is provided
         if (request.responseValidator) {
           const validationResult = request.responseValidator(processedResponse);
           if (!validationResult.valid) {
             if (retryCount < this.maxRetries) {
-              Logger.warn(
-                `Response validation failed on attempt ${retryCount + 1}`,
-                {
-                  requestId,
-                  errors: validationResult.errors,
-                  responseExcerpt: response.content.substring(0, 100),
-                },
-              );
+              Logger.warn(`Response validation failed on attempt ${retryCount + 1}`, {
+                requestId,
+                errors: validationResult.errors,
+                responseExcerpt: response.content.substring(0, 100),
+              });
               retryCount++;
               continue;
             } else {
               // On last retry, still return the response but log the validation failure
-              Logger.error(
-                `Response validation failed after ${retryCount + 1} attempts`,
-                {
-                  requestId,
-                  errors: validationResult.errors,
-                  responseExcerpt: response.content.substring(0, 100),
-                },
-              );
+              Logger.error(`Response validation failed after ${retryCount + 1} attempts`, {
+                requestId,
+                errors: validationResult.errors,
+                responseExcerpt: response.content.substring(0, 100),
+              });
               return processedResponse;
             }
           }
@@ -198,9 +176,7 @@ export class AIServiceManager {
             await this.usageService.recordFailedAttempt(userId);
           }
           throw new AIServiceError(
-            `AI request failed after ${retryCount + 1} attempts: ${
-              lastError.message
-            }`,
+            `AI request failed after ${retryCount + 1} attempts: ${lastError.message}`,
             { cause: lastError },
           );
         }
@@ -223,9 +199,7 @@ export class AIServiceManager {
     if (request.chatHistory && request.chatHistory.length > 0) {
       // Add tokens for system instruction if present
       if (request.systemInstruction) {
-        estimatedTokens += this.defaultClient.calculateTokens(
-          request.systemInstruction,
-        );
+        estimatedTokens += this.defaultClient.calculateTokens(request.systemInstruction);
       }
 
       // Add tokens for each message in the history
@@ -290,10 +264,7 @@ export class AIServiceManager {
   /**
    * Process the response using available response processors
    */
-  private async processResponse<T>(
-    response: string,
-    request: AIRequestModel<T>,
-  ): Promise<T> {
+  private async processResponse<T>(response: string, request: AIRequestModel<T>): Promise<T> {
     // Find the first matching processor
     for (const processor of this.responseProcessors) {
       if (processor.canProcess(request)) {

@@ -1,24 +1,19 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState } from "react";
-import type { ResumeContactInfo, ResumeContent } from "@/types/resume";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Edit, Save, X } from "lucide-react";
-import { ResumeBuilderCard } from "../resume-builder-card";
-import { useResumeBuilder } from "../context/useResumeBuilder";
+import { useState } from 'react';
+import type { ResumeContactInfo } from '@/types/resume';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Edit, Save, X } from 'lucide-react';
+import { ResumeBuilderCard } from '../resume-builder-card';
+import { useResumeBuilder } from '../context/useResumeBuilder';
 
-type ContactInfoSectionProps = {};
-
-export function ContactInfoSection({}: ContactInfoSectionProps) {
+export function ContactInfoSection() {
   const { resume, saveResume } = useResumeBuilder();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<ResumeContactInfo>(
-    resume.contactInfo
-  );
+  const [formData, setFormData] = useState<ResumeContactInfo>(resume.contactInfo);
 
   const handleEdit = () => {
     setFormData(resume.contactInfo);
@@ -36,7 +31,7 @@ export function ContactInfoSection({}: ContactInfoSectionProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       [name]: value,
     }));
@@ -171,33 +166,23 @@ export function ContactInfoSection({}: ContactInfoSectionProps) {
             <p>{resume.contactInfo?.phone}</p>
           </div>
           <div>
-            <h3 className="text-xs font-medium text-muted-foreground">
-              LinkedIn
-            </h3>
+            <h3 className="text-xs font-medium text-muted-foreground">LinkedIn</h3>
             <p>{resume.contactInfo?.linkedIn}</p>
           </div>
           <div>
-            <h3 className="text-xs font-medium text-muted-foreground">
-              Twitter
-            </h3>
+            <h3 className="text-xs font-medium text-muted-foreground">Twitter</h3>
             <p>{resume.contactInfo?.twitter}</p>
           </div>
           <div>
-            <h3 className="text-xs font-medium text-muted-foreground">
-              Address
-            </h3>
+            <h3 className="text-xs font-medium text-muted-foreground">Address</h3>
             <p>{resume.contactInfo?.address}</p>
           </div>
           <div>
-            <h3 className="text-xs font-medium text-muted-foreground">
-              Country
-            </h3>
+            <h3 className="text-xs font-medium text-muted-foreground">Country</h3>
             <p>{resume.contactInfo?.country}</p>
           </div>
           <div>
-            <h3 className="text-xs font-medium text-muted-foreground">
-              Pronouns
-            </h3>
+            <h3 className="text-xs font-medium text-muted-foreground">Pronouns</h3>
             <p>{resume.contactInfo?.pronouns}</p>
           </div>
         </div>

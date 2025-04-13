@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { CardWrapper } from "@/components/shared/card-wrapper";
-import { Form } from "@/components/ui/form";
-import { FormInput } from "@/components/shared/form-input";
-import { useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { resetPasswordSchema } from "@/schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { resetPassword } from "@/actions/reset-password";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { CardWrapper } from '@/components/shared/card-wrapper';
+import { Form } from '@/components/ui/form';
+import { FormInput } from '@/components/shared/form-input';
+import { useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { resetPasswordSchema } from '@/schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { resetPassword } from '@/actions/reset-password';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 export const ResetForm = () => {
   const router = useRouter();
@@ -19,15 +19,15 @@ export const ResetForm = () => {
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      email: "",
+      email: '',
     },
   });
 
-  const handleSubmit = form.handleSubmit((values) => {
+  const handleSubmit = form.handleSubmit(values => {
     startTransition(() => {
-      resetPassword(values).then((data) => {
+      resetPassword(values).then(data => {
         if (data.success) {
-          router.push("/login");
+          router.push('/login');
           return toast.success(data.message);
         }
         return toast.error(data.error.message);

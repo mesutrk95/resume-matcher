@@ -1,28 +1,28 @@
-import NextAuth from "next-auth";
-import { authConfig } from "@/auth/config";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { db } from "@/lib/db";
-import { getUserById, updateUserById } from "@/services/user";
-import { getTwoFactorConfirmationByUserId } from "@/services/two-factor-confirmation";
-import { isExpired } from "@/lib/utils";
-import { getAccountByUserId } from "@/services/account";
-import { UserRole } from "@prisma/client";
+import NextAuth from 'next-auth';
+import { authConfig } from '@/auth/config';
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { db } from '@/lib/db';
+import { getUserById, updateUserById } from '@/services/user';
+import { getTwoFactorConfirmationByUserId } from '@/services/two-factor-confirmation';
+import { isExpired } from '@/lib/utils';
+import { getAccountByUserId } from '@/services/account';
+import { UserRole } from '@prisma/client';
 
 export const {
   handlers: { GET, POST },
   auth,
   signIn,
   signOut,
-  unstable_update
+  unstable_update,
 } = NextAuth({
   adapter: PrismaAdapter(db),
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
     maxAge: 60 * 60 * 24, // 1 Day
   },
   pages: {
-    signIn: "/login",
-    error: "/error",
+    signIn: '/login',
+    error: '/error',
   },
   events: {
     async linkAccount({ user }) {
@@ -42,6 +42,7 @@ export const {
       token.email = existingUser.email;
       token.role = existingUser.role;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+      token.marketingEmails = existingUser.marketingEmails;
       // token.isOAuth = !!existingAccount;
 
       return token;
@@ -60,12 +61,13 @@ export const {
         session.user.email = token.email || '';
         session.user.isTwoFactorEnabled = !!token.isTwoFactorEnabled;
         session.user.isOAuth = !!token.isOAuth;
+        session.user.marketingEmails = !!token.marketingEmails;
       }
 
       return session;
     },
     async signIn({ user, account }) {
-      if (account?.provider !== "credentials") return true;
+      if (account?.provider !== 'credentials') return true;
 
       const existingUser = await getUserById(user.id!);
       // Prevent sign in without email verification
@@ -74,7 +76,7 @@ export const {
       // If user's 2FA checked
       if (existingUser.isTwoFactorEnabled) {
         const existingTwoFactorConfirmation = await getTwoFactorConfirmationByUserId(
-          existingUser.id
+          existingUser.id,
         );
         // If two factor confirmation doesn't exist, then prevent to login
         if (!existingTwoFactorConfirmation) return false;

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { ResumeTargetTitle } from "@/types/resume";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { useState } from 'react';
+import type { ResumeTargetTitle } from '@/types/resume';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Edit, GripVertical, Save, Trash2, X } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 type TitleItemProps = {
   title: ResumeTargetTitle;
@@ -16,8 +16,9 @@ type TitleItemProps = {
 };
 
 export function TitleItem({ title, onUpdate, onDelete }: TitleItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: title.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: title.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -77,13 +78,11 @@ export function TitleItem({ title, onUpdate, onDelete }: TitleItemProps) {
           {isEditing ? (
             <Input
               value={editForm.content}
-              onChange={(e) => setEditForm({ content: e.target.value })}
+              onChange={e => setEditForm({ content: e.target.value })}
               placeholder="Title"
             />
           ) : (
-            <p className={`${!title.enabled ? "text-muted-foreground" : ""}`}>
-              {title.content}
-            </p>
+            <p className={`${!title.enabled ? 'text-muted-foreground' : ''}`}>{title.content}</p>
           )}
         </div>
 
@@ -102,11 +101,7 @@ export function TitleItem({ title, onUpdate, onDelete }: TitleItemProps) {
               <Button variant="outline" size="sm" onClick={handleEdit}>
                 <Edit className="h-4 w-4" />
               </Button>
-              <Button
-                variant="outline-destructive"
-                size="sm"
-                onClick={() => onDelete(title.id)}
-              >
+              <Button variant="outline-destructive" size="sm" onClick={() => onDelete(title.id)}>
                 <Trash2 className="h-4 w-4" />
               </Button>
             </>

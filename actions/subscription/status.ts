@@ -25,8 +25,7 @@ export const cancelUserSubscription = async () => {
     return response({
       success: true,
       code: 200,
-      message:
-        'Subscription scheduled for cancellation at the end of the billing period',
+      message: 'Subscription scheduled for cancellation at the end of the billing period',
     });
   } catch (error: any) {
     if (error instanceof UnauthorizedException) {
@@ -81,9 +80,7 @@ export const cancelSubscription = async (userId: string) => {
       subscriptionId: subscription.subscriptionId,
       error: error.message,
     });
-    throw new InternalServerErrorException(
-      `Failed to cancel subscription: ${error.message}`,
-    );
+    throw new InternalServerErrorException(`Failed to cancel subscription: ${error.message}`);
   }
 };
 
@@ -154,8 +151,6 @@ export const reactivateSubscription = async (userId: string) => {
       subscriptionId: subscription.subscriptionId,
       error: error.message,
     });
-    throw new InternalServerErrorException(
-      `Failed to reactivate subscription: ${error.message}`,
-    );
+    throw new InternalServerErrorException(`Failed to reactivate subscription: ${error.message}`);
   }
 };

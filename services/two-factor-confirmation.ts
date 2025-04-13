@@ -1,5 +1,5 @@
-import { db } from "@/lib/db";
-import { setTokenExpiration } from "@/lib/utils";
+import { db } from '@/lib/db';
+import { setTokenExpiration } from '@/lib/utils';
 
 export const generateTwoFactorConfirmation = async (userId: string) => {
   const existingTwoFactorConfirmation = await getTwoFactorConfirmationByUserId(userId);
@@ -49,4 +49,4 @@ export const deleteTwoFactorConfirmationByUserId = async (userId: string) => {
   } catch {
     return null;
   }
-}
+};

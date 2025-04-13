@@ -43,9 +43,7 @@ export function getRequestIdFromRequest(req: NextRequest): string {
 /**
  * Utility to set request ID in headers for fetch requests
  */
-export function createHeadersWithRequestId(
-  additionalHeaders: HeadersInit = {},
-): Headers {
+export function createHeadersWithRequestId(additionalHeaders: HeadersInit = {}): Headers {
   const requestId = getRequestId();
   const headers = new Headers(additionalHeaders);
 

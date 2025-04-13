@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { Variation } from "@/types/resume";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { VariationMatchingScores } from "./variation-matching-scores";
+import { useState } from 'react';
+import type { Variation } from '@/types/resume';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Edit, GripVertical, Save, Trash2, X } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { VariationMatchingScores } from './variation-matching-scores';
 
 type VariationComponentProps = {
   experienceId: string;
@@ -25,8 +25,9 @@ export function VariationComponent({
   onUpdate,
   onDelete,
 }: VariationComponentProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: variation.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: variation.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -89,8 +90,8 @@ export function VariationComponent({
                 {isEditing ? (
                   <Textarea
                     value={editForm.content}
-                    onChange={(e) =>
-                      setEditForm((prev) => ({
+                    onChange={e =>
+                      setEditForm(prev => ({
                         ...prev,
                         content: e.target.value,
                       }))
@@ -100,11 +101,7 @@ export function VariationComponent({
                     rows={5}
                   />
                 ) : (
-                  <div
-                    className={`text-sm ${
-                      !variation.enabled ? "text-muted-foreground" : ""
-                    }`}
-                  >
+                  <div className={`text-sm ${!variation.enabled ? 'text-muted-foreground' : ''}`}>
                     <p>{variation.content}</p>
 
                     <VariationMatchingScores variation={variation} />
@@ -133,11 +130,7 @@ export function VariationComponent({
                     <Button variant="ghost" size="sm" onClick={handleEdit}>
                       <Edit className="h-3 w-3" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onDelete(variation.id)}
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => onDelete(variation.id)}>
                       <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>

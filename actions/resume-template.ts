@@ -1,53 +1,51 @@
-"use server";
+'use server';
 
-import { currentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { ResumeTemplate } from "@prisma/client";
-import { revalidatePath } from "next/cache";
-import { DEFAULT_RESUME_CONTENT } from "./constants";
-import { ResumeContent } from "@/types/resume";
-import { withErrorHandling } from "@/lib/with-error-handling";
-import { getAIJsonResponse } from "@/lib/ai";
-import { resumeContentSchema } from "@/schemas/resume";
-import { zodSchemaToString } from "@/lib/zod";
-import { getMimeType } from "@/lib/utils";
+import { currentUser } from '@/lib/auth';
+import { db } from '@/lib/db';
+import { ResumeTemplate } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
+import { DEFAULT_RESUME_CONTENT } from './constants';
+import { ResumeContent } from '@/types/resume';
+import { withErrorHandling } from '@/lib/with-error-handling';
+import { getAIJsonResponse } from '@/lib/ai';
+import { resumeContentSchema } from '@/schemas/resume';
+import { zodSchemaToString } from '@/lib/zod';
+import { getMimeType } from '@/lib/utils';
 
 export const deleteResumeTemplate = async (id: string) => {
   const user = await currentUser();
   await db.resumeTemplate.delete({
     where: { id, userId: user?.id },
   });
-  revalidatePath("/templates");
+  revalidatePath('/templates');
   return true;
 };
 
-export const updateResumeTemplate = withErrorHandling(
-  async (template: ResumeTemplate) => {
-    const user = await currentUser();
+export const updateResumeTemplate = withErrorHandling(async (template: ResumeTemplate) => {
+  const user = await currentUser();
 
-    // Update job in database
-    const updatedJob = await db.resumeTemplate.update({
-      where: {
-        id: template.id,
-        userId: user?.id,
-      },
-      data: {
-        name: template.name,
-        description: template.description,
-        content: template.content || DEFAULT_RESUME_CONTENT,
-      },
-    });
+  // Update job in database
+  const updatedJob = await db.resumeTemplate.update({
+    where: {
+      id: template.id,
+      userId: user?.id,
+    },
+    data: {
+      name: template.name,
+      description: template.description,
+      content: template.content || DEFAULT_RESUME_CONTENT,
+    },
+  });
 
-    revalidatePath("/templates");
-    revalidatePath(`/templates/${template.id}`);
+  revalidatePath('/templates');
+  revalidatePath(`/templates/${template.id}`);
 
-    return updatedJob;
-  }
-);
+  return updatedJob;
+});
 
 export const updateResumeTemplateContent = async (
   templateId: string,
-  resmueContent: ResumeContent
+  resmueContent: ResumeContent,
 ) => {
   const user = await currentUser();
 
@@ -61,7 +59,7 @@ export const updateResumeTemplateContent = async (
     },
   });
 
-  revalidatePath("/templates");
+  revalidatePath('/templates');
   revalidatePath(`/templates/${templateId}`);
 
   return updatedJob;
@@ -70,37 +68,36 @@ export const updateResumeTemplateContent = async (
 export const createResumeTemplate = async (
   resumeContent?: ResumeContent,
   name?: string,
-  description?: string
+  description?: string,
 ) => {
   const user = await currentUser();
 
   // Update job in database
   const template = await db.resumeTemplate.create({
     data: {
-      name: name || "No name template",
+      name: name || 'No name template',
       description: description,
       content: resumeContent || DEFAULT_RESUME_CONTENT,
       userId: user?.id!,
     },
   });
 
-  revalidatePath("/templates");
+  revalidatePath('/templates');
 
   return template;
 };
 
-export const createResumeTemplateFromResumePdf = withErrorHandling(
-  async (formData: FormData) => {
-    const user = await currentUser();
-    const file = formData.get("file") as File;
+export const createResumeTemplateFromResumePdf = withErrorHandling(async (formData: FormData) => {
+  const user = await currentUser();
+  const file = formData.get('file') as File;
 
-    // throw new NotFoundException();
-    const bytes = await file.arrayBuffer();
-    const pdfBuffer = Buffer.from(bytes);
+  // throw new NotFoundException();
+  const bytes = await file.arrayBuffer();
+  const pdfBuffer = Buffer.from(bytes);
 
-    const systemInstructions = `Your task is importing user resume data from the provided pdf resume file and convert it to the following schema format: \n ${zodSchemaToString(
-      resumeContentSchema
-    )} \n 
+  const systemInstructions = `Your task is importing user resume data from the provided pdf resume file and convert it to the following schema format: \n ${zodSchemaToString(
+    resumeContentSchema,
+  )} \n 
   this was schema, you have to give me a valid object out of it, 
   - All dates must be in this format: MM/YYYY
   - ids convention is based on the path they have prefix then an underscore like the following:
@@ -108,29 +105,28 @@ export const createResumeTemplateFromResumePdf = withErrorHandling(
   - For each experience item in resume file, add one experience item with a variation item and fill its content by resume file experience item
   
   make sure your output is complete in json format without any extra character!`;
-    const prompt = "Convert it!";
-    const { result } = await getAIJsonResponse(
-      prompt,
-      [{ data: pdfBuffer, mimeType: getMimeType(file.name) }],
-      systemInstructions
-    );
+  const prompt = 'Convert it!';
+  const { result } = await getAIJsonResponse(
+    prompt,
+    [{ data: pdfBuffer, mimeType: getMimeType(file.name) }],
+    systemInstructions,
+  );
 
-    const content = result as ResumeContent;
+  const content = result as ResumeContent;
 
-    // Update job in database
-    const template = await db.resumeTemplate.create({
-      data: {
-        name: content.titles?.[0]?.content || "No name template",
-        content: content,
-        userId: user?.id!,
-      },
-    });
+  // Update job in database
+  const template = await db.resumeTemplate.create({
+    data: {
+      name: content.titles?.[0]?.content || 'No name template',
+      content: content,
+      userId: user?.id!,
+    },
+  });
 
-    revalidatePath("/templates");
+  revalidatePath('/templates');
 
-    return template;
-  }
-);
+  return template;
+});
 
 export const getResumeTemplate = async (id: string) => {
   const user = await currentUser();

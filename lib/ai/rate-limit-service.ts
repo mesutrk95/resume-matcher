@@ -162,24 +162,9 @@ export class AIRateLimitService {
       const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
       // Get usage for each timeframe
-      const minuteUsage = await this.getUsageInTimeframe(
-        userId,
-        clientId,
-        minuteAgo,
-        now,
-      );
-      const hourUsage = await this.getUsageInTimeframe(
-        userId,
-        clientId,
-        hourAgo,
-        now,
-      );
-      const dayUsage = await this.getUsageInTimeframe(
-        userId,
-        clientId,
-        dayAgo,
-        now,
-      );
+      const minuteUsage = await this.getUsageInTimeframe(userId, clientId, minuteAgo, now);
+      const hourUsage = await this.getUsageInTimeframe(userId, clientId, hourAgo, now);
+      const dayUsage = await this.getUsageInTimeframe(userId, clientId, dayAgo, now);
 
       // Get rate limit configuration
       const limits = await this.getRateLimitConfig(clientId);
@@ -224,12 +209,7 @@ export class AIRateLimitService {
     }
 
     // Get usage in the timeframe
-    const usage = await this.getUsageInTimeframe(
-      userId,
-      clientId,
-      timeAgo,
-      now,
-    );
+    const usage = await this.getUsageInTimeframe(userId, clientId, timeAgo, now);
 
     // Check if usage exceeds limit
     return usage >= limit;

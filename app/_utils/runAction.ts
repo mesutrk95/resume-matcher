@@ -1,5 +1,5 @@
-import { ServerActionResponse } from "@/lib/with-error-handling";
-import { toast } from "sonner";
+import { ServerActionResponse } from '@/lib/with-error-handling';
+import { toast } from 'sonner';
 
 /**
  * Executes a server action with error handling
@@ -10,20 +10,18 @@ import { toast } from "sonner";
  * @returns A promise that resolves to the server action's response or a standardized error response
  */
 export async function runAction<T, Args extends any[]>(
-  action:
-    | ((...args: Args) => Promise<ServerActionResponse<T>>)
-    | Promise<ServerActionResponse<T>>,
+  action: ((...args: Args) => Promise<ServerActionResponse<T>>) | Promise<ServerActionResponse<T>>,
   ...args: Args
 ): Promise<ServerActionResponse<T>> {
   try {
     // Check if action is a function or a promise
-    if (typeof action === "function") {
+    if (typeof action === 'function') {
       // If it's a function, call it with the provided arguments
       const result = await action(...args);
 
       if (!result.success) {
-        toast.error(result.error?.message || "An unexpected error occurred");
-        console.error("Unexpected error when executing action:", result);
+        toast.error(result.error?.message || 'An unexpected error occurred');
+        console.error('Unexpected error when executing action:', result);
       }
 
       return result;
@@ -33,17 +31,14 @@ export async function runAction<T, Args extends any[]>(
     }
   } catch (error) {
     // Handle unexpected errors that might occur when executing the action
-    console.error("Unexpected error when executing action:", error);
+    console.error('Unexpected error when executing action:', error);
 
     // Return a standardized error response
     return {
       success: false,
       data: null as unknown as T, // Type assertion needed here
       error: {
-        message:
-          error instanceof Error
-            ? error.message
-            : "An unexpected error occurred",
+        message: error instanceof Error ? error.message : 'An unexpected error occurred',
         data: error,
       },
     };

@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,25 +8,18 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Edit,
-  Plus,
-  Search,
-  Trash,
-} from "lucide-react";
-import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
-import { ResumeTemplate } from "@prisma/client";
-import { deleteResumeTemplate } from "@/actions/resume-template";
-import { toast } from "sonner";
-import Moment from "react-moment";
-import { confirmDialog } from "../shared/confirm-dialog";
-import { LinkableTableCell } from "../ui/linkable-table-cell";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ChevronLeft, ChevronRight, Edit, Plus, Search, Trash } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+import { ResumeTemplate } from '@prisma/client';
+import { deleteResumeTemplate } from '@/actions/resume-template';
+import { toast } from 'sonner';
+import Moment from 'react-moment';
+import { confirmDialog } from '../shared/confirm-dialog';
+import { LinkableTableCell } from '../ui/linkable-table-cell';
 
 interface ResumeTemplatesDateTableProps {
   data: ResumeTemplate[];
@@ -51,34 +44,34 @@ export function ResumeTemplatesDateTable({
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (search) params.set("search", search);
-    params.set("page", "1");
-    params.set("pageSize", pageSize.toString());
+    if (search) params.set('search', search);
+    params.set('page', '1');
+    params.set('pageSize', pageSize.toString());
     router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleChangePage = (page: number) => {
     const params = new URLSearchParams();
-    if (search) params.set("search", search);
-    params.set("page", page.toString());
-    params.set("pageSize", pageSize.toString());
+    if (search) params.set('search', search);
+    params.set('page', page.toString());
+    params.set('pageSize', pageSize.toString());
     router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleDeleteTemplate = async (template: ResumeTemplate) => {
     if (
       await confirmDialog({
-        title: "Are you absolutely sure!?",
+        title: 'Are you absolutely sure!?',
         description: `You are deleting the "${template.name}" template.`,
       })
     )
       try {
         setIsDeleting(template.id);
         await deleteResumeTemplate(template.id);
-        toast.success("Template deleted successfully");
+        toast.success('Template deleted successfully');
         router.refresh();
       } catch (error) {
-        toast.error("Something went wrong");
+        toast.error('Something went wrong');
       } finally {
         setIsDeleting(null);
       }
@@ -87,17 +80,14 @@ export function ResumeTemplatesDateTable({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <form
-          onSubmit={handleSearch}
-          className="flex w-full max-w-sm items-center space-x-2"
-        >
+        <form onSubmit={handleSearch} className="flex w-full max-w-sm items-center space-x-2">
           <Input
             placeholder="Search templates..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={e => setSearch(e.target.value)}
             className="w-full"
           />
-          <Button type="submit" size="icon" variant={"outline"}>
+          <Button type="submit" size="icon" variant={'outline'}>
             <Search className="h-4 w-4" />
           </Button>
         </form>
@@ -123,43 +113,29 @@ export function ResumeTemplatesDateTable({
           <TableBody>
             {data.length === 0 ? (
               <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="h-24 text-center text-muted-foreground"
-                >
+                <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
                   No templates found!
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((template) => (
+              data.map(template => (
                 <TableRow key={template.id}>
-                  <LinkableTableCell
-                    className="font-medium"
-                    href={`/templates/${template.id}`}
-                  >
+                  <LinkableTableCell className="font-medium" href={`/templates/${template.id}`}>
                     {template.name}
                   </LinkableTableCell>
                   <LinkableTableCell href={`/templates/${template.id}`}>
                     {template.description}
                   </LinkableTableCell>
                   <LinkableTableCell href={`/templates/${template.id}`}>
-                    <Moment
-                      date={template.createdAt}
-                      format="YYYY/MM/DD HH:mm"
-                      utc
-                    />
+                    <Moment date={template.createdAt} format="YYYY/MM/DD HH:mm" utc />
                   </LinkableTableCell>
                   <LinkableTableCell href={`/templates/${template.id}`}>
-                    <Moment
-                      date={template.updatedAt}
-                      format="YYYY/MM/DD HH:mm"
-                      utc
-                    />
+                    <Moment date={template.updatedAt} format="YYYY/MM/DD HH:mm" utc />
                   </LinkableTableCell>
                   <TableCell className="flex gap-2">
                     {/* Delete Confirmation Dialog */}
                     <Button
-                      variant={"outline"}
+                      variant={'outline'}
                       disabled={isDeleting === template.id}
                       className="text-destructive focus:text-destructive"
                       onClick={() => handleDeleteTemplate(template)}
@@ -168,11 +144,7 @@ export function ResumeTemplatesDateTable({
                       {/* Delete */}
                     </Button>
 
-                    <Button
-                      asChild
-                      variant={"outline"}
-                      disabled={isDeleting === template.id}
-                    >
+                    <Button asChild variant={'outline'} disabled={isDeleting === template.id}>
                       <Link href={`/templates/${template.id}`}>
                         <Edit className=" h-4 w-4" />
                         {/* Edit */}
@@ -190,19 +162,11 @@ export function ResumeTemplatesDateTable({
         <div className="text-sm text-muted-foreground">
           {data.length > 0 && (
             <>
-              Showing{" "}
+              Showing <span className="font-medium">{(currentPage - 1) * pageSize + 1}</span> to{' '}
               <span className="font-medium">
-                {(currentPage - 1) * pageSize + 1}
-              </span>{" "}
-              to{" "}
-              <span className="font-medium">
-                {Math.min(
-                  currentPage * pageSize,
-                  (currentPage - 1) * pageSize + data.length
-                )}
-              </span>{" "}
-              of <span className="font-medium">{pageCount * pageSize}</span>{" "}
-              templates
+                {Math.min(currentPage * pageSize, (currentPage - 1) * pageSize + data.length)}
+              </span>{' '}
+              of <span className="font-medium">{pageCount * pageSize}</span> templates
             </>
           )}
         </div>

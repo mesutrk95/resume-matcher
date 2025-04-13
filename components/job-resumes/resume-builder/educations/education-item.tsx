@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { ResumeEducation } from "@/types/resume";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, GripVertical, Save, Trash2, X } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { format } from "date-fns";
-import { Textarea } from "@/components/ui/textarea";
-import { YearMonthPicker } from "@/components/ui/year-month-picker";
-import { SeperateList } from "@/components/shared/seperate-list";
+import { useState } from 'react';
+import type { ResumeEducation } from '@/types/resume';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Edit, GripVertical, Save, Trash2, X } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { format } from 'date-fns';
+import { Textarea } from '@/components/ui/textarea';
+import { YearMonthPicker } from '@/components/ui/year-month-picker';
+import { SeperateList } from '@/components/shared/seperate-list';
 
 type EducationItemProps = {
   education: ResumeEducation;
@@ -19,13 +19,10 @@ type EducationItemProps = {
   onDelete: (educationId: string) => void;
 };
 
-export function EducationItem({
-  education,
-  onUpdate,
-  onDelete,
-}: EducationItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: education.id });
+export function EducationItem({ education, onUpdate, onDelete }: EducationItemProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: education.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -40,12 +37,10 @@ export function EducationItem({
     institution: education.institution,
   });
 
-  const [startDate, setStartDate] = useState<string | undefined>(
-    education.startDate
-  );
+  const [startDate, setStartDate] = useState<string | undefined>(education.startDate);
   const [endDate, setEndDate] = useState<string | undefined>(education.endDate);
 
-  const [isPresent, setIsPresent] = useState(education.endDate === "Present");
+  const [isPresent, setIsPresent] = useState(education.endDate === 'Present');
 
   const handleEdit = () => {
     setEditForm({
@@ -56,7 +51,7 @@ export function EducationItem({
     });
     setStartDate(education.startDate);
     setEndDate(education.endDate);
-    setIsPresent(education.endDate === "Present");
+    setIsPresent(education.endDate === 'Present');
     setIsEditing(true);
   };
 
@@ -68,7 +63,7 @@ export function EducationItem({
       location: editForm.location,
       institution: editForm.institution,
       startDate: startDate,
-      endDate: isPresent ? "Present" : endDate,
+      endDate: isPresent ? 'Present' : endDate,
     });
     setIsEditing(false);
   };
@@ -116,21 +111,17 @@ export function EducationItem({
                 <label className="text-sm font-medium mb-1 block">Degree</label>
                 <Input
                   value={editForm.degree}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({ ...prev, degree: e.target.value }))
-                  }
+                  onChange={e => setEditForm(prev => ({ ...prev, degree: e.target.value }))}
                   placeholder="Degree"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium mb-1 block">
-                  Institution
-                </label>
+                <label className="text-sm font-medium mb-1 block">Institution</label>
                 <Input
                   value={editForm.institution}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({
+                  onChange={e =>
+                    setEditForm(prev => ({
                       ...prev,
                       institution: e.target.value,
                     }))
@@ -140,13 +131,11 @@ export function EducationItem({
               </div>
 
               <div>
-                <label className="text-sm font-medium mb-1 block">
-                  Location
-                </label>
+                <label className="text-sm font-medium mb-1 block">Location</label>
                 <Input
                   value={editForm.location}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({
+                  onChange={e =>
+                    setEditForm(prev => ({
                       ...prev,
                       location: e.target.value,
                     }))
@@ -157,9 +146,7 @@ export function EducationItem({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium mb-1 block">
-                    Start Date
-                  </label>
+                  <label className="text-sm font-medium mb-1 block">Start Date</label>
                   <YearMonthPicker
                     date={startDate}
                     setDate={setStartDate}
@@ -167,9 +154,7 @@ export function EducationItem({
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-1 block">
-                    End Date
-                  </label>
+                  <label className="text-sm font-medium mb-1 block">End Date</label>
                   {isPresent ? (
                     <Input value="Present" disabled className="bg-muted" />
                   ) : (
@@ -186,10 +171,7 @@ export function EducationItem({
                       onCheckedChange={handlePresentToggle}
                       className="mr-2"
                     />
-                    <label
-                      htmlFor={`isPresent-${education.id}`}
-                      className="text-sm"
-                    >
+                    <label htmlFor={`isPresent-${education.id}`} className="text-sm">
                       Currently studying
                     </label>
                   </div>
@@ -197,13 +179,11 @@ export function EducationItem({
               </div>
 
               <div>
-                <label className="text-sm font-medium mb-1 block">
-                  Description
-                </label>
+                <label className="text-sm font-medium mb-1 block">Description</label>
                 <Textarea
                   value={editForm.content}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({
+                  onChange={e =>
+                    setEditForm(prev => ({
                       ...prev,
                       content: e.target.value,
                     }))
@@ -214,28 +194,15 @@ export function EducationItem({
             </div>
           ) : (
             <div>
-              <h3
-                className={`font-medium ${
-                  !education.enabled ? "text-muted-foreground" : ""
-                }`}
-              >
+              <h3 className={`font-medium ${!education.enabled ? 'text-muted-foreground' : ''}`}>
                 {education.degree}
               </h3>
-              <div
-                className={`${
-                  !education.enabled ? "text-muted-foreground" : ""
-                }`}
-              >
+              <div className={`${!education.enabled ? 'text-muted-foreground' : ''}`}>
                 {education.content}
               </div>
               <div className="text-sm text-muted-foreground">
-                <SeperateList
-                  data={[education.institution, education.location]}
-                />{" "}
-                <SeperateList
-                  data={[education.startDate, education.endDate]}
-                  by=" - "
-                />
+                <SeperateList data={[education.institution, education.location]} />{' '}
+                <SeperateList data={[education.startDate, education.endDate]} by=" - " />
               </div>
             </div>
           )}

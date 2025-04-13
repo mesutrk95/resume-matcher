@@ -2,10 +2,7 @@
 
 import { db } from '@/lib/db';
 import { SubscriptionStatus } from '@prisma/client';
-import {
-  BadRequestException,
-  InternalServerErrorException,
-} from '@/lib/exceptions';
+import { BadRequestException, InternalServerErrorException } from '@/lib/exceptions';
 import Logger from '@/lib/logger';
 import { currentUser } from '@/lib/auth';
 
@@ -54,9 +51,7 @@ export const updateSubscriptionInDatabase = async (
       subscriptionId,
       error: error.message,
     });
-    throw new InternalServerErrorException(
-      'Failed to update subscription in database',
-    );
+    throw new InternalServerErrorException('Failed to update subscription in database');
   }
 };
 
@@ -77,9 +72,7 @@ export const getCustomerById = async (customerId: string) => {
       customerId,
       error: error.message,
     });
-    throw new InternalServerErrorException(
-      `Failed to retrieve customer: ${error.message}`,
-    );
+    throw new InternalServerErrorException(`Failed to retrieve customer: ${error.message}`);
   }
 };
 

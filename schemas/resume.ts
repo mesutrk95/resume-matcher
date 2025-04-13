@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 // Define the variation schema
 const variationSchema = z.object({
@@ -166,7 +166,7 @@ const resumeAnalyzedImprovementNoteSchema = z.object({
   explanation: z.string(),
   text: z.string(),
   id: z.string(),
-  action_type: z.enum(["update", "delete", "create"]),
+  action_type: z.enum(['update', 'delete', 'create']),
   action_text: z.string(),
 });
 

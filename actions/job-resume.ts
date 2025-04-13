@@ -1,37 +1,26 @@
-"use server";
+'use server';
 
-import { currentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { JobResume } from "@prisma/client";
-import { revalidatePath } from "next/cache";
-import { DEFAULT_RESUME_CONTENT } from "./constants";
+import { currentUser } from '@/lib/auth';
+import { db } from '@/lib/db';
+import { JobResume } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
+import { DEFAULT_RESUME_CONTENT } from './constants';
 import {
   ResumeAnalyzeResults,
   ResumeContent,
   ResumeDesign,
   ResumeItemScoreAnalyze,
-} from "@/types/resume";
-import {
-  ContentWithMeta,
-  getAIJsonResponse,
-  getGeminiChatResponse,
-} from "@/lib/ai";
-import { JobAnalyzeResult } from "@/types/job";
-import { chunkArray, hashString } from "@/lib/utils";
-import { analyzeJobByAI } from "./job";
-import {
-  convertResumeObjectToString,
-  resumeExperiencesToString,
-} from "@/lib/resume-content";
-import {
-  BadRequestException,
-  InvalidInputException,
-  NotFoundException,
-} from "@/lib/exceptions";
-import { resumeContentSchema } from "@/schemas/resume";
-import z from "zod";
-import { withErrorHandling } from "@/lib/with-error-handling";
-import { resumeDesignSchema } from "@/schemas/resume-design.schema";
+} from '@/types/resume';
+import { ContentWithMeta, getAIJsonResponse, getGeminiChatResponse } from '@/lib/ai';
+import { JobAnalyzeResult } from '@/types/job';
+import { chunkArray, hashString } from '@/lib/utils';
+import { analyzeJobByAI } from './job';
+import { convertResumeObjectToString, resumeExperiencesToString } from '@/lib/resume-content';
+import { BadRequestException, InvalidInputException, NotFoundException } from '@/lib/exceptions';
+import { resumeContentSchema } from '@/schemas/resume';
+import z from 'zod';
+import { withErrorHandling } from '@/lib/with-error-handling';
+import { resumeDesignSchema } from '@/schemas/resume-design.schema';
 
 export const findJobResume = async (id: string) => {
   const user = await currentUser();
@@ -41,10 +30,7 @@ export const findJobResume = async (id: string) => {
   return jobResume;
 };
 
-export const createJobResume = async (
-  resumeTemplateId?: string,
-  jobId?: string
-) => {
+export const createJobResume = async (resumeTemplateId?: string, jobId?: string) => {
   const user = await currentUser();
   const resumeTemplate = resumeTemplateId
     ? await db.resumeTemplate.findUnique({
@@ -64,14 +50,13 @@ export const createJobResume = async (
     data: {
       jobId: jobId,
       baseResumeTemplateId: resumeTemplateId,
-      content:
-        (resumeTemplate?.content as ResumeContent) || DEFAULT_RESUME_CONTENT,
-      name: name || "Blank",
+      content: (resumeTemplate?.content as ResumeContent) || DEFAULT_RESUME_CONTENT,
+      name: name || 'Blank',
       userId: user?.id!,
     },
   });
 
-  revalidatePath("/resumes");
+  revalidatePath('/resumes');
 
   return resumeJob;
 };
@@ -96,8 +81,8 @@ export const updateJobResume = withErrorHandling(
 
     if (validationResult.error) {
       throw new InvalidInputException(
-        "Error in validating the resume data.",
-        validationResult.error.errors
+        'Error in validating the resume data.',
+        validationResult.error.errors,
       );
     }
 
@@ -116,13 +101,10 @@ export const updateJobResume = withErrorHandling(
     forceRevalidate && revalidatePath(`/resumes/${resume.id}/builder`);
 
     // return updatedJob;
-  }
+  },
 );
 
-export const connectJobResumeToJob = async (
-  jobResumeId: string,
-  jobId: string
-) => {
+export const connectJobResumeToJob = async (jobResumeId: string, jobId: string) => {
   const user = await currentUser();
 
   const job = await db.job.findUnique({
@@ -131,7 +113,7 @@ export const connectJobResumeToJob = async (
   });
 
   if (!job) {
-    throw new NotFoundException("Job not found!");
+    throw new NotFoundException('Job not found!');
   }
   // Update job in database
   const updatedJob = await db.jobResume.update({
@@ -156,16 +138,13 @@ export const deleteJobResume = async (id: string) => {
     where: { id },
   });
 
-  revalidatePath("/resumes");
+  revalidatePath('/resumes');
   revalidatePath(`/resumes/${id}/builder`);
   return true;
 };
 
-export const analyzeResumeScore = async (
-  formData: FormData,
-  jobResumeId: string
-) => {
-  const file = formData.get("file") as File;
+export const analyzeResumeScore = async (formData: FormData, jobResumeId: string) => {
+  const file = formData.get('file') as File;
 
   const bytes = await file.arrayBuffer();
   const pdfBuffer = Buffer.from(bytes);
@@ -178,9 +157,8 @@ export const analyzeResumeScore = async (
     },
   });
 
-  if (!jobResume) throw new NotFoundException("Resume not found.");
-  if (!jobResume.job)
-    throw new BadRequestException("The resume has not been attached to a job!");
+  if (!jobResume) throw new NotFoundException('Resume not found.');
+  if (!jobResume.job) throw new BadRequestException('The resume has not been attached to a job!');
 
   const jobAnalyzeResult = jobResume?.job!.analyzeResults as JobAnalyzeResult;
 
@@ -305,15 +283,13 @@ IMPORTANT:
 - You must be rigorous and realistic in your scoring - empty sections MUST result in low scores
 - Only focus on important/relevant keywords that would impact ATS scoring`;
 
-    const prompt = `Job Description: \n${jobResume?.job!.title}\n${
-      jobResume?.job!.description
-    }
+    const prompt = `Job Description: \n${jobResume?.job!.title}\n${jobResume?.job!.description}
     Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
 
     return getAIJsonResponse(
       prompt,
-      [{ data: pdfBuffer, mimeType: "application/pdf" }],
-      systemInstructions
+      [{ data: pdfBuffer, mimeType: 'application/pdf' }],
+      systemInstructions,
     );
   };
 
@@ -353,9 +329,7 @@ IMPORTANT:
 - Limit to maximum 20 most important keywords in each category
 - Sort keywords by importance/relevance (most important first)`;
 
-    const prompt = `Job Keywords: ${jobAnalyzeResult.keywords
-      .map((k) => k.keyword)
-      .join(",")}
+    const prompt = `Job Keywords: ${jobAnalyzeResult.keywords.map(k => k.keyword).join(',')}
 
     Resume:
     ${convertResumeObjectToString(jobResume.content as ResumeContent)}
@@ -390,7 +364,7 @@ IMPORTANT:
 
 const analyzeResumeExperiencesScores = async (
   analyzeResults: JobAnalyzeResult,
-  content: string
+  content: string,
 ) => {
   const systemInstructions = `I'm trying to find the best matches of my experiences based on the job description to ensure they pass ATS easily. For each variation or project item, you need to:
   
@@ -403,36 +377,26 @@ const analyzeResumeExperiencesScores = async (
   const prompt =
     `## Job description summary: ${analyzeResults.summary}\n ## My Resume Items\n` +
     content +
-    "\n Ensure the response is in a valid JSON format with no extra text! Make sure all the variations have score.";
+    '\n Ensure the response is in a valid JSON format with no extra text! Make sure all the variations have score.';
 
-  const generatedContent = await getAIJsonResponse(
-    prompt,
-    [],
-    systemInstructions
-  );
+  const generatedContent = await getAIJsonResponse(prompt, [], systemInstructions);
 
   return generatedContent;
 };
 
-const analyzeResumeProjectsScores = async (
-  analyzeResults: JobAnalyzeResult,
-  content: string
-) => {
+const analyzeResumeProjectsScores = async (analyzeResults: JobAnalyzeResult, content: string) => {
   const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, you need to give a score (on a scale from 0 to 1) to each project item based on how well it matches the job description, give me the best matches in this format [{ "id" : "project_..", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
 
   const generatedContent = await getAIJsonResponse(prompt, [
     content +
-      "\n" +
+      '\n' +
       `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
   ]);
 
   return generatedContent;
 };
 
-export const analyzeResumeItemsScores = async (
-  jobResumeId: string,
-  forceCheckAll?: boolean
-) => {
+export const analyzeResumeItemsScores = async (jobResumeId: string, forceCheckAll?: boolean) => {
   const user = await currentUser();
 
   const jobResume = await db.jobResume.findUnique({
@@ -446,25 +410,24 @@ export const analyzeResumeItemsScores = async (
   });
 
   if (!jobResume) {
-    throw new NotFoundException("Job Resume not found");
+    throw new NotFoundException('Job Resume not found');
   }
-  if (!jobResume.job)
-    throw new BadRequestException("The resume has not been attached to a job!");
+  if (!jobResume.job) throw new BadRequestException('The resume has not been attached to a job!');
 
   const resumeAnalyzeResults = jobResume.analyzeResults as ResumeAnalyzeResults;
   const oldItemsScore = resumeAnalyzeResults.itemsScore;
 
   const resume = jobResume?.content as ResumeContent;
   let variations = resume.experiences
-    .map((experience) => experience.items.map((i) => i.variations).flat())
+    .map(experience => experience.items.map(i => i.variations).flat())
     .flat()
-    .filter((v) => !!v.content)
-    .map((v) => ({ ...v, hash: hashString(v.content!, 8) }));
+    .filter(v => !!v.content)
+    .map(v => ({ ...v, hash: hashString(v.content!, 8) }));
 
   // concat with project items
   variations = [
     ...variations,
-    ...resume.projects.map((p) => ({
+    ...resume.projects.map(p => ({
       enabled: p.enabled,
       id: p.id,
       content: p.content,
@@ -474,14 +437,13 @@ export const analyzeResumeItemsScores = async (
 
   variations = forceCheckAll
     ? variations
-    : variations.filter((v) => oldItemsScore?.[v.id]?.hash !== v.hash);
+    : variations.filter(v => oldItemsScore?.[v.id]?.hash !== v.hash);
 
   if (variations.length === 0) return resumeAnalyzeResults;
 
   let jobAnalyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
   if (!jobAnalyzeResults?.summary) {
-    jobAnalyzeResults = (await analyzeJobByAI(jobResume.jobId!))
-      .analyzeResults!;
+    jobAnalyzeResults = (await analyzeJobByAI(jobResume.jobId!)).analyzeResults!;
   }
 
   // const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
@@ -489,16 +451,14 @@ export const analyzeResumeItemsScores = async (
   const chunks = chunkArray(variations, 10);
 
   const results = await Promise.all(
-    chunks.map((items) =>
+    chunks.map(items =>
       analyzeResumeExperiencesScores(
         jobAnalyzeResults,
-        items.map((v) => `${v.id} - ${v.content}`).join("\n")
-      )
-    )
+        items.map(v => `${v.id} - ${v.content}`).join('\n'),
+      ),
+    ),
   );
-  const scores = results
-    .map((res) => res.result as ResumeItemScoreAnalyze[])
-    .flat();
+  const scores = results.map(res => res.result as ResumeItemScoreAnalyze[]).flat();
 
   // const resp = await analyzeResumeExperiencesScores(
   //   jobAnalyzeResults,
@@ -511,13 +471,10 @@ export const analyzeResumeItemsScores = async (
       ...acc,
       [curr.id]: {
         ...curr,
-        hash: hashString(
-          variations.find((v) => curr.id === v.id)?.content || "",
-          8
-        ),
+        hash: hashString(variations.find(v => curr.id === v.id)?.content || '', 8),
       },
     }),
-    {}
+    {},
   );
 
   const newAnalyzeResults = {
@@ -543,7 +500,7 @@ export const askCustomQuestionFromAI = async (
   question: string,
   pdfFile: string | null,
   shareJobDescription: boolean,
-  history: ContentWithMeta[] = []
+  history: ContentWithMeta[] = [],
 ) => {
   const user = await currentUser();
 
@@ -563,7 +520,7 @@ export const askCustomQuestionFromAI = async (
   });
 
   if (!jobResume) {
-    throw new NotFoundException("Resume not found");
+    throw new NotFoundException('Resume not found');
   }
   const jd =
     (shareJobDescription &&
@@ -572,18 +529,17 @@ export const askCustomQuestionFromAI = async (
       `## Job description: 
     Company: ${jobResume.job.companyName}
     ${jobResume.job.description}`) ||
-    "";
+    '';
 
-  const messageParts: (
-    | { inlineData: { data: string; mimeType: string } }
-    | { text: string }
-  )[] = [{ text: question }];
+  const messageParts: ({ inlineData: { data: string; mimeType: string } } | { text: string })[] = [
+    { text: question },
+  ];
 
   if (pdfFile) {
     messageParts.push({
       inlineData: {
-        data: pdfFile.split(",")[1],
-        mimeType: "application/pdf",
+        data: pdfFile.split(',')[1],
+        mimeType: 'application/pdf',
       },
     });
   }
@@ -599,7 +555,7 @@ export const askCustomQuestionFromAI = async (
     systemInstruction,
     messageParts,
     instructionSuffix,
-    history
+    history,
   );
   return result;
 };

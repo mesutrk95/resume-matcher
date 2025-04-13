@@ -52,10 +52,7 @@ export class GeminiClient implements AIModelClient {
         : undefined;
 
       // Generate content
-      const result = await model.generateContent(
-        geminiContents,
-        requestOptions,
-      );
+      const result = await model.generateContent(geminiContents, requestOptions);
       const response = result.response;
       const text = response.text();
 
@@ -83,9 +80,7 @@ export class GeminiClient implements AIModelClient {
     } catch (error) {
       Logger.error('Gemini API error:', error);
       throw new Error(
-        `Gemini API error: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
+        `Gemini API error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
@@ -124,9 +119,7 @@ export class GeminiClient implements AIModelClient {
       const lastMessage = history[history.length - 1];
 
       // Ensure the parts are valid for Google's API
-      const messageParts = lastMessage.parts.map(part =>
-        this.ensureValidPart(part),
-      );
+      const messageParts = lastMessage.parts.map(part => this.ensureValidPart(part));
 
       // Send the message
       const result = await chat.sendMessage(messageParts);
@@ -160,9 +153,7 @@ export class GeminiClient implements AIModelClient {
     } catch (error) {
       Logger.error('Gemini Chat API error:', error);
       throw new Error(
-        `Gemini Chat API error: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
+        `Gemini Chat API error: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
@@ -214,18 +205,16 @@ export class GeminiClient implements AIModelClient {
         case 'image':
         case 'pdf':
         case 'audio':
-        case 'video':
-          const data = Buffer.isBuffer(item.data)
-            ? item.data.toString('base64')
-            : item.data;
+        case 'video': {
+          const data = Buffer.isBuffer(item.data) ? item.data.toString('base64') : item.data;
 
           return {
             inlineData: {
               data: data.toString(),
-              mimeType:
-                item.mimeType || this.getMimeTypeForContentType(item.type),
+              mimeType: item.mimeType || this.getMimeTypeForContentType(item.type),
             },
           };
+        }
 
         default:
           Logger.warn(`Unsupported content type: ${item.type}`);

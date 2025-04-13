@@ -1,5 +1,5 @@
-import { capitalizeText } from "@/lib/utils";
-import { JobStatus } from "@prisma/client";
+import { capitalizeText } from '@/lib/utils';
+import { JobStatus } from '@prisma/client';
 import {
   Edit,
   Bookmark,
@@ -9,51 +9,51 @@ import {
   MessageSquareOff,
   Lock,
   Archive,
-} from "lucide-react";
+} from 'lucide-react';
 
 export function getJobStatusLabel(s: JobStatus) {
-  return capitalizeText(s.replaceAll("_", " "));
+  return capitalizeText(s.replaceAll('_', ' '));
 }
 
 export const JOB_STATUS_CONFIG = {
   [JobStatus.BOOKMARKED]: {
-    color: "blue",
+    color: 'blue',
     icon: Bookmark,
-    label: "Bookmarked",
+    label: 'Bookmarked',
   },
   [JobStatus.APPLYING]: {
-    color: "violet",
+    color: 'violet',
     icon: Edit,
-    label: "Applying",
+    label: 'Applying',
   },
   [JobStatus.APPLIED]: {
-    color: "emerald",
+    color: 'emerald',
     icon: CheckCircle,
-    label: "Applied",
+    label: 'Applied',
   },
   [JobStatus.INTERVIEWING]: {
-    color: "amber",
+    color: 'amber',
     icon: CalendarClock,
-    label: "Interviewing",
+    label: 'Interviewing',
   },
   [JobStatus.REJECTED]: {
-    color: "rose",
+    color: 'rose',
     icon: XCircle,
-    label: "Rejected",
+    label: 'Rejected',
   },
   [JobStatus.NO_ANSWER]: {
-    color: "slate",
+    color: 'slate',
     icon: MessageSquareOff,
-    label: "No Answer",
+    label: 'No Answer',
   },
   [JobStatus.CLOSED]: {
-    color: "zinc",
+    color: 'zinc',
     icon: Lock,
-    label: "Closed",
+    label: 'Closed',
   },
   [JobStatus.ARCHIVED]: {
-    color: "stone",
+    color: 'stone',
     icon: Archive,
-    label: "Archived",
+    label: 'Archived',
   },
 };

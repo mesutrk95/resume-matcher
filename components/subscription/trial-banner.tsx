@@ -7,8 +7,7 @@ import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 
 export function TrialBanner() {
-  const { subscription, isTrialingBannerEnable, dismissTrialBanner } =
-    useSubscription();
+  const { subscription, isTrialingBannerEnable, dismissTrialBanner } = useSubscription();
 
   // Don't show if no subscription, not on trial, or already dismissed
   if (!isTrialingBannerEnable) {

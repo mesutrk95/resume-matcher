@@ -1,35 +1,35 @@
-"use client";
+'use client';
 
-import { CardWrapper } from "@/components/shared/card-wrapper";
-import { resendSchema } from "@/schemas";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Form } from "@/components/ui/form";
-import { FormInput } from "@/components/shared/form-input";
-import { useTransition } from "react";
-import { resendToken } from "@/actions/resend";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { CardWrapper } from '@/components/shared/card-wrapper';
+import { resendSchema } from '@/schemas';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Form } from '@/components/ui/form';
+import { FormInput } from '@/components/shared/form-input';
+import { useTransition } from 'react';
+import { resendToken } from '@/actions/resend';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export const ResendForm = () => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof resendSchema>>({
     resolver: zodResolver(resendSchema),
     defaultValues: {
-      email: ""
-    }
-  })
+      email: '',
+    },
+  });
 
   const handleSubmit = form.handleSubmit(values => {
     startTransition(() => {
-      resendToken(values).then((data) => {
+      resendToken(values).then(data => {
         if (data.success) {
           return toast.success(data.message);
         }
         return toast.error(data.error.message);
       });
-    })
+    });
   });
   return (
     <CardWrapper
@@ -48,7 +48,9 @@ export const ResendForm = () => {
             placeholder="e.g. johndoe@example.com"
             isPending={isPending}
           />
-          <Button type="submit" disabled={isPending} className="w-full">Resend</Button>
+          <Button type="submit" disabled={isPending} className="w-full">
+            Resend
+          </Button>
         </form>
       </Form>
     </CardWrapper>

@@ -1,25 +1,23 @@
-"use client";
+'use client';
 
-import { ContactInfoSection } from "./contact-information";
-import { ProjectsSection } from "./projects";
-import { ExperiencesSection } from "./experiences";
-import { EducationsSection } from "./educations";
-import { SummariesSection } from "./summaries";
-import { TitlesSection } from "./titles";
-import { SkillsSection } from "./skills";
+import { ContactInfoSection } from './contact-information';
+import { ProjectsSection } from './projects';
+import { ExperiencesSection } from './experiences';
+import { EducationsSection } from './educations';
+import { SummariesSection } from './summaries';
+import { TitlesSection } from './titles';
+import { SkillsSection } from './skills';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Minus, Plus } from "lucide-react";
-import { ReactNode, useState } from "react";
-import clsx from "clsx";
+} from '@/components/ui/accordion';
+import { Minus, Plus } from 'lucide-react';
+import { ReactNode, useState } from 'react';
+import clsx from 'clsx';
 
-type IPropsType = {};
-
-export function ResumeBuilder({}: IPropsType) {
+export function ResumeBuilder() {
   return (
     <div className="flex flex-col gap-2">
       <ContactInfoSection />
@@ -47,12 +45,7 @@ function AccordionElement({
   return (
     <AccordionItem value={name}>
       <AccordionTrigger asChild>
-        <div
-          className={clsx(
-            "flex justify-between px-4 bg-slate-50/80",
-            isOpen && "border-b"
-          )}
-        >
+        <div className={clsx('flex justify-between px-4 bg-slate-50/80', isOpen && 'border-b')}>
           {title}
           {isOpen ? <Minus size={16} /> : <Plus size={16} />}
         </div>
@@ -62,63 +55,50 @@ function AccordionElement({
   );
 }
 
-export function AccordionResumeBuilder({}: IPropsType) {
+export function AccordionResumeBuilder() {
   const [tabs, setTabs] = useState<Record<string, boolean>>({});
 
   return (
     <Accordion
       type="multiple"
       className="w-full"
-      onValueChange={(items) =>
+      onValueChange={items =>
         setTabs(
-          items.reduce((acc, item) => {
-            acc[item] = true;
-            return acc;
-          }, {} as Record<string, boolean>)
+          items.reduce(
+            (acc, item) => {
+              acc[item] = true;
+              return acc;
+            },
+            {} as Record<string, boolean>,
+          ),
         )
       }
     >
-      <AccordionElement
-        title="Contact Information"
-        name="item-1"
-        isOpen={tabs["item-1"]}
-      >
+      <AccordionElement title="Contact Information" name="item-1" isOpen={tabs['item-1']}>
         <ContactInfoSection />
       </AccordionElement>
 
-      <AccordionElement title="Titles" name="item-2" isOpen={tabs["item-2"]}>
+      <AccordionElement title="Titles" name="item-2" isOpen={tabs['item-2']}>
         <TitlesSection />
       </AccordionElement>
 
-      <AccordionElement
-        title="Professional Summeries"
-        name="item-3"
-        isOpen={tabs["item-3"]}
-      >
+      <AccordionElement title="Professional Summeries" name="item-3" isOpen={tabs['item-3']}>
         <SummariesSection />
       </AccordionElement>
 
-      <AccordionElement
-        title="Experiences"
-        name="item-4"
-        isOpen={tabs["item-4"]}
-      >
+      <AccordionElement title="Experiences" name="item-4" isOpen={tabs['item-4']}>
         <ExperiencesSection />
       </AccordionElement>
 
-      <AccordionElement
-        title="Educations"
-        name="item-5"
-        isOpen={tabs["item-5"]}
-      >
+      <AccordionElement title="Educations" name="item-5" isOpen={tabs['item-5']}>
         <EducationsSection />
       </AccordionElement>
 
-      <AccordionElement title="Projects" name="item-6" isOpen={tabs["item-6"]}>
+      <AccordionElement title="Projects" name="item-6" isOpen={tabs['item-6']}>
         <ProjectsSection />
       </AccordionElement>
 
-      <AccordionElement title="Skills" name="item-7" isOpen={tabs["item-7"]}>
+      <AccordionElement title="Skills" name="item-7" isOpen={tabs['item-7']}>
         <SkillsSection />
       </AccordionElement>
     </Accordion>

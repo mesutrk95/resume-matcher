@@ -1,8 +1,8 @@
-import { notFound } from "next/navigation";
-import { db } from "@/lib/db";
-import { currentUser } from "@/lib/auth";
-import { ResumeTemplateCard } from "@/components/resume-templates/resume-template-card";
-import { Card, CardContent } from "@/components/ui/card";
+import { notFound } from 'next/navigation';
+import { db } from '@/lib/db';
+import { currentUser } from '@/lib/auth';
+import { ResumeTemplateCard } from '@/components/resume-templates/resume-template-card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,8 +10,8 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { CreateResumeButton } from "@/components/job-resumes/create-resume-button";
+} from '@/components/ui/breadcrumb';
+import { CreateResumeButton } from '@/components/job-resumes/create-resume-button';
 
 interface CreateResumePageProps {
   params: {
@@ -19,9 +19,7 @@ interface CreateResumePageProps {
   };
 }
 
-export default async function CreateResumePage({
-  params,
-}: CreateResumePageProps) {
+export default async function CreateResumePage({ params }: CreateResumePageProps) {
   const user = await currentUser();
   const { id: jobId } = params;
 
@@ -56,7 +54,7 @@ export default async function CreateResumePage({
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink href={`/jobs/${job.id}`}>
-                {job.title} {job.companyName ? "at " + job.companyName : ""}
+                {job.title} {job.companyName ? 'at ' + job.companyName : ''}
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -81,18 +79,12 @@ export default async function CreateResumePage({
 
       <div className="mt-5">
         <h2 className="text-xl font-bold">Resume Templates</h2>
-        <p className="text-muted-foreground">
-          Choose from one of your already designed templates
-        </p>
+        <p className="text-muted-foreground">Choose from one of your already designed templates</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {resumeTemplates.map((template) => (
-          <ResumeTemplateCard
-            key={template.id}
-            template={template}
-            jobId={jobId}
-          />
+        {resumeTemplates.map(template => (
+          <ResumeTemplateCard key={template.id} template={template} jobId={jobId} />
         ))}
       </div>
     </div>

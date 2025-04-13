@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useState, useTransition } from "react";
+import { useState, useTransition } from 'react';
 import {
   Table,
   TableBody,
@@ -8,29 +8,22 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Edit,
-  Plus,
-  Search,
-  Trash,
-} from "lucide-react";
-import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
-import { Job, JobResume } from "@prisma/client";
-import { deleteJobResume } from "@/actions/job-resume"; // Assuming you have an action to delete a job resume
-import { toast } from "sonner";
-import Moment from "react-moment";
-import { confirmDialog } from "../shared/confirm-dialog";
-import { LinkableTableCell } from "../ui/linkable-table-cell";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ChevronLeft, ChevronRight, Edit, Plus, Search, Trash } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+import { Job, JobResume } from '@prisma/client';
+import { deleteJobResume } from '@/actions/job-resume'; // Assuming you have an action to delete a job resume
+import { toast } from 'sonner';
+import Moment from 'react-moment';
+import { confirmDialog } from '../shared/confirm-dialog';
+import { LinkableTableCell } from '../ui/linkable-table-cell';
 
 type JobResumeItem = Omit<
-  JobResume & { job: Pick<Job, "companyName"> | null },
-  "analyzeResults" | "content" | "jobId" | "userId" | "baseResumeTemplateId" | "design"
+  JobResume & { job: Pick<Job, 'companyName'> | null },
+  'analyzeResults' | 'content' | 'jobId' | 'userId' | 'baseResumeTemplateId' | 'design'
 >;
 
 interface JobResumesDataTableProps {
@@ -57,24 +50,24 @@ export function JobResumesDataTable({
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (search) params.set("search", search);
-    params.set("page", "1");
-    params.set("pageSize", pageSize.toString());
+    if (search) params.set('search', search);
+    params.set('page', '1');
+    params.set('pageSize', pageSize.toString());
     router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleChangePage = (page: number) => {
     const params = new URLSearchParams();
-    if (search) params.set("search", search);
-    params.set("page", page.toString());
-    params.set("pageSize", pageSize.toString());
+    if (search) params.set('search', search);
+    params.set('page', page.toString());
+    params.set('pageSize', pageSize.toString());
     router.push(`${pathname}?${params.toString()}`);
   };
 
   const handleDeleteJobResume = async (jobResume: JobResumeItem) => {
     if (
       !(await confirmDialog({
-        title: "Are you absolutely sure!?",
+        title: 'Are you absolutely sure!?',
         description: `You are deleting the resume "${jobResume.name}"${
           jobResume.job && ` at "${jobResume.job.companyName}"`
         }.`,
@@ -85,10 +78,10 @@ export function JobResumesDataTable({
     startDeletingTransition(async () => {
       try {
         await deleteJobResume(jobResume.id);
-        toast.success("Job resume deleted successfully");
+        toast.success('Job resume deleted successfully');
         router.refresh();
       } catch (error) {
-        toast.error(error?.toString() || "Something went wrong");
+        toast.error(error?.toString() || 'Something went wrong');
       }
     });
   };
@@ -96,17 +89,14 @@ export function JobResumesDataTable({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <form
-          onSubmit={handleSearch}
-          className="flex w-full max-w-sm items-center space-x-2"
-        >
+        <form onSubmit={handleSearch} className="flex w-full max-w-sm items-center space-x-2">
           <Input
             placeholder="Search in resumes..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={e => setSearch(e.target.value)}
             className="w-full"
           />
-          <Button type="submit" size="icon" variant={"outline"}>
+          <Button type="submit" size="icon" variant={'outline'}>
             <Search className="h-4 w-4" />
           </Button>
         </form>
@@ -132,15 +122,12 @@ export function JobResumesDataTable({
           <TableBody>
             {data.length === 0 ? (
               <TableRow>
-                <TableCell
-                  colSpan={6}
-                  className="h-24 text-center text-muted-foreground"
-                >
+                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                   No resumes found!
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((jobResume) => (
+              data.map(jobResume => (
                 <TableRow key={jobResume.id}>
                   <LinkableTableCell
                     className="font-medium"
@@ -152,34 +139,24 @@ export function JobResumesDataTable({
                     {jobResume.job ? (
                       jobResume.job?.companyName
                     ) : (
-                      <span className="text-muted-foreground">
-                        No attached job
-                      </span>
+                      <span className="text-muted-foreground">No attached job</span>
                     )}
                   </LinkableTableCell>
                   <LinkableTableCell href={`/resumes/${jobResume.id}/builder`}>
-                    <Moment
-                      date={jobResume.createdAt}
-                      format="MMM d, yyyy HH:mm"
-                      utc
-                    />
+                    <Moment date={jobResume.createdAt} format="MMM d, yyyy HH:mm" utc />
                   </LinkableTableCell>
                   <LinkableTableCell href={`/resumes/${jobResume.id}/builder`}>
-                    <Moment
-                      date={jobResume.updatedAt}
-                      format="MMM d, yyyy HH:mm"
-                      utc
-                    />
+                    <Moment date={jobResume.updatedAt} format="MMM d, yyyy HH:mm" utc />
                   </LinkableTableCell>
                   <TableCell className="flex gap-2">
                     <Button
-                      variant={"outline-destructive"}
+                      variant={'outline-destructive'}
                       disabled={isDeleting}
                       onClick={() => handleDeleteJobResume(jobResume)}
                     >
                       <Trash className="h-4 w-4" />
                     </Button>
-                    <Button asChild variant={"outline"} disabled={isDeleting}>
+                    <Button asChild variant={'outline'} disabled={isDeleting}>
                       <Link href={`/resumes/${jobResume.id}/builder`}>
                         <Edit className="h-4 w-4" />
                       </Link>
@@ -196,17 +173,10 @@ export function JobResumesDataTable({
         <div className="text-sm text-muted-foreground">
           {data.length > 0 && (
             <>
-              Showing{" "}
+              Showing <span className="font-medium">{(currentPage - 1) * pageSize + 1}</span> to{' '}
               <span className="font-medium">
-                {(currentPage - 1) * pageSize + 1}
-              </span>{" "}
-              to{" "}
-              <span className="font-medium">
-                {Math.min(
-                  currentPage * pageSize,
-                  (currentPage - 1) * pageSize + data.length
-                )}
-              </span>{" "}
+                {Math.min(currentPage * pageSize, (currentPage - 1) * pageSize + data.length)}
+              </span>{' '}
               of <span className="font-medium">{total}</span> job resumes
             </>
           )}

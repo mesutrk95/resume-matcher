@@ -20,9 +20,7 @@ export interface ResponseProcessor<T = any> {
 /**
  * Abstract base class for response processors
  */
-export abstract class BaseResponseProcessor<T = any>
-  implements ResponseProcessor<T>
-{
+export abstract class BaseResponseProcessor<T = any> implements ResponseProcessor<T> {
   /**
    * Process a response with error handling
    */
@@ -41,10 +39,7 @@ export abstract class BaseResponseProcessor<T = any>
   /**
    * Actual processing logic to be implemented by subclasses
    */
-  protected abstract processResponse(
-    response: string,
-    request: AIRequestModel<T>,
-  ): Promise<T>;
+  protected abstract processResponse(response: string, request: AIRequestModel<T>): Promise<T>;
 
   /**
    * Check if this processor can handle the given request

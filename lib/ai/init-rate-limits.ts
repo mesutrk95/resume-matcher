@@ -65,20 +65,15 @@ export async function updateRateLimits(
       await db.aIRateLimit.update({
         where: { clientId },
         data: {
-          requestsPerMinute:
-            options.requestsPerMinute ?? existingLimits.requestsPerMinute,
-          requestsPerHour:
-            options.requestsPerHour ?? existingLimits.requestsPerHour,
-          requestsPerDay:
-            options.requestsPerDay ?? existingLimits.requestsPerDay,
+          requestsPerMinute: options.requestsPerMinute ?? existingLimits.requestsPerMinute,
+          requestsPerHour: options.requestsPerHour ?? existingLimits.requestsPerHour,
+          requestsPerDay: options.requestsPerDay ?? existingLimits.requestsPerDay,
         },
       });
 
       Logger.info(`Updated rate limits for client ${clientId}`);
     } else {
-      Logger.warn(
-        `Attempted to update rate limits for non-existent client ${clientId}`,
-      );
+      Logger.warn(`Attempted to update rate limits for non-existent client ${clientId}`);
     }
   } catch (error) {
     Logger.error('Error updating rate limits', { error });

@@ -22,10 +22,7 @@ describe('zodSchemaToString', () => {
     const parsedResult = JSON.parse(result);
 
     // Verify the schema structure
-    expect(parsedResult).toHaveProperty(
-      '$schema',
-      'http://json-schema.org/draft-07/schema#',
-    );
+    expect(parsedResult).toHaveProperty('$schema', 'http://json-schema.org/draft-07/schema#');
     expect(parsedResult).toHaveProperty('$ref', '#/definitions/schema');
     expect(parsedResult).toHaveProperty('definitions');
     expect(parsedResult.definitions).toHaveProperty('schema');

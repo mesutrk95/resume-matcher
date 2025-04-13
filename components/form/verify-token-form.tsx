@@ -1,6 +1,6 @@
-import { CardWrapper } from "@/components/shared/card-wrapper";
-import type { Response } from "@/types";
-import { redirect } from "next/navigation";
+import { CardWrapper } from '@/components/shared/card-wrapper';
+import type { Response } from '@/types';
+import { redirect } from 'next/navigation';
 
 type NewVerificationFormProps = {
   data: Response;
@@ -8,7 +8,7 @@ type NewVerificationFormProps = {
 
 export const NewVerificationForm = ({ data }: NewVerificationFormProps) => {
   if (!data.success) {
-    return redirect("/login");
+    return redirect('/login');
   }
 
   return (

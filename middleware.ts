@@ -1,12 +1,7 @@
 // middleware.ts
 import { authConfig } from '@/auth/config';
 import NextAuth from 'next-auth';
-import {
-  DEFAULT_LOGIN_REDIRECT,
-  apiAuthPrefix,
-  authRoutes,
-  publicRoutes,
-} from '@/routes';
+import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from '@/routes';
 import { NextRequest, NextResponse } from 'next/server';
 import { HttpException, InternalServerErrorException } from '@/lib/exceptions';
 import { runWithRequestContext } from '@/lib/request-context';

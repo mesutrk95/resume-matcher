@@ -1,14 +1,14 @@
-"use server";
+'use server';
 
-import { newPasswordSchema } from "@/schemas";
+import { newPasswordSchema } from '@/schemas';
 import {
   deleteResetPasswordTokenById,
   getResetPasswordToken,
-} from "@/services/reset-password-token";
-import { getUserByEmail, updateUserById } from "@/services/user";
-import { redirect } from "next/navigation";
-import { z } from "zod";
-import { hashPassword, isExpired, response } from "@/lib/utils";
+} from '@/services/reset-password-token';
+import { getUserByEmail, updateUserById } from '@/services/user';
+import { redirect } from 'next/navigation';
+import { z } from 'zod';
+import { hashPassword, isExpired, response } from '@/lib/utils';
 
 export const newPassword = async (payload: z.infer<typeof newPasswordSchema>, token: string) => {
   // Check if user input is not valid, then return an error.
@@ -18,7 +18,7 @@ export const newPassword = async (payload: z.infer<typeof newPasswordSchema>, to
       success: false,
       error: {
         code: 422,
-        message: "Invalid fields.",
+        message: 'Invalid fields.',
       },
     });
   }
@@ -27,7 +27,7 @@ export const newPassword = async (payload: z.infer<typeof newPasswordSchema>, to
 
   // Check if token doesn't exist, then redirect to login page.
   const existingToken = await getResetPasswordToken(token);
-  if (!existingToken) redirect("/");
+  if (!existingToken) redirect('/');
 
   // Check if token has expired, then return an error.
   const hasExpired = isExpired(existingToken.expires);
@@ -36,7 +36,7 @@ export const newPassword = async (payload: z.infer<typeof newPasswordSchema>, to
       success: false,
       error: {
         code: 401,
-        message: "Token has expired. Please resend to your email.",
+        message: 'Token has expired. Please resend to your email.',
       },
     });
   }
@@ -48,7 +48,7 @@ export const newPassword = async (payload: z.infer<typeof newPasswordSchema>, to
       success: false,
       error: {
         code: 401,
-        message: "Email address does not exist.",
+        message: 'Email address does not exist.',
       },
     });
   }
@@ -67,6 +67,6 @@ export const newPassword = async (payload: z.infer<typeof newPasswordSchema>, to
   return response({
     success: true,
     code: 200,
-    message: "Your password has been reset successfully.",
+    message: 'Your password has been reset successfully.',
   });
 };

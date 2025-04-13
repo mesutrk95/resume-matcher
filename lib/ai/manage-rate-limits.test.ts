@@ -85,12 +85,9 @@ describe('Rate Limits Management', () => {
 
       // Execute & Verify
       await expect(getAllRateLimits()).rejects.toThrow(error);
-      expect(Logger.error).toHaveBeenCalledWith(
-        'Error getting all rate limits',
-        {
-          error,
-        },
-      );
+      expect(Logger.error).toHaveBeenCalledWith('Error getting all rate limits', {
+        error,
+      });
     });
   });
 
@@ -127,10 +124,9 @@ describe('Rate Limits Management', () => {
 
       // Execute & Verify
       await expect(getClientRateLimits('client1')).rejects.toThrow(error);
-      expect(Logger.error).toHaveBeenCalledWith(
-        'Error getting rate limits for client client1',
-        { error },
-      );
+      expect(Logger.error).toHaveBeenCalledWith('Error getting rate limits for client client1', {
+        error,
+      });
     });
   });
 
@@ -194,13 +190,12 @@ describe('Rate Limits Management', () => {
       vi.mocked(db.aIRateLimit.findUnique).mockRejectedValue(error);
 
       // Execute & Verify
-      await expect(
-        setClientRateLimits('client1', { requestsPerMinute: 10 }),
-      ).rejects.toThrow(error);
-      expect(Logger.error).toHaveBeenCalledWith(
-        'Error setting rate limits for client client1',
-        { error },
+      await expect(setClientRateLimits('client1', { requestsPerMinute: 10 })).rejects.toThrow(
+        error,
       );
+      expect(Logger.error).toHaveBeenCalledWith('Error setting rate limits for client client1', {
+        error,
+      });
     });
   });
 
@@ -295,13 +290,10 @@ describe('Rate Limits Management', () => {
       vi.mocked(db.aIRateLimitUsage.findMany).mockRejectedValue(error);
 
       // Execute & Verify
-      await expect(getUserRateLimitUsage('user123', 'client1')).rejects.toThrow(
+      await expect(getUserRateLimitUsage('user123', 'client1')).rejects.toThrow(error);
+      expect(Logger.error).toHaveBeenCalledWith('Error getting rate limit usage for user user123', {
         error,
-      );
-      expect(Logger.error).toHaveBeenCalledWith(
-        'Error getting rate limit usage for user user123',
-        { error },
-      );
+      });
     });
   });
 
@@ -340,9 +332,7 @@ describe('Rate Limits Management', () => {
           userId: 'user123',
         },
       });
-      expect(Logger.info).toHaveBeenCalledWith(
-        'Cleared rate limit usage for user user123',
-      );
+      expect(Logger.info).toHaveBeenCalledWith('Cleared rate limit usage for user user123');
     });
 
     it('should throw and log error when database operation fails', async () => {

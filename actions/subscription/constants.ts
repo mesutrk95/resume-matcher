@@ -2,9 +2,7 @@ import { SubscriptionStatus } from '@prisma/client';
 
 export const TRIAL_PERIOD_DAYS = 3;
 
-export function mapStripeStatusToDBStatus(
-  stripeStatus: string,
-): SubscriptionStatus {
+export function mapStripeStatusToDBStatus(stripeStatus: string): SubscriptionStatus {
   switch (stripeStatus) {
     case 'active':
       return SubscriptionStatus.ACTIVE;
@@ -25,12 +23,7 @@ export function mapStripeStatusToDBStatus(
   }
 }
 
-export type SubscriptionInterval =
-  | 'weekly'
-  | 'monthly'
-  | 'quarterly'
-  | 'biannual'
-  | 'yearly';
+export type SubscriptionInterval = 'weekly' | 'monthly' | 'quarterly' | 'biannual' | 'yearly';
 
 export const PRICE_MAPPING: Record<SubscriptionInterval, string | undefined> = {
   weekly: process.env.STRIPE_BASIC_PRICE_WEEKLY,

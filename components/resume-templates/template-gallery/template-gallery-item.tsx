@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { CreateTemplateButton } from "./create-template-button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ResumeContent } from "@/types/resume";
-import { useEffect, useState } from "react";
+import { CreateTemplateButton } from './create-template-button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ResumeContent } from '@/types/resume';
+import { useEffect, useState } from 'react';
 
 interface ResumeTemplateCardProps {
   label: string;
@@ -12,31 +12,27 @@ interface ResumeTemplateCardProps {
   url: string;
 }
 
-export const TemplateGalleryItem = ({
-  label,
-  url,
-  caption,
-}: ResumeTemplateCardProps) => {
+export const TemplateGalleryItem = ({ label, url, caption }: ResumeTemplateCardProps) => {
   const [resumeContent, setResumeContent] = useState<ResumeContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState('');
 
   useEffect(() => {
     setIsLoading(true);
-    
+
     // Generate image URL by replacing .json with .png
     const imgUrl = url.replace('.json', '.png');
     setImageUrl(imgUrl);
-    
+
     // Still fetch the JSON to get resume content for the Create button
     fetch(url)
-      .then((res) => res.json())
-      .then((res) => {
+      .then(res => res.json())
+      .then(res => {
         setResumeContent(res as ResumeContent);
         setIsLoading(false);
       })
-      .catch((err) => {
-        console.error("Error loading template data:", err);
+      .catch(err => {
+        console.error('Error loading template data:', err);
         setIsLoading(false);
       });
   }, [url]);
@@ -51,16 +47,14 @@ export const TemplateGalleryItem = ({
             </div>
           ) : imageUrl ? (
             <div className="h-full w-full overflow-hidden p-3">
-              <img 
-                src={imageUrl} 
+              <img
+                src={imageUrl}
                 alt={`${label} template preview`}
                 className="  w-full object-contain p-4 overflow-hidden hover:mb-2 border rounded-lg"
               />
             </div>
           ) : (
-            <div className="text-sm text-muted-foreground">
-              Failed to load template
-            </div>
+            <div className="text-sm text-muted-foreground">Failed to load template</div>
           )}
         </div>
         <div className="flex flex-col gap-4 p-4 pt-0">

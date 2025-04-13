@@ -1,5 +1,5 @@
-import { AxiosError } from "axios";
-import { HttpException } from "./exceptions";
+import { AxiosError } from 'axios';
+import { HttpException } from './exceptions';
 
 export type ServerActionResponse<T> = {
   success: boolean;
@@ -8,13 +8,9 @@ export type ServerActionResponse<T> = {
 };
 
 export function withErrorHandling<T extends (...args: any[]) => Promise<any>>(
-  action: T
-): (
-  ...args: Parameters<T>
-) => Promise<ServerActionResponse<Awaited<ReturnType<T>>>> {
-  return async (
-    ...args: Parameters<T>
-  ): Promise<ServerActionResponse<Awaited<ReturnType<T>>>> => {
+  action: T,
+): (...args: Parameters<T>) => Promise<ServerActionResponse<Awaited<ReturnType<T>>>> {
+  return async (...args: Parameters<T>): Promise<ServerActionResponse<Awaited<ReturnType<T>>>> => {
     try {
       const data = await action(...args);
       return { success: true, data };
@@ -23,12 +19,12 @@ export function withErrorHandling<T extends (...args: any[]) => Promise<any>>(
       if (err instanceof HttpException) {
         errObj = err.serialize();
       } else if (err instanceof AxiosError) {
-        errObj = { message: "An unknown error occurred", data: err.message };
+        errObj = { message: 'An unknown error occurred', data: err.message };
       } else {
-        errObj = { message: "An unknown error occurred" };
+        errObj = { message: 'An unknown error occurred' };
       }
       console.error(err);
-      
+
       return { success: false, error: errObj };
     }
   };

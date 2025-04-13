@@ -16,10 +16,7 @@ export class TextResponseProcessor extends BaseResponseProcessor<string> {
   /**
    * Process the text response with basic cleanup
    */
-  protected async processResponse(
-    response: string,
-    request: AIRequestModel<any>,
-  ): Promise<string> {
+  protected async processResponse(response: string, request: AIRequestModel<any>): Promise<string> {
     // Basic cleanup
     return response.trim();
   }

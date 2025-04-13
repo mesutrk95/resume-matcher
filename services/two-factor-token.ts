@@ -1,6 +1,6 @@
-import { db } from "@/lib/db";
-import { setTokenExpiration } from "@/lib/utils";
-import crypto from "node:crypto";
+import { db } from '@/lib/db';
+import { setTokenExpiration } from '@/lib/utils';
+import crypto from 'node:crypto';
 
 export const generateTwoFactorToken = async (email: string) => {
   const existingToken = await getTwoFactorTokenByEmail(email);

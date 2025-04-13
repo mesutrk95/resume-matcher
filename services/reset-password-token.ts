@@ -1,6 +1,6 @@
-import { db } from "@/lib/db";
-import { setTokenExpiration } from "@/lib/utils";
-import { v4 as uuid } from "uuid";
+import { db } from '@/lib/db';
+import { setTokenExpiration } from '@/lib/utils';
+import { v4 as uuid } from 'uuid';
 
 export const generateResetPasswordToken = async (email: string) => {
   const existingToken = await getResetPasswordTokenByEmail(email);

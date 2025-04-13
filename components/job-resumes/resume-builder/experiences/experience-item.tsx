@@ -1,22 +1,19 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type {
-  Experience,
-  ExperienceItem as ExperienceItemType,
-} from "@/types/resume";
+import { useState } from 'react';
+import type { Experience, ExperienceItem as ExperienceItemType } from '@/types/resume';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, GripVertical, Plus, Save, Trash2, X } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Edit, GripVertical, Plus, Save, Trash2, X } from 'lucide-react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import {
   DndContext,
   closestCenter,
@@ -24,20 +21,20 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+} from '@dnd-kit/sortable';
 
-import { ItemList } from "./item-list";
-import { AddItemForm } from "./add-item-form";
-import { randomNDigits } from "@/lib/utils";
-import clsx from "clsx";
-import { SeperateList } from "@/components/shared/seperate-list";
-import { YearMonthPicker } from "@/components/ui/year-month-picker";
+import { ItemList } from './item-list';
+import { AddItemForm } from './add-item-form';
+import { randomNDigits } from '@/lib/utils';
+import clsx from 'clsx';
+import { SeperateList } from '@/components/shared/seperate-list';
+import { YearMonthPicker } from '@/components/ui/year-month-picker';
 
 type ExperienceItemProps = {
   experience: Experience;
@@ -45,14 +42,11 @@ type ExperienceItemProps = {
   onDelete: (experienceId: string) => void;
 };
 
-export function ExperienceItem({
-  experience,
-  onUpdate,
-  onDelete,
-}: ExperienceItemProps) {
+export function ExperienceItem({ experience, onUpdate, onDelete }: ExperienceItemProps) {
   const [isOpen, setIsOpen] = useState<string | undefined>();
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: experience.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: experience.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -76,7 +70,7 @@ export function ExperienceItem({
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleEdit = () => {
@@ -115,7 +109,7 @@ export function ExperienceItem({
   const handleSaveNewItem = (description: string) => {
     const newItem: ExperienceItemType = {
       id: `item_${randomNDigits()}`,
-      description: "",
+      description: '',
       enabled: true,
       skills: [],
       variations: [
@@ -142,16 +136,14 @@ export function ExperienceItem({
   const handleUpdateItem = (updatedItem: ExperienceItemType) => {
     onUpdate({
       ...experience,
-      items: experience.items.map((item) =>
-        item.id === updatedItem.id ? updatedItem : item
-      ),
+      items: experience.items.map(item => (item.id === updatedItem.id ? updatedItem : item)),
     });
   };
 
   const handleDeleteItem = (itemId: string) => {
     onUpdate({
       ...experience,
-      items: experience.items.filter((item) => item.id !== itemId),
+      items: experience.items.filter(item => item.id !== itemId),
     });
   };
 
@@ -159,12 +151,8 @@ export function ExperienceItem({
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = experience.items.findIndex(
-        (item) => item.id === active.id
-      );
-      const newIndex = experience.items.findIndex(
-        (item) => item.id === over.id
-      );
+      const oldIndex = experience.items.findIndex(item => item.id === active.id);
+      const newIndex = experience.items.findIndex(item => item.id === over.id);
 
       onUpdate({
         ...experience,
@@ -192,8 +180,8 @@ export function ExperienceItem({
         <AccordionItem value={experience.id} className="border rounded-lg">
           <div
             className={clsx(
-              "flex items-center mx-[2px] px-4 py-0 sticky top-0 bg-white",
-              isOpen ? "border-b rounded-t-xl mb-2" : "rounded-xl"
+              'flex items-center mx-[2px] px-4 py-0 sticky top-0 bg-white',
+              isOpen ? 'border-b rounded-t-xl mb-2' : 'rounded-xl',
             )}
           >
             <div
@@ -215,8 +203,8 @@ export function ExperienceItem({
               <div className="w-[400px] grid grid-cols-1 md:grid-cols-2 gap-1 py-2">
                 <Input
                   value={editForm.companyName}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({
+                  onChange={e =>
+                    setEditForm(prev => ({
                       ...prev,
                       companyName: e.target.value,
                     }))
@@ -225,15 +213,13 @@ export function ExperienceItem({
                 />
                 <Input
                   value={editForm.role}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({ ...prev, role: e.target.value }))
-                  }
+                  onChange={e => setEditForm(prev => ({ ...prev, role: e.target.value }))}
                   placeholder="Role"
                 />
                 <Input
                   value={editForm.type}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({
+                  onChange={e =>
+                    setEditForm(prev => ({
                       ...prev,
                       type: e.target.value,
                     }))
@@ -242,8 +228,8 @@ export function ExperienceItem({
                 />
                 <Input
                   value={editForm.location}
-                  onChange={(e) =>
-                    setEditForm((prev) => ({
+                  onChange={e =>
+                    setEditForm(prev => ({
                       ...prev,
                       location: e.target.value,
                     }))
@@ -252,16 +238,12 @@ export function ExperienceItem({
                 />
                 <YearMonthPicker
                   date={editForm.startDate}
-                  setDate={(date) =>
-                    setEditForm((prev) => ({ ...prev, startDate: date }))
-                  }
+                  setDate={date => setEditForm(prev => ({ ...prev, startDate: date }))}
                   placeholder="Start Date"
                 />
                 <YearMonthPicker
                   date={editForm.endDate}
-                  setDate={(date) =>
-                    setEditForm((prev) => ({ ...prev, endDate: date }))
-                  }
+                  setDate={date => setEditForm(prev => ({ ...prev, endDate: date }))}
                   placeholder="End Date"
                 />
               </div>
@@ -271,20 +253,12 @@ export function ExperienceItem({
               <div className="flex flex-col items-start text-left">
                 {!isEditing && (
                   <>
-                    <div
-                      className={`${
-                        !experience.enabled ? "text-muted-foreground" : ""
-                      }`}
-                    >
+                    <div className={`${!experience.enabled ? 'text-muted-foreground' : ''}`}>
                       {experience.companyName}
                     </div>
                     <div className="text-sm text-muted-foreground">
                       <SeperateList
-                        data={[
-                          experience.role,
-                          experience.startDate,
-                          experience.endDate,
-                        ]}
+                        data={[experience.role, experience.startDate, experience.endDate]}
                         by=" • "
                       />
                     </div>
@@ -332,7 +306,7 @@ export function ExperienceItem({
               onDragEnd={handleDragEndItems}
             >
               <SortableContext
-                items={experience.items.map((item) => item.id)}
+                items={experience.items.map(item => item.id)}
                 strategy={verticalListSortingStrategy}
               >
                 <ItemList
@@ -346,10 +320,7 @@ export function ExperienceItem({
 
             {/* Add Item Form */}
             {addingItem && (
-              <AddItemForm
-                onSave={handleSaveNewItem}
-                onCancel={handleCancelAddItem}
-              />
+              <AddItemForm onSave={handleSaveNewItem} onCancel={handleCancelAddItem} />
             )}
 
             <div className="flex justify-end mt-4 ">

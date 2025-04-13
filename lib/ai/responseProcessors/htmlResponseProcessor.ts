@@ -16,10 +16,7 @@ export class HtmlResponseProcessor extends BaseResponseProcessor<string> {
   /**
    * Process the HTML response with cleanup
    */
-  protected async processResponse(
-    response: string,
-    request: AIRequestModel<any>,
-  ): Promise<string> {
+  protected async processResponse(response: string, request: AIRequestModel<any>): Promise<string> {
     // Clean up markdown code blocks
     let cleanHtml = response
       .replace(/```html|```/g, '')
@@ -27,10 +24,7 @@ export class HtmlResponseProcessor extends BaseResponseProcessor<string> {
       .trim();
 
     // Ensure HTML document has basic structure if missing
-    if (
-      !cleanHtml.includes('<html') &&
-      !request.prompt.toLowerCase().includes('fragment')
-    ) {
+    if (!cleanHtml.includes('<html') && !request.prompt.toLowerCase().includes('fragment')) {
       // Check if it's just a fragment or a full document is expected
       if (cleanHtml.startsWith('<body') || cleanHtml.startsWith('<!DOCTYPE')) {
         // It already has some structure, leave it alone

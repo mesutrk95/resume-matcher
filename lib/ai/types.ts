@@ -115,4 +115,4 @@ export interface AIRequestModel<TResponse = any> {
 }
 
 // Export a type for compatibility with existing code
-export interface ContentWithMeta extends ChatHistoryItem {}
+export type ContentWithMeta = ChatHistoryItem;

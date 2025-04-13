@@ -9,10 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Subscription as PrismaSubscription,
-  SubscriptionStatus,
-} from '@prisma/client';
+import { Subscription as PrismaSubscription, SubscriptionStatus } from '@prisma/client';
 import { format } from 'date-fns';
 import { Badge } from '../ui/badge';
 import {
@@ -37,10 +34,7 @@ import {
   RefreshCw,
   Package,
 } from 'lucide-react';
-import {
-  SubscriptionWithPlanDetails,
-  useSubscription,
-} from '@/providers/SubscriptionProvider'; // Import augmented type
+import { SubscriptionWithPlanDetails, useSubscription } from '@/providers/SubscriptionProvider'; // Import augmented type
 
 // Update props to potentially accept the augmented type, though initial might not have it
 interface CurrentSubscriptionProps {
@@ -66,8 +60,7 @@ export function CurrentSubscription({
 
   // Use the hook's subscription state if available, otherwise use prop
   // Cast initialSubscription if needed, or rely on the hook's state which should have details
-  const currentSubscription =
-    subscription || (initialSubscription as SubscriptionWithPlanDetails);
+  const currentSubscription = subscription || (initialSubscription as SubscriptionWithPlanDetails);
 
   // Format date display
   const formatDate = (date: Date | null | undefined) => {
@@ -121,25 +114,19 @@ export function CurrentSubscription({
       case SubscriptionStatus.ACTIVE:
         return {
           label: 'Active',
-          description: `Renews on ${formatDate(
-            currentSubscription.currentPeriodEnd,
-          )}`,
+          description: `Renews on ${formatDate(currentSubscription.currentPeriodEnd)}`,
           variant: 'default' as BadgeVariant,
         };
       case SubscriptionStatus.TRIALING:
         return {
           label: 'Trial',
-          description: `Trial ends on ${formatDate(
-            currentSubscription.currentPeriodEnd,
-          )}`,
+          description: `Trial ends on ${formatDate(currentSubscription.currentPeriodEnd)}`,
           variant: 'outline' as BadgeVariant,
         };
       case SubscriptionStatus.CANCELED:
         return {
           label: 'Canceled',
-          description: `Access until ${formatDate(
-            currentSubscription.currentPeriodEnd,
-          )}`,
+          description: `Access until ${formatDate(currentSubscription.currentPeriodEnd)}`,
           variant: 'destructive' as BadgeVariant,
         };
       case SubscriptionStatus.PAST_DUE:
@@ -176,8 +163,7 @@ export function CurrentSubscription({
     if (interval && intervalCount) {
       if (intervalCount === 1) {
         // Capitalize interval (e.g., 'month' -> 'Monthly')
-        const formattedInterval =
-          interval.charAt(0).toUpperCase() + interval.slice(1);
+        const formattedInterval = interval.charAt(0).toUpperCase() + interval.slice(1);
         return `${name} (${formattedInterval})`; // e.g., "Pro Plan (Monthly)"
       } else {
         // e.g., "Team Plan (Every 3 months)"
@@ -196,22 +182,16 @@ export function CurrentSubscription({
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>No Subscription</CardTitle>
-              <CardDescription>
-                You don&apos;t have an active subscription
-              </CardDescription>
+              <CardDescription>You don&apos;t have an active subscription</CardDescription>
             </div>
             <Badge variant="destructive">Not Subscribed</Badge>
           </div>
         </CardHeader>
         <CardContent className="pt-6 text-center">
           <p className="mb-6">
-            Subscribe to access premium features and boost your job search
-            success.
+            Subscribe to access premium features and boost your job search success.
           </p>
-          <Button
-            onClick={() => document.getElementById('plans-tab')?.click()}
-            className="mt-2"
-          >
+          <Button onClick={() => document.getElementById('plans-tab')?.click()} className="mt-2">
             View Subscription Plans
           </Button>
         </CardContent>
@@ -220,9 +200,7 @@ export function CurrentSubscription({
   }
 
   const statusInfo = getStatusDisplay();
-  const daysRemaining = calculateDaysRemaining(
-    currentSubscription.currentPeriodEnd,
-  );
+  const daysRemaining = calculateDaysRemaining(currentSubscription.currentPeriodEnd);
 
   return (
     <Card className="w-full">
@@ -259,9 +237,7 @@ export function CurrentSubscription({
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-medium">Status</h3>
-            <p className="text-sm text-muted-foreground">
-              {statusInfo.description}
-            </p>
+            <p className="text-sm text-muted-foreground">{statusInfo.description}</p>
           </div>
 
           {daysRemaining > 0 && (
@@ -286,12 +262,10 @@ export function CurrentSubscription({
           <div className="flex items-start p-4 bg-amber-50 border border-amber-200 rounded-md">
             <AlertTriangle className="h-5 w-5 text-amber-500 mr-3 mt-0.5" />
             <div>
-              <h4 className="text-sm font-medium text-amber-800">
-                Payment Failed
-              </h4>
+              <h4 className="text-sm font-medium text-amber-800">Payment Failed</h4>
               <p className="text-sm text-amber-700">
-                Your last payment attempt failed. Please update your payment
-                method to continue your subscription.
+                Your last payment attempt failed. Please update your payment method to continue your
+                subscription.
               </p>
               <Button
                 variant="outline"
@@ -330,10 +304,9 @@ export function CurrentSubscription({
                   <p className="text-xs text-muted-foreground">
                     {currentSubscription.cancelAtPeriodEnd
                       ? 'Will not renew automatically'
-                      : currentSubscription.status ===
-                        SubscriptionStatus.TRIALING
-                      ? 'Will convert to paid subscription'
-                      : 'Will renew automatically'}
+                      : currentSubscription.status === SubscriptionStatus.TRIALING
+                        ? 'Will convert to paid subscription'
+                        : 'Will renew automatically'}
                   </p>
                 </div>
               </div>
@@ -372,9 +345,7 @@ export function CurrentSubscription({
               <div className="flex items-center gap-4">
                 <RefreshCw className="h-8 w-8 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">
-                    Change Subscription Plan
-                  </p>
+                  <p className="text-sm font-medium">Change Subscription Plan</p>
                   <p className="text-xs text-muted-foreground">
                     Upgrade, downgrade or switch billing cycle
                   </p>
@@ -404,18 +375,14 @@ export function CurrentSubscription({
               <AlertDialogHeader>
                 <AlertDialogTitle>Resume Subscription</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Your subscription will continue and you won&apos;t lose access
-                  to any features. You&apos;ll be billed on your regular billing
-                  date.
+                  Your subscription will continue and you won&apos;t lose access to any features.
+                  You&apos;ll be billed on your regular billing date.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction asChild>
-                  <LoadingButton
-                    loading={isReactivating}
-                    onClick={handleReactivateSubscription}
-                  >
+                  <LoadingButton loading={isReactivating} onClick={handleReactivateSubscription}>
                     Resume Subscription
                   </LoadingButton>
                 </AlertDialogAction>
@@ -432,9 +399,8 @@ export function CurrentSubscription({
               <AlertDialogHeader>
                 <AlertDialogTitle>Cancel Subscription</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Your subscription will continue until the end of the current
-                  billing period. After that, you&apos;ll lose access to premium
-                  features.
+                  Your subscription will continue until the end of the current billing period. After
+                  that, you&apos;ll lose access to premium features.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

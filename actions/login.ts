@@ -1,20 +1,20 @@
-"use server";
+'use server';
 
-import { signIn } from "@/auth";
-import { loginSchema } from "@/schemas";
-import { z } from "zod";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { AuthError } from "next-auth";
-import { getUserByEmail } from "@/services/user";
-import bcrypt from "bcryptjs";
-import { generateTwoFactorToken } from "@/services/two-factor-token";
-import { sendTwoFactorEmail } from "@/services/mail";
-import { cookies } from "next/headers";
+import { signIn } from '@/auth';
+import { loginSchema } from '@/schemas';
+import { z } from 'zod';
+import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
+import { AuthError } from 'next-auth';
+import { getUserByEmail } from '@/services/user';
+import bcrypt from 'bcryptjs';
+import { generateTwoFactorToken } from '@/services/two-factor-token';
+import { sendTwoFactorEmail } from '@/services/mail';
+import { cookies } from 'next/headers';
 import {
   getTwoFactorConfirmationByUserId,
   deleteTwoFactorConfirmationById,
-} from "@/services/two-factor-confirmation";
-import { isExpired, response, signJwt } from "@/lib/utils";
+} from '@/services/two-factor-confirmation';
+import { isExpired, response, signJwt } from '@/lib/utils';
 
 export const login = async (payload: z.infer<typeof loginSchema>) => {
   // Check if user input is not valid, then return an error.
@@ -24,7 +24,7 @@ export const login = async (payload: z.infer<typeof loginSchema>) => {
       success: false,
       error: {
         code: 422,
-        message: "Invalid fields.",
+        message: 'Invalid fields.',
       },
     });
   }
@@ -38,7 +38,7 @@ export const login = async (payload: z.infer<typeof loginSchema>) => {
       success: false,
       error: {
         code: 401,
-        message: "Invalid credentials.",
+        message: 'Invalid credentials.',
       },
     });
   }
@@ -50,7 +50,7 @@ export const login = async (payload: z.infer<typeof loginSchema>) => {
       success: false,
       error: {
         code: 401,
-        message: "Invalid credentials.",
+        message: 'Invalid credentials.',
       },
     });
   }
@@ -61,7 +61,7 @@ export const login = async (payload: z.infer<typeof loginSchema>) => {
       success: false,
       error: {
         code: 401,
-        message: "Your email address is not verified yet. Please check your email.",
+        message: 'Your email address is not verified yet. Please check your email.',
       },
     });
   }
@@ -80,7 +80,7 @@ export const login = async (payload: z.infer<typeof loginSchema>) => {
     if (!existingTwoFactorConfirmation || hasExpired) {
       const cookieStore = cookies();
       const token = signJwt(validatedFields.data);
-      cookieStore.set("credentials-session", token);
+      cookieStore.set('credentials-session', token);
 
       const twoFactorToken = await generateTwoFactorToken(existingUser.email);
       await sendTwoFactorEmail(twoFactorToken.email, twoFactorToken.token);
@@ -88,7 +88,7 @@ export const login = async (payload: z.infer<typeof loginSchema>) => {
       return response({
         success: true,
         code: 200,
-        message: "Please confirm your two-factor authentication code.",
+        message: 'Please confirm your two-factor authentication code.',
       });
     }
   }
@@ -100,7 +100,7 @@ export const login = async (payload: z.infer<typeof loginSchema>) => {
 // Sign in credentials from next-auth
 export const signInCredentials = async (email: string, password: string) => {
   try {
-    await signIn("credentials", {
+    await signIn('credentials', {
       email,
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
@@ -108,31 +108,31 @@ export const signInCredentials = async (email: string, password: string) => {
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
-        case "CredentialsSignin":
+        case 'CredentialsSignin':
           return response({
             success: false,
             error: {
               code: 401,
-              message: "Invalid credentials.",
+              message: 'Invalid credentials.',
             },
           });
 
-        case "OAuthAccountNotLinked":
+        case 'OAuthAccountNotLinked':
           return response({
             success: false,
             error: {
               code: 403,
               message:
-                "Another account already registered with the same Email Address. Please login the different one.",
+                'Another account already registered with the same Email Address. Please login the different one.',
             },
           });
 
-        case "Verification":
+        case 'Verification':
           return response({
             success: false,
             error: {
               code: 422,
-              message: "Verification failed. Please try again.",
+              message: 'Verification failed. Please try again.',
             },
           });
 
@@ -150,7 +150,7 @@ export const signInCredentials = async (email: string, password: string) => {
             success: false,
             error: {
               code: 500,
-              message: "Something went wrong.",
+              message: 'Something went wrong.',
             },
           });
       }

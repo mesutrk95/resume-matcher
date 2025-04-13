@@ -1,34 +1,28 @@
-"use client";
+'use client';
 
-import { JobAnalyzeResult, JobKeyword, JobKeywordType } from "@/types/job";
-import { Job } from "@prisma/client";
-import { useMemo, useTransition } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { JobDescriptionPreview } from "./job-description-preview";
-import Moment from "react-moment";
-import {
-  Briefcase,
-  Edit,
-  Ellipsis,
-  LucideExternalLink,
-  Trash,
-} from "lucide-react";
-import { LoadingButton } from "../ui/loading-button";
-import { analyzeJobByAI, deleteJob } from "@/actions/job";
-import { toast } from "sonner";
-import { ContentPlaceholder } from "@/app/_components/content-placeholder";
+import { JobAnalyzeResult, JobKeyword, JobKeywordType } from '@/types/job';
+import { Job } from '@prisma/client';
+import { useMemo, useTransition } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { JobDescriptionPreview } from './job-description-preview';
+import Moment from 'react-moment';
+import { Briefcase, Edit, Ellipsis, LucideExternalLink, Trash } from 'lucide-react';
+import { LoadingButton } from '../ui/loading-button';
+import { analyzeJobByAI, deleteJob } from '@/actions/job';
+import { toast } from 'sonner';
+import { ContentPlaceholder } from '@/app/_components/content-placeholder';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { confirmDialog } from "../shared/confirm-dialog";
-import { useRouter } from "next/navigation";
-import { Card, CardContent } from "../ui/card";
-import { JobStatusUpdateForm } from "./job-status-update-form";
-import Link from "next/link";
+} from '../ui/dropdown-menu';
+import { Button } from '../ui/button';
+import { confirmDialog } from '../shared/confirm-dialog';
+import { useRouter } from 'next/navigation';
+import { Card, CardContent } from '../ui/card';
+import { JobStatusUpdateForm } from './job-status-update-form';
+import Link from 'next/link';
 
 const KeywordBadge = ({ keyword }: { keyword: JobKeyword }) => {
   return (
@@ -51,12 +45,10 @@ const RequireAnalyzeAlert = ({
   return (
     <div className="py-10 text-sm text-center">
       <h3 className="text-xl font-bold">Job is not analyzed yet!</h3>
-      <span className="text-muted-foreground">
-        Please analyze the job first
-      </span>
+      <span className="text-muted-foreground">Please analyze the job first</span>
       <div className="mt-2">
         <LoadingButton
-          variant={"outline"}
+          variant={'outline'}
           onClick={onAnalyzeJob}
           loading={isAnalyzingJob}
           loadingText="Analyzing ..."
@@ -84,13 +76,13 @@ export const JobPostPreview = ({
       try {
         const result = await analyzeJobByAI(job.id);
 
-        toast.success("Job analyzed successfully.");
+        toast.success('Job analyzed successfully.');
         onJobUpdated?.({
           ...job,
           analyzeResults: result.analyzeResults,
         });
       } catch (error) {
-        toast.error("Failed to analyze job.");
+        toast.error('Failed to analyze job.');
       }
     });
   };
@@ -103,10 +95,10 @@ export const JobPostPreview = ({
       startDeletingJob(async () => {
         try {
           await deleteJob(job.id);
-          toast.success("Job deleted successfully.");
-          router.push("/jobs");
+          toast.success('Job deleted successfully.');
+          router.push('/jobs');
         } catch (error) {
-          toast.error("Failed to delete job.");
+          toast.error('Failed to delete job.');
         }
       });
     }
@@ -122,7 +114,7 @@ export const JobPostPreview = ({
           acc[keyword.skill] = ks;
           return acc;
         },
-        {} as Record<JobKeywordType, JobKeyword[]>
+        {} as Record<JobKeywordType, JobKeyword[]>,
       );
     } catch (error) {
       return null;
@@ -140,8 +132,7 @@ export const JobPostPreview = ({
             {job.location && <> - {job.location}</>}
             {job.postedAt && (
               <>
-                - Posted at{" "}
-                <Moment format="YYYY/MM/DD" date={job.postedAt} utc />
+                - Posted at <Moment format="YYYY/MM/DD" date={job.postedAt} utc />
                 (<Moment date={job.postedAt} fromNow utc />)
               </>
             )}
@@ -166,12 +157,9 @@ export const JobPostPreview = ({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem
-                onClick={handleAnalyzeJob}
-                disabled={isAnalyzingJob}
-              >
+              <DropdownMenuItem onClick={handleAnalyzeJob} disabled={isAnalyzingJob}>
                 <Briefcase size={16} />
-                {!isAnalyzingJob ? "Analyze Job" : "Analyzing Job ..."}
+                {!isAnalyzingJob ? 'Analyze Job' : 'Analyzing Job ...'}
               </DropdownMenuItem>
               <DropdownMenuItem disabled={isDeletingJob} asChild>
                 <Link href={`/jobs/${job.id}/update`}>
@@ -192,17 +180,14 @@ export const JobPostPreview = ({
         </div>
       </div>
       <Tabs defaultValue="jd" className="">
-        <TabsList
-          className="grid w-full grid-cols-3 bg-white"
-          variant={"outline"}
-        >
-          <TabsTrigger value="jd" variant={"outline"}>
+        <TabsList className="grid w-full grid-cols-3 bg-white" variant={'outline'}>
+          <TabsTrigger value="jd" variant={'outline'}>
             Description
           </TabsTrigger>
-          <TabsTrigger value="keywords" variant={"outline"}>
+          <TabsTrigger value="keywords" variant={'outline'}>
             Keywords
           </TabsTrigger>
-          <TabsTrigger value="summary" variant={"outline"}>
+          <TabsTrigger value="summary" variant={'outline'}>
             Summary
           </TabsTrigger>
         </TabsList>
@@ -225,14 +210,9 @@ export const JobPostPreview = ({
                   <div className="flex flex-col gap-1">
                     <h4 className="font-bold">Hard Skills</h4>
                     <ul className="  gap-2   ">
-                      {jobKeywords?.["hard"]
+                      {jobKeywords?.['hard']
                         ?.sort((k1, k2) => k2.level - k1.level)
-                        .map((keyword) => (
-                          <KeywordBadge
-                            keyword={keyword}
-                            key={keyword.keyword}
-                          />
-                        ))}
+                        .map(keyword => <KeywordBadge keyword={keyword} key={keyword.keyword} />)}
 
                       {/* {(jobKeywords?.["hard"]?.length || 0) > 15 && (
                       <li
@@ -247,27 +227,17 @@ export const JobPostPreview = ({
                   <div className="flex flex-col gap-1">
                     <h4 className="  font-bold">Soft Skills</h4>
                     <ul className="  gap-2   ">
-                      {jobKeywords?.["soft"]
+                      {jobKeywords?.['soft']
                         ?.sort((k1, k2) => k2.level - k1.level)
-                        .map((keyword) => (
-                          <KeywordBadge
-                            keyword={keyword}
-                            key={keyword.keyword}
-                          />
-                        ))}
+                        .map(keyword => <KeywordBadge keyword={keyword} key={keyword.keyword} />)}
                     </ul>
                   </div>
                   <div className="flex flex-col gap-1">
                     <h4 className="font-bold">Other</h4>
                     <ul className="gap-2">
-                      {jobKeywords?.["none"]
+                      {jobKeywords?.['none']
                         ?.sort((k1, k2) => k2.level - k1.level)
-                        .map((keyword) => (
-                          <KeywordBadge
-                            keyword={keyword}
-                            key={keyword.keyword}
-                          />
-                        ))}
+                        .map(keyword => <KeywordBadge keyword={keyword} key={keyword.keyword} />)}
                     </ul>
                   </div>
                 </div>
@@ -286,9 +256,7 @@ export const JobPostPreview = ({
                 <div
                   className="jd-preview text-sm"
                   dangerouslySetInnerHTML={{
-                    __html:
-                      (job.analyzeResults as { summary: string })?.summary ||
-                      "",
+                    __html: (job.analyzeResults as { summary: string })?.summary || '',
                   }}
                 ></div>
               </ContentPlaceholder>

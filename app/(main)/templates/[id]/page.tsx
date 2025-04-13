@@ -5,22 +5,18 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { db } from "@/lib/db";
-import { ResumeContent } from "@/types/resume";
-import { Metadata } from "next";
-import { ResumeTemplatePage } from "./resume-template-page";
-import { notFound } from "next/navigation";
+} from '@/components/ui/breadcrumb';
+import { db } from '@/lib/db';
+import { ResumeContent } from '@/types/resume';
+import { Metadata } from 'next';
+import { ResumeTemplatePage } from './resume-template-page';
+import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: "Resume Template Builder",
+  title: 'Resume Template Builder',
 };
 
-export default async function TemplateBuilderPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default async function TemplateBuilderPage({ params }: { params: { id: string } }) {
   const resumeTemplate = await db.resumeTemplate.findUnique({
     where: { id: params.id },
   });

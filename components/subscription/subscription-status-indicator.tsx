@@ -29,9 +29,9 @@ export function SubscriptionStatusIndicator() {
         className="cursor-pointer border-slate-300 border-dashed py-1"
         onClick={() => router.push('/settings/billing')}
       >
-        <LottieAnimatedIcon icon="/iconly/Star5.json"/>
+        <LottieAnimatedIcon icon="/iconly/Star5.json" />
         {/* <Sparkles className="h-3 w-3 mr-1" /> */}
-        <span className='ms-2'>Upgrade</span>
+        <span className="ms-2">Upgrade</span>
       </Badge>
     );
   }
@@ -41,10 +41,7 @@ export function SubscriptionStatusIndicator() {
     // Calculate days remaining
     const trialEndDate = subscription.currentPeriodEnd;
     const daysRemaining = trialEndDate
-      ? Math.ceil(
-          (new Date(trialEndDate).getTime() - new Date().getTime()) /
-            (1000 * 60 * 60 * 24),
-        )
+      ? Math.ceil((new Date(trialEndDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
       : 0;
 
     return (

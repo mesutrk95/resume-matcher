@@ -1,13 +1,13 @@
-import { notFound } from "next/navigation";
-import { db } from "@/lib/db";
-import { currentUser } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
-import { JobResumeCard } from "@/components/job-resumes/resume-card";
-import { JobPostPreview } from "@/components/jobs/job-post-preview";
-import { JobStatusUpdateForm } from "@/components/jobs/job-status-update-form";
-import { ContentPlaceholder } from "@/app/_components/content-placeholder";
+import { notFound } from 'next/navigation';
+import { db } from '@/lib/db';
+import { currentUser } from '@/lib/auth';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { ChevronLeft } from 'lucide-react';
+import { JobResumeCard } from '@/components/job-resumes/resume-card';
+import { JobPostPreview } from '@/components/jobs/job-post-preview';
+import { JobStatusUpdateForm } from '@/components/jobs/job-status-update-form';
+import { ContentPlaceholder } from '@/app/_components/content-placeholder';
 
 interface JobResumesPageProps {
   params: {
@@ -40,7 +40,7 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
     //   resumeTemplate: true,
     // },
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
 
@@ -80,16 +80,14 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
                   </div>
                 }
               >
-                {resumeJobs.map((resumeJob) => (
+                {resumeJobs.map(resumeJob => (
                   <JobResumeCard key={resumeJob.id} jobResume={resumeJob} />
                 ))}
               </ContentPlaceholder>
             </div>
             <div className="mt-4">
               <Button asChild className="w-full">
-                <Link href={`/jobs/${job.id}/create-resume`}>
-                  Create a new Resume
-                </Link>
+                <Link href={`/jobs/${job.id}/create-resume`}>Create a new Resume</Link>
               </Button>
             </div>
           </div>

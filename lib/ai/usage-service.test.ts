@@ -116,10 +116,9 @@ describe('AIUsageService', () => {
 
       // Verify
       expect(result).toBe(false);
-      expect(Logger.warn).toHaveBeenCalledWith(
-        'User user123 exceeded token limit: 450000/500000',
-        { estimatedRequest: 100000 },
-      );
+      expect(Logger.warn).toHaveBeenCalledWith('User user123 exceeded token limit: 450000/500000', {
+        estimatedRequest: 100000,
+      });
     });
 
     it('should use FREE tier limit when user has no subscription', async () => {
@@ -143,10 +142,9 @@ describe('AIUsageService', () => {
 
       // Verify
       expect(result).toBe(false);
-      expect(Logger.warn).toHaveBeenCalledWith(
-        'User user123 exceeded token limit: 40000/50000',
-        { estimatedRequest: 20000 },
-      );
+      expect(Logger.warn).toHaveBeenCalledWith('User user123 exceeded token limit: 40000/50000', {
+        estimatedRequest: 20000,
+      });
     });
 
     it('should use 0 for current usage when no usage record exists', async () => {
@@ -184,10 +182,9 @@ describe('AIUsageService', () => {
 
       // Verify
       expect(result).toBe(true);
-      expect(Logger.error).toHaveBeenCalledWith(
-        'Error checking token usage for user user123',
-        { error },
-      );
+      expect(Logger.error).toHaveBeenCalledWith('Error checking token usage for user user123', {
+        error,
+      });
     });
   });
 
@@ -284,10 +281,9 @@ describe('AIUsageService', () => {
       await service.recordUsage('user123', 200, 100);
 
       // Verify
-      expect(Logger.error).toHaveBeenCalledWith(
-        'Error recording token usage for user user123',
-        { error },
-      );
+      expect(Logger.error).toHaveBeenCalledWith('Error recording token usage for user user123', {
+        error,
+      });
     });
   });
 
@@ -381,10 +377,9 @@ describe('AIUsageService', () => {
       await service.recordFailedAttempt('user123');
 
       // Verify
-      expect(Logger.error).toHaveBeenCalledWith(
-        'Error recording failed attempt for user user123',
-        { error },
-      );
+      expect(Logger.error).toHaveBeenCalledWith('Error recording failed attempt for user user123', {
+        error,
+      });
     });
   });
 
@@ -561,10 +556,9 @@ describe('AIUsageService', () => {
 
       // Execute & Verify
       await expect(service.getUserUsageStats('user123')).rejects.toThrow(error);
-      expect(Logger.error).toHaveBeenCalledWith(
-        'Error getting usage stats for user user123',
-        { error },
-      );
+      expect(Logger.error).toHaveBeenCalledWith('Error getting usage stats for user user123', {
+        error,
+      });
     });
   });
 
@@ -579,9 +573,7 @@ describe('AIUsageService', () => {
 
     it('should return BASIC limit for ACTIVE subscription', () => {
       // Execute
-      const result = (service as any).getTokenLimitForUser(
-        SubscriptionStatus.ACTIVE,
-      );
+      const result = (service as any).getTokenLimitForUser(SubscriptionStatus.ACTIVE);
 
       // Verify
       expect(result).toBe(TOKEN_LIMITS.BASIC);
@@ -589,9 +581,7 @@ describe('AIUsageService', () => {
 
     it('should return BASIC limit for TRIALING subscription', () => {
       // Execute
-      const result = (service as any).getTokenLimitForUser(
-        SubscriptionStatus.TRIALING,
-      );
+      const result = (service as any).getTokenLimitForUser(SubscriptionStatus.TRIALING);
 
       // Verify
       expect(result).toBe(TOKEN_LIMITS.BASIC);
@@ -599,9 +589,7 @@ describe('AIUsageService', () => {
 
     it('should return FREE limit for CANCELED subscription', () => {
       // Execute
-      const result = (service as any).getTokenLimitForUser(
-        SubscriptionStatus.CANCELED,
-      );
+      const result = (service as any).getTokenLimitForUser(SubscriptionStatus.CANCELED);
 
       // Verify
       expect(result).toBe(TOKEN_LIMITS.FREE);
@@ -609,18 +597,10 @@ describe('AIUsageService', () => {
 
     it('should return FREE limit for other subscription statuses', () => {
       // Execute
-      const result1 = (service as any).getTokenLimitForUser(
-        SubscriptionStatus.INCOMPLETE,
-      );
-      const result2 = (service as any).getTokenLimitForUser(
-        SubscriptionStatus.INCOMPLETE_EXPIRED,
-      );
-      const result3 = (service as any).getTokenLimitForUser(
-        SubscriptionStatus.PAST_DUE,
-      );
-      const result4 = (service as any).getTokenLimitForUser(
-        SubscriptionStatus.UNPAID,
-      );
+      const result1 = (service as any).getTokenLimitForUser(SubscriptionStatus.INCOMPLETE);
+      const result2 = (service as any).getTokenLimitForUser(SubscriptionStatus.INCOMPLETE_EXPIRED);
+      const result3 = (service as any).getTokenLimitForUser(SubscriptionStatus.PAST_DUE);
+      const result4 = (service as any).getTokenLimitForUser(SubscriptionStatus.UNPAID);
 
       // Verify
       expect(result1).toBe(TOKEN_LIMITS.FREE);

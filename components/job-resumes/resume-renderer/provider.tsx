@@ -1,25 +1,19 @@
-"use client";
+'use client';
 
-import React from "react";
-import {
-  ResumeDesign,
-  ResumeDesignClass,
-  ResumeDesignElementStyle,
-} from "@/types/resume";
-import { createContext, useContext, useState } from "react";
-import moment from "moment";
-import { parseDate } from "@/components/ui/year-month-picker";
+import React from 'react';
+import { ResumeDesign, ResumeDesignClass, ResumeDesignElementStyle } from '@/types/resume';
+import { createContext, useContext, useState } from 'react';
+import moment from 'moment';
+import { parseDate } from '@/components/ui/year-month-picker';
 
 interface ResumeRendererContextType {
   design: ResumeDesign;
-  resolveStyle: (
-    ...elementStyles: (ResumeDesignElementStyle | undefined)[]
-  ) => any;
+  resolveStyle: (...elementStyles: (ResumeDesignElementStyle | undefined)[]) => any;
   formatDate: (date?: string) => string;
 }
 
 const ResumeRendererContext = createContext<ResumeRendererContextType>(
-  {} as ResumeRendererContextType
+  {} as ResumeRendererContextType,
 );
 
 export const ResumeRendererProvider = ({
@@ -33,19 +27,17 @@ export const ResumeRendererProvider = ({
 
   const getClassStyles = (name?: ResumeDesignClass) => {
     if (!name) return {};
-    const classes = name.split(" ").map((c) => design.classDefs[c]);
+    const classes = name.split(' ').map(c => design.classDefs[c]);
     return classes.reduce(
       (acc, classStyles) => ({
         ...acc,
         ...classStyles,
       }),
-      {}
+      {},
     );
   };
 
-  const resolveStyle = (
-    ...elementStyles: (ResumeDesignElementStyle | undefined)[]
-  ) => {
+  const resolveStyle = (...elementStyles: (ResumeDesignElementStyle | undefined)[]) => {
     if (!elementStyles.length) {
       return {};
     }
@@ -66,14 +58,14 @@ export const ResumeRendererProvider = ({
         ...getClassStyles(elementStyle?.class),
         ...(elementStyle?.style || {}),
       }),
-      {}
+      {},
     );
   };
 
   const formatDate = (date?: string) => {
-    if (!date) return "";
-    if (date === "Present") return "Present";
-    return moment(parseDate(date)).format(design.dateFormat || "MMM YYYY");
+    if (!date) return '';
+    if (date === 'Present') return 'Present';
+    return moment(parseDate(date)).format(design.dateFormat || 'MMM YYYY');
   };
 
   return (

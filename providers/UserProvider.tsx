@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { User } from "next-auth";
-import { createContext, useContext, useState } from "react";
+import { User } from 'next-auth';
+import { createContext, useContext, useState } from 'react';
 
 interface UserContextType {
   user?: User;

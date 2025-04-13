@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { ResumeContent, ResumeProject } from "@/types/resume";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { useState } from 'react';
+import type { ResumeContent, ResumeProject } from '@/types/resume';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Plus } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -12,23 +12,21 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+} from '@dnd-kit/sortable';
 
-import { ProjectList } from "./project-list";
-import { AddProjectForm } from "./add-project-form";
-import { randomNDigits } from "@/lib/utils";
-import { ResumeBuilderCard } from "../resume-builder-card";
-import { useResumeBuilder } from "../context/useResumeBuilder";
+import { ProjectList } from './project-list';
+import { AddProjectForm } from './add-project-form';
+import { randomNDigits } from '@/lib/utils';
+import { ResumeBuilderCard } from '../resume-builder-card';
+import { useResumeBuilder } from '../context/useResumeBuilder';
 
-type ProjectsSectionProps = {};
-
-export function ProjectsSection({}: ProjectsSectionProps) {
+export function ProjectsSection() {
   const { resume, saveResume } = useResumeBuilder();
   const [addingProject, setAddingProject] = useState(false);
 
@@ -37,7 +35,7 @@ export function ProjectsSection({}: ProjectsSectionProps) {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleAddProject = () => {
@@ -72,8 +70,8 @@ export function ProjectsSection({}: ProjectsSectionProps) {
   const handleUpdateProject = (updatedProject: ResumeProject) => {
     saveResume({
       ...resume,
-      projects: resume.projects.map((project) =>
-        project.id === updatedProject.id ? updatedProject : project
+      projects: resume.projects.map(project =>
+        project.id === updatedProject.id ? updatedProject : project,
       ),
     });
   };
@@ -81,7 +79,7 @@ export function ProjectsSection({}: ProjectsSectionProps) {
   const handleDeleteProject = (projectId: string) => {
     saveResume({
       ...resume,
-      projects: resume.projects.filter((project) => project.id !== projectId),
+      projects: resume.projects.filter(project => project.id !== projectId),
     });
   };
 
@@ -89,12 +87,8 @@ export function ProjectsSection({}: ProjectsSectionProps) {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = resume.projects.findIndex(
-        (project) => project.id === active.id
-      );
-      const newIndex = resume.projects.findIndex(
-        (project) => project.id === over.id
-      );
+      const oldIndex = resume.projects.findIndex(project => project.id === active.id);
+      const newIndex = resume.projects.findIndex(project => project.id === over.id);
 
       saveResume({
         ...resume,
@@ -111,19 +105,12 @@ export function ProjectsSection({}: ProjectsSectionProps) {
       addButtonText="Add Project"
     >
       {addingProject && (
-        <AddProjectForm
-          onSave={handleSaveNewProject}
-          onCancel={handleCancelAddProject}
-        />
+        <AddProjectForm onSave={handleSaveNewProject} onCancel={handleCancelAddProject} />
       )}
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
-          items={resume.projects.map((project) => project.id)}
+          items={resume.projects.map(project => project.id)}
           strategy={verticalListSortingStrategy}
         >
           <ProjectList

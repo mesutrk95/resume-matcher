@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -148,12 +142,9 @@ export function PaymentHistory({ payments, error }: PaymentHistoryProps) {
         {payments.length === 0 ? (
           <div className="text-center py-12 border rounded-md bg-gray-50">
             <Calendar className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-700">
-              No payment history
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-700">No payment history</h3>
             <p className="text-sm text-gray-500 max-w-sm mx-auto mt-2">
-              Your payment history will appear here once you have an active
-              subscription.
+              Your payment history will appear here once you have an active subscription.
             </p>
           </div>
         ) : (
@@ -180,9 +171,7 @@ export function PaymentHistory({ payments, error }: PaymentHistoryProps) {
                     >
                       <TableCell>
                         <div className="flex flex-col">
-                          <div className="font-medium">
-                            {format(payment.date, 'MMM d, yyyy')}
-                          </div>
+                          <div className="font-medium">{format(payment.date, 'MMM d, yyyy')}</div>
                           <div className="text-xs text-muted-foreground">
                             {format(payment.date, 'h:mm a')}
                           </div>
@@ -200,9 +189,7 @@ export function PaymentHistory({ payments, error }: PaymentHistoryProps) {
                           <div className="text-sm text-muted-foreground">-</div>
                         )}
                       </TableCell>
-                      <TableCell>
-                        {getStatusBadge(payment.status, payment.isUpcoming)}
-                      </TableCell>
+                      <TableCell>{getStatusBadge(payment.status, payment.isUpcoming)}</TableCell>
                       <TableCell>
                         <div
                           className={cn(
@@ -215,12 +202,7 @@ export function PaymentHistory({ payments, error }: PaymentHistoryProps) {
                       </TableCell>
                       <TableCell className="text-right space-x-1">
                         {payment.invoiceUrl && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 px-2"
-                            asChild
-                          >
+                          <Button variant="ghost" size="sm" className="h-8 px-2" asChild>
                             <a
                               href={payment.invoiceUrl}
                               target="_blank"
@@ -233,12 +215,7 @@ export function PaymentHistory({ payments, error }: PaymentHistoryProps) {
                           </Button>
                         )}
                         {payment.receiptUrl && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 px-2"
-                            asChild
-                          >
+                          <Button variant="ghost" size="sm" className="h-8 px-2" asChild>
                             <a
                               href={payment.receiptUrl}
                               target="_blank"

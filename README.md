@@ -29,6 +29,30 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
+## Code Style and Linting
+
+This project uses ESLint and Prettier to ensure consistent code style and quality across the codebase.
+
+### Available Scripts
+
+- `npm run lint` - Run ESLint to check for code quality issues
+- `npm run lint:fix` - Run ESLint and automatically fix issues when possible
+- `npm run format` - Run Prettier to format all code files
+- `npm run format:check` - Check if all files are properly formatted without making changes
+
+### VS Code Integration
+
+For the best development experience with VS Code:
+
+1. Install the [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) and [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) extensions
+2. The project includes VS Code settings that will:
+   - Format code on save using Prettier
+   - Run ESLint fix actions on save
+
+### Pre-commit Hooks (Optional)
+
+For teams wanting to enforce code style before commits, consider adding [husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged).
+
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.

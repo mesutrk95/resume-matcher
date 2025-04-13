@@ -53,12 +53,9 @@ export async function setClientRateLimits(
       return await db.aIRateLimit.update({
         where: { clientId },
         data: {
-          requestsPerMinute:
-            limits.requestsPerMinute ?? existingLimits.requestsPerMinute,
-          requestsPerHour:
-            limits.requestsPerHour ?? existingLimits.requestsPerHour,
-          requestsPerDay:
-            limits.requestsPerDay ?? existingLimits.requestsPerDay,
+          requestsPerMinute: limits.requestsPerMinute ?? existingLimits.requestsPerMinute,
+          requestsPerHour: limits.requestsPerHour ?? existingLimits.requestsPerHour,
+          requestsPerDay: limits.requestsPerDay ?? existingLimits.requestsPerDay,
         },
       });
     } else {
@@ -83,12 +80,7 @@ export async function getUserRateLimitUsage(userId: string, clientId: string) {
     const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
     // Get usage for each timeframe
-    const minuteUsage = await getUsageInTimeframe(
-      userId,
-      clientId,
-      minuteAgo,
-      now,
-    );
+    const minuteUsage = await getUsageInTimeframe(userId, clientId, minuteAgo, now);
     const hourUsage = await getUsageInTimeframe(userId, clientId, hourAgo, now);
     const dayUsage = await getUsageInTimeframe(userId, clientId, dayAgo, now);
 
@@ -153,9 +145,7 @@ export async function clearRateLimitUsage(userId: string, clientId?: string) {
     });
 
     Logger.info(
-      `Cleared rate limit usage for user ${userId}${
-        clientId ? ` and client ${clientId}` : ''
-      }`,
+      `Cleared rate limit usage for user ${userId}${clientId ? ` and client ${clientId}` : ''}`,
     );
   } catch (error) {
     Logger.error(`Error clearing rate limit usage for user ${userId}`, {

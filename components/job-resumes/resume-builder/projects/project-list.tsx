@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import type { ResumeContent, ResumeProject } from "@/types/resume";
-import { ProjectItem } from "./project-item";
+import type { ResumeContent, ResumeProject } from '@/types/resume';
+import { ProjectItem } from './project-item';
 
 type ProjectListProps = {
   resume: ResumeContent;
@@ -12,13 +12,8 @@ type ProjectListProps = {
 export function ProjectList({ resume, onUpdate, onDelete }: ProjectListProps) {
   return (
     <div className="space-y-4">
-      {resume.projects.map((project) => (
-        <ProjectItem
-          key={project.id}
-          project={project}
-          onUpdate={onUpdate}
-          onDelete={onDelete}
-        />
+      {resume.projects.map(project => (
+        <ProjectItem key={project.id} project={project} onUpdate={onUpdate} onDelete={onDelete} />
       ))}
     </div>
   );

@@ -1,4 +1,4 @@
-import { renderList, SeperateList } from "@/components/shared/seperate-list";
+import { renderList, SeperateList } from '@/components/shared/seperate-list';
 import {
   Experience,
   ResumeContent,
@@ -8,18 +8,15 @@ import {
   ResumeDesignSectionSubHeader,
   ResumeEducation,
   ResumeProject,
-} from "@/types/resume";
-import { Text, View } from "@react-pdf/renderer";
-import React from "react";
-import { useResumeRenderer } from "./provider";
+} from '@/types/resume';
+import { Text, View } from '@react-pdf/renderer';
+import React from 'react';
+import { useResumeRenderer } from './provider';
 
 interface SectionHeaderProps {
   sectionName: ResumeDesignSectionName;
   data: Record<string, any>;
-  getItemValue: (
-    itemType: string,
-    data: Record<string, any>
-  ) => string | undefined;
+  getItemValue: (itemType: string, data: Record<string, any>) => string | undefined;
 }
 export const SectionHeader: React.FC<SectionHeaderProps> = ({
   sectionName,
@@ -45,27 +42,20 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   }
 
   // Helper function to render a group of items with a separator
-  const renderItemGroup = (
-    items: string[],
-    separator?: string,
-    parentKey?: string
-  ) => {
+  const renderItemGroup = (items: string[], separator?: string, parentKey?: string) => {
     const validItems = items
-      .map((itemType) => ({
+      .map(itemType => ({
         type: itemType,
         value: getItemValue(itemType, data),
       }))
-      .filter((item) => item.value);
+      .filter(item => item.value);
 
     if (validItems.length === 0) return null;
 
     return (
-      <View key={parentKey || items.join("-")}>
+      <View key={parentKey || items.join('-')}>
         {validItems.map((item, index) => (
-          <Text
-            key={`${item.type}-${index}`}
-            style={resolveStyle(styleGetter(item.type))}
-          >
+          <Text key={`${item.type}-${index}`} style={resolveStyle(styleGetter(item.type))}>
             {item.value}
             {separator && index < validItems.length - 1 && separator}
           </Text>
@@ -80,16 +70,13 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
         <View key={rowIndex} style={resolveStyle(row)}>
           {!row.separator ? (
             row.items.map((itemOrGroup, itemIndex) => {
-              if (typeof itemOrGroup === "string") {
+              if (typeof itemOrGroup === 'string') {
                 // Handle simple string item
                 const value = getItemValue(itemOrGroup, data);
                 if (!value) return null;
 
                 return (
-                  <Text
-                    key={`item-${itemIndex}`}
-                    style={resolveStyle(styleGetter(itemOrGroup))}
-                  >
+                  <Text key={`item-${itemIndex}`} style={resolveStyle(styleGetter(itemOrGroup))}>
                     {value}
                   </Text>
                 );
@@ -98,7 +85,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
                 return renderItemGroup(
                   itemOrGroup.items,
                   itemOrGroup.separator,
-                  `group-${itemIndex}`
+                  `group-${itemIndex}`,
                 );
               }
             })
@@ -109,21 +96,17 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
                 // For items with a row separator, we need to handle both simple items and groups
                 let content;
 
-                if (typeof itemOrGroup === "string") {
+                if (typeof itemOrGroup === 'string') {
                   const value = getItemValue(itemOrGroup, data);
                   if (!value) return null;
 
-                  content = (
-                    <Text style={resolveStyle(styleGetter(itemOrGroup))}>
-                      {value}
-                    </Text>
-                  );
+                  content = <Text style={resolveStyle(styleGetter(itemOrGroup))}>{value}</Text>;
                 } else {
                   // Render a group within the row
                   content = renderItemGroup(
                     itemOrGroup.items,
                     itemOrGroup.separator,
-                    `group-${itemIndex}`
+                    `group-${itemIndex}`,
                   );
                   if (!content) return null;
                 }
@@ -132,13 +115,11 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
                 const nextValidIndex = row.items.findIndex((nextItem, i) => {
                   if (i <= itemIndex) return false;
 
-                  if (typeof nextItem === "string") {
+                  if (typeof nextItem === 'string') {
                     return !!getItemValue(nextItem, data);
                   } else {
                     // Check if any item in the group has a value
-                    return nextItem.items.some(
-                      (item) => !!getItemValue(item, data)
-                    );
+                    return nextItem.items.some(item => !!getItemValue(item, data));
                   }
                 });
 
@@ -178,9 +159,7 @@ const RenderSection = ({
           {section.label.text || defaultLabel}
         </Text>
       )}
-      <View style={resolveStyle(design.sections.container, section?.container)}>
-        {children}
-      </View>
+      <View style={resolveStyle(design.sections.container, section?.container)}>{children}</View>
     </View>
   );
 };
@@ -190,50 +169,50 @@ export const ContactInfoSection = ({ resume }: { resume: ResumeContent }) => {
   // Helper function to get the value for a specific item type
   const getItemValue = (itemType: string) => {
     switch (itemType) {
-      case "email":
+      case 'email':
         return resume.contactInfo.email;
-      case "phone":
+      case 'phone':
         return resume.contactInfo.phone;
-      case "linkedIn":
+      case 'linkedIn':
         return resume.contactInfo.linkedIn;
-      case "github":
+      case 'github':
         return resume.contactInfo.github;
-      case "website":
+      case 'website':
         return resume.contactInfo.website;
-      case "address":
+      case 'address':
         return resume.contactInfo.address;
-      case "country":
+      case 'country':
         return resume.contactInfo.country;
       default:
-        return "";
+        return '';
     }
   };
 
   // Get the configured items and separator
   const configuredItems = design.sections.contactInfo?.items || [
-    "email",
-    "phone",
-    "linkedIn",
-    "github",
-    "website",
-    "address",
-    "country",
+    'email',
+    'phone',
+    'linkedIn',
+    'github',
+    'website',
+    'address',
+    'country',
   ];
   const separator = design.sections.contactInfo?.separator;
 
   // Filter out items with empty values
   const validItems = configuredItems
-    .map((itemType) => ({
+    .map(itemType => ({
       type: itemType,
       value: getItemValue(itemType),
     }))
-    .filter((item) => item.value);
+    .filter(item => item.value);
 
   return (
     <RenderSection sectionName="contactInfo">
       <Text>
         {renderList({
-          data: validItems.map((item) => item.value),
+          data: validItems.map(item => item.value),
           by: separator,
         })}
       </Text>
@@ -264,7 +243,7 @@ export const FullNameSection = ({ resume }: { resume: ResumeContent }) => {
 
 export const TitleSection = ({ resume }: { resume: ResumeContent }) => {
   //   const { design, resolveStyle } = useResumeRenderer();
-  const title = resume.titles.find((t) => t.enabled);
+  const title = resume.titles.find(t => t.enabled);
   if (!title) return null;
 
   return (
@@ -276,7 +255,7 @@ export const TitleSection = ({ resume }: { resume: ResumeContent }) => {
 
 export const SummarySection = ({ resume }: { resume: ResumeContent }) => {
   //   const { design, resolveStyle } = useResumeRenderer();
-  const summary = resume.summaries.find((s) => s.enabled);
+  const summary = resume.summaries.find(s => s.enabled);
   if (!summary) return null;
 
   return (
@@ -294,42 +273,40 @@ export const ExperienceSection = ({
   withIdentifiers?: boolean;
 }) => {
   const { resolveStyle, formatDate, design } = useResumeRenderer();
-  const experiences = resume.experiences.filter((e) => e.enabled);
+  const experiences = resume.experiences.filter(e => e.enabled);
   if (experiences.length === 0) return null;
 
   // Define the value getter function for experience section
   const getExperienceItemValue = (itemType: string, experience: Experience) => {
     switch (itemType) {
-      case "company":
+      case 'company':
         return experience.companyName;
-      case "role":
+      case 'role':
         return experience.role;
-      case "date":
+      case 'date': {
         const startDate = formatDate(
-          experience.startDate
+          experience.startDate,
           //   design.sections.experiences.subheader?.dates?.format
         );
         const endDate = formatDate(
-          experience.endDate
+          experience.endDate,
           //   design.sections.experiences.subheader?.dates?.format
         );
         return `${startDate} - ${endDate}`;
-      case "positionType":
+      }
+      case 'positionType':
         return experience.type;
-      case "location":
+      case 'location':
         return experience.location;
       default:
-        return "";
+        return '';
     }
   };
 
   return (
     <RenderSection sectionName="experiences" defaultLabel="Experiences">
-      {experiences.map((experience) => (
-        <View
-          key={experience.id}
-          style={resolveStyle(design.sections.experiences)}
-        >
+      {experiences.map(experience => (
+        <View key={experience.id} style={resolveStyle(design.sections.experiences)}>
           <SectionHeader
             sectionName="experiences"
             data={experience}
@@ -338,30 +315,22 @@ export const ExperienceSection = ({
 
           <View style={resolveStyle(design.sections.experiences.items)}>
             {experience.items
-              .filter((item) => item.enabled)
-              .map((item) =>
+              .filter(item => item.enabled)
+              .map(item =>
                 item.variations
-                  .filter((v) => v.enabled)
-                  .map((variation) => (
+                  .filter(v => v.enabled)
+                  .map(variation => (
                     <View
                       key={variation.id}
-                      style={resolveStyle(
-                        design.sections.experiences.items?.item
-                      )}
+                      style={resolveStyle(design.sections.experiences.items?.item)}
                     >
-                      <Text
-                        style={resolveStyle(
-                          design.sections.experiences.bullets
-                        )}
-                      >
-                        •
-                      </Text>
+                      <Text style={resolveStyle(design.sections.experiences.bullets)}>•</Text>
                       <Text style={undefined}>
                         {withIdentifiers && <>[{variation.id}] </>}
                         {variation.content}
                       </Text>
                     </View>
-                  ))
+                  )),
               )}
           </View>
         </View>
@@ -378,36 +347,28 @@ export const EducationSection = ({
   withIdentifiers?: boolean;
 }) => {
   const { design, resolveStyle, formatDate } = useResumeRenderer();
-  const educations = resume.educations.filter((edu) => edu.enabled);
+  const educations = resume.educations.filter(edu => edu.enabled);
   if (educations.length === 0) return null;
 
-  const getEducationItemValue = (
-    itemType: string,
-    education: ResumeEducation
-  ) => {
+  const getEducationItemValue = (itemType: string, education: ResumeEducation) => {
     switch (itemType) {
-      case "degree":
+      case 'degree':
         return education.degree;
-      case "institution":
+      case 'institution':
         return education.institution;
-      case "date":
-        return `${formatDate(education.startDate)} - ${formatDate(
-          education.endDate
-        )}`;
-      case "location":
+      case 'date':
+        return `${formatDate(education.startDate)} - ${formatDate(education.endDate)}`;
+      case 'location':
         return education.location;
       default:
-        return "";
+        return '';
     }
   };
 
   return (
     <RenderSection sectionName="educations" defaultLabel="Education">
-      {educations.map((education) => (
-        <View
-          key={education.id}
-          style={resolveStyle(design.sections.educations.item)}
-        >
+      {educations.map(education => (
+        <View key={education.id} style={resolveStyle(design.sections.educations.item)}>
           {/* Use our new SectionHeader component */}
           <SectionHeader
             sectionName="educations"
@@ -437,12 +398,12 @@ export const SkillsSection = ({
   const { design, resolveStyle } = useResumeRenderer();
   // Get enabled skill sets and their enabled skills
   const enabledSkillSets = resume.skills
-    .filter((set) => set.enabled)
-    .map((set) => ({
+    .filter(set => set.enabled)
+    .map(set => ({
       ...set,
-      skills: set.skills.filter((skill) => skill.enabled),
+      skills: set.skills.filter(skill => skill.enabled),
     }))
-    .filter((set) => set.skills.length > 0);
+    .filter(set => set.skills.length > 0);
 
   if (enabledSkillSets.length === 0) return null;
 
@@ -457,13 +418,12 @@ export const SkillsSection = ({
           <View key={skillSet.category}>
             {hasMultipleCategories ? (
               <Text style={resolveStyle(design.sections.skills.category)}>
-                {skillSet.category !== "Default" && skillSet.category.length > 0
-                  ? skillSet.category +
-                    (design.sections.skills.category.itemsSeparator || ": ")
-                  : ""}
+                {skillSet.category !== 'Default' && skillSet.category.length > 0
+                  ? skillSet.category + (design.sections.skills.category.itemsSeparator || ': ')
+                  : ''}
                 <Text style={resolveStyle(design.sections.skills.list)}>
                   {renderList({
-                    data: skillSet.skills.map((skill) => skill.content),
+                    data: skillSet.skills.map(skill => skill.content),
                     by: design.sections.skills.list.itemsSeparator,
                   })}
                 </Text>
@@ -472,12 +432,9 @@ export const SkillsSection = ({
               <Text style={resolveStyle(design.sections.skills.list)}>
                 {renderList({
                   data: skillSet.skills.map(
-                    (skill) =>
-                      `${withIdentifiers ? `[${skill.id}] ` : ""}${
-                        skill.content
-                      }`
+                    skill => `${withIdentifiers ? `[${skill.id}] ` : ''}${skill.content}`,
                   ),
-                  by: design.sections.skills.list.itemsSeparator || ", ",
+                  by: design.sections.skills.list.itemsSeparator || ', ',
                 })}
               </Text>
             )}
@@ -488,13 +445,12 @@ export const SkillsSection = ({
         <View style={resolveStyle(design.sections.skills.list)}>
           <Text>
             {renderList({
-              data: enabledSkillSets.flatMap((set) =>
+              data: enabledSkillSets.flatMap(set =>
                 set.skills.map(
-                  (skill) =>
-                    `${withIdentifiers ? `[${skill.id}] ` : ""}${skill.content}`
-                )
+                  skill => `${withIdentifiers ? `[${skill.id}] ` : ''}${skill.content}`,
+                ),
               ),
-              by: design.sections.skills.list.itemsSeparator || ", ",
+              by: design.sections.skills.list.itemsSeparator || ', ',
             })}
           </Text>
         </View>
@@ -511,32 +467,27 @@ export const ProjectsSection = ({
   withIdentifiers?: boolean;
 }) => {
   const { design, resolveStyle, formatDate } = useResumeRenderer();
-  const projects = resume.projects.filter((p) => p.enabled);
+  const projects = resume.projects.filter(p => p.enabled);
   if (projects.length === 0) return null;
 
   // Define the value getter function for project section
   const getProjectItemValue = (itemType: string, project: ResumeProject) => {
     switch (itemType) {
-      case "name":
+      case 'name':
         return project.name;
-      case "url":
+      case 'url':
         return project.link;
-      case "date":
-        return `${formatDate(project.startDate)} - ${formatDate(
-          project.endDate
-        )}`;
+      case 'date':
+        return `${formatDate(project.startDate)} - ${formatDate(project.endDate)}`;
       default:
-        return "";
+        return '';
     }
   };
 
   return (
     <RenderSection sectionName="projects" defaultLabel="Projects">
-      {projects.map((project) => (
-        <View
-          key={project.id}
-          style={resolveStyle(design.sections.projects.item)}
-        >
+      {projects.map(project => (
+        <View key={project.id} style={resolveStyle(design.sections.projects.item)}>
           <SectionHeader
             sectionName="projects"
             data={project}
@@ -562,7 +513,7 @@ export const LanguagesSection = ({ resume }: { resume: ResumeContent }) => {
     <RenderSection sectionName="languages" defaultLabel="Languages">
       <Text style={undefined}>
         {renderList({
-          data: languages.map((l) => `${l.name}${l.level && ` (${l.level})`}`),
+          data: languages.map(l => `${l.name}${l.level && ` (${l.level})`}`),
           by: design.sections.languages?.itemsSeperator,
         })}
       </Text>
@@ -571,40 +522,33 @@ export const LanguagesSection = ({ resume }: { resume: ResumeContent }) => {
 };
 
 // Certifications Section using SectionHeader
-export const CertificationsSection = ({
-  resume,
-}: {
-  resume: ResumeContent;
-}) => {
+export const CertificationsSection = ({ resume }: { resume: ResumeContent }) => {
   const { design, resolveStyle, formatDate } = useResumeRenderer();
   const certifications = resume.certifications;
   if (certifications.length === 0) return null;
 
   // Define the value getter function for certification section
   const getCertificationItemValue = (itemType: string, certification: any) => {
-    if (typeof certification === "string") {
-      return itemType === "name" ? certification : "";
+    if (typeof certification === 'string') {
+      return itemType === 'name' ? certification : '';
     }
 
     switch (itemType) {
-      case "name":
+      case 'name':
         return certification.name;
-      case "issuer":
+      case 'issuer':
         return certification.issuer;
-      case "date":
+      case 'date':
         return formatDate(certification.date);
       default:
-        return "";
+        return '';
     }
   };
 
   return (
     <RenderSection sectionName="certifications" defaultLabel="Certifications">
       {certifications.map((certification, index) => (
-        <View
-          key={index}
-          style={resolveStyle(design.sections.certifications.item)}
-        >
+        <View key={index} style={resolveStyle(design.sections.certifications.item)}>
           <SectionHeader
             sectionName="certifications"
             data={certification}
@@ -634,23 +578,23 @@ export const AwardsSection = ({
 
   // Define the value getter function for award section
   const getAwardItemValue = (itemType: string, award: any) => {
-    if (typeof award === "string") {
-      return itemType === "title" ? award : "";
+    if (typeof award === 'string') {
+      return itemType === 'title' ? award : '';
     }
 
     switch (itemType) {
-      case "title":
+      case 'title':
         return award.title;
-      case "name":
+      case 'name':
         return award.name;
-      case "description":
+      case 'description':
         return award.description;
-      case "issuer":
+      case 'issuer':
         return award.issuer;
-      case "date":
+      case 'date':
         return formatDate(award.date);
       default:
-        return "";
+        return '';
     }
   };
 
@@ -659,16 +603,10 @@ export const AwardsSection = ({
       {awards.map((award, index) => (
         <View key={index} style={resolveStyle(design.sections.awards.item)}>
           {/* Use SectionHeader component */}
-          <SectionHeader
-            sectionName="awards"
-            data={award}
-            getItemValue={getAwardItemValue}
-          />
+          <SectionHeader sectionName="awards" data={award} getItemValue={getAwardItemValue} />
 
           {/* Render description if it exists and is not rendered in the header */}
-          {award.description && (
-            <Text style={undefined}>{award.description}</Text>
-          )}
+          {award.description && <Text style={undefined}>{award.description}</Text>}
         </View>
       ))}
     </RenderSection>
@@ -684,7 +622,7 @@ export const InterestsSection = ({ resume }: { resume: ResumeContent }) => {
     <RenderSection sectionName="interests" defaultLabel="Interests">
       <Text style={undefined}>
         {renderList({
-          data: resume.interests.map((i) => i.description),
+          data: resume.interests.map(i => i.description),
           by: design.sections.interests?.itemsSeperator,
         })}
       </Text>
@@ -700,25 +638,25 @@ export const ReferencesSection = ({ resume }: { resume: ResumeContent }) => {
 
   // Define the value getter function for reference section
   const getReferenceItemValue = (itemType: string, reference: any) => {
-    if (typeof reference === "string") {
-      return itemType === "name" ? reference : "";
+    if (typeof reference === 'string') {
+      return itemType === 'name' ? reference : '';
     }
 
     switch (itemType) {
-      case "name":
+      case 'name':
         return reference.name;
-      case "title":
+      case 'title':
         return reference.title;
-      case "relationship":
+      case 'relationship':
         return reference.relationship;
-      case "company":
+      case 'company':
         return reference.company;
-      case "email":
+      case 'email':
         return reference.email;
-      case "phone":
+      case 'phone':
         return reference.phone;
       default:
-        return "";
+        return '';
     }
   };
 
@@ -734,9 +672,7 @@ export const ReferencesSection = ({ resume }: { resume: ResumeContent }) => {
           />
 
           {/* Render description if it exists and is not rendered in the header */}
-          {reference.description && (
-            <Text style={undefined}>{reference.description}</Text>
-          )}
+          {reference.description && <Text style={undefined}>{reference.description}</Text>}
         </View>
       ))}
     </RenderSection>

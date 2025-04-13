@@ -5,10 +5,8 @@ import { getCurrentRequestId } from './request-context';
 
 // Get configuration from environment variables
 const env = process.env.NODE_ENV || 'development';
-const configuredLogLevel =
-  process.env.LOG_LEVEL || (env === 'development' ? 'debug' : 'warn');
-const shouldLogToFile =
-  process.env.LOG_TO_FILE === 'true' || env === 'development';
+const configuredLogLevel = process.env.LOG_LEVEL || (env === 'development' ? 'debug' : 'warn');
+const shouldLogToFile = process.env.LOG_TO_FILE === 'true' || env === 'development';
 const logDir = process.env.LOG_DIR || 'logs';
 
 // Ensure logs directory exists if we're logging to file
@@ -42,22 +40,20 @@ const colors = {
 winston.addColors(colors);
 
 // Add request ID automatically to the logger format
-const logFormat = winston.format.printf(
-  ({ level, message, timestamp, ...metadata }) => {
-    // Get requestId from AsyncLocalStorage context
-    const reqId = getCurrentRequestId();
+const logFormat = winston.format.printf(({ level, message, timestamp, ...metadata }) => {
+  // Get requestId from AsyncLocalStorage context
+  const reqId = getCurrentRequestId();
 
-    // Build the log message
-    let logMessage = `${timestamp} [${reqId}] ${level}: ${message}`;
+  // Build the log message
+  let logMessage = `${timestamp} [${reqId}] ${level}: ${message}`;
 
-    // Add metadata if it exists and is not empty
-    if (metadata && Object.keys(metadata).length > 0) {
-      logMessage += ` ${JSON.stringify(metadata)}`;
-    }
+  // Add metadata if it exists and is not empty
+  if (metadata && Object.keys(metadata).length > 0) {
+    logMessage += ` ${JSON.stringify(metadata)}`;
+  }
 
-    return logMessage;
-  },
-);
+  return logMessage;
+});
 
 const consoleFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),

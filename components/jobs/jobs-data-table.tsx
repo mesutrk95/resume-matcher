@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,9 +8,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   ChevronLeft,
   ChevronRight,
@@ -26,23 +26,23 @@ import {
   Plus,
   Search,
   Trash,
-} from "lucide-react";
-import Link from "next/link";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Job, JobStatus } from "@prisma/client";
+} from 'lucide-react';
+import Link from 'next/link';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { Job, JobStatus } from '@prisma/client';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
-import { deleteJob, updateJobStatus } from "@/actions/job";
-import { toast } from "sonner";
-import Moment from "react-moment";
-import { confirmDialog } from "../shared/confirm-dialog";
-import { JobStatusIndicator } from "./job-status-badge";
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
+import { deleteJob, updateJobStatus } from '@/actions/job';
+import { toast } from 'sonner';
+import Moment from 'react-moment';
+import { confirmDialog } from '../shared/confirm-dialog';
+import { JobStatusIndicator } from './job-status-badge';
 import {
   Select,
   SelectContent,
@@ -51,16 +51,13 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { getJobStatusLabel, JOB_STATUS_CONFIG } from "./utils";
-import clsx from "clsx";
-import { ContentLoading } from "@/app/_components/loading";
-import { LinkableTableCell } from "../ui/linkable-table-cell";
+} from '../ui/select';
+import { getJobStatusLabel, JOB_STATUS_CONFIG } from './utils';
+import clsx from 'clsx';
+import { ContentLoading } from '@/app/_components/loading';
+import { LinkableTableCell } from '../ui/linkable-table-cell';
 
-type JobItem = Omit<
-  Job,
-  "analyzeResults" | "description" | "userId" | "moreDetails"
->;
+type JobItem = Omit<Job, 'analyzeResults' | 'description' | 'userId' | 'moreDetails'>;
 
 interface JobsDataTableProps {
   data: JobItem[];
@@ -88,9 +85,7 @@ export function JobsDataTable({
   const [search, setSearch] = useState(searchQuery);
 
   const [selectedStatus, setSelectedStatus] = useState<JobStatus | undefined>(
-    statusFilter && statusFilter.length > 0
-      ? (statusFilter[0] as JobStatus)
-      : undefined
+    statusFilter && statusFilter.length > 0 ? (statusFilter[0] as JobStatus) : undefined,
   );
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
@@ -102,10 +97,10 @@ export function JobsDataTable({
   }) => {
     setLoading(true);
     const params = new URLSearchParams();
-    if (filter.search) params.set("search", filter.search);
-    if (filter.status) params.set("status", filter.status);
-    params.set("page", filter.page.toString());
-    params.set("pageSize", filter.pageSize.toString());
+    if (filter.search) params.set('search', filter.search);
+    if (filter.status) params.set('status', filter.status);
+    params.set('page', filter.page.toString());
+    params.set('pageSize', filter.pageSize.toString());
     router.push(`${pathname}?${params.toString()}`);
   };
 
@@ -131,7 +126,7 @@ export function JobsDataTable({
   const handleDeleteJob = async (item: JobItem) => {
     if (
       await confirmDialog({
-        title: "Are you absolutely sure?!",
+        title: 'Are you absolutely sure?!',
         description: `You are deleting the job "${item.title}" at "${item.companyName}".`,
       })
     ) {
@@ -140,14 +135,14 @@ export function JobsDataTable({
         const result = await deleteJob(item.id);
 
         if (!result.success) {
-          toast.error(result.error?.message || "Failed to delete job");
+          toast.error(result.error?.message || 'Failed to delete job');
           return;
         }
 
-        toast.success("Job deleted successfully");
+        toast.success('Job deleted successfully');
         router.refresh();
       } catch (error) {
-        toast.error("Something went wrong");
+        toast.error('Something went wrong');
       } finally {
         setIsDeleting(null);
       }
@@ -179,23 +174,17 @@ export function JobsDataTable({
           <div className="max-w-[400px]">
             <Select
               value={selectedStatus}
-              onValueChange={(s) =>
-                handleOnStatusChanged(
-                  s === "all" ? undefined : (s as JobStatus)
-                )
-              }
+              onValueChange={s => handleOnStatusChanged(s === 'all' ? undefined : (s as JobStatus))}
             >
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="Filter by Status">
                   <span
-                    {...(((selectedStatus as string) === "all" ||
-                      selectedStatus === undefined) && {
-                      className: "text-muted-foreground",
+                    {...(((selectedStatus as string) === 'all' || selectedStatus === undefined) && {
+                      className: 'text-muted-foreground',
                     })}
                   >
-                    {(selectedStatus as string) === "all" ||
-                    selectedStatus === undefined
-                      ? "Filter by Status"
+                    {(selectedStatus as string) === 'all' || selectedStatus === undefined
+                      ? 'Filter by Status'
                       : getJobStatusLabel(selectedStatus)}
                   </span>
                 </SelectValue>
@@ -204,16 +193,16 @@ export function JobsDataTable({
                 <SelectGroup>
                   <SelectLabel>Application Status</SelectLabel>
                   <SelectItem value="all">
-                    <div className={clsx("flex items-center gap-2", ``)}>
+                    <div className={clsx('flex items-center gap-2', ``)}>
                       <GalleryVerticalEnd size={14} />
                       All Jobs
                     </div>
                   </SelectItem>
-                  {Object.values(JobStatus).map((status) => {
+                  {Object.values(JobStatus).map(status => {
                     const Icon = JOB_STATUS_CONFIG[status].icon;
                     return (
                       <SelectItem key={status} value={status}>
-                        <div className={clsx("flex items-center gap-2", ``)}>
+                        <div className={clsx('flex items-center gap-2', ``)}>
                           <Icon size={14} />
                           {getJobStatusLabel(status)}
                         </div>
@@ -240,14 +229,11 @@ export function JobsDataTable({
               }
             /> */}
           </div>
-          <form
-            onSubmit={handleSearch}
-            className="flex w-full max-w-md items-center space-x-2"
-          >
+          <form onSubmit={handleSearch} className="flex w-full max-w-md items-center space-x-2">
             <Input
               placeholder="Search in jobs..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={e => setSearch(e.target.value)}
               className="w-full"
             />
             <Button type="submit" size="icon" variant="outline">
@@ -280,57 +266,41 @@ export function JobsDataTable({
             <TableBody>
               {data.length === 0 ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className="h-24 text-center text-muted-foreground"
-                  >
+                  <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
                     No jobs found!
                   </TableCell>
                 </TableRow>
               ) : (
-                data.map((job) => (
+                data.map(job => (
                   <TableRow key={job.id}>
-                    <LinkableTableCell
-                      className="font-medium"
-                      href={`/jobs/${job.id}`}
-                    >
+                    <LinkableTableCell className="font-medium" href={`/jobs/${job.id}`}>
                       <h6 className="max-w-72 overflow-hidden text-ellipsis block text-nowrap">
                         {job.title}
                       </h6>
 
                       {job.companyName && (
-                        <span className="text-muted-foreground text-xs">
-                          At {job.companyName}
-                        </span>
+                        <span className="text-muted-foreground text-xs">At {job.companyName}</span>
                       )}
                     </LinkableTableCell>
                     {/* <TableCell></TableCell> */}
-                    <LinkableTableCell
-                      className="capitalize"
-                      href={`/jobs/${job.id}`}
-                    >
+                    <LinkableTableCell className="capitalize" href={`/jobs/${job.id}`}>
                       <JobStatusIndicator status={job.status} />
                     </LinkableTableCell>
                     <LinkableTableCell href={`/jobs/${job.id}`}>
                       <div className="flex gap-1 items-center">
                         {job.location ? (
                           <>
-                            <MapPin
-                              className="text-muted-foreground"
-                              size={14}
-                            />
+                            <MapPin className="text-muted-foreground" size={14} />
                             {job.location}
                           </>
-                        ): <span className="text-muted-foreground">No Location</span>}
+                        ) : (
+                          <span className="text-muted-foreground">No Location</span>
+                        )}
                       </div>
                     </LinkableTableCell>
                     <LinkableTableCell href={`/jobs/${job.id}`}>
                       <div className="flex flex-col">
-                        <Moment
-                          date={job.createdAt}
-                          format="yyyy/MM/DD HH:mm"
-                          utc
-                        />
+                        <Moment date={job.createdAt} format="yyyy/MM/DD HH:mm" utc />
                         <span className="text-xs text-muted-foreground">
                           <Moment date={job.createdAt} fromNow utc />
                         </span>
@@ -368,11 +338,7 @@ export function JobsDataTable({
                           </DropdownMenuItem>
                           {job.url && (
                             <DropdownMenuItem asChild>
-                              <a
-                                href={job.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
+                              <a href={job.url} target="_blank" rel="noopener noreferrer">
                                 <ExternalLink className="mr-2 h-4 w-4" />
                                 View listing
                               </a>
@@ -392,9 +358,7 @@ export function JobsDataTable({
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
                                 className="cursor-pointer"
-                                onClick={() =>
-                                  handleUpdateStatus(job, JobStatus.APPLIED)
-                                }
+                                onClick={() => handleUpdateStatus(job, JobStatus.APPLIED)}
                               >
                                 <LucideCheckCircle className="mr-2 h-4 w-4" />
                                 Mark as Applied
@@ -407,27 +371,21 @@ export function JobsDataTable({
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
                                 className="cursor-pointer"
-                                onClick={() =>
-                                  handleUpdateStatus(job, JobStatus.REJECTED)
-                                }
+                                onClick={() => handleUpdateStatus(job, JobStatus.REJECTED)}
                               >
                                 <LucideFileX className="mr-2 h-4 w-4" />
                                 Mark as Rejected
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 className="cursor-pointer"
-                                onClick={() =>
-                                  handleUpdateStatus(job, JobStatus.NO_ANSWER)
-                                }
+                                onClick={() => handleUpdateStatus(job, JobStatus.NO_ANSWER)}
                               >
                                 <LucideMessageCircleX className="mr-2 h-4 w-4" />
                                 Mark as No Response
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 className="cursor-pointer"
-                                onClick={() =>
-                                  handleUpdateStatus(job, JobStatus.ARCHIVED)
-                                }
+                                onClick={() => handleUpdateStatus(job, JobStatus.ARCHIVED)}
                               >
                                 <LucideArchive className="mr-2 h-4 w-4" />
                                 Archive Job
@@ -448,17 +406,10 @@ export function JobsDataTable({
           <div className="text-sm text-muted-foreground">
             {data.length > 0 && (
               <>
-                Showing{" "}
+                Showing <span className="font-medium">{(currentPage - 1) * pageSize + 1}</span> to{' '}
                 <span className="font-medium">
-                  {(currentPage - 1) * pageSize + 1}
-                </span>{" "}
-                to{" "}
-                <span className="font-medium">
-                  {Math.min(
-                    currentPage * pageSize,
-                    (currentPage - 1) * pageSize + data.length
-                  )}
-                </span>{" "}
+                  {Math.min(currentPage * pageSize, (currentPage - 1) * pageSize + data.length)}
+                </span>{' '}
                 of <span className="font-medium">{total}</span> jobs
               </>
             )}

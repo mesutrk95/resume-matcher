@@ -3,11 +3,7 @@
 import { currentUser } from '@/lib/auth';
 import { getStripeServer } from '@/lib/stripe';
 import { createOrRetrieveCustomer, getSubscriptionByUserId } from './customer';
-import {
-  PRICE_MAPPING,
-  SubscriptionInterval,
-  TRIAL_PERIOD_DAYS,
-} from './index';
+import { PRICE_MAPPING, SubscriptionInterval, TRIAL_PERIOD_DAYS } from './index';
 import { updateSubscriptionInDatabase } from './utils';
 import { mapStripeStatusToDBStatus } from './constants';
 import { db } from '@/lib/db';
@@ -66,9 +62,7 @@ export const createCheckoutSession = async (
   const subscription = await createOrRetrieveCustomer(userId, email, name);
 
   if (!subscription?.customerId) {
-    throw new InternalServerErrorException(
-      'Could not create or retrieve customer',
-    );
+    throw new InternalServerErrorException('Could not create or retrieve customer');
   }
 
   const hasHadPreviousSubscription = await hasUserHadSubscription(userId);
@@ -164,9 +158,7 @@ export const verifySubscriptionFromSession = async (sessionId: string) => {
       sessionId,
       error: error.message,
     });
-    throw new InternalServerErrorException(
-      'Failed to retrieve checkout session',
-    );
+    throw new InternalServerErrorException('Failed to retrieve checkout session');
   }
 
   if (session.status !== 'complete') {
@@ -244,16 +236,13 @@ export const createCustomerPortalSession = async (returnUrl?: string) => {
     configId = await getOrCreatePortalConfiguration(stripe);
   } catch (error: any) {
     Logger.error('Error with portal configuration', { error: error.message });
-    throw new InternalServerErrorException(
-      'Failed to set up portal configuration',
-    );
+    throw new InternalServerErrorException('Failed to set up portal configuration');
   }
 
   try {
     const session = await stripe.billingPortal.sessions.create({
       customer: subscription.customerId,
-      return_url:
-        returnUrl || `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing`,
+      return_url: returnUrl || `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing`,
       configuration: configId,
     });
 
@@ -265,9 +254,7 @@ export const createCustomerPortalSession = async (returnUrl?: string) => {
     Logger.error('Error creating billing portal session', {
       error: error.message,
     });
-    throw new InternalServerErrorException(
-      'Failed to create billing portal session',
-    );
+    throw new InternalServerErrorException('Failed to create billing portal session');
   }
 };
 
@@ -289,11 +276,9 @@ async function getOrCreatePortalConfiguration(stripe: any) {
     business_profile: {
       headline: 'Manage your subscription',
       privacy_policy_url:
-        process.env.PRIVACY_POLICY_URL ||
-        `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
+        process.env.PRIVACY_POLICY_URL || `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
       terms_of_service_url:
-        process.env.TERMS_OF_SERVICE_URL ||
-        `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
+        process.env.TERMS_OF_SERVICE_URL || `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
     },
     features: {
       customer_update: {

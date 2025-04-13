@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { createJobResume } from "@/actions/job-resume";
-import { LoadingButton } from "@/components/ui/loading-button";
-import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useTransition } from "react";
-import { toast } from "sonner";
+import { createJobResume } from '@/actions/job-resume';
+import { LoadingButton } from '@/components/ui/loading-button';
+import { Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useTransition } from 'react';
+import { toast } from 'sonner';
 
 export const CreateResumeButton = ({
   jobId,
@@ -26,10 +26,10 @@ export const CreateResumeButton = ({
           // Redirect to the edit page
           router.push(`/resumes/${result?.id}/builder`);
         } else {
-          toast.error("Failed to create resume");
+          toast.error('Failed to create resume');
         }
       } catch (error) {
-        toast.error("Something went wrong");
+        toast.error('Something went wrong');
       }
     });
   };
@@ -47,7 +47,7 @@ export const CreateResumeButton = ({
           Create Blank Resume
         </>
       ) : (
-        "Use This Template"
+        'Use This Template'
       )}
     </LoadingButton>
   );

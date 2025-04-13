@@ -1,15 +1,17 @@
-"use server";
+'use server';
 
-import { profileSchema } from "@/schemas";
-import { z } from "zod";
-import { currentUser } from "@/lib/auth";
-import { hashPassword, response } from "@/lib/utils";
-import { getUserByEmail, getUserById, updateUserById } from "@/services/user";
-import { unstable_update } from "@/auth";
-import { deleteTwoFactorConfirmationByUserId } from "@/services/two-factor-confirmation";
-import bcrypt from "bcryptjs";
-import { generateVerificationToken } from "@/services/verification-token";
-import { sendVerificationEmail } from "@/services/mail";
+import { profileSchema } from '@/schemas';
+import { z } from 'zod';
+import { currentUser } from '@/lib/auth';
+import { hashPassword, response } from '@/lib/utils';
+import { getUserByEmail, getUserById, updateUserById } from '@/services/user';
+import { unstable_update } from '@/auth';
+import { deleteTwoFactorConfirmationByUserId } from '@/services/two-factor-confirmation';
+import bcrypt from 'bcryptjs';
+import { generateVerificationToken } from '@/services/verification-token';
+import { sendVerificationEmail } from '@/services/mail';
+import { updateContactMarketingPreferences } from '@/lib/brevo';
+import logger from '@/lib/logger';
 
 export const profile = async (payload: z.infer<typeof profileSchema>) => {
   // Check if user input is not valid, then return an error.
@@ -19,12 +21,13 @@ export const profile = async (payload: z.infer<typeof profileSchema>) => {
       success: false,
       error: {
         code: 422,
-        message: "Invalid fields.",
+        message: 'Invalid fields.',
       },
     });
   }
 
-  let { name, email, password, newPassword, isTwoFactorEnabled } = validatedFields.data;
+  let { email, password, newPassword, isTwoFactorEnabled } = validatedFields.data;
+  const { name, marketingEmails } = validatedFields.data;
 
   // Check if current user does not exist, then return an error.
   const user = await currentUser();
@@ -33,7 +36,7 @@ export const profile = async (payload: z.infer<typeof profileSchema>) => {
       success: false,
       error: {
         code: 401,
-        message: "Unauthorized.",
+        message: 'Unauthorized.',
       },
     });
   }
@@ -45,7 +48,7 @@ export const profile = async (payload: z.infer<typeof profileSchema>) => {
       success: false,
       error: {
         code: 401,
-        message: "Unauthorized.",
+        message: 'Unauthorized.',
       },
     });
   }
@@ -67,7 +70,7 @@ export const profile = async (payload: z.infer<typeof profileSchema>) => {
         success: false,
         error: {
           code: 422,
-          message: "The email address you have entered is already in use. Please use another one.",
+          message: 'The email address you have entered is already in use. Please use another one.',
         },
       });
     }
@@ -80,7 +83,7 @@ export const profile = async (payload: z.infer<typeof profileSchema>) => {
     return response({
       success: true,
       code: 201,
-      message: "Confirmation email sent. Please check your email.",
+      message: 'Confirmation email sent. Please check your email.',
     });
   }
 
@@ -98,7 +101,7 @@ export const profile = async (payload: z.infer<typeof profileSchema>) => {
         success: false,
         error: {
           code: 401,
-          message: "Incorrect password.",
+          message: 'Incorrect password.',
         },
       });
     }
@@ -118,7 +121,29 @@ export const profile = async (payload: z.infer<typeof profileSchema>) => {
     email,
     password,
     isTwoFactorEnabled,
+    marketingEmails,
   });
+
+  // Update marketing preferences in Brevo if changed
+  if (marketingEmails !== undefined && marketingEmails !== existingUser.marketingEmails) {
+    try {
+      await updateContactMarketingPreferences(
+        existingUser.email || email || '',
+        !!marketingEmails,
+        name || existingUser.name || undefined,
+      );
+      logger.debug('Updated contact marketing preferences in Brevo', {
+        email: existingUser.email || email,
+        marketingEmails,
+      });
+    } catch (error) {
+      // Don't fail profile update if Brevo integration fails
+      logger.error('Failed to update contact marketing preferences in Brevo', {
+        error,
+        email: existingUser.email || email,
+      });
+    }
+  }
 
   // Update session
   await unstable_update({ user: { ...updatedUser } });
@@ -127,6 +152,6 @@ export const profile = async (payload: z.infer<typeof profileSchema>) => {
   return response({
     success: true,
     code: 204,
-    message: "Profile updated.",
+    message: 'Profile updated.',
   });
 };

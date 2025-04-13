@@ -1,6 +1,6 @@
-import { Content, GoogleGenerativeAI, Part } from "@google/generative-ai";
-import OpenAI from "openai";
-import { randomNDigits } from "./utils";
+import { Content, GoogleGenerativeAI, Part } from '@google/generative-ai';
+import OpenAI from 'openai';
+import { randomNDigits } from './utils';
 
 export interface ContentWithMeta extends Content {
   id: string;
@@ -10,7 +10,7 @@ export interface ContentWithMeta extends Content {
 export const getAIJsonResponse = async (
   prompt: string,
   content?: (string | { mimeType: string; data: Buffer })[],
-  systemInstructions?: string
+  systemInstructions?: string,
 ) => {
   const response = await getGeminiResponse(prompt, content, systemInstructions);
   const result = parseJson(response);
@@ -20,7 +20,7 @@ export const getAIJsonResponse = async (
 
 export const getAIHtmlResponse = async (
   prompt: string,
-  content?: (string | { mimeType: string; data: Buffer })[]
+  content?: (string | { mimeType: string; data: Buffer })[],
 ) => {
   const response = await getGeminiResponse(prompt, content);
   const result = parseHtml(response);
@@ -28,26 +28,21 @@ export const getAIHtmlResponse = async (
 };
 export const getAIRawResponse = async (
   prompt: string,
-  content?: (string | { mimeType: string; data: Buffer })[]
+  content?: (string | { mimeType: string; data: Buffer })[],
 ) => {
   const response = await getGeminiResponse(prompt, content);
   return { result: response, prompt, content };
 };
 
-const getDeepSeekResponse = async (
-  prompt: string,
-  contents?: (string | Buffer)[]
-) => {
+const getDeepSeekResponse = async (prompt: string, contents?: (string | Buffer)[]) => {
   const openai = new OpenAI({
-    baseURL: "https://api.deepseek.com",
+    baseURL: 'https://api.deepseek.com',
     apiKey: process.env.DEEPSEEK_API_KEY,
   });
 
   const completion = await openai.chat.completions.create({
-    messages: [
-      { role: "system", content: prompt + "\n" + contents?.join(", ") },
-    ],
-    model: "deepseek-chat",
+    messages: [{ role: 'system', content: prompt + '\n' + contents?.join(', ') }],
+    model: 'deepseek-chat',
   });
 
   const msg = completion.choices[0].message.content;
@@ -57,25 +52,25 @@ const getDeepSeekResponse = async (
 const getGeminiResponse = async (
   prompt: string,
   contents?: (string | { mimeType: string; data: Buffer })[],
-  systemInstruction?: string
+  systemInstruction?: string,
 ) => {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
   const model = genAI.getGenerativeModel({
     systemInstruction,
-    model: "gemini-2.0-flash",
+    model: 'gemini-2.0-flash',
   });
 
   const generatedContent = await model.generateContent([
     prompt,
-    ...(contents?.map((c) =>
-      typeof c === "string"
+    ...(contents?.map(c =>
+      typeof c === 'string'
         ? { text: c }
         : {
             inlineData: {
-              data: c.data.toString("base64"),
-              mimeType: c.mimeType || "application/pdf",
+              data: c.data.toString('base64'),
+              mimeType: c.mimeType || 'application/pdf',
             },
-          }
+          },
     ) || []),
   ]);
   const msg = generatedContent.response.text();
@@ -85,20 +80,20 @@ export const getGeminiChatResponse = async (
   systemInstruction: string,
   messages: Part[],
   instructionSuffix: string | null,
-  history?: ContentWithMeta[]
+  history?: ContentWithMeta[],
 ): Promise<{
   response: string;
   updatedHistory: ContentWithMeta[];
 }> => {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: 'gemini-2.0-flash',
     systemInstruction,
   });
 
   // 1. Prepare the history (without any instructions)
   const geminiHistory =
-    history?.map((item) => ({
+    history?.map(item => ({
       role: item.role,
       parts: item.parts,
     })) || [];
@@ -114,7 +109,7 @@ export const getGeminiChatResponse = async (
 
   // 3. Send message (model sees instruction)
   const result = await chat.sendMessage(messagesWithInstruction);
-  console.log("usageMetadata", result.response.usageMetadata);
+  console.log('usageMetadata', result.response.usageMetadata);
 
   const responseText = result.response.text();
 
@@ -122,14 +117,14 @@ export const getGeminiChatResponse = async (
   const newUserMessage: ContentWithMeta = {
     id: randomNDigits(),
     timestamp: new Date(),
-    role: "user",
+    role: 'user',
     parts: messages, // Original parts without instruction
   };
 
   const newModelMessage: ContentWithMeta = {
     id: randomNDigits(),
     timestamp: new Date(),
-    role: "model",
+    role: 'model',
     parts: [{ text: responseText }],
   };
 
@@ -143,7 +138,7 @@ const parseJson = (message: string) => {
   let error = null;
   let object = null;
   try {
-    object = JSON.parse(message.replace("```json", "").replace("```", ""));
+    object = JSON.parse(message.replace('```json', '').replace('```', ''));
   } catch (err: any) {
     error = err.toString();
   }
@@ -152,10 +147,10 @@ const parseJson = (message: string) => {
 };
 
 const parseHtml = (message: string) => {
-  let error = null;
+  const error = null;
   return {
     error,
-    result: message.replace("```html", "").replace("```", ""),
+    result: message.replace('```html', '').replace('```', ''),
     rawResult: message,
   };
 };

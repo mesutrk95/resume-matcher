@@ -51,20 +51,14 @@ async function loadMjmlTemplate(
   }
 }
 
-export const sendVerificationEmail = async (
-  email: string,
-  token: string,
-  name?: string,
-) => {
+export const sendVerificationEmail = async (email: string, token: string, name?: string) => {
   const verifyEmailLink = `${process.env.NEXT_PUBLIC_APP_URL}/verify?token=${token}`;
 
   try {
     const template = await loadMjmlTemplate('verification');
 
     const data = {
-      title: `Email Verification - ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      }`,
+      title: `Email Verification - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'}`,
       name: name || email.split('@')[0],
       verificationLink: verifyEmailLink,
       appName: process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher',
@@ -96,9 +90,7 @@ export const sendResetPasswordEmail = async (email: string, token: string) => {
   try {
     const template = await loadMjmlTemplate('reset-password');
     const html = template({
-      title: `Reset Your Password - ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      }`,
+      title: `Reset Your Password - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'}`,
       name: email.split('@')[0],
       resetPasswordLink: resetPasswordLink,
       appName: process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher',
@@ -128,9 +120,7 @@ export const sendTwoFactorEmail = async (email: string, token: string) => {
   try {
     const template = await loadMjmlTemplate('two-factor');
     const html = template({
-      title: `Two-Factor Authentication - ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      }`,
+      title: `Two-Factor Authentication - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'}`,
       name: email.split('@')[0],
       token: token,
       appName: process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher',
@@ -164,9 +154,7 @@ export const sendSubscriptionWelcomeEmail = async (
   try {
     const template = await loadMjmlTemplate('subscription-welcome');
     const html = template({
-      title: `Welcome to ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      } Pro!`,
+      title: `Welcome to ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro!`,
       name: name || 'there',
       trialEndDate: trialEndDate.toLocaleDateString(),
       appUrl: process.env.NEXT_PUBLIC_APP_URL,
@@ -180,9 +168,7 @@ export const sendSubscriptionWelcomeEmail = async (
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
       to: email,
-      subject: `Welcome to ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      } Pro!`,
+      subject: `Welcome to ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro!`,
       html: html,
     });
 
@@ -246,9 +232,7 @@ export const sendPaymentFailedEmail = async (
   try {
     const template = await loadMjmlTemplate('payment-failed');
     const html = template({
-      title: `Payment Failed - ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      } Pro`,
+      title: `Payment Failed - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro`,
       name: name || 'there',
       amount: amount.toFixed(2),
       currency: currency.toUpperCase(),
@@ -280,17 +264,11 @@ export const sendPaymentFailedEmail = async (
   }
 };
 
-export const sendSubscriptionCanceledEmail = async (
-  email: string,
-  name: string,
-  endDate: Date,
-) => {
+export const sendSubscriptionCanceledEmail = async (email: string, name: string, endDate: Date) => {
   try {
     const template = await loadMjmlTemplate('subscription-ended');
     const html = template({
-      title: `Subscription Ended - ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      } Pro`,
+      title: `Subscription Ended - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro`,
       name: name || 'there',
       endDate: endDate.toLocaleDateString(),
       resubscribeUrl: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing`,
@@ -318,17 +296,11 @@ export const sendSubscriptionCanceledEmail = async (
   }
 };
 
-export const sendWinBackEmail = async (
-  email: string,
-  name: string,
-  userId: string,
-) => {
+export const sendWinBackEmail = async (email: string, name: string, userId: string) => {
   try {
     const template = await loadMjmlTemplate('win-back');
     const html = template({
-      title: `Special Offer - ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      } Pro`,
+      title: `Special Offer - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro`,
       name: name || 'there',
       specialOfferUrl: `${process.env.NEXT_PUBLIC_APP_URL}/special-offer?userId=${userId}`,
       appUrl: process.env.NEXT_PUBLIC_APP_URL,
@@ -342,9 +314,7 @@ export const sendWinBackEmail = async (
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
       to: email,
-      subject: `We Miss You at ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      } Pro`,
+      subject: `We Miss You at ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro`,
       html: html,
     });
 

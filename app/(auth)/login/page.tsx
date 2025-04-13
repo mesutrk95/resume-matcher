@@ -1,9 +1,9 @@
-import { LoginForm } from "@/components/form/login-form";
-import { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { LoginForm } from '@/components/form/login-form';
+import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: "Login",
+  title: 'Login',
 };
 
 export default async function LoginPage({ searchParams }: { searchParams: { error: string } }) {

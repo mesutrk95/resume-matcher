@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useState, useTransition } from "react";
-import Moment from "react-moment";
-import { Pencil } from "lucide-react";
+import React, { useState, useTransition } from 'react';
+import Moment from 'react-moment';
+import { Pencil } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -10,25 +10,22 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { JobResume } from "@prisma/client";
-import { updateJobResume } from "@/actions/job-resume";
-import { toast } from "sonner";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { JobResume } from '@prisma/client';
+import { updateJobResume } from '@/actions/job-resume';
+import { toast } from 'sonner';
 
 interface ResumeHeaderProps {
   jobResume: JobResume;
   onUpdate?: () => void;
 }
 
-export const ResumeHeader: React.FC<ResumeHeaderProps> = ({
-  jobResume,
-  onUpdate,
-}) => {
+export const ResumeHeader: React.FC<ResumeHeaderProps> = ({ jobResume, onUpdate }) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [newName, setNewName] = useState<string>(jobResume.name || "");
+  const [newName, setNewName] = useState<string>(jobResume.name || '');
   const [isPending, startTransition] = useTransition();
 
   const handleRename = () => {
@@ -36,10 +33,7 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({
 
     startTransition(async () => {
       try {
-        const result = await updateJobResume(
-          { id: jobResume.id, name: newName },
-          true
-        );
+        const result = await updateJobResume({ id: jobResume.id, name: newName }, true);
 
         if (result.success) {
           setIsDialogOpen(false);
@@ -48,10 +42,10 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({
           if (onUpdate) {
             onUpdate();
           }
-          toast.success("Resume name updated successfully!");
-        } else toast.error("Failed to update resume name. Please try again.");
+          toast.success('Resume name updated successfully!');
+        } else toast.error('Failed to update resume name. Please try again.');
       } catch (error) {
-        toast.error("Failed to update resume name. Please try again.");
+        toast.error('Failed to update resume name. Please try again.');
       }
     });
   };
@@ -60,13 +54,13 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({
   const handleDialogChange = (open: boolean) => {
     setIsDialogOpen(open);
     if (open) {
-      setNewName(jobResume.name || "");
+      setNewName(jobResume.name || '');
     }
   };
 
   // Handle Enter key press
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !isPending && newName?.trim()) {
+    if (e.key === 'Enter' && !isPending && newName?.trim()) {
       handleRename();
     }
   };
@@ -81,13 +75,11 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({
       >
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-xl font-bold cursor-pointer">
-              {jobResume.name} Resume
-            </h2>
+            <h2 className="text-xl font-bold cursor-pointer">{jobResume.name} Resume</h2>
             <Pencil
               size={16}
               className={`text-muted-foreground transition-opacity duration-200 ${
-                isHovered ? "opacity-100" : "opacity-0"
+                isHovered ? 'opacity-100' : 'opacity-0'
               }`}
             />
           </div>
@@ -102,15 +94,14 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({
           <DialogHeader>
             <DialogTitle>Rename Resume</DialogTitle>
             <DialogDescription>
-              Enter a new name for your resume. Click save when you&apos;re
-              done.
+              Enter a new name for your resume. Click save when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
             <Input
               id="resume-name"
               value={newName}
-              onChange={(e) => setNewName(e.target.value)}
+              onChange={e => setNewName(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Enter resume name"
               className="w-full"
@@ -118,12 +109,8 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({
             />
           </div>
           <DialogFooter>
-            <Button
-              type="submit"
-              onClick={handleRename}
-              disabled={isPending || !newName?.trim()}
-            >
-              {isPending ? "Saving..." : "Save changes"}
+            <Button type="submit" onClick={handleRename} disabled={isPending || !newName?.trim()}>
+              {isPending ? 'Saving...' : 'Save changes'}
             </Button>
           </DialogFooter>
         </DialogContent>

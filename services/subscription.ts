@@ -10,11 +10,7 @@ export const getSubscriptionByUserId = async (userId: string) => {
   });
 };
 
-export const createCustomer = async (
-  userId: string,
-  email: string,
-  name?: string,
-) => {
+export const createCustomer = async (userId: string, email: string, name?: string) => {
   const stripe = getStripeServer();
 
   if (!stripe) {
@@ -47,11 +43,7 @@ export const createCustomer = async (
   return subscription;
 };
 
-export const createOrRetrieveCustomer = async (
-  userId: string,
-  email: string,
-  name?: string,
-) => {
+export const createOrRetrieveCustomer = async (userId: string, email: string, name?: string) => {
   const subscription = await getSubscriptionByUserId(userId);
 
   if (subscription?.customerId) {

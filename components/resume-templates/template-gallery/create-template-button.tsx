@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { createJobResume } from "@/actions/job-resume";
-import { createResumeTemplate } from "@/actions/resume-template";
-import { LoadingButton } from "@/components/ui/loading-button";
-import { ResumeContent } from "@/types/resume";
-import { MousePointerClick, Pointer } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useTransition } from "react";
-import { toast } from "sonner";
+import { createJobResume } from '@/actions/job-resume';
+import { createResumeTemplate } from '@/actions/resume-template';
+import { LoadingButton } from '@/components/ui/loading-button';
+import { ResumeContent } from '@/types/resume';
+import { MousePointerClick, Pointer } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { useTransition } from 'react';
+import { toast } from 'sonner';
 
 export const CreateTemplateButton = ({
   jobId,
@@ -26,16 +26,16 @@ export const CreateTemplateButton = ({
         // Call the Server Action to create the ResumeJob
         const result = await createResumeTemplate(
           resumeContent,
-          resumeContent.titles?.[0]?.content
+          resumeContent.titles?.[0]?.content,
         );
         if (result) {
           // Redirect to the edit page
           router.push(`/templates/${result?.id}`);
         } else {
-          toast.error("Failed to create resume template!");
+          toast.error('Failed to create resume template!');
         }
       } catch (error) {
-        toast.error("Something went wrong!");
+        toast.error('Something went wrong!');
       }
     });
   };

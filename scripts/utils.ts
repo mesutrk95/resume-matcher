@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
 
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from 'fs';
+import * as path from 'path';
 
 export async function getDirectoryFiles(targetPath: string, ext?: string) {
   const files = [];
@@ -15,10 +15,7 @@ export async function getDirectoryFiles(targetPath: string, ext?: string) {
 
         if (entry.isDirectory()) {
           await processDirectory(fullPath);
-        } else if (
-          entry.isFile() &&
-          (!ext || (ext && entry.name.endsWith(ext)))
-        ) {
+        } else if (entry.isFile() && (!ext || (ext && entry.name.endsWith(ext)))) {
           files.push(fullPath);
         }
       }

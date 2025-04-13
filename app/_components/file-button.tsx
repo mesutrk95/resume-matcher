@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { LoadingButton } from "@/components/ui/loading-button";
-import { UploadIcon } from "lucide-react";
-import React, { ChangeEvent, ReactNode, useRef, useState } from "react";
+import { Button } from '@/components/ui/button';
+import { LoadingButton } from '@/components/ui/loading-button';
+import { UploadIcon } from 'lucide-react';
+import React, { ChangeEvent, ReactNode, useRef, useState } from 'react';
 
 interface FileButtonProps {
   children?: ReactNode;
@@ -16,7 +16,7 @@ export const FileButton = ({
   onFileSelected,
   loading,
   loadingText,
-  accept = "",
+  accept = '',
 }: FileButtonProps) => {
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,7 +34,7 @@ export const FileButton = ({
   const handleButtonClick = () => {
     // Reset the value of the file input before clicking it
     if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+      fileInputRef.current.value = '';
     }
     // Trigger the hidden file input when button is clicked
     fileInputRef.current?.click();
@@ -48,7 +48,7 @@ export const FileButton = ({
         onFileSelected(file);
       }
     } else {
-      console.log("No file selected");
+      console.log('No file selected');
     }
   };
 
@@ -69,7 +69,7 @@ export const FileButton = ({
           loading={loading}
           loadingText={loadingText}
         >
-          {children || "Select File"}
+          {children || 'Select File'}
         </LoadingButton>
       </div>
     </form>

@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { YearMonthPicker } from "@/components/ui/year-month-picker";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { YearMonthPicker } from '@/components/ui/year-month-picker';
 
 type AddExperienceType = {
   companyName: string;
@@ -22,22 +22,19 @@ type AddExperienceFormProps = {
   onCancel: () => void;
 };
 
-export function AddExperienceForm({
-  onSave,
-  onCancel,
-}: AddExperienceFormProps) {
+export function AddExperienceForm({ onSave, onCancel }: AddExperienceFormProps) {
   const [formData, setFormData] = useState<AddExperienceType>({
-    companyName: "",
-    role: "",
+    companyName: '',
+    role: '',
     // startDate: "",
     // endDate: "",
-    location: "",
-    type: "",
+    location: '',
+    type: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = () => {
@@ -71,16 +68,12 @@ export function AddExperienceForm({
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="text-sm font-medium mb-1 block">
-                Start Date
-              </label>
+              <label className="text-sm font-medium mb-1 block">Start Date</label>
 
               <YearMonthPicker
                 className="w-full"
                 date={formData.startDate}
-                setDate={(date) =>
-                  setFormData((prev) => ({ ...prev, startDate: date }))
-                }
+                setDate={date => setFormData(prev => ({ ...prev, startDate: date }))}
                 placeholder="Start Date"
               />
             </div>
@@ -89,9 +82,7 @@ export function AddExperienceForm({
               <YearMonthPicker
                 className="w-full"
                 date={formData.endDate}
-                setDate={(date) =>
-                  setFormData((prev) => ({ ...prev, endDate: date }))
-                }
+                setDate={date => setFormData(prev => ({ ...prev, endDate: date }))}
                 placeholder="End Date"
               />
             </div>

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import type { ResumeContent, ResumeProfessionalSummary } from "@/types/resume";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus } from "lucide-react";
+import { useState } from 'react';
+import type { ResumeContent, ResumeProfessionalSummary } from '@/types/resume';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Plus } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -12,22 +12,20 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { AddSummaryForm } from "./add-summary-form";
-import { SummaryList } from "./summary-list";
-import { randomNDigits } from "@/lib/utils";
-import { ResumeBuilderCard } from "../resume-builder-card";
-import { useResumeBuilder } from "../context/useResumeBuilder";
+} from '@dnd-kit/sortable';
+import { AddSummaryForm } from './add-summary-form';
+import { SummaryList } from './summary-list';
+import { randomNDigits } from '@/lib/utils';
+import { ResumeBuilderCard } from '../resume-builder-card';
+import { useResumeBuilder } from '../context/useResumeBuilder';
 
-type SummariesSectionProps = {};
-
-export function SummariesSection({}: SummariesSectionProps) {
+export function SummariesSection() {
   const { resume, saveResume } = useResumeBuilder();
   const [addingSummary, setAddingSummary] = useState(false);
 
@@ -36,7 +34,7 @@ export function SummariesSection({}: SummariesSectionProps) {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleAddSummary = () => {
@@ -61,17 +59,15 @@ export function SummariesSection({}: SummariesSectionProps) {
   const handleUpdateSummary = (updatedSummary: ResumeProfessionalSummary) => {
     let summaries = resume.summaries;
     if (updatedSummary.enabled) {
-      summaries = summaries.map((summary) =>
-        summary.id !== updatedSummary.id
-          ? { ...summary, enabled: false }
-          : updatedSummary
+      summaries = summaries.map(summary =>
+        summary.id !== updatedSummary.id ? { ...summary, enabled: false } : updatedSummary,
       );
     }
 
     saveResume({
       ...resume,
-      summaries: summaries.map((summary) =>
-        summary.id === updatedSummary.id ? updatedSummary : summary
+      summaries: summaries.map(summary =>
+        summary.id === updatedSummary.id ? updatedSummary : summary,
       ),
     });
   };
@@ -79,7 +75,7 @@ export function SummariesSection({}: SummariesSectionProps) {
   const handleDeleteSummary = (summaryId: string) => {
     saveResume({
       ...resume,
-      summaries: resume.summaries.filter((summary) => summary.id !== summaryId),
+      summaries: resume.summaries.filter(summary => summary.id !== summaryId),
     });
   };
 
@@ -87,12 +83,8 @@ export function SummariesSection({}: SummariesSectionProps) {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = resume.summaries.findIndex(
-        (summary) => summary.id === active.id
-      );
-      const newIndex = resume.summaries.findIndex(
-        (summary) => summary.id === over.id
-      );
+      const oldIndex = resume.summaries.findIndex(summary => summary.id === active.id);
+      const newIndex = resume.summaries.findIndex(summary => summary.id === over.id);
 
       saveResume({
         ...resume,
@@ -109,19 +101,12 @@ export function SummariesSection({}: SummariesSectionProps) {
       addButtonText="Add Summary"
     >
       {addingSummary && (
-        <AddSummaryForm
-          onSave={handleSaveNewSummary}
-          onCancel={handleCancelAddSummary}
-        />
+        <AddSummaryForm onSave={handleSaveNewSummary} onCancel={handleCancelAddSummary} />
       )}
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
-          items={resume.summaries.map((summary) => summary.id)}
+          items={resume.summaries.map(summary => summary.id)}
           strategy={verticalListSortingStrategy}
         >
           <SummaryList

@@ -1,18 +1,21 @@
-import { ZodIssue } from "zod";
+import { ZodIssue } from 'zod';
 
 export class HttpException extends Error {
-  constructor(public readonly statusCode: number, message: string) {
+  constructor(
+    public readonly statusCode: number,
+    message: string,
+  ) {
     super(message);
     this.name = this.constructor.name;
   }
 
   serialize(): { message: string; data?: unknown } {
-    return { message: "" };
+    return { message: '' };
   }
 }
 
 export class NotFoundException extends HttpException {
-  constructor(message = "Resource not found") {
+  constructor(message = 'Resource not found') {
     super(404, message);
   }
 
@@ -22,7 +25,7 @@ export class NotFoundException extends HttpException {
 }
 
 export class BadRequestException extends HttpException {
-  constructor(message = "Bad request") {
+  constructor(message = 'Bad request') {
     super(400, message);
   }
   serialize() {
@@ -33,7 +36,7 @@ export class BadRequestException extends HttpException {
 export class InvalidInputException extends HttpException {
   errors;
 
-  constructor(message = "Invalid Input Data", errors: ZodIssue[]) {
+  constructor(message = 'Invalid Input Data', errors: ZodIssue[]) {
     super(400, message);
 
     this.errors = errors;
@@ -45,7 +48,7 @@ export class InvalidInputException extends HttpException {
 }
 
 export class ConflictException extends HttpException {
-  constructor(message = "Conflict") {
+  constructor(message = 'Conflict') {
     super(409, message);
   }
   serialize() {
@@ -54,7 +57,7 @@ export class ConflictException extends HttpException {
 }
 
 export class UnauthorizedException extends HttpException {
-  constructor(message = "Unauthorized") {
+  constructor(message = 'Unauthorized') {
     super(401, message);
   }
   serialize() {
@@ -63,7 +66,7 @@ export class UnauthorizedException extends HttpException {
 }
 
 export class ForbiddenException extends HttpException {
-  constructor(message = "Forbidden") {
+  constructor(message = 'Forbidden') {
     super(403, message);
   }
   serialize() {
@@ -72,7 +75,7 @@ export class ForbiddenException extends HttpException {
 }
 
 export class InternalServerErrorException extends HttpException {
-  constructor(input: string | Error = "Internal server error") {
+  constructor(input: string | Error = 'Internal server error') {
     const message = input instanceof Error ? input.message : input;
     super(500, message);
   }

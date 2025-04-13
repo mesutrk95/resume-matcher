@@ -1,22 +1,22 @@
-import { CardWrapper } from "@/components/shared/card-wrapper";
-import { AuthError } from "next-auth";
-import { redirect } from "next/navigation";
+import { CardWrapper } from '@/components/shared/card-wrapper';
+import { AuthError } from 'next-auth';
+import { redirect } from 'next/navigation';
 
 type ErrorCardProps = {
-  message?: AuthError["type"];
+  message?: AuthError['type'];
 };
 
 export const ErrorCard = ({ message }: ErrorCardProps) => {
   let headerDescription =
-    "Oops! Something went wrong. Please contact administrator for more details or try again later.";
+    'Oops! Something went wrong. Please contact administrator for more details or try again later.';
 
   if (!message) {
-    redirect("/login");
+    redirect('/login');
   }
 
-  if (message === "OAuthAccountNotLinked") {
+  if (message === 'OAuthAccountNotLinked') {
     headerDescription =
-      "Another account already registered with the same Email Address. Please login the different one.";
+      'Another account already registered with the same Email Address. Please login the different one.';
   }
 
   return (

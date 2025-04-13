@@ -4,10 +4,7 @@
 import { currentUser } from '@/lib/auth';
 import { getStripeServer } from '@/lib/stripe';
 import { getSubscriptionByUserId } from './customer';
-import {
-  BadRequestException,
-  InternalServerErrorException,
-} from '@/lib/exceptions';
+import { BadRequestException, InternalServerErrorException } from '@/lib/exceptions';
 import Logger from '@/lib/logger';
 
 export type PaymentHistoryItem = {
@@ -112,9 +109,7 @@ export const getPaymentHistory = async (): Promise<{
 
     // Convert past charges to PaymentHistoryItems
     const pastPayments = charges.data.map(charge => {
-      const relatedInvoice = pastInvoices.data.find(
-        invoice => invoice.charge === charge.id,
-      );
+      const relatedInvoice = pastInvoices.data.find(invoice => invoice.charge === charge.id);
 
       let description = 'Subscription payment';
       let billingPeriod = undefined;
@@ -162,10 +157,7 @@ export const getPaymentHistory = async (): Promise<{
         amount: upcomingInvoice.amount_due / 100,
         currency: upcomingInvoice.currency.toUpperCase(),
         status: 'upcoming',
-        date: new Date(
-          (upcomingInvoice.next_payment_attempt || upcomingInvoice.created) *
-            1000,
-        ),
+        date: new Date((upcomingInvoice.next_payment_attempt || upcomingInvoice.created) * 1000),
         description: upcomingDescription,
         isUpcoming: true,
         billingPeriod,

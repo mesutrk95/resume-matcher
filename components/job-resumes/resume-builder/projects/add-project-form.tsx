@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Card } from "@/components/ui/card";
-import { YearMonthPicker } from "@/components/ui/year-month-picker";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Card } from '@/components/ui/card';
+import { YearMonthPicker } from '@/components/ui/year-month-picker';
 
 type AddProjectFormProps = {
   onSave: (project: {
@@ -20,9 +20,9 @@ type AddProjectFormProps = {
 };
 
 export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
-  const [name, setName] = useState("");
-  const [content, setContent] = useState("");
-  const [link, setLink] = useState("");
+  const [name, setName] = useState('');
+  const [content, setContent] = useState('');
+  const [link, setLink] = useState('');
   const [startDate, setStartDate] = useState<string | undefined>(undefined);
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [isPresent, setIsPresent] = useState(false);
@@ -34,7 +34,7 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
         content,
         link,
         startDate: startDate,
-        endDate: isPresent ? "Present" : endDate,
+        endDate: isPresent ? 'Present' : endDate,
       });
     }
   };
@@ -54,7 +54,7 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
           <label className="text-sm font-medium mb-1 block">Project Name</label>
           <Input
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={e => setName(e.target.value)}
             placeholder="Enter project name"
           />
         </div>
@@ -62,7 +62,7 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
           <label className="text-sm font-medium mb-1 block">Project Link</label>
           <Input
             value={link}
-            onChange={(e) => setLink(e.target.value)}
+            onChange={e => setLink(e.target.value)}
             placeholder="Enter project link"
           />
         </div>
@@ -81,11 +81,7 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
             {isPresent ? (
               <Input value="Present" disabled className="bg-muted" />
             ) : (
-              <YearMonthPicker
-                date={endDate}
-                setDate={setEndDate}
-                placeholder="Select end date"
-              />
+              <YearMonthPicker date={endDate} setDate={setEndDate} placeholder="Select end date" />
             )}
             <div className="flex items-center mt-2">
               <Checkbox
@@ -105,7 +101,7 @@ export function AddProjectForm({ onSave, onCancel }: AddProjectFormProps) {
           <label className="text-sm font-medium mb-1 block">Description</label>
           <Textarea
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={e => setContent(e.target.value)}
             placeholder="Enter project description"
             rows={3}
           />
