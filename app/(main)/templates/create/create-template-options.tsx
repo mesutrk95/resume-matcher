@@ -65,7 +65,21 @@ export const CreateTemplateOptions = () => {
 
   return (
     <div className="grid grid-cols-3 gap-5">
-      <Card className="border-2">
+      {/* <Card className="border-2 border-dashed">
+        <CardContent className="flex justify-between items-center p-6">
+          <div className="">
+            <h3 className="text-xl font-bold">Start Fresh 🌿</h3>
+            <p>
+              Create a completely customized resume template without content
+            </p>
+          </div>
+          <div></div>
+        </CardContent>
+        <CardFooter>
+          <CreateNewTemplateForm blank />
+        </CardFooter>
+      </Card> */}
+      <Card className="border-2 border-dashed">
         <CardContent className="flex justify-between items-center p-6">
           <div className="">
             <h3 className="text-xl font-bold">Start Fresh 🌿</h3>
@@ -94,7 +108,7 @@ export const CreateTemplateOptions = () => {
             accept=".pdf,.txt"
           >
             <UploadIcon className="mr-2 h-4 w-4" />
-            Select Resume
+            Select Resume File
           </FileButton>
         </CardFooter>
       </Card>

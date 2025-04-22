@@ -1,8 +1,5 @@
 import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
 import { ResumeTemplateCard } from '@/components/resume-templates/resume-template-card';
 import {
   Breadcrumb,
@@ -45,12 +42,19 @@ export default async function CreateResumePage({ params }: CreateResumePageProps
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {resumeTemplates.map(template => (
-          <ResumeTemplateCard key={template.id} template={template} />
-        ))}
-      </div>
+      {/* 
+      {resumeTemplates.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {resumeTemplates.map(template => (
+            <ResumeTemplateCard key={template.id} template={template} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-6">
+          <div className="col-span-4"> </div>
+          <div className="col-span-4"></div>
+        </div>
+      )} */}
     </div>
   );
 }

@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CreditCard, LogOut, Settings2, User2, UserRound } from 'lucide-react';
+import { CreditCard, FileUser, LogOut, Settings2, User2, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { SubscriptionStatusIndicator } from '@/components/subscription/subscription-status-indicator';
 import { LottieAnimatedIcon } from './lottie-animated-icon';
@@ -60,6 +60,12 @@ function AuthNav() {
               <User2 className="me-1 " />
               Profile
               {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/templates">
+              <FileUser className="me-1 " />
+              Career Profiles
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
@@ -115,9 +121,13 @@ export default function Navbar() {
         <div className="flex gap-x-4 items-center justify-between">
           <div className="flex gap-2 items-center text-sm font-medium navbar-hover-effect">
             <img src="/logo.svg" className="h-[35px]" />
-            <NavItem icon="/iconly/Inbox.json" title="Resume Templates" link="/templates" />
-            <NavItem icon="/iconly/Shoppingbag.json" title="Jobs" link="/jobs" />
+            {/* <NavItem
+              icon="/iconly/Inbox.json"
+              title="Resume Templates"
+              link="/templates"
+            /> */}
             <NavItem icon="/iconly/emaildocument1.json" title="Resumes" link="/resumes" />
+            <NavItem icon="/iconly/Shoppingbag.json" title="Jobs" link="/jobs" />
           </div>
           <div className="flex items-center gap-4">
             <SubscriptionStatusIndicator />

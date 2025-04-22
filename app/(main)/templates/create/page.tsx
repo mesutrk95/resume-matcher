@@ -17,11 +17,11 @@ export default async function CreateResumeTemplate({ params }: CreateResumePageP
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold mb-1">Create Resume Template</h2>
+        <h2 className="text-2xl font-bold mb-1">Create Career Profile</h2>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/templates">Templates</BreadcrumbLink>
+              <BreadcrumbLink href="/templates">Career Profiles</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>

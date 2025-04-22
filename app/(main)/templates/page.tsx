@@ -5,8 +5,8 @@ import { currentUser } from '@/lib/auth';
 import { Prisma } from '@prisma/client';
 
 export const metadata: Metadata = {
-  title: 'Resume Templates',
-  description: 'Manage your resume templates',
+  title: 'Career Profiles',
+  description: 'Manage your Career Profiles',
 };
 
 interface TemplatesPageProps {
@@ -69,8 +69,8 @@ export default async function TemplatesPage({ searchParams }: TemplatesPageProps
     <div className="">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Resume Templates</h1>
-          <p className="text-muted-foreground mt-2">Manage your resume templates</p>
+          <h1 className="text-3xl font-bold tracking-tight">Your Career Profiles</h1>
+          <p className="text-muted-foreground mt-2">Manage your career profiles</p>
         </div>
       </div>
 

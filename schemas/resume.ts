@@ -1,13 +1,11 @@
 import { z } from 'zod';
 
-// Define the variation schema
 const variationSchema = z.object({
   id: z.string(),
   content: z.string().optional(),
   enabled: z.boolean(),
 });
 
-// Define the experienceItem schema
 const experienceItemSchema = z.object({
   id: z.string(),
   description: z.string().optional(),
@@ -16,7 +14,6 @@ const experienceItemSchema = z.object({
   skills: z.array(z.string()).optional(),
 });
 
-// Define the experience schema
 const experienceSchema = z.object({
   id: z.string(),
   companyName: z.string().optional(),
@@ -29,7 +26,6 @@ const experienceSchema = z.object({
   type: z.string().optional(),
 });
 
-// Define the resumeProfessionalSummary schema
 const resumeProfessionalSummarySchema = z.object({
   id: z.string(),
   content: z.string(),
@@ -41,14 +37,12 @@ const resumeSkillItemSchema = z.object({
   content: z.string(),
   enabled: z.boolean(),
 });
-// Define the resumeSkill schema
 const resumeSkillSetSchema = z.object({
   category: z.string(),
   enabled: z.boolean(),
   skills: z.array(resumeSkillItemSchema),
 });
 
-// Define the resumeProject schema
 const resumeProjectSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -59,7 +53,6 @@ const resumeProjectSchema = z.object({
   enabled: z.boolean(),
 });
 
-// Define the resumeContactInfo schema
 const resumeContactInfoSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
@@ -74,14 +67,12 @@ const resumeContactInfoSchema = z.object({
   pronouns: z.string().optional(),
 });
 
-// Define the resumeTargetTitle schema
 const resumeTargetTitleSchema = z.object({
   id: z.string(),
   content: z.string(),
   enabled: z.boolean(),
 });
 
-// Define the resumeEducation schema
 const resumeEducationSchema = z.object({
   id: z.string(),
   content: z.string(),
@@ -135,7 +126,6 @@ const resumeReferenceSchema = z.object({
   enabled: z.boolean(),
 });
 
-// Define the resumeContent schema
 const resumeContentSchema = z.object({
   experiences: z.array(experienceSchema),
   titles: z.array(resumeTargetTitleSchema),

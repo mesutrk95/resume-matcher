@@ -82,7 +82,7 @@ export function ResumeTemplatesDateTable({
       <div className="flex items-center justify-between">
         <form onSubmit={handleSearch} className="flex w-full max-w-sm items-center space-x-2">
           <Input
-            placeholder="Search templates..."
+            placeholder="Search in profiles..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full"
@@ -94,7 +94,7 @@ export function ResumeTemplatesDateTable({
         <Button asChild>
           <Link href="/templates/create">
             <Plus className="mr-2 h-4 w-4" />
-            Create Resume Template
+            Create Career Profile
           </Link>
         </Button>
       </div>
@@ -114,7 +114,7 @@ export function ResumeTemplatesDateTable({
             {data.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
-                  No templates found!
+                  No career profiles found!
                 </TableCell>
               </TableRow>
             ) : (

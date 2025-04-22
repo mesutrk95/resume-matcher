@@ -1,0 +1,432 @@
+{
+  "name": "Elegant Blueprint",
+  "version": 1,
+  "pageSize": "A4",
+  "orientation": "portrait",
+  "fonts": {
+    "family": "Roboto",
+    "headingFamily": "Montserrat",
+    "fallback": "Helvetica, Arial, sans-serif",
+    "baseSize": 10
+  },
+  "columnLayout": "two-columns",
+  "header": {
+    "style": {
+      "backgroundColor": "#f8fafc",
+      "padding": 16,
+      "borderBottom": "2 solid #3b82f6",
+      "marginBottom": 16
+    },
+    "sections": ["fullname", "title", "contactInfo"]
+  },
+  "leftColumn": {
+    "style": {
+      "width": "65%",
+      "paddingRight": 20
+    },
+    "sections": ["summary", "experiences", "educations", "projects"]
+  },
+  "rightColumn": {
+    "style": {
+      "width": "35%",
+      "paddingLeft": 20,
+      "borderLeft": "1 solid #e2e8f0"
+    },
+    "sections": [
+      "skills",
+      "certifications",
+      "languages",
+      "interests",
+      "awards",
+      "references"
+    ]
+  },
+  "classDefs": {
+    "h1": {
+      "fontSize": 24,
+      "fontWeight": "bold",
+      "color": "#1e40af",
+      "letterSpacing": 0.5,
+      "marginBottom": 4
+    },
+    "h2": {
+      "fontSize": 18,
+      "fontWeight": "semibold",
+      "color": "#1e40af",
+      "marginBottom": 4
+    },
+    "h3": {
+      "fontSize": 16,
+      "fontWeight": "semibold",
+      "color": "#1e40af",
+      "marginBottom": 3
+    },
+    "h4": {
+      "fontSize": 14,
+      "fontWeight": "medium",
+      "color": "#1e40af",
+      "marginBottom": 3
+    },
+    "h5": {
+      "fontSize": 12,
+      "fontWeight": "medium",
+      "marginBottom": 2
+    },
+    "h6": {
+      "fontSize": 11,
+      "fontWeight": "medium",
+      "marginBottom": 2
+    },
+    "p": {
+      "fontSize": 10,
+      "fontWeight": "normal",
+      "lineHeight": 1.4
+    },
+    "text-muted": {
+      "color": "#64748b",
+      "fontSize": 10
+    },
+    "section-heading": {
+      "borderBottom": "2 solid #3b82f6",
+      "paddingBottom": 4,
+      "marginBottom": 8,
+      "fontWeight": "bold",
+      "color": "#1e40af"
+    },
+    "flex-between": {
+      "display": "flex",
+      "justifyContent": "space-between",
+      "alignItems": "center"
+    },
+    "flex-start": {
+      "display": "flex",
+      "justifyContent": "flex-start",
+      "alignItems": "center",
+      "gap": 8
+    },
+    "badge": {
+      "backgroundColor": "#dbeafe",
+      "color": "#1e40af",
+      "padding": 4,
+      "borderRadius": 4,
+      "fontSize": 9,
+      "fontWeight": "medium"
+    }
+  },
+  "spacing": {
+    "unit": 4,
+    "sectionGap": 4,
+    "itemGap": 2,
+    "pagePadding": {
+      "top": 24,
+      "right": 24,
+      "bottom": 24,
+      "left": 24
+    }
+  },
+  "sections": {
+    "heading": {
+      "class": "section-heading"
+    },
+    "container": {
+      "style": {
+        "marginBottom": 12
+      }
+    },
+    "fullname": {
+      "class": "h1",
+      "container": {
+        "class": "h1"
+      },
+      "label": {
+        "enable": false
+      }
+    },
+    "title": {
+      "class": "h3",
+      "container": {
+        "class": "h3",
+        "style": {
+          "color": "#3b82f6",
+          "marginBottom": 8
+        }
+      },
+      "label": {
+        "enable": false
+      }
+    },
+    "contactInfo": {
+      "container": {
+        "class": "flex-start",
+        "style": {
+          "flexWrap": "wrap",
+          "marginBottom": 8
+        }
+      },
+      "label": {
+        "enable": false
+      },
+      "separator": " • ",
+      "items": ["email", "phone", "linkedIn", "github", "website", "country"],
+      "showIcons": true
+    },
+    "summary": {
+      "label": {
+        "enable": true,
+        "text": "Professional Summary"
+      },
+      "container": {
+        "style": {
+          "marginBottom": 16
+        }
+      }
+    },
+    "experiences": {
+      "label": {
+        "enable": true,
+        "text": "Work Experience"
+      },
+      "subheader": {
+        "rows": [
+          {
+            "class": "flex-between",
+            "items": ["role", "dates"]
+          },
+          {
+            "class": "flex-between",
+            "items": [
+              {
+                "items": ["company", "location"],
+                "separator": " • "
+              },
+              "positionType"
+            ]
+          }
+        ],
+        "style": {
+          "marginBottom": 6
+        },
+        "role": {
+          "class": "h5",
+          "style": {
+            "color": "#0f172a"
+          }
+        },
+        "company": {
+          "class": "h6",
+          "style": {
+            "color": "#3b82f6"
+          }
+        },
+        "location": {
+          "class": "text-muted"
+        },
+        "positionType": {
+          "class": "badge"
+        },
+        "dates": {
+          "class": "text-muted",
+          "format": "MMM YYYY"
+        }
+      },
+      "bullets": {
+        "symbol": "■",
+        "size": 0.6,
+        "style": {
+          "color": "#3b82f6"
+        }
+      },
+      "items": {
+        "style": {
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": 4,
+          "marginBottom": 12
+        },
+        "item": {
+          "style": {
+            "marginLeft": 5,
+            "display": "flex",
+            "flexDirection": "row",
+            "gap": 4
+          }
+        }
+      }
+    },
+    "educations": {
+      "label": {
+        "enable": true,
+        "text": "Education"
+      },
+      "subheader": {
+        "rows": [
+          {
+            "class": "flex-between",
+            "items": ["degree", "dates"]
+          },
+          {
+            "class": "flex-between",
+            "items": ["institution", "location"]
+          }
+        ]
+      },
+      "item": {
+        "style": {
+          "marginBottom": 12
+        }
+      }
+    },
+    "skills": {
+      "label": {
+        "enable": true,
+        "text": "Skills"
+      },
+      "groupByCategory": true,
+      "category": {
+        "style": {
+          "fontWeight": "bold",
+          "color": "#3b82f6",
+          "marginBottom": 4,
+          "borderBottom": "1 solid #e2e8f0",
+          "paddingBottom": 2
+        },
+        "itemsSeparator": "\n"
+      },
+      "list": {
+        "style": {
+          "marginBottom": 12
+        },
+        "itemsSeparator": "\n"
+      }
+    },
+    "projects": {
+      "label": {
+        "enable": true,
+        "text": "Notable Projects"
+      },
+      "subheader": {
+        "rows": [
+          {
+            "class": "flex-between",
+            "items": ["name", "date"]
+          },
+          {
+            "items": ["url"]
+          }
+        ],
+        "name": {
+          "class": "h5",
+          "style": {
+            "color": "#3b82f6"
+          }
+        },
+        "url": {
+          "class": "text-muted"
+        },
+        "date": {
+          "class": "text-muted"
+        }
+      },
+      "item": {
+        "style": {
+          "marginBottom": 12
+        }
+      }
+    },
+    "certifications": {
+      "label": {
+        "enable": true,
+        "text": "Certifications"
+      },
+      "subheader": {
+        "rows": [
+          {
+            "class": "flex-between",
+            "items": ["name", "date"]
+          },
+          {
+            "items": ["issuer"]
+          }
+        ],
+        "name": {
+          "style": {
+            "fontWeight": "medium"
+          }
+        },
+        "issuer": {
+          "class": "text-muted"
+        }
+      }
+    },
+    "languages": {
+      "label": {
+        "enable": true,
+        "text": "Languages"
+      },
+      "itemsSeperator": "\n"
+    },
+    "interests": {
+      "label": {
+        "enable": true,
+        "text": "Interests"
+      },
+      "itemsSeperator": " • "
+    },
+    "awards": {
+      "label": {
+        "enable": true,
+        "text": "Awards & Honors"
+      },
+      "subheader": {
+        "rows": [
+          {
+            "class": "flex-between",
+            "items": ["name", "date"]
+          },
+          {
+            "items": ["issuer"]
+          }
+        ],
+        "name": {
+          "style": {
+            "fontWeight": "medium"
+          }
+        },
+        "issuer": {
+          "class": "text-muted"
+        }
+      }
+    },
+    "references": {
+      "label": {
+        "enable": true,
+        "text": "References"
+      },
+      "subheader": {
+        "rows": [
+          {
+            "items": ["name"],
+            "style": {
+              "fontWeight": "medium"
+            }
+          },
+          {
+            "items": ["title", "company"],
+            "separator": ", "
+          },
+          {
+            "items": ["email", "phone"],
+            "separator": " | "
+          }
+        ]
+      },
+      "item": {
+        "style": {
+          "marginBottom": 10
+        }
+      }
+    }
+  },
+  "dateFormat": "MMM YYYY",
+  "enablePageNumbers": true
+}
