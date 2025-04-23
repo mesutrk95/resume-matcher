@@ -14,8 +14,7 @@ import {
 import { Dispatch, SetStateAction, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { CATEGORIES, INDUSTRIES } from './constants';
-import { ResumeTemplateCard } from '../resume-template-card';
-import { TemplateGalleryItem } from './template-gallery-item';
+import { CareerProfileGalleryItem } from './career-profile-gallery-item';
 import {
   Pagination,
   PaginationContent,
@@ -144,7 +143,7 @@ const CategoriesSelect = ({
   );
 };
 
-export const TemplateGallery = () => {
+export const CareerProfileGallery = () => {
   const [industry, setIndustry] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -185,7 +184,7 @@ export const TemplateGallery = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
         {currentItems.map(template => (
-          <TemplateGalleryItem
+          <CareerProfileGalleryItem
             key={template.value}
             label={template.label}
             caption={template.caption}

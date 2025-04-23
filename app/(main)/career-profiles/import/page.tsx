@@ -1,7 +1,7 @@
 import React from 'react';
-import { CreateTemplateOptions } from '../create/create-template-options';
+import { CreateCareerProfileOptions } from '../create/create-career-profile-options';
 import { ResumeContent } from '@/types/resume';
-import { ResumeWizard } from '@/components/resume-templates/create-career-profile-wizard';
+import { ResumeWizard } from '@/components/career-profiles/create-career-profile-wizard';
 
 export default async function CareerImportPage() {
   return (
@@ -9,7 +9,7 @@ export default async function CareerImportPage() {
       {/* <ResumeWizard
         onResumeWizardDone={(resumeData: ResumeContent) => {}}
       /> */}
-      <CreateTemplateOptions />
+      <CreateCareerProfileOptions />
     </div>
   );
 }

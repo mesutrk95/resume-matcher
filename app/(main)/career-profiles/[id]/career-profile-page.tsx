@@ -1,34 +1,34 @@
 'use client';
 
-import { updateResumeTemplate } from '@/actions/resume-template';
+import { updateCareerProfile } from '@/actions/career-profiles';
 import { runAction } from '@/app/_utils/runAction';
 import { ResumeBuilder } from '@/components/job-resumes/resume-builder';
 import { ResumeBuilderProvider } from '@/components/job-resumes/resume-builder/context/ResumeBuilderProvider';
-import { ImportExportBar } from '@/components/resume-templates/import-export-bar';
-import { ResumeTemplateForm } from '@/components/resume-templates/resume-template-form';
+import { ImportExportBar } from '@/components/career-profiles/import-export-bar';
+import { CareerProfileForm } from '@/components/career-profiles/career-profile-form';
 import { ResumeContent } from '@/types/resume';
-import { ResumeTemplate } from '@prisma/client';
 import React from 'react';
+import { CareerProfile } from '@/types/career-profile';
 
-export const ResumeTemplatePage = ({ resumeTemplate }: { resumeTemplate: ResumeTemplate }) => {
+export const CareerProfilePage = ({ careerProfile }: { careerProfile: CareerProfile }) => {
   const handleResumeUpdate = async (resumeContent: ResumeContent) => {
-    await runAction(updateResumeTemplate, {
-      ...resumeTemplate,
+    await runAction(updateCareerProfile, {
+      ...careerProfile,
       content: resumeContent,
     });
   };
   return (
     <>
-      <ResumeTemplateForm template={resumeTemplate} />
+      <CareerProfileForm careerProfile={careerProfile} />
       <ResumeBuilderProvider
-        initialResume={resumeTemplate.content as ResumeContent}
+        initialResume={careerProfile.content as ResumeContent}
         initialDesign={null}
         onUpdated={handleResumeUpdate}
       >
         <ResumeBuilder />
       </ResumeBuilderProvider>
 
-      <ImportExportBar resumeTemplate={resumeTemplate} />
+      <ImportExportBar careerProfile={careerProfile} />
     </>
   );
 };

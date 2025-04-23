@@ -6,14 +6,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { TemplateGallery } from '@/components/resume-templates/template-gallery';
-import { CreateTemplateOptions } from './create-template-options';
+import { CareerProfileGallery } from '@/components/career-profiles/career-profile-gallery';
+import { CreateCareerProfileOptions } from './create-career-profile-options';
 
-interface CreateResumePageProps {
+interface CreateCareerProfilePageProps {
   params: object;
 }
 
-export default async function CreateResumeTemplate({ params }: CreateResumePageProps) {
+export default async function CreateCareerProfile({ params }: CreateCareerProfilePageProps) {
   return (
     <div className="space-y-6">
       <div>
@@ -21,7 +21,7 @@ export default async function CreateResumeTemplate({ params }: CreateResumePageP
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/templates">Career Profiles</BreadcrumbLink>
+              <BreadcrumbLink href="/career-profiles">Career Profiles</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -37,8 +37,8 @@ export default async function CreateResumeTemplate({ params }: CreateResumePageP
         </p> */}
       </div>
 
-      <CreateTemplateOptions />
-      <TemplateGallery />
+      <CreateCareerProfileOptions />
+      <CareerProfileGallery />
     </div>
   );
 }

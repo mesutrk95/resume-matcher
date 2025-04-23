@@ -1,22 +1,22 @@
 'use client';
 
 import { authorizeCode } from '@/actions/linkedin';
-import { createResumeTemplateFromResumePdf } from '@/actions/resume-template';
+import { createResumeTemplateFromResumePdf } from '@/actions/career-profiles';
 import { FileButton } from '@/app/_components/file-button';
 import { runAction } from '@/app/_utils/runAction';
-import { CreateNewTemplateForm } from '@/components/resume-templates/create-new-template-button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { LoadingButton } from '@/components/ui/loading-button';
-import { Import, UploadCloud, UploadIcon } from 'lucide-react';
+import { Import, UploadIcon } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useTransition } from 'react';
 import { toast } from 'sonner';
+import { CreateNewCareerProfileForm } from '@/components/career-profiles/create-new-career-profile-button';
 
-export const CreateTemplateOptions = () => {
+export const CreateCareerProfileOptions = () => {
   const handleLinkedinImport = () => {
     const clientId = '78nqb8kmqhvzhm';
-    const redirectUri = 'http://localhost:8998/templates/create';
+    const redirectUri = 'http://localhost:8998/career-profiles/create';
     const scopes = ['profile'];
 
     // Step 1: Redirect user to LinkedIn authorization page
@@ -58,7 +58,7 @@ export const CreateTemplateOptions = () => {
         toast.success('Resume Imported!', {
           description: `Your resume "${result.data?.name}" imported successfully.`,
         });
-        router.push('/templates/' + result.data?.id);
+        router.push('/career-profiles/' + result.data?.id);
       }
     });
   };
@@ -88,7 +88,7 @@ export const CreateTemplateOptions = () => {
           <div></div>
         </CardContent>
         <CardFooter>
-          <CreateNewTemplateForm blank />
+          <CreateNewCareerProfileForm blank />
         </CardFooter>
       </Card>
       <Card className="border-2">

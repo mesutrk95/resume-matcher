@@ -4,7 +4,7 @@ import {
   ResumeWizardBody,
   ResumeWizardFooter,
   ResumeWizardHeader,
-} from '@/components/resume-templates/create-career-profile-wizard';
+} from '@/components/career-profiles/create-career-profile-wizard';
 import { ResumeHighlighter } from './resume-highlighter';
 
 interface CreateResumePageProps {

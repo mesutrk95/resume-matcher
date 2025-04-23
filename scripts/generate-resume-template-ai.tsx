@@ -3,7 +3,7 @@
 import React from 'react';
 import * as fs from 'fs';
 import * as path from 'path';
-import { CATEGORIES } from '@/components/resume-templates/template-gallery/constants';
+import { CATEGORIES } from '@/components/career-profiles/career-profile-gallery/constants';
 import { getAIJsonResponse } from '../lib/ai';
 import { resumeContentSchema } from '@/schemas/resume';
 import { zodSchemaToString } from '@/lib/zod';

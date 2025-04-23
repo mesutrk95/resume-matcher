@@ -2,22 +2,22 @@
 
 import { LoadingButton } from '../ui/loading-button';
 import { Plus } from 'lucide-react';
-import { createResumeTemplate } from '@/actions/resume-template';
+import { createCareerProfile } from '@/actions/career-profiles';
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
-export function CreateNewTemplateForm({ blank }: { blank?: boolean }) {
+export function CreateNewCareerProfileForm({ blank }: { blank?: boolean }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const handleCreateNewResumeTemplate = async () => {
+  const handleCreate = async () => {
     startTransition(() => {
-      createResumeTemplate()
+      createCareerProfile()
         .then(data => {
           const templateId = data?.id;
-          router.push('/templates/' + templateId);
-          toast.success('Resume template successfully created!');
+          router.push('/career-profiles/' + templateId);
+          toast.success('Career Profile successfully created!');
         })
         .catch(err => toast.error(err?.toString() || 'Something went wrong.'));
     });
@@ -26,12 +26,12 @@ export function CreateNewTemplateForm({ blank }: { blank?: boolean }) {
   return (
     <LoadingButton
       loading={isPending}
-      loadingText="Creating Resume Template..."
+      loadingText="Creating Career Profile ..."
       disabled={isPending}
-      onClick={handleCreateNewResumeTemplate}
+      onClick={handleCreate}
     >
       <Plus className="mr-2 h-4 w-4" />
-      {blank ? 'Create Blank Template' : 'Create Resume Template'}
+      {blank ? 'Create Blank Profile' : 'Create Career Profile'}
     </LoadingButton>
   );
 }

@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
-import { ResumeTemplateCard } from '@/components/resume-templates/resume-template-card';
+import { CareerProfileCard } from '@/components/career-profiles/career-profile-card';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,6 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { NoCareerProfileWizard } from './no-career-profile-wizard';
 
 interface CreateResumePageProps {
   params: {
@@ -19,8 +20,8 @@ interface CreateResumePageProps {
 export default async function CreateResumePage({ params }: CreateResumePageProps) {
   const user = await currentUser();
 
-  // Fetch all resume templates for the user
-  const resumeTemplates = await db.resumeTemplate.findMany({
+  // Fetch all resume careerProfiles for the user
+  const careerProfiles = await db.resumeTemplate.findMany({
     where: {
       userId: user?.id,
     },
@@ -42,19 +43,8 @@ export default async function CreateResumePage({ params }: CreateResumePageProps
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      {/* 
-      {resumeTemplates.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {resumeTemplates.map(template => (
-            <ResumeTemplateCard key={template.id} template={template} />
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-6">
-          <div className="col-span-4"> </div>
-          <div className="col-span-4"></div>
-        </div>
-      )} */}
+
+      {careerProfiles.length === 0 && <NoCareerProfileWizard />}
     </div>
   );
 }

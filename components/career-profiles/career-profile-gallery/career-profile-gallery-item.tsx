@@ -1,18 +1,18 @@
 'use client';
 
-import { CreateTemplateButton } from './create-template-button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ResumeContent } from '@/types/resume';
 import { useEffect, useState } from 'react';
+import { CreateCareerProfileButton } from './create-career-profile-button';
 
-interface ResumeTemplateCardProps {
+interface CareerProfileCardProps {
   label: string;
   caption: string;
   url: string;
 }
 
-export const TemplateGalleryItem = ({ label, url, caption }: ResumeTemplateCardProps) => {
+export const CareerProfileGalleryItem = ({ label, url, caption }: CareerProfileCardProps) => {
   const [resumeContent, setResumeContent] = useState<ResumeContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [imageUrl, setImageUrl] = useState('');
@@ -74,7 +74,7 @@ export const TemplateGalleryItem = ({ label, url, caption }: ResumeTemplateCardP
           {isLoading ? (
             <Skeleton className="h-10 w-full" />
           ) : (
-            <CreateTemplateButton resumeContent={resumeContent!} />
+            <CreateCareerProfileButton resumeContent={resumeContent!} />
           )}
         </div>
       </CardContent>

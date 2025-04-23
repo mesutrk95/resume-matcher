@@ -5,53 +5,53 @@ import { Card, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Edit, Save, X } from 'lucide-react';
-import { ResumeTemplate } from '@prisma/client';
-import { updateResumeTemplate } from '@/actions/resume-template';
+import { updateCareerProfile } from '@/actions/career-profiles';
 import { LoadingButton } from '../ui/loading-button';
 import { runAction } from '@/app/_utils/runAction';
+import { CareerProfile } from '@/types/career-profile';
 
-export const ResumeTemplateForm = ({ template }: { template: ResumeTemplate }) => {
-  const [editingTemplate, setEditingTemplate] = useState(false);
-  const [templateForm, setTemplateForm] = useState({ ...template });
+export const CareerProfileForm = ({ careerProfile }: { careerProfile: CareerProfile }) => {
+  const [editingCareerProfile, setEditingCareerProfile] = useState(false);
+  const [careerProfileForm, setCareerProfileForm] = useState({ ...careerProfile });
   const [isPending, startTransition] = useTransition();
 
   // Template handlers
-  const handleEditTemplate = () => {
-    setTemplateForm({
-      ...template,
-      name: template.name,
-      description: template.description,
+  const handleEditCareerProfile = () => {
+    setCareerProfileForm({
+      ...careerProfile,
+      name: careerProfile.name,
+      description: careerProfile.description,
     });
-    setEditingTemplate(true);
+    setEditingCareerProfile(true);
   };
 
-  const handleSaveTemplate = async () => {
+  const handleSaveCareerProfile = async () => {
     startTransition(async () => {
-      const result = await runAction(updateResumeTemplate(templateForm));
-      if (result.success) setEditingTemplate(false);
+      const result = await runAction(updateCareerProfile(careerProfileForm));
+      if (result.success) setEditingCareerProfile(false);
     });
   };
 
   return (
     <Card className="mb-8">
       <CardHeader className="flex flex-row items-start justify-between">
-        {!editingTemplate ? (
+        {!editingCareerProfile ? (
           <div>
-            <CardTitle className="text-2xl">{template.name}</CardTitle>
-            <p className="text-muted-foreground mt-1">{template.description}</p>
+            <CardTitle className="text-2xl">{careerProfile.name}</CardTitle>
+            <p className="text-muted-foreground mt-1">{careerProfile.description}</p>
           </div>
         ) : (
           <div className="w-full space-y-2">
             <Input
-              value={templateForm.name}
-              onChange={e => setTemplateForm(prev => ({ ...prev, name: e.target.value }))}
+              value={careerProfileForm.name}
+              onChange={e => setCareerProfileForm(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Template name"
               className="font-semibold text-lg"
             />
             <Input
-              value={templateForm.description || ''}
+              value={careerProfileForm.description || ''}
               onChange={e =>
-                setTemplateForm(prev => ({
+                setCareerProfileForm(prev => ({
                   ...prev,
                   description: e.target.value,
                 }))
@@ -62,8 +62,8 @@ export const ResumeTemplateForm = ({ template }: { template: ResumeTemplate }) =
         )}
 
         <div>
-          {!editingTemplate ? (
-            <Button variant="outline" size="sm" onClick={handleEditTemplate}>
+          {!editingCareerProfile ? (
+            <Button variant="outline" size="sm" onClick={handleEditCareerProfile}>
               <Edit className="h-4 w-4 mr-1" />
               Edit
             </Button>
@@ -73,7 +73,7 @@ export const ResumeTemplateForm = ({ template }: { template: ResumeTemplate }) =
                 variant="outline"
                 size="sm"
                 disabled={isPending}
-                onClick={() => setEditingTemplate(false)}
+                onClick={() => setEditingCareerProfile(false)}
               >
                 <X className="h-4 w-4 mr-1" />
                 Cancel
@@ -82,7 +82,7 @@ export const ResumeTemplateForm = ({ template }: { template: ResumeTemplate }) =
                 loading={isPending}
                 loadingText="Saving..."
                 size="sm"
-                onClick={handleSaveTemplate}
+                onClick={handleSaveCareerProfile}
               >
                 <Save className="h-4 w-4 mr-1" />
                 Save

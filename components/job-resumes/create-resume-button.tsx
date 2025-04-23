@@ -9,10 +9,10 @@ import { toast } from 'sonner';
 
 export const CreateResumeButton = ({
   jobId,
-  resumeTemplateId,
+  careerProfileId,
 }: {
   jobId?: string;
-  resumeTemplateId?: string;
+  careerProfileId?: string;
 }) => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -20,7 +20,7 @@ export const CreateResumeButton = ({
     startTransition(async () => {
       try {
         // Call the Server Action to create the ResumeJob
-        const result = await createJobResume(resumeTemplateId, jobId);
+        const result = await createJobResume(careerProfileId, jobId);
 
         if (result) {
           // Redirect to the edit page
@@ -41,13 +41,13 @@ export const CreateResumeButton = ({
       loading={isPending}
       loadingText="Creating Resume ..."
     >
-      {!resumeTemplateId ? (
+      {!careerProfileId ? (
         <>
           <Plus />
           Create Blank Resume
         </>
       ) : (
-        'Use This Template'
+        'Use This Career Profile'
       )}
     </LoadingButton>
   );

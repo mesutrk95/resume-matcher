@@ -1,19 +1,19 @@
 'use client';
 
-import { ResumeTemplate } from '@prisma/client';
 import React from 'react';
 import { Button } from '../ui/button';
-import { getResumeTemplate, updateResumeTemplate } from '@/actions/resume-template';
+import { getCareerProfile, updateCareerProfile } from '@/actions/career-profiles';
+import { CareerProfile } from '@/types/career-profile';
 
-export const ImportExportBar = ({ resumeTemplate }: { resumeTemplate: ResumeTemplate }) => {
+export const ImportExportBar = ({ careerProfile }: { careerProfile: CareerProfile }) => {
   const exportJson = async () => {
-    const rt = await getResumeTemplate(resumeTemplate.id);
+    const rt = await getCareerProfile(careerProfile.id);
     const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
       JSON.stringify(rt?.content),
     )}`;
     const link = document.createElement('a');
     link.href = jsonString;
-    link.download = `template_${resumeTemplate.name}.json`;
+    link.download = `career_profile_${careerProfile.name}.json`;
 
     link.click();
   };
@@ -28,7 +28,7 @@ export const ImportExportBar = ({ resumeTemplate }: { resumeTemplate: ResumeTemp
         const reader = new FileReader();
         reader.onload = async e => {
           const content = JSON.parse(e.target?.result as string);
-          await updateResumeTemplate({ ...resumeTemplate, content });
+          await updateCareerProfile({ ...careerProfile, content });
         };
         reader.readAsText(file);
       }

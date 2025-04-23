@@ -2,7 +2,6 @@
 
 import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
-import { ResumeTemplate } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { DEFAULT_RESUME_CONTENT } from './constants';
 import { ResumeContent } from '@/types/resume';
@@ -11,17 +10,18 @@ import { getAIJsonResponse } from '@/lib/ai';
 import { resumeContentSchema } from '@/schemas/resume';
 import { zodSchemaToString } from '@/lib/zod';
 import { getMimeType } from '@/lib/utils';
+import { CareerProfile } from '@/types/career-profile';
 
-export const deleteResumeTemplate = async (id: string) => {
+export const deleteCareerProfile = async (id: string) => {
   const user = await currentUser();
   await db.resumeTemplate.delete({
     where: { id, userId: user?.id },
   });
-  revalidatePath('/templates');
+  revalidatePath('/career-profiles');
   return true;
 };
 
-export const updateResumeTemplate = withErrorHandling(async (template: ResumeTemplate) => {
+export const updateCareerProfile = withErrorHandling(async (template: CareerProfile) => {
   const user = await currentUser();
 
   // Update job in database
@@ -37,13 +37,13 @@ export const updateResumeTemplate = withErrorHandling(async (template: ResumeTem
     },
   });
 
-  revalidatePath('/templates');
-  revalidatePath(`/templates/${template.id}`);
+  revalidatePath('/career-profiles');
+  revalidatePath(`/career-profiles/${template.id}`);
 
   return updatedJob;
 });
 
-export const updateResumeTemplateContent = async (
+export const updateCareerProfileContent = async (
   templateId: string,
   resmueContent: ResumeContent,
 ) => {
@@ -59,13 +59,13 @@ export const updateResumeTemplateContent = async (
     },
   });
 
-  revalidatePath('/templates');
-  revalidatePath(`/templates/${templateId}`);
+  revalidatePath('/career-profiles');
+  revalidatePath(`/career-profiles/${templateId}`);
 
   return updatedJob;
 };
 
-export const createResumeTemplate = async (
+export const createCareerProfile = async (
   resumeContent?: ResumeContent,
   name?: string,
   description?: string,
@@ -75,14 +75,14 @@ export const createResumeTemplate = async (
   // Update job in database
   const template = await db.resumeTemplate.create({
     data: {
-      name: name || 'No name template',
+      name: name || 'No name Career Profile',
       description: description,
       content: resumeContent || DEFAULT_RESUME_CONTENT,
       userId: user?.id!,
     },
   });
 
-  revalidatePath('/templates');
+  revalidatePath('/career-profiles');
 
   return template;
 };
@@ -117,18 +117,18 @@ export const createResumeTemplateFromResumePdf = withErrorHandling(async (formDa
   // Update job in database
   const template = await db.resumeTemplate.create({
     data: {
-      name: content.titles?.[0]?.content || 'No name template',
+      name: content.titles?.[0]?.content || 'No name career profile',
       content: content,
       userId: user?.id!,
     },
   });
 
-  revalidatePath('/templates');
+  revalidatePath('/career-profiles');
 
   return template;
 });
 
-export const getResumeTemplate = async (id: string) => {
+export const getCareerProfile = async (id: string) => {
   const user = await currentUser();
 
   // Update job in database

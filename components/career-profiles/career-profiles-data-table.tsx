@@ -14,28 +14,28 @@ import { Input } from '@/components/ui/input';
 import { ChevronLeft, ChevronRight, Edit, Plus, Search, Trash } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { ResumeTemplate } from '@prisma/client';
-import { deleteResumeTemplate } from '@/actions/resume-template';
+import { deleteCareerProfile } from '@/actions/career-profiles';
 import { toast } from 'sonner';
 import Moment from 'react-moment';
 import { confirmDialog } from '../shared/confirm-dialog';
 import { LinkableTableCell } from '../ui/linkable-table-cell';
+import { CareerProfile } from '@/types/career-profile';
 
-interface ResumeTemplatesDateTableProps {
-  data: ResumeTemplate[];
+interface CareerProfilesDataTableProps {
+  data: CareerProfile[];
   pageCount: number;
   currentPage: number;
   pageSize: number;
   searchQuery: string;
 }
 
-export function ResumeTemplatesDateTable({
+export function CareerProfilesDataTable({
   data,
   pageCount,
   currentPage,
   pageSize,
   searchQuery,
-}: ResumeTemplatesDateTableProps) {
+}: CareerProfilesDataTableProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [search, setSearch] = useState(searchQuery);
@@ -58,17 +58,17 @@ export function ResumeTemplatesDateTable({
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const handleDeleteTemplate = async (template: ResumeTemplate) => {
+  const handleDelete = async (careerProfile: CareerProfile) => {
     if (
       await confirmDialog({
         title: 'Are you absolutely sure!?',
-        description: `You are deleting the "${template.name}" template.`,
+        description: `You are deleting the "${careerProfile.name}" career profile.`,
       })
     )
       try {
-        setIsDeleting(template.id);
-        await deleteResumeTemplate(template.id);
-        toast.success('Template deleted successfully');
+        setIsDeleting(careerProfile.id);
+        await deleteCareerProfile(careerProfile.id);
+        toast.success('Career profile deleted successfully');
         router.refresh();
       } catch (error) {
         toast.error('Something went wrong');
@@ -82,7 +82,7 @@ export function ResumeTemplatesDateTable({
       <div className="flex items-center justify-between">
         <form onSubmit={handleSearch} className="flex w-full max-w-sm items-center space-x-2">
           <Input
-            placeholder="Search in profiles..."
+            placeholder="Search in career profiles..."
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="w-full"
@@ -92,7 +92,7 @@ export function ResumeTemplatesDateTable({
           </Button>
         </form>
         <Button asChild>
-          <Link href="/templates/create">
+          <Link href="/career-profiles/create">
             <Plus className="mr-2 h-4 w-4" />
             Create Career Profile
           </Link>
@@ -118,34 +118,34 @@ export function ResumeTemplatesDateTable({
                 </TableCell>
               </TableRow>
             ) : (
-              data.map(template => (
-                <TableRow key={template.id}>
-                  <LinkableTableCell className="font-medium" href={`/templates/${template.id}`}>
-                    {template.name}
+              data.map(cp => (
+                <TableRow key={cp.id}>
+                  <LinkableTableCell className="font-medium" href={`/career-profiles/${cp.id}`}>
+                    {cp.name}
                   </LinkableTableCell>
-                  <LinkableTableCell href={`/templates/${template.id}`}>
-                    {template.description}
+                  <LinkableTableCell href={`/career-profiles/${cp.id}`}>
+                    {cp.description}
                   </LinkableTableCell>
-                  <LinkableTableCell href={`/templates/${template.id}`}>
-                    <Moment date={template.createdAt} format="YYYY/MM/DD HH:mm" utc />
+                  <LinkableTableCell href={`/career-profiles/${cp.id}`}>
+                    <Moment date={cp.createdAt} format="YYYY/MM/DD HH:mm" utc />
                   </LinkableTableCell>
-                  <LinkableTableCell href={`/templates/${template.id}`}>
-                    <Moment date={template.updatedAt} format="YYYY/MM/DD HH:mm" utc />
+                  <LinkableTableCell href={`/career-profiles/${cp.id}`}>
+                    <Moment date={cp.updatedAt} format="YYYY/MM/DD HH:mm" utc />
                   </LinkableTableCell>
                   <TableCell className="flex gap-2">
                     {/* Delete Confirmation Dialog */}
                     <Button
                       variant={'outline'}
-                      disabled={isDeleting === template.id}
+                      disabled={isDeleting === cp.id}
                       className="text-destructive focus:text-destructive"
-                      onClick={() => handleDeleteTemplate(template)}
+                      onClick={() => handleDelete(cp)}
                     >
                       <Trash className=" h-4 w-4" />
                       {/* Delete */}
                     </Button>
 
-                    <Button asChild variant={'outline'} disabled={isDeleting === template.id}>
-                      <Link href={`/templates/${template.id}`}>
+                    <Button asChild variant={'outline'} disabled={isDeleting === cp.id}>
+                      <Link href={`/career-profiles/${cp.id}`}>
                         <Edit className=" h-4 w-4" />
                         {/* Edit */}
                       </Link>
@@ -166,7 +166,7 @@ export function ResumeTemplatesDateTable({
               <span className="font-medium">
                 {Math.min(currentPage * pageSize, (currentPage - 1) * pageSize + data.length)}
               </span>{' '}
-              of <span className="font-medium">{pageCount * pageSize}</span> templates
+              of <span className="font-medium">{pageCount * pageSize}</span> career profiles
             </>
           )}
         </div>

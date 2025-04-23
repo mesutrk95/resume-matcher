@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { ResumeTemplatesDateTable } from '@/components/resume-templates/resume-templates-data-table';
+import { CareerProfilesDataTable } from '@/components/career-profiles/career-profiles-data-table';
 import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
 import { Prisma } from '@prisma/client';
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'Manage your Career Profiles',
 };
 
-interface TemplatesPageProps {
+interface CareerProfilesPageProps {
   searchParams: {
     page?: string;
     pageSize?: string;
@@ -17,7 +17,7 @@ interface TemplatesPageProps {
   };
 }
 
-export default async function TemplatesPage({ searchParams }: TemplatesPageProps) {
+export default async function CareerProfilesPage({ searchParams }: CareerProfilesPageProps) {
   const user = await currentUser();
 
   // Await searchParams before accessing its properties
@@ -43,7 +43,7 @@ export default async function TemplatesPage({ searchParams }: TemplatesPageProps
     : {};
 
   // Get templates with filters, pagination and sorting
-  const templates = await db.resumeTemplate.findMany({
+  const careerProfiles = await db.resumeTemplate.findMany({
     where: {
       userId: user?.id,
       ...searchFilter,
@@ -56,14 +56,14 @@ export default async function TemplatesPage({ searchParams }: TemplatesPageProps
   });
 
   // Get total count for pagination
-  const totalTemplates = await db.resumeTemplate.count({
+  const total = await db.resumeTemplate.count({
     where: {
       userId: user?.id,
       ...searchFilter,
     },
   });
 
-  const totalPages = Math.ceil(totalTemplates / pageSize);
+  const totalPages = Math.ceil(total / pageSize);
 
   return (
     <div className="">
@@ -74,8 +74,8 @@ export default async function TemplatesPage({ searchParams }: TemplatesPageProps
         </div>
       </div>
 
-      <ResumeTemplatesDateTable
-        data={templates}
+      <CareerProfilesDataTable
+        data={careerProfiles}
         pageCount={totalPages}
         currentPage={page}
         pageSize={pageSize}

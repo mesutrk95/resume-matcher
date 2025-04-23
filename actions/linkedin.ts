@@ -9,7 +9,7 @@ export const authorizeCode = withErrorHandling(async (code: string) => {
     grant_type: 'authorization_code',
     client_id: process.env.LINKEDIN_CLIENT_ID,
     client_secret: process.env.LINKEDIN_CLIENT_SECRET,
-    redirect_uri: 'http://localhost:8998/templates/create',
+    redirect_uri: 'http://localhost:8998/career-profiles/create',
   };
 
   const result = await axios.post('https://www.linkedin.com/oauth/v2/accessToken', data, {

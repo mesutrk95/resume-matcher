@@ -63,7 +63,7 @@ function AuthNav() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/templates">
+            <Link href="/career-profiles">
               <FileUser className="me-1 " />
               Career Profiles
             </Link>

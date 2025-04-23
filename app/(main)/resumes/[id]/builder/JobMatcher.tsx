@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { useParams, useRouter } from 'next/navigation';
 import { analyzeResumeItemsScores, deleteJobResume } from '@/actions/job-resume';
 import { ResumePreview } from '@/components/job-resumes/resume-pdf-preview';
-import { updateResumeTemplateContent } from '@/actions/resume-template';
+import { updateCareerProfileContent } from '@/actions/career-profiles';
 import {
   BotMessageSquare,
   Briefcase,
@@ -44,7 +44,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
   const { resume, design, setResumeAnalyzeResults } = useResumeBuilder();
 
   const [isDeleting, startDeletingTransition] = useTransition();
-  const [isSyncingToTemplate, startSyncToTemplateTransition] = useTransition();
+  const [isSyncingToCareerProfile, startSyncToCareerProfileTransition] = useTransition();
   const [isAnalyzingScores, startAnalyzeScoresTransition] = useTransition();
   const handleAnalyzeScores = async (forceRefresh: boolean) => {
     startAnalyzeScoresTransition(async () => {
@@ -59,25 +59,25 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
       }
     });
   };
-  const handleSyncToTemplate = async () => {
-    const templateId = jobResume.baseResumeTemplateId;
-    if (!templateId) {
-      toast.error('This resume is not connected to any resume template!');
+  const handleSyncToCareerProfile = async () => {
+    const careerProfileId = jobResume.baseResumeTemplateId;
+    if (!careerProfileId) {
+      toast.error('This resume is not connected to any career profile!');
       return;
     }
     if (
       !(await confirmDialog({
         confirmText: 'Yes, Sync It!',
         title: 'Are you absolutely sure!?',
-        description: `By confirming this action, your resume template will be updated with the details from this job resume.`,
+        description: `By confirming this action, your resume career profile will be updated with the details from this job resume.`,
       }))
     )
       return;
 
-    startSyncToTemplateTransition(async () => {
+    startSyncToCareerProfileTransition(async () => {
       try {
-        await updateResumeTemplateContent(templateId, resume);
-        toast.success('Successfully synced to template!');
+        await updateCareerProfileContent(careerProfileId, resume);
+        toast.success('Successfully synced to your Career Profile!');
       } catch (error) {
         toast.error('Failed to sync.');
       }
@@ -160,11 +160,11 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
 
                     {jobResume.baseResumeTemplateId && (
                       <DropdownMenuItem
-                        disabled={isSyncingToTemplate}
-                        onClick={handleSyncToTemplate}
+                        disabled={isSyncingToCareerProfile}
+                        onClick={handleSyncToCareerProfile}
                       >
                         <RefreshCw size={14} />
-                        Sync to Template
+                        Sync to Career Profile
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem disabled={isDeleting} onClick={handleDeleteJobResume}>
