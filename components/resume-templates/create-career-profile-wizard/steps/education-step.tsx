@@ -1,24 +1,24 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Plus, Trash } from "lucide-react"
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Plus, Trash } from 'lucide-react';
 
 interface Education {
-  id: string
-  degree: string
-  major: string
-  school: string
-  location: string
-  startDate: string
-  endDate: string
+  id: string;
+  degree: string;
+  major: string;
+  school: string;
+  location: string;
+  startDate: string;
+  endDate: string;
 }
 
 interface EducationStepProps {
-  onSaveEducations: (educations: Education[]) => void
-  initialEducations?: Education[]
+  onSaveEducations: (educations: Education[]) => void;
+  initialEducations?: Education[];
 }
 
 export function EducationStep({ onSaveEducations, initialEducations = [] }: EducationStepProps) {
@@ -27,58 +27,60 @@ export function EducationStep({ onSaveEducations, initialEducations = [] }: Educ
       ? initialEducations
       : [
           {
-            id: "1",
-            degree: "",
-            major: "",
-            school: "",
-            location: "",
-            startDate: "",
-            endDate: "",
+            id: '1',
+            degree: '',
+            major: '',
+            school: '',
+            location: '',
+            startDate: '',
+            endDate: '',
           },
         ],
-  )
-  const [hasChanged, setHasChanged] = useState(false)
+  );
+  const [hasChanged, setHasChanged] = useState(false);
 
   // Auto-save when educations change, but only if they've been modified or we have initial data
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      onSaveEducations(educations)
-    }, 500) // 500ms debounce
+      onSaveEducations(educations);
+    }, 500); // 500ms debounce
 
-    return () => clearTimeout(timeoutId)
-  }, [educations, onSaveEducations])
+    return () => clearTimeout(timeoutId);
+  }, [educations, onSaveEducations]);
 
   const addEducation = () => {
     setEducations([
       ...educations,
       {
         id: Date.now().toString(),
-        degree: "",
-        major: "",
-        school: "",
-        location: "",
-        startDate: "",
-        endDate: "",
+        degree: '',
+        major: '',
+        school: '',
+        location: '',
+        startDate: '',
+        endDate: '',
       },
-    ])
-    setHasChanged(true)
-  }
+    ]);
+    setHasChanged(true);
+  };
 
   const removeEducation = (id: string) => {
-    setEducations(educations.filter((edu) => edu.id !== id))
-    setHasChanged(true)
-  }
+    setEducations(educations.filter(edu => edu.id !== id));
+    setHasChanged(true);
+  };
 
   const updateEducation = (id: string, field: keyof Education, value: string) => {
-    setEducations(educations.map((edu) => (edu.id === id ? { ...edu, [field]: value } : edu)))
-    setHasChanged(true)
-  }
+    setEducations(educations.map(edu => (edu.id === id ? { ...edu, [field]: value } : edu)));
+    setHasChanged(true);
+  };
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-xl font-bold">Educations</h3>
-        <p className="text-sm text-gray-500">Add your educational background, starting with the most recent.</p>
+        <p className="text-sm text-gray-500">
+          Add your educational background, starting with the most recent.
+        </p>
       </div>
 
       <div className="space-y-8">
@@ -105,7 +107,7 @@ export function EducationStep({ onSaveEducations, initialEducations = [] }: Educ
                 <Input
                   id={`degree-${education.id}`}
                   value={education.degree}
-                  onChange={(e) => updateEducation(education.id, "degree", e.target.value)}
+                  onChange={e => updateEducation(education.id, 'degree', e.target.value)}
                   placeholder="e.g. Bachelor of Science"
                 />
               </div>
@@ -115,7 +117,7 @@ export function EducationStep({ onSaveEducations, initialEducations = [] }: Educ
                 <Input
                   id={`major-${education.id}`}
                   value={education.major}
-                  onChange={(e) => updateEducation(education.id, "major", e.target.value)}
+                  onChange={e => updateEducation(education.id, 'major', e.target.value)}
                   placeholder="e.g. Computer Science"
                 />
               </div>
@@ -125,7 +127,7 @@ export function EducationStep({ onSaveEducations, initialEducations = [] }: Educ
                 <Input
                   id={`school-${education.id}`}
                   value={education.school}
-                  onChange={(e) => updateEducation(education.id, "school", e.target.value)}
+                  onChange={e => updateEducation(education.id, 'school', e.target.value)}
                   placeholder="e.g. University of California"
                 />
               </div>
@@ -135,7 +137,7 @@ export function EducationStep({ onSaveEducations, initialEducations = [] }: Educ
                 <Input
                   id={`location-${education.id}`}
                   value={education.location}
-                  onChange={(e) => updateEducation(education.id, "location", e.target.value)}
+                  onChange={e => updateEducation(education.id, 'location', e.target.value)}
                   placeholder="e.g. Berkeley, CA"
                 />
               </div>
@@ -146,7 +148,7 @@ export function EducationStep({ onSaveEducations, initialEducations = [] }: Educ
                   id={`start-date-${education.id}`}
                   type="month"
                   value={education.startDate}
-                  onChange={(e) => updateEducation(education.id, "startDate", e.target.value)}
+                  onChange={e => updateEducation(education.id, 'startDate', e.target.value)}
                 />
               </div>
 
@@ -156,7 +158,7 @@ export function EducationStep({ onSaveEducations, initialEducations = [] }: Educ
                   id={`end-date-${education.id}`}
                   type="month"
                   value={education.endDate}
-                  onChange={(e) => updateEducation(education.id, "endDate", e.target.value)}
+                  onChange={e => updateEducation(education.id, 'endDate', e.target.value)}
                 />
               </div>
             </div>
@@ -169,5 +171,5 @@ export function EducationStep({ onSaveEducations, initialEducations = [] }: Educ
         </Button>
       </div>
     </div>
-  )
+  );
 }

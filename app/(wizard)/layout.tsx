@@ -1,12 +1,8 @@
-"use client";
+'use client';
 
-import Navbar from "@/app/_components/navbar";
+import Navbar from '@/app/_components/navbar';
 
-export default function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       {/* <Navbar /> */}

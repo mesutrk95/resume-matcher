@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import type { ReactNode } from "react";
-import { cn } from "@/lib/utils";
-import { ResumeWizardProvider } from "./resume-wizard-context";
-import { ResumeContent } from "@/types/resume";
+import type { ReactNode } from 'react';
+import { cn } from '@/lib/utils';
+import { ResumeWizardProvider } from './resume-wizard-context';
+import { ResumeContent } from '@/types/resume';
 
 interface ResumeWizardProps {
   children: ReactNode;
@@ -11,14 +11,10 @@ interface ResumeWizardProps {
   onResumeWizardDone?: (resumeData: ResumeContent) => void;
 }
 
-export function ResumeWizard({
-  children,
-  className,
-  onResumeWizardDone,
-}: ResumeWizardProps) {
+export function ResumeWizard({ children, className, onResumeWizardDone }: ResumeWizardProps) {
   return (
     <ResumeWizardProvider onResumeWizardDone={onResumeWizardDone}>
-      <div className={cn("", className)}>{children}</div>
+      <div className={cn('', className)}>{children}</div>
     </ResumeWizardProvider>
   );
 }

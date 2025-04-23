@@ -1,104 +1,110 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Plus, Trash } from "lucide-react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Plus, Trash } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface Language {
-  id: string
-  language: string
-  proficiency: string
+  id: string;
+  language: string;
+  proficiency: string;
 }
 
 interface LanguagesStepProps {
-  onSaveLanguages: (languages: Language[]) => void
-  initialLanguages?: Language[]
+  onSaveLanguages: (languages: Language[]) => void;
+  initialLanguages?: Language[];
 }
 
 // Sample languages list
 const languagesList = [
-  "English",
-  "Spanish",
-  "French",
-  "German",
-  "Chinese",
-  "Japanese",
-  "Korean",
-  "Russian",
-  "Arabic",
-  "Portuguese",
-  "Italian",
-  "Dutch",
-  "Hindi",
-  "Turkish",
-  "Swedish",
-  "Polish",
-  "Vietnamese",
-  "Thai",
-  "Greek",
-  "Hebrew",
-]
+  'English',
+  'Spanish',
+  'French',
+  'German',
+  'Chinese',
+  'Japanese',
+  'Korean',
+  'Russian',
+  'Arabic',
+  'Portuguese',
+  'Italian',
+  'Dutch',
+  'Hindi',
+  'Turkish',
+  'Swedish',
+  'Polish',
+  'Vietnamese',
+  'Thai',
+  'Greek',
+  'Hebrew',
+];
 
 // Proficiency levels with colors
 const proficiencyLevels = [
-  { value: "Basic", color: "bg-gray-200 text-gray-800" },
-  { value: "Intermediate", color: "bg-blue-200 text-blue-800" },
-  { value: "Fluent", color: "bg-green-200 text-green-800" },
-  { value: "Native", color: "bg-purple-200 text-purple-800" },
-]
+  { value: 'Basic', color: 'bg-gray-200 text-gray-800' },
+  { value: 'Intermediate', color: 'bg-blue-200 text-blue-800' },
+  { value: 'Fluent', color: 'bg-green-200 text-green-800' },
+  { value: 'Native', color: 'bg-purple-200 text-purple-800' },
+];
 
 export function LanguagesStep({ onSaveLanguages, initialLanguages = [] }: LanguagesStepProps) {
   // Initialize with Fluent English if no initial languages
   const [languages, setLanguages] = useState<Language[]>(() => {
     if (initialLanguages.length > 0) {
-      return initialLanguages
+      return initialLanguages;
     }
 
     return [
       {
-        id: "1",
-        language: "English",
-        proficiency: "Fluent",
+        id: '1',
+        language: 'English',
+        proficiency: 'Fluent',
       },
-    ]
-  })
+    ];
+  });
 
   // Auto-save when languages change
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      onSaveLanguages(languages)
-    }, 500) // 500ms debounce
+      onSaveLanguages(languages);
+    }, 500); // 500ms debounce
 
-    return () => clearTimeout(timeoutId)
-  }, [languages, onSaveLanguages])
+    return () => clearTimeout(timeoutId);
+  }, [languages, onSaveLanguages]);
 
   const addLanguage = () => {
     setLanguages([
       ...languages,
       {
         id: Date.now().toString(),
-        language: "",
-        proficiency: "",
+        language: '',
+        proficiency: '',
       },
-    ])
-  }
+    ]);
+  };
 
   const removeLanguage = (id: string) => {
-    setLanguages(languages.filter((lang) => lang.id !== id))
-  }
+    setLanguages(languages.filter(lang => lang.id !== id));
+  };
 
   const updateLanguage = (id: string, field: keyof Language, value: string) => {
-    setLanguages(languages.map((lang) => (lang.id === id ? { ...lang, [field]: value } : lang)))
-  }
+    setLanguages(languages.map(lang => (lang.id === id ? { ...lang, [field]: value } : lang)));
+  };
 
   // Get the appropriate badge color based on proficiency level
   const getProficiencyColor = (proficiency: string) => {
-    const level = proficiencyLevels.find((level) => level.value === proficiency)
-    return level?.color || "bg-gray-100 text-gray-800"
-  }
+    const level = proficiencyLevels.find(level => level.value === proficiency);
+    return level?.color || 'bg-gray-100 text-gray-800';
+  };
 
   return (
     <div className="space-y-6">
@@ -108,19 +114,19 @@ export function LanguagesStep({ onSaveLanguages, initialLanguages = [] }: Langua
       </div>
 
       <div className="space-y-4">
-        {languages.map((language) => (
+        {languages.map(language => (
           <Card key={language.id} className="overflow-hidden">
             <CardContent className="p-0">
               <div className="flex items-center justify-between p-4 bg-gray-50 border-b">
                 <Select
                   value={language.language}
-                  onValueChange={(value) => updateLanguage(language.id, "language", value)}
+                  onValueChange={value => updateLanguage(language.id, 'language', value)}
                 >
                   <SelectTrigger className="w-full border-0 bg-transparent focus:ring-0 px-0">
                     <SelectValue placeholder="Select a language" />
                   </SelectTrigger>
                   <SelectContent>
-                    {languagesList.map((lang) => (
+                    {languagesList.map(lang => (
                       <SelectItem key={lang} value={lang}>
                         {lang}
                       </SelectItem>
@@ -140,12 +146,12 @@ export function LanguagesStep({ onSaveLanguages, initialLanguages = [] }: Langua
 
               <div className="p-4">
                 <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                  {proficiencyLevels.map((level) => (
+                  {proficiencyLevels.map(level => (
                     <Badge
                       key={level.value}
-                      className={`${language.proficiency === level.value ? level.color : "bg-gray-100 text-gray-500"} 
+                      className={`${language.proficiency === level.value ? level.color : 'bg-gray-100 text-gray-500'} 
                                 hover:bg-opacity-80 cursor-pointer px-3 py-1 whitespace-nowrap`}
-                      onClick={() => updateLanguage(language.id, "proficiency", level.value)}
+                      onClick={() => updateLanguage(language.id, 'proficiency', level.value)}
                     >
                       {level.value}
                     </Badge>
@@ -163,14 +169,17 @@ export function LanguagesStep({ onSaveLanguages, initialLanguages = [] }: Langua
       </Button>
 
       {/* Display selected languages summary */}
-      {languages.some((lang) => lang.language && lang.proficiency) && (
+      {languages.some(lang => lang.language && lang.proficiency) && (
         <div className="mt-6 p-4   rounded-lg">
           <h4 className="text-sm font-bold mb-2">Your Languages</h4>
           <div className="flex flex-wrap gap-2">
             {languages
-              .filter((lang) => lang.language && lang.proficiency)
-              .map((lang) => (
-                <Badge key={lang.id} className={`${getProficiencyColor(lang.proficiency)} px-3 py-1`}>
+              .filter(lang => lang.language && lang.proficiency)
+              .map(lang => (
+                <Badge
+                  key={lang.id}
+                  className={`${getProficiencyColor(lang.proficiency)} px-3 py-1`}
+                >
                   {lang.language} ({lang.proficiency})
                 </Badge>
               ))}
@@ -178,5 +187,5 @@ export function LanguagesStep({ onSaveLanguages, initialLanguages = [] }: Langua
         </div>
       )}
     </div>
-  )
+  );
 }

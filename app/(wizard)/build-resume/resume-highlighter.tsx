@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
+import { useState, useEffect } from 'react';
+import styled, { keyframes } from 'styled-components';
 
 const SECTION_DATA = [
-  { key: "header", title: "John Doe", subtitle: "Senior Software Engineer" },
-  { key: "experience", title: "Work Experience", items: 3 },
-  { key: "education", title: "Education", items: 2 },
-  { key: "skills", title: "Technical Skills", items: 4 },
-  { key: "projects", title: "Key Projects", items: 3 },
+  { key: 'header', title: 'John Doe', subtitle: 'Senior Software Engineer' },
+  { key: 'experience', title: 'Work Experience', items: 3 },
+  { key: 'education', title: 'Education', items: 2 },
+  { key: 'skills', title: 'Technical Skills', items: 4 },
+  { key: 'projects', title: 'Key Projects', items: 3 },
 ];
 
 const morph = keyframes`
@@ -23,7 +23,7 @@ const gradientFlow = keyframes`
 `;
 
 const ResumeContainer = styled.div`
-  font-family: "Segoe UI", sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   max-width: 800px;
   margin: 2rem auto;
   position: relative;
@@ -33,21 +33,15 @@ const Section = styled.div<{ $isActive: boolean }>`
   padding: 1.5rem;
   margin: 1rem;
   border-radius: 12px;
-  background: ${({ $isActive }) =>
-    $isActive
-      ? "#fff"
-      : "#fff"};
-  background-size: ${({ $isActive }) => ($isActive ? "400% 400%" : "auto")};
-  animation: ${({ $isActive }) =>
-    $isActive ? `${gradientFlow} 6s ease infinite` : "none"};
+  background: ${({ $isActive }) => ($isActive ? '#fff' : '#fff')};
+  background-size: ${({ $isActive }) => ($isActive ? '400% 400%' : 'auto')};
+  animation: ${({ $isActive }) => ($isActive ? `${gradientFlow} 6s ease infinite` : 'none')};
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: ${({ $isActive }) => ($isActive ? "scale(1.02)" : "scale(0.98)")};
+  transform: ${({ $isActive }) => ($isActive ? 'scale(1.02)' : 'scale(0.98)')};
   opacity: ${({ $isActive }) => ($isActive ? 1 : 0.6)};
   cursor: pointer;
   box-shadow: ${({ $isActive }) =>
-    $isActive
-      ? "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
-      : "none"};
+    $isActive ? '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' : 'none'};
 
   &:hover {
     transform: scale(1.01);
@@ -83,7 +77,7 @@ const SectionTitle = styled.h2`
   display: inline-block;
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     bottom: -4px;
     left: 0;
@@ -103,15 +97,15 @@ export const ResumeHighlighter = ({ activeKey }: { activeKey: string }) => {
   const [layoutVersion, setLayoutVersion] = useState(0);
 
   useEffect(() => {
-    setLayoutVersion((prev) => prev + 1);
+    setLayoutVersion(prev => prev + 1);
     setPrevKey(activeKey);
   }, [activeKey]);
 
   return (
     <ResumeContainer key={layoutVersion}>
-      {SECTION_DATA.map((section) => (
+      {SECTION_DATA.map(section => (
         <Section key={section.key} $isActive={section.key === activeKey}>
-          {section.key === "header" ? (
+          {section.key === 'header' ? (
             <HeaderSection $isActive={section.key === activeKey}>
               <h1>{section.title}</h1>
               <p>{section.subtitle}</p>
@@ -129,4 +123,3 @@ export const ResumeHighlighter = ({ activeKey }: { activeKey: string }) => {
     </ResumeContainer>
   );
 };
- 

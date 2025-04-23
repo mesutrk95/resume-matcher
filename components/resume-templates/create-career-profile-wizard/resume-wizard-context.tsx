@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   createContext,
@@ -8,8 +8,8 @@ import {
   useCallback,
   ReactNode,
   ComponentType,
-} from "react";
-import { v4 as uuidv4 } from "uuid";
+} from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Briefcase,
   Zap,
@@ -21,8 +21,8 @@ import {
   Code,
   CheckCircle,
   HelpCircle,
-} from "lucide-react";
-import { ResumeContent } from "@/types/resume";
+} from 'lucide-react';
+import { ResumeContent } from '@/types/resume';
 
 export type WizardStep = {
   id: string;
@@ -33,17 +33,17 @@ export type WizardStep = {
 
 // Define the core and optional steps with icons
 export const coreSteps = [
-  { id: "title", label: "Title", icon: Briefcase, optional: false },
-  { id: "skills", label: "Skills", icon: Zap, optional: false },
+  { id: 'title', label: 'Title', icon: Briefcase, optional: false },
+  { id: 'skills', label: 'Skills', icon: Zap, optional: false },
   {
-    id: "summary",
-    label: "Professional Summary",
+    id: 'summary',
+    label: 'Professional Summary',
     icon: FileText,
     optional: false,
   },
   {
-    id: "experience",
-    label: "Work Experience",
+    id: 'experience',
+    label: 'Work Experience',
     icon: Building,
     optional: false,
   },
@@ -51,24 +51,24 @@ export const coreSteps = [
 
 export const optionalSteps = [
   {
-    id: "education",
-    label: "Education",
+    id: 'education',
+    label: 'Education',
     icon: GraduationCap,
     optional: true,
   },
   {
-    id: "certifications",
-    label: "Certifications",
+    id: 'certifications',
+    label: 'Certifications',
     icon: Award,
     optional: true,
   },
-  { id: "languages", label: "Languages", icon: Globe, optional: true },
-  { id: "projects", label: "Projects", icon: Code, optional: true },
+  { id: 'languages', label: 'Languages', icon: Globe, optional: true },
+  { id: 'projects', label: 'Projects', icon: Code, optional: true },
 ];
 
 export const finalStep = {
-  id: "completion",
-  label: "Done!",
+  id: 'completion',
+  label: 'Done!',
   icon: CheckCircle,
   optional: false,
 };
@@ -124,9 +124,7 @@ interface ResumeWizardContextType {
 }
 
 // Create the context
-const ResumeWizardContext = createContext<ResumeWizardContextType | undefined>(
-  undefined
-);
+const ResumeWizardContext = createContext<ResumeWizardContextType | undefined>(undefined);
 
 // Create a provider component
 interface ResumeWizardProviderProps {
@@ -134,20 +132,17 @@ interface ResumeWizardProviderProps {
   onResumeWizardDone?: (resumeData: WizardResumeContent) => void;
 }
 
-export function ResumeWizardProvider({
-  children,
-  onResumeWizardDone,
-}: ResumeWizardProviderProps) {
+export function ResumeWizardProvider({ children, onResumeWizardDone }: ResumeWizardProviderProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [resumeData, setResumeData] = useState<WizardResumeContent>(() => {
     // Try to load from localStorage on initial render (client-side only)
-    if (typeof window !== "undefined") {
-      const savedData = localStorage.getItem("resumeData");
+    if (typeof window !== 'undefined') {
+      const savedData = localStorage.getItem('resumeData');
       if (savedData) {
         try {
           return JSON.parse(savedData);
         } catch (e) {
-          console.error("Failed to parse saved resume data", e);
+          console.error('Failed to parse saved resume data', e);
         }
       }
     }
@@ -163,13 +158,10 @@ export function ResumeWizardProvider({
   // Calculate the active steps based on the user's choice
   const activeSteps = ((): WizardStep[] => {
     // If user hasn't made a choice yet and we're still in core steps
-    if (
-      resumeData.includeOptionalSteps === undefined &&
-      currentStep <= coreSteps.length
-    ) {
+    if (resumeData.includeOptionalSteps === undefined && currentStep <= coreSteps.length) {
       return [
         ...coreSteps,
-        { id: "optional-prompt", label: "More Details", icon: HelpCircle },
+        { id: 'optional-prompt', label: 'More Details', icon: HelpCircle },
         finalStep,
       ];
     }
@@ -185,7 +177,7 @@ export function ResumeWizardProvider({
 
   // Add this useEffect to save to localStorage whenever resumeData changes
   useEffect(() => {
-    localStorage.setItem("resumeData", JSON.stringify(resumeData));
+    localStorage.setItem('resumeData', JSON.stringify(resumeData));
   }, [resumeData]);
 
   // Add this useEffect to call the callback when the user reaches the completion step
@@ -202,7 +194,7 @@ export function ResumeWizardProvider({
     if (currentStep < activeSteps.length - 1) {
       // If we're at the work experience step and haven't decided on optional steps
       if (
-        activeSteps[currentStep].id === "experience" &&
+        activeSteps[currentStep].id === 'experience' &&
         resumeData.includeOptionalSteps === undefined
       ) {
         setShowOptionalPrompt(true);
@@ -225,7 +217,7 @@ export function ResumeWizardProvider({
 
   const handleOptionalStepsDecision = (includeOptionalSteps: boolean) => {
     // Update the resume data with the user's choice
-    setResumeData((prev) => ({
+    setResumeData(prev => ({
       ...prev,
       includeOptionalSteps,
     }));
@@ -243,7 +235,7 @@ export function ResumeWizardProvider({
   };
 
   const updateResumeData = useCallback((data: Partial<ResumeContent>) => {
-    setResumeData((prev) => ({ ...prev, ...data }));
+    setResumeData(prev => ({ ...prev, ...data }));
   }, []);
 
   // Helper function to add a title
@@ -259,13 +251,13 @@ export function ResumeWizardProvider({
         ],
       });
     },
-    [updateResumeData]
+    [updateResumeData],
   );
 
   // Helper function to add skills
   const addSkills = useCallback(
     (skills: string[]) => {
-      const skillItems = skills.map((skill) => ({
+      const skillItems = skills.map(skill => ({
         id: uuidv4(),
         content: skill,
         enabled: true,
@@ -274,14 +266,14 @@ export function ResumeWizardProvider({
       updateResumeData({
         skills: [
           {
-            category: "Technical Skills",
+            category: 'Technical Skills',
             enabled: true,
             skills: skillItems,
           },
         ],
       });
     },
-    [updateResumeData]
+    [updateResumeData],
   );
 
   // Helper function to add a summary
@@ -297,13 +289,13 @@ export function ResumeWizardProvider({
         summaries: [newSummary],
       });
     },
-    [updateResumeData]
+    [updateResumeData],
   );
 
   // Helper function to add experiences
   const addExperiences = useCallback(
     (experiences: any[]) => {
-      const formattedExperiences = experiences.map((exp) => ({
+      const formattedExperiences = experiences.map(exp => ({
         id: uuidv4(),
         companyName: exp.companyName,
         role: exp.jobTitle,
@@ -326,17 +318,17 @@ export function ResumeWizardProvider({
         experiences: formattedExperiences,
       });
     },
-    [updateResumeData]
+    [updateResumeData],
   );
 
   // Helper function to add education
   const addEducations = useCallback(
     (educations: any[]) => {
-      const formattedEducations = educations.map((edu) => ({
+      const formattedEducations = educations.map(edu => ({
         id: uuidv4(),
         degree: edu.degree,
         institution: edu.school,
-        location: edu.location || "",
+        location: edu.location || '',
         startDate: edu.startDate,
         endDate: edu.endDate,
         content: `${edu.degree} in ${edu.major}`,
@@ -347,13 +339,13 @@ export function ResumeWizardProvider({
         educations: formattedEducations,
       });
     },
-    [updateResumeData]
+    [updateResumeData],
   );
 
   // Helper function to add certifications
   const addCertifications = useCallback(
     (certifications: any[]) => {
-      const formattedCertifications = certifications.map((cert) => ({
+      const formattedCertifications = certifications.map(cert => ({
         id: uuidv4(),
         name: cert.name,
         issuer: cert.organization,
@@ -366,13 +358,13 @@ export function ResumeWizardProvider({
         certifications: formattedCertifications,
       });
     },
-    [updateResumeData]
+    [updateResumeData],
   );
 
   // Helper function to add languages
   const addLanguages = useCallback(
     (languages: any[]) => {
-      const formattedLanguages = languages.map((lang) => ({
+      const formattedLanguages = languages.map(lang => ({
         id: uuidv4(),
         name: lang.language,
         level: lang.proficiency,
@@ -383,13 +375,13 @@ export function ResumeWizardProvider({
         languages: formattedLanguages,
       });
     },
-    [updateResumeData]
+    [updateResumeData],
   );
 
   // Helper function to add projects
   const addProjects = useCallback(
     (projects: any[]) => {
-      const formattedProjects = projects.map((proj) => ({
+      const formattedProjects = projects.map(proj => ({
         id: uuidv4(),
         name: proj.title,
         link: proj.link,
@@ -401,116 +393,111 @@ export function ResumeWizardProvider({
         projects: formattedProjects,
       });
     },
-    [updateResumeData]
+    [updateResumeData],
   );
 
   // Import step components
-  const { TitleStep } = require("./steps/title-step");
-  const { SkillsStep } = require("./steps/skills-step");
-  const { SummaryStep } = require("./steps/summary-step");
-  const { ExperienceStep } = require("./steps/experience-step");
-  const { EducationStep } = require("./steps/education-step");
-  const { CertificationsStep } = require("./steps/certifications-step");
-  const { LanguagesStep } = require("./steps/languages-step");
-  const { ProjectsStep } = require("./steps/projects-step");
-  const { CompletionStep } = require("./steps/completion-step");
-  const { OptionalStepsPrompt } = require("./steps/optional-steps-prompt");
+  const { TitleStep } = require('./steps/title-step');
+  const { SkillsStep } = require('./steps/skills-step');
+  const { SummaryStep } = require('./steps/summary-step');
+  const { ExperienceStep } = require('./steps/experience-step');
+  const { EducationStep } = require('./steps/education-step');
+  const { CertificationsStep } = require('./steps/certifications-step');
+  const { LanguagesStep } = require('./steps/languages-step');
+  const { ProjectsStep } = require('./steps/projects-step');
+  const { CompletionStep } = require('./steps/completion-step');
+  const { OptionalStepsPrompt } = require('./steps/optional-steps-prompt');
 
   // Render the current step
   const renderStep = (): JSX.Element | null => {
     const currentStepId = activeSteps[currentStep]?.id;
 
     // If we're at the optional prompt step and should show it
-    if (currentStepId === "optional-prompt" && showOptionalPrompt) {
+    if (currentStepId === 'optional-prompt' && showOptionalPrompt) {
       return <OptionalStepsPrompt onContinue={handleOptionalStepsDecision} />;
     }
 
     switch (currentStepId) {
-      case "title":
+      case 'title':
         return (
-          <TitleStep
-            onSelectTitle={addTitle}
-            initialTitle={resumeData.titles[0]?.content || ""}
-          />
+          <TitleStep onSelectTitle={addTitle} initialTitle={resumeData.titles[0]?.content || ''} />
         );
-      case "skills":
+      case 'skills':
         return (
           <SkillsStep
-            selectedTitle={resumeData.titles[0]?.content || ""}
+            selectedTitle={resumeData.titles[0]?.content || ''}
             onSelectSkills={addSkills}
-            initialSkills={
-              resumeData.skills[0]?.skills.map((skill) => skill.content) || []
-            }
+            initialSkills={resumeData.skills[0]?.skills.map(skill => skill.content) || []}
           />
         );
-      case "summary":
+      case 'summary':
         return (
           <SummaryStep
             onSaveSummary={addSummary}
-            initialSummary={resumeData.summaries[0]?.content || ""}
+            initialSummary={resumeData.summaries[0]?.content || ''}
           />
         );
-      case "experience":
+      case 'experience':
         return (
           <ExperienceStep
             onSaveExperiences={addExperiences}
-            initialExperiences={resumeData.experiences.map((exp) => ({
+            initialExperiences={resumeData.experiences.map(exp => ({
               id: exp.id,
-              jobTitle: exp.role || "",
-              companyName: exp.companyName || "",
-              location: exp.location || "",
-              startDate: exp.startDate || "",
-              endDate: exp.endDate || "",
+              jobTitle: exp.role || '',
+              companyName: exp.companyName || '',
+              location: exp.location || '',
+              startDate: exp.startDate || '',
+              endDate: exp.endDate || '',
               currentlyWorking: !exp.endDate,
-              description: exp.items[0]?.description || "",
+              description: exp.items[0]?.description || '',
               tools: exp.items[0]?.skills || [],
             }))}
           />
         );
-      case "education":
+      case 'education':
         return (
           <EducationStep
             onSaveEducations={addEducations}
-            initialEducations={resumeData.educations.map((edu) => ({
+            initialEducations={resumeData.educations.map(edu => ({
               id: edu.id,
               degree: edu.degree,
-              major: edu.content.replace(`${edu.degree} in `, ""),
+              major: edu.content.replace(`${edu.degree} in `, ''),
               school: edu.institution,
-              location: edu.location || "",
-              startDate: edu.startDate || "",
-              endDate: edu.endDate || "",
+              location: edu.location || '',
+              startDate: edu.startDate || '',
+              endDate: edu.endDate || '',
             }))}
           />
         );
-      case "certifications":
+      case 'certifications':
         return (
           <CertificationsStep
             onSaveCertifications={addCertifications}
-            initialCertifications={resumeData.certifications.map((cert) => ({
+            initialCertifications={resumeData.certifications.map(cert => ({
               id: cert.id,
               name: cert.name,
               organization: cert.issuer,
               date: cert.date,
-              credentialId: cert.description || "",
+              credentialId: cert.description || '',
             }))}
           />
         );
-      case "languages":
+      case 'languages':
         return (
           <LanguagesStep
             onSaveLanguages={addLanguages}
-            initialLanguages={resumeData.languages.map((lang) => ({
+            initialLanguages={resumeData.languages.map(lang => ({
               id: lang.id,
               language: lang.name,
               proficiency: lang.level,
             }))}
           />
         );
-      case "projects":
+      case 'projects':
         return (
           <ProjectsStep
             onSaveProjects={addProjects}
-            initialProjects={resumeData.projects.map((proj) => ({
+            initialProjects={resumeData.projects.map(proj => ({
               id: proj.id,
               title: proj.name,
               description: proj.content,
@@ -518,7 +505,7 @@ export function ResumeWizardProvider({
             }))}
           />
         );
-      case "completion":
+      case 'completion':
         return <CompletionStep resumeData={resumeData} />;
       default:
         return null;
@@ -528,7 +515,7 @@ export function ResumeWizardProvider({
   const isLastStep = currentStep === activeSteps.length - 1;
   const isFirstStep = currentStep === 0;
   const isOptionalPromptStep =
-    activeSteps[currentStep]?.id === "optional-prompt" && showOptionalPrompt;
+    activeSteps[currentStep]?.id === 'optional-prompt' && showOptionalPrompt;
 
   const value = {
     currentStep,
@@ -557,20 +544,14 @@ export function ResumeWizardProvider({
     renderStep,
   };
 
-  return (
-    <ResumeWizardContext.Provider value={value}>
-      {children}
-    </ResumeWizardContext.Provider>
-  );
+  return <ResumeWizardContext.Provider value={value}>{children}</ResumeWizardContext.Provider>;
 }
 
 // Create a hook to use the context
 export function useResumeWizard() {
   const context = useContext(ResumeWizardContext);
   if (context === undefined) {
-    throw new Error(
-      "useResumeWizard must be used within a ResumeWizardProvider"
-    );
+    throw new Error('useResumeWizard must be used within a ResumeWizardProvider');
   }
   return context;
 }

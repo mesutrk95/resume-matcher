@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, SkipForward } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useResumeWizard } from "./resume-wizard-context";
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight, SkipForward } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useResumeWizard } from './resume-wizard-context';
 
 interface ResumeWizardFooterProps {
   className?: string;
@@ -25,9 +25,7 @@ export function ResumeWizardFooter({ className }: ResumeWizardFooterProps) {
   }
 
   return (
-    <div
-      className={cn("p-6 border-t bg-gray-50 flex justify-between", className)}
-    >
+    <div className={cn('p-6 border-t bg-gray-50 flex justify-between', className)}>
       <Button
         variant="outline"
         onClick={handleBack}
@@ -39,11 +37,7 @@ export function ResumeWizardFooter({ className }: ResumeWizardFooterProps) {
 
       <div className="flex gap-2">
         {!isLastStep && step.optional && !isFirstStep && (
-          <Button
-            variant="ghost"
-            onClick={handleSkip}
-            className="flex items-center gap-2"
-          >
+          <Button variant="ghost" onClick={handleSkip} className="flex items-center gap-2">
             Skip <SkipForward className="h-4 w-4" />
           </Button>
         )}

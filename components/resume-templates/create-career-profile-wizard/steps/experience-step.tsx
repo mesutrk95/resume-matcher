@@ -1,106 +1,118 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Plus, Trash } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { X } from "lucide-react"
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Plus, Trash } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { X } from 'lucide-react';
 
 interface Experience {
-  id: string
-  jobTitle: string
-  companyName: string
-  location: string
-  startDate: string
-  endDate: string
-  currentlyWorking: boolean
-  description: string
-  tools: string[]
+  id: string;
+  jobTitle: string;
+  companyName: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  currentlyWorking: boolean;
+  description: string;
+  tools: string[];
 }
 
 interface ExperienceStepProps {
-  onSaveExperiences: (experiences: Experience[]) => void
-  initialExperiences?: Experience[]
+  onSaveExperiences: (experiences: Experience[]) => void;
+  initialExperiences?: Experience[];
 }
 
-export function ExperienceStep({ onSaveExperiences, initialExperiences = [] }: ExperienceStepProps) {
+export function ExperienceStep({
+  onSaveExperiences,
+  initialExperiences = [],
+}: ExperienceStepProps) {
   const [experiences, setExperiences] = useState<Experience[]>(
     initialExperiences.length > 0
       ? initialExperiences
       : [
           {
-            id: "1",
-            jobTitle: "",
-            companyName: "",
-            location: "",
-            startDate: "",
-            endDate: "",
+            id: '1',
+            jobTitle: '',
+            companyName: '',
+            location: '',
+            startDate: '',
+            endDate: '',
             currentlyWorking: false,
-            description: "",
+            description: '',
             tools: [],
           },
         ],
-  )
-  const [currentTool, setCurrentTool] = useState("")
-  const [hasChanged, setHasChanged] = useState(false)
+  );
+  const [currentTool, setCurrentTool] = useState('');
+  const [hasChanged, setHasChanged] = useState(false);
 
   // Auto-save when experiences change, but only if they've been modified or we have initial data
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      onSaveExperiences(experiences)
-    }, 500) // 500ms debounce
+      onSaveExperiences(experiences);
+    }, 500); // 500ms debounce
 
-    return () => clearTimeout(timeoutId)
-  }, [experiences, onSaveExperiences])
+    return () => clearTimeout(timeoutId);
+  }, [experiences, onSaveExperiences]);
 
   const addExperience = () => {
     setExperiences([
       ...experiences,
       {
         id: Date.now().toString(),
-        jobTitle: "",
-        companyName: "",
-        location: "",
-        startDate: "",
-        endDate: "",
+        jobTitle: '',
+        companyName: '',
+        location: '',
+        startDate: '',
+        endDate: '',
         currentlyWorking: false,
-        description: "",
+        description: '',
         tools: [],
       },
-    ])
-    setHasChanged(true)
-  }
+    ]);
+    setHasChanged(true);
+  };
 
   const removeExperience = (id: string) => {
-    setExperiences(experiences.filter((exp) => exp.id !== id))
-    setHasChanged(true)
-  }
+    setExperiences(experiences.filter(exp => exp.id !== id));
+    setHasChanged(true);
+  };
 
   const updateExperience = (id: string, field: keyof Experience, value: any) => {
-    setExperiences(experiences.map((exp) => (exp.id === id ? { ...exp, [field]: value } : exp)))
-    setHasChanged(true)
-  }
+    setExperiences(experiences.map(exp => (exp.id === id ? { ...exp, [field]: value } : exp)));
+    setHasChanged(true);
+  };
 
   const addTool = (id: string) => {
-    if (currentTool && !experiences.find((exp) => exp.id === id)?.tools.includes(currentTool)) {
-      updateExperience(id, "tools", [...(experiences.find((exp) => exp.id === id)?.tools || []), currentTool])
-      setCurrentTool("")
+    if (currentTool && !experiences.find(exp => exp.id === id)?.tools.includes(currentTool)) {
+      updateExperience(id, 'tools', [
+        ...(experiences.find(exp => exp.id === id)?.tools || []),
+        currentTool,
+      ]);
+      setCurrentTool('');
     }
-  }
+  };
 
   const removeTool = (id: string, tool: string) => {
-    updateExperience(id, "tools", experiences.find((exp) => exp.id === id)?.tools.filter((t) => t !== tool) || [])
-  }
+    updateExperience(
+      id,
+      'tools',
+      experiences.find(exp => exp.id === id)?.tools.filter(t => t !== tool) || [],
+    );
+  };
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-xl font-bold">Work Experiences</h3>
-        <p className="text-sm text-gray-500">Add your work experience, starting with the most recent position.</p>
+        <p className="text-sm text-gray-500">
+          Add your work experience, starting with the most recent position.
+        </p>
       </div>
 
       <div className="space-y-8">
@@ -127,7 +139,7 @@ export function ExperienceStep({ onSaveExperiences, initialExperiences = [] }: E
                 <Input
                   id={`job-title-${experience.id}`}
                   value={experience.jobTitle}
-                  onChange={(e) => updateExperience(experience.id, "jobTitle", e.target.value)}
+                  onChange={e => updateExperience(experience.id, 'jobTitle', e.target.value)}
                   placeholder="e.g. Software Engineer"
                 />
               </div>
@@ -137,7 +149,7 @@ export function ExperienceStep({ onSaveExperiences, initialExperiences = [] }: E
                 <Input
                   id={`company-name-${experience.id}`}
                   value={experience.companyName}
-                  onChange={(e) => updateExperience(experience.id, "companyName", e.target.value)}
+                  onChange={e => updateExperience(experience.id, 'companyName', e.target.value)}
                   placeholder="e.g. Acme Inc."
                 />
               </div>
@@ -147,7 +159,7 @@ export function ExperienceStep({ onSaveExperiences, initialExperiences = [] }: E
                 <Input
                   id={`location-${experience.id}`}
                   value={experience.location}
-                  onChange={(e) => updateExperience(experience.id, "location", e.target.value)}
+                  onChange={e => updateExperience(experience.id, 'location', e.target.value)}
                   placeholder="e.g. New York, NY"
                 />
               </div>
@@ -158,7 +170,7 @@ export function ExperienceStep({ onSaveExperiences, initialExperiences = [] }: E
                   id={`start-date-${experience.id}`}
                   type="month"
                   value={experience.startDate}
-                  onChange={(e) => updateExperience(experience.id, "startDate", e.target.value)}
+                  onChange={e => updateExperience(experience.id, 'startDate', e.target.value)}
                 />
               </div>
 
@@ -167,10 +179,10 @@ export function ExperienceStep({ onSaveExperiences, initialExperiences = [] }: E
                   <Checkbox
                     id={`currently-working-${experience.id}`}
                     checked={experience.currentlyWorking}
-                    onCheckedChange={(checked) => {
-                      updateExperience(experience.id, "currentlyWorking", checked)
+                    onCheckedChange={checked => {
+                      updateExperience(experience.id, 'currentlyWorking', checked);
                       if (checked) {
-                        updateExperience(experience.id, "endDate", "")
+                        updateExperience(experience.id, 'endDate', '');
                       }
                     }}
                   />
@@ -188,7 +200,7 @@ export function ExperienceStep({ onSaveExperiences, initialExperiences = [] }: E
                       id={`end-date-${experience.id}`}
                       type="month"
                       value={experience.endDate}
-                      onChange={(e) => updateExperience(experience.id, "endDate", e.target.value)}
+                      onChange={e => updateExperience(experience.id, 'endDate', e.target.value)}
                     />
                   </>
                 )}
@@ -200,7 +212,7 @@ export function ExperienceStep({ onSaveExperiences, initialExperiences = [] }: E
               <Textarea
                 id={`description-${experience.id}`}
                 value={experience.description}
-                onChange={(e) => updateExperience(experience.id, "description", e.target.value)}
+                onChange={e => updateExperience(experience.id, 'description', e.target.value)}
                 placeholder="Describe your responsibilities and achievements..."
                 className="min-h-[100px]"
               />
@@ -211,21 +223,26 @@ export function ExperienceStep({ onSaveExperiences, initialExperiences = [] }: E
               <div className="flex space-x-2">
                 <Input
                   value={currentTool}
-                  onChange={(e) => setCurrentTool(e.target.value)}
+                  onChange={e => setCurrentTool(e.target.value)}
                   placeholder="e.g. React, Python, AWS"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && currentTool) {
-                      e.preventDefault()
-                      addTool(experience.id)
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && currentTool) {
+                      e.preventDefault();
+                      addTool(experience.id);
                     }
                   }}
                 />
-                <Button type="button" onClick={() => addTool(experience.id)} disabled={!currentTool} size="icon">
+                <Button
+                  type="button"
+                  onClick={() => addTool(experience.id)}
+                  disabled={!currentTool}
+                  size="icon"
+                >
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
               <div className="flex flex-wrap gap-2 mt-2">
-                {experience.tools.map((tool) => (
+                {experience.tools.map(tool => (
                   <Badge key={tool} variant="secondary" className="px-3 py-1 text-sm">
                     {tool}
                     <button
@@ -251,5 +268,5 @@ export function ExperienceStep({ onSaveExperiences, initialExperiences = [] }: E
         </Button>
       </div>
     </div>
-  )
+  );
 }

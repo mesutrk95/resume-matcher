@@ -1,22 +1,22 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Plus, Trash } from "lucide-react"
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Plus, Trash } from 'lucide-react';
 
 interface Project {
-  id: string
-  title: string
-  description: string
-  link: string
+  id: string;
+  title: string;
+  description: string;
+  link: string;
 }
 
 interface ProjectsStepProps {
-  onSaveProjects: (projects: Project[]) => void
-  initialProjects?: Project[]
+  onSaveProjects: (projects: Project[]) => void;
+  initialProjects?: Project[];
 }
 
 export function ProjectsStep({ onSaveProjects, initialProjects = [] }: ProjectsStepProps) {
@@ -25,52 +25,54 @@ export function ProjectsStep({ onSaveProjects, initialProjects = [] }: ProjectsS
       ? initialProjects
       : [
           {
-            id: "1",
-            title: "",
-            description: "",
-            link: "",
+            id: '1',
+            title: '',
+            description: '',
+            link: '',
           },
         ],
-  )
-  const [hasChanged, setHasChanged] = useState(false)
+  );
+  const [hasChanged, setHasChanged] = useState(false);
 
   // Auto-save when projects change, but only if they've been modified or we have initial data
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      onSaveProjects(projects)
-    }, 500) // 500ms debounce
+      onSaveProjects(projects);
+    }, 500); // 500ms debounce
 
-    return () => clearTimeout(timeoutId)
-  }, [projects, onSaveProjects])
+    return () => clearTimeout(timeoutId);
+  }, [projects, onSaveProjects]);
 
   const addProject = () => {
     setProjects([
       ...projects,
       {
         id: Date.now().toString(),
-        title: "",
-        description: "",
-        link: "",
+        title: '',
+        description: '',
+        link: '',
       },
-    ])
-    setHasChanged(true)
-  }
+    ]);
+    setHasChanged(true);
+  };
 
   const removeProject = (id: string) => {
-    setProjects(projects.filter((proj) => proj.id !== id))
-    setHasChanged(true)
-  }
+    setProjects(projects.filter(proj => proj.id !== id));
+    setHasChanged(true);
+  };
 
   const updateProject = (id: string, field: keyof Project, value: string) => {
-    setProjects(projects.map((proj) => (proj.id === id ? { ...proj, [field]: value } : proj)))
-    setHasChanged(true)
-  }
+    setProjects(projects.map(proj => (proj.id === id ? { ...proj, [field]: value } : proj)));
+    setHasChanged(true);
+  };
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <h3 className="text-xl font-bold">Projects</h3>
-        <p className="text-sm text-gray-500">Add notable projects that showcase your skills and experience.</p>
+        <p className="text-sm text-gray-500">
+          Add notable projects that showcase your skills and experience.
+        </p>
       </div>
 
       <div className="space-y-8">
@@ -97,7 +99,7 @@ export function ProjectsStep({ onSaveProjects, initialProjects = [] }: ProjectsS
                 <Input
                   id={`title-${project.id}`}
                   value={project.title}
-                  onChange={(e) => updateProject(project.id, "title", e.target.value)}
+                  onChange={e => updateProject(project.id, 'title', e.target.value)}
                   placeholder="e.g. E-commerce Website"
                 />
               </div>
@@ -107,7 +109,7 @@ export function ProjectsStep({ onSaveProjects, initialProjects = [] }: ProjectsS
                 <Textarea
                   id={`description-${project.id}`}
                   value={project.description}
-                  onChange={(e) => updateProject(project.id, "description", e.target.value)}
+                  onChange={e => updateProject(project.id, 'description', e.target.value)}
                   placeholder="Describe the project, your role, and the technologies used..."
                   className="min-h-[100px]"
                 />
@@ -118,7 +120,7 @@ export function ProjectsStep({ onSaveProjects, initialProjects = [] }: ProjectsS
                 <Input
                   id={`link-${project.id}`}
                   value={project.link}
-                  onChange={(e) => updateProject(project.id, "link", e.target.value)}
+                  onChange={e => updateProject(project.id, 'link', e.target.value)}
                   placeholder="e.g. https://github.com/username/project"
                 />
               </div>
@@ -132,5 +134,5 @@ export function ProjectsStep({ onSaveProjects, initialProjects = [] }: ProjectsS
         </Button>
       </div>
     </div>
-  )
+  );
 }

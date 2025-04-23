@@ -1,72 +1,77 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Plus, Trash } from "lucide-react"
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Plus, Trash } from 'lucide-react';
 
 interface Certification {
-  id: string
-  name: string
-  organization: string
-  date: string
-  credentialId: string
+  id: string;
+  name: string;
+  organization: string;
+  date: string;
+  credentialId: string;
 }
 
 interface CertificationsStepProps {
-  onSaveCertifications: (certifications: Certification[]) => void
-  initialCertifications?: Certification[]
+  onSaveCertifications: (certifications: Certification[]) => void;
+  initialCertifications?: Certification[];
 }
 
-export function CertificationsStep({ onSaveCertifications, initialCertifications = [] }: CertificationsStepProps) {
+export function CertificationsStep({
+  onSaveCertifications,
+  initialCertifications = [],
+}: CertificationsStepProps) {
   const [certifications, setCertifications] = useState<Certification[]>(
     initialCertifications.length > 0
       ? initialCertifications
       : [
           {
-            id: "1",
-            name: "",
-            organization: "",
-            date: "",
-            credentialId: "",
+            id: '1',
+            name: '',
+            organization: '',
+            date: '',
+            credentialId: '',
           },
         ],
-  )
-  const [hasChanged, setHasChanged] = useState(false)
+  );
+  const [hasChanged, setHasChanged] = useState(false);
 
   // Auto-save when certifications change, but only if they've been modified or we have initial data
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      onSaveCertifications(certifications)
-    }, 500) // 500ms debounce
+      onSaveCertifications(certifications);
+    }, 500); // 500ms debounce
 
-    return () => clearTimeout(timeoutId)
-  }, [certifications, onSaveCertifications])
+    return () => clearTimeout(timeoutId);
+  }, [certifications, onSaveCertifications]);
 
   const addCertification = () => {
     setCertifications([
       ...certifications,
       {
         id: Date.now().toString(),
-        name: "",
-        organization: "",
-        date: "",
-        credentialId: "",
+        name: '',
+        organization: '',
+        date: '',
+        credentialId: '',
       },
-    ])
-    setHasChanged(true)
-  }
+    ]);
+    setHasChanged(true);
+  };
 
   const removeCertification = (id: string) => {
-    setCertifications(certifications.filter((cert) => cert.id !== id))
-    setHasChanged(true)
-  }
+    setCertifications(certifications.filter(cert => cert.id !== id));
+    setHasChanged(true);
+  };
 
   const updateCertification = (id: string, field: keyof Certification, value: string) => {
-    setCertifications(certifications.map((cert) => (cert.id === id ? { ...cert, [field]: value } : cert)))
-    setHasChanged(true)
-  }
+    setCertifications(
+      certifications.map(cert => (cert.id === id ? { ...cert, [field]: value } : cert)),
+    );
+    setHasChanged(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -99,7 +104,7 @@ export function CertificationsStep({ onSaveCertifications, initialCertifications
                 <Input
                   id={`cert-name-${certification.id}`}
                   value={certification.name}
-                  onChange={(e) => updateCertification(certification.id, "name", e.target.value)}
+                  onChange={e => updateCertification(certification.id, 'name', e.target.value)}
                   placeholder="e.g. AWS Certified Solutions Architect"
                 />
               </div>
@@ -109,7 +114,9 @@ export function CertificationsStep({ onSaveCertifications, initialCertifications
                 <Input
                   id={`org-${certification.id}`}
                   value={certification.organization}
-                  onChange={(e) => updateCertification(certification.id, "organization", e.target.value)}
+                  onChange={e =>
+                    updateCertification(certification.id, 'organization', e.target.value)
+                  }
                   placeholder="e.g. Amazon Web Services"
                 />
               </div>
@@ -120,7 +127,7 @@ export function CertificationsStep({ onSaveCertifications, initialCertifications
                   id={`date-${certification.id}`}
                   type="month"
                   value={certification.date}
-                  onChange={(e) => updateCertification(certification.id, "date", e.target.value)}
+                  onChange={e => updateCertification(certification.id, 'date', e.target.value)}
                 />
               </div>
 
@@ -129,7 +136,9 @@ export function CertificationsStep({ onSaveCertifications, initialCertifications
                 <Input
                   id={`credential-${certification.id}`}
                   value={certification.credentialId}
-                  onChange={(e) => updateCertification(certification.id, "credentialId", e.target.value)}
+                  onChange={e =>
+                    updateCertification(certification.id, 'credentialId', e.target.value)
+                  }
                   placeholder="e.g. ABC123 or https://credential.net/abc123"
                 />
               </div>
@@ -143,5 +152,5 @@ export function CertificationsStep({ onSaveCertifications, initialCertifications
         </Button>
       </div>
     </div>
-  )
+  );
 }

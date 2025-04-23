@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { WizardResumeContent } from "../resume-wizard-context";
+import { CheckCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { WizardResumeContent } from '../resume-wizard-context';
 
 interface CompletionStepProps {
   resumeData: WizardResumeContent;
@@ -12,14 +12,14 @@ export function CompletionStep({ resumeData }: CompletionStepProps) {
   const handleDownload = () => {
     // Create a blob with the JSON data
     const blob = new Blob([JSON.stringify(resumeData, null, 2)], {
-      type: "application/json",
+      type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
 
     // Create a link and trigger download
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = "resume-data.json";
+    a.download = 'resume-data.json';
     document.body.appendChild(a);
     a.click();
 
@@ -37,8 +37,8 @@ export function CompletionStep({ resumeData }: CompletionStepProps) {
       <div className="space-y-2">
         <h3 className="text-2xl font-bold">All Set!</h3>
         <p className="text-gray-500 max-w-md mx-auto">
-          You've successfully completed all the steps to create your resume.
-          Your information has been automatically saved.
+          You've successfully completed all the steps to create your resume. Your information has
+          been automatically saved.
         </p>
       </div>
       <div className="space-y-4 w-full max-w-md">

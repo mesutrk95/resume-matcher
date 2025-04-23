@@ -1,11 +1,11 @@
-import { currentUser } from "@/lib/auth";
+import { currentUser } from '@/lib/auth';
 import {
   ResumeWizard,
   ResumeWizardBody,
   ResumeWizardFooter,
   ResumeWizardHeader,
-} from "@/components/resume-templates/create-career-profile-wizard";
-import { ResumeHighlighter } from "./resume-highlighter";
+} from '@/components/resume-templates/create-career-profile-wizard';
+import { ResumeHighlighter } from './resume-highlighter';
 
 interface CreateResumePageProps {
   params: {
@@ -13,12 +13,10 @@ interface CreateResumePageProps {
   };
 }
 
-export default async function ResumeWizardPage({
-  params,
-}: CreateResumePageProps) {
+export default async function ResumeWizardPage({ params }: CreateResumePageProps) {
   const user = await currentUser();
 
-  const keys = ["experiences", "skills", "projects"];
+  const keys = ['experiences', 'skills', 'projects'];
   return (
     <div className="">
       <div className="grid grid-cols-12">
@@ -31,9 +29,7 @@ export default async function ResumeWizardPage({
           </ResumeWizard>
         </div>
         <div className="col-span-3 bg-gray-50 h-screen overflow-hidden">
-          <div className="overflow-auto">
-            {/* <ResumeHighlighter activeKey="experiences" /> */}
-          </div>
+          <div className="overflow-auto">{/* <ResumeHighlighter activeKey="experiences" /> */}</div>
         </div>
       </div>
     </div>
