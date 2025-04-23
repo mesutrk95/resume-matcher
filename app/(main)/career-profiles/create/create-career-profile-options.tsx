@@ -42,7 +42,7 @@ export const CreateCareerProfileOptions = () => {
 
     async function getCode() {
       const result = await runAction(authorizeCode(code));
-      console.log(result);
+      // console.log(result);
     }
     getCode();
   }, [sp]);

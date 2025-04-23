@@ -18,6 +18,7 @@ import { ConnectJobToResume } from '../../../../../components/job-resumes/connec
 import dynamic from 'next/dynamic';
 import { Card, CardContent } from '@/components/ui/card';
 import { LottieAnimatedIcon } from '@/app/_components/lottie-animated-icon';
+import Image from 'next/image';
 const GaugeComponent = dynamic(() => import('react-gauge-component'), {
   ssr: false,
 });
@@ -82,7 +83,7 @@ const ImprovementNote = ({
     return note.id === 'skills'
       ? resumeSkillsToString(resume)
       : variation?.content?.trim().replace(/\u200B/g, '');
-  }, [resume?.skills, variation]);
+  }, [variation, note?.id, resume]);
 
   return (
     <div className="flex flex-col gap-2" key={note.title}>
@@ -153,7 +154,7 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
 
         const analyzeResults = await analyzeResumeScore(formData, jobResume.id);
         setResumeAnalyzeResults(analyzeResults);
-        console.log(analyzeResults);
+        // console.log(analyzeResults);
         toast.success('Successfully analyzed resume score!');
       } catch (error) {
         toast.error('Failed to analyze resume score.');
@@ -205,7 +206,7 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
               </LoadingButton>
             </div>
             <div className=" flex justify-center">
-              <img src="/assets/resume-score.svg" className="min-w-[200px]" />
+              <Image src="/assets/resume-score.svg" width={200} alt="" />
 
               {/* <LottieAnimatedIcon icon="/iconly/AiProcessor.json" width={150} height={150}/> */}
             </div>

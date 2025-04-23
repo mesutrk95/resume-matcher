@@ -8,13 +8,12 @@ import { revalidatePath } from 'next/cache';
 import { Job, JobStatus, Prisma } from '@prisma/client';
 import { getAIHtmlResponse, getAIJsonResponse } from '@/lib/ai';
 import { JobAnalyzeResult } from '@/types/job';
-
-import cheerio from 'cheerio';
-import axios from 'axios';
-import moment from 'moment';
 import { downloadImageAsBase64 } from '@/lib/utils';
 import { PaginationParams } from '@/types/pagination-params';
 import { withErrorHandling } from '@/lib/with-error-handling';
+import { load as cheerioLoad } from 'cheerio';
+import axios from 'axios';
+import moment from 'moment';
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {
@@ -255,7 +254,7 @@ export const extractJobDescriptionFromUrl = async (url: string) => {
   const html = response.data;
 
   // Load the HTML into cheerio
-  const $ = cheerio.load(html);
+  const $ = cheerioLoad(html);
   const logoImage = $("img[data-delayed-url*='company-logo']").first().attr('data-delayed-url');
 
   const cardTop = $('.top-card-layout__entity-info-container').text().trim();

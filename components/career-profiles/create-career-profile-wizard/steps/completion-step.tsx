@@ -37,8 +37,8 @@ export function CompletionStep({ resumeData }: CompletionStepProps) {
       <div className="space-y-2">
         <h3 className="text-2xl font-bold">All Set!</h3>
         <p className="text-gray-500 max-w-md mx-auto">
-          You've successfully completed all the steps to create your resume. Your information has
-          been automatically saved.
+          You&apos;ve successfully completed all the steps to create your resume. Your information
+          has been automatically saved.
         </p>
       </div>
       <div className="space-y-4 w-full max-w-md">

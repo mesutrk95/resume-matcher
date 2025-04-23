@@ -91,7 +91,7 @@ function PDFViewer({ pdfBlob, maxPages, width }: PDFViewerProps & { width: numbe
       className={'relative flex flex-col gap-2'}
       file={pdfBlob}
       onLoadSuccess={onDocumentLoadSuccess}
-      onItemClick={item => console.log(item)}
+      // onItemClick={item => console.log(item)}
       loading={loadingIndicator}
     >
       {Array.from(new Array(numPages), (el, index) => (

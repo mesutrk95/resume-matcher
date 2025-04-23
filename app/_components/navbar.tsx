@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { SubscriptionStatusIndicator } from '@/components/subscription/subscription-status-indicator';
 import { LottieAnimatedIcon } from './lottie-animated-icon';
 import { useUser } from '@/providers/UserProvider';
+import Image from 'next/image';
 
 function AuthNav() {
   const { user } = useUser();
@@ -120,7 +121,7 @@ export default function Navbar() {
         {/* Include the CSS */}
         <div className="flex gap-x-4 items-center justify-between">
           <div className="flex gap-2 items-center text-sm font-medium navbar-hover-effect">
-            <img src="/logo.svg" className="h-[35px]" />
+            <Image src="/logo.svg" height={35} alt="Logo" />
             {/* <NavItem
               icon="/iconly/Inbox.json"
               title="Resume Templates"

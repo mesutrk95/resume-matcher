@@ -14,14 +14,15 @@ import { CreateResumeButton } from '@/components/job-resumes/create-resume-butto
 import { CareerProfileCard } from '@/components/career-profiles/career-profile-card';
 
 interface CreateResumePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function CreateResumePage({ params }: CreateResumePageProps) {
   const user = await currentUser();
-  const { id: jobId } = params;
+  const paramsResult = await params;
+  const { id: jobId } = paramsResult;
 
   // Fetch the job
   const job = await db.job.findUnique({

@@ -17,7 +17,7 @@ export class JsonResponseProcessor extends BaseResponseProcessor<any> {
   /**
    * Process the JSON response by parsing it
    */
-  protected async processResponse(response: string, request: AIRequestModel<any>): Promise<any> {
+  protected async processResponse(response: string, _request: AIRequestModel<any>): Promise<any> {
     // Clean up markdown code blocks and whitespace
     const cleanJson = response
       .replace(/```json|```/g, '')

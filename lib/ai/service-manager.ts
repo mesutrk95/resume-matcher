@@ -240,7 +240,7 @@ export class AIServiceManager {
   /**
    * Get the appropriate AI client for this request
    */
-  private getClientForRequest(request: AIRequestModel<any>): AIModelClient {
+  private getClientForRequest(_request: AIRequestModel<any>): AIModelClient {
     // Future enhancement: select different clients based on request properties
     // For now, just return the default client
     return this.defaultClient;

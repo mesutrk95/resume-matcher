@@ -176,7 +176,7 @@ const ResumeDocumentRenderer = ({
       },
     });
     return styles;
-  }, [design, skipFont]);
+  }, [design, skipFont, resolveStyle]);
 
   // For single column layout
   if (design.columnLayout === 'single') {

@@ -91,7 +91,7 @@ export function ChatInterface({
     } else {
       // addMessage(INITIAL_MESSAGE);
     }
-  }, []);
+  }, [jobResume.id]);
 
   // Check if chat is just starting (only has the initial greeting)
   const isChatStarting = messages.length === 0;

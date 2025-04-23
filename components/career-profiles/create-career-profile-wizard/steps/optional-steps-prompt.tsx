@@ -17,8 +17,8 @@ export function OptionalStepsPrompt({ onContinue }: OptionalStepsPromptProps) {
       <div className="space-y-4 max-w-lg">
         <h3 className="text-2xl font-bold">Great progress!</h3>
         <p className="text-gray-600">
-          You've completed the essential parts of your resume. Would you like to add more details to
-          make your resume even more comprehensive?
+          You&apos;ve completed the essential parts of your resume. Would you like to add more
+          details to make your resume even more comprehensive?
         </p>
 
         <div className="bg-gray-50 p-4 rounded-lg text-left">

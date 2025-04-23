@@ -21,11 +21,11 @@ export const metadata: Metadata = {
 export default async function BillingPage({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     success?: string;
     canceled?: string;
     session_id?: string;
-  };
+  }>;
 }) {
   // Await searchParams before destructuring to fix Next.js dynamic API usage
   const { success, canceled, session_id: sessionId } = await searchParams;

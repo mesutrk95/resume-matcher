@@ -12,13 +12,14 @@ import {
 import { NoCareerProfileWizard } from './no-career-profile-wizard';
 
 interface CreateResumePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function CreateResumePage({ params }: CreateResumePageProps) {
   const user = await currentUser();
+  const paramsResult = await params;
 
   // Fetch all resume careerProfiles for the user
   const careerProfiles = await db.resumeTemplate.findMany({

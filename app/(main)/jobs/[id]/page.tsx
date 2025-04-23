@@ -10,18 +10,18 @@ import { JobStatusUpdateForm } from '@/components/jobs/job-status-update-form';
 import { ContentPlaceholder } from '@/app/_components/content-placeholder';
 
 interface JobResumesPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function JobResumesPage({ params }: JobResumesPageProps) {
   const user = await currentUser();
-
+  const paramsResult = await params;
   // Fetch the job
   const job = await db.job.findUnique({
     where: {
-      id: params.id,
+      id: paramsResult.id,
       userId: user?.id,
     },
   });

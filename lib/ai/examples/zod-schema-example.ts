@@ -1,3 +1,5 @@
+/* eslint no-console: "off" */
+
 import * as z from 'zod';
 import { AIServiceManager } from '../service-manager';
 import { AIRequestModel } from '../types';

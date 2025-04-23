@@ -55,7 +55,7 @@ const ResumeDesignItem = ({
         setPdfBlob(blob);
         setError(false);
       } catch (err) {
-        console.error('Error loading resume design:', err);
+        // console.error('Error loading resume design:', err);
         setError(true);
         toast.error('Error loading design', {
           description: `Failed to load design: ${designUrl}`,
@@ -70,7 +70,7 @@ const ResumeDesignItem = ({
     };
 
     fetchDesign();
-  }, [designUrl, resume, toast]);
+  }, [designUrl, resume]);
 
   const handleSelect = useCallback(() => {
     if (design && onSelect) {
@@ -154,7 +154,7 @@ const ResumeDesignList = ({
     };
 
     fetchDesigns();
-  }, [toast]);
+  }, []);
 
   const handleSelectDesign = useCallback(
     (design: ResumeDesign, designUrl: string) => {
@@ -222,7 +222,7 @@ export const ChooseResumeDesignDialog = ({
         description: 'Please select a design first.',
       });
     }
-  }, [selectedDesign, onDesignChange, toast]);
+  }, [selectedDesign, onDesignChange]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

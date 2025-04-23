@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default async function AuthErrorPage({
   searchParams,
 }: {
-  searchParams: { message: AuthError['type'] };
+  searchParams: Promise<{ message: AuthError['type'] }>;
 }) {
   // Await searchParams before accessing its properties
   const params = await searchParams;

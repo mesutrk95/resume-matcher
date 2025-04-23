@@ -9,11 +9,7 @@ import {
 import { CareerProfileGallery } from '@/components/career-profiles/career-profile-gallery';
 import { CreateCareerProfileOptions } from './create-career-profile-options';
 
-interface CreateCareerProfilePageProps {
-  params: object;
-}
-
-export default async function CreateCareerProfile({ params }: CreateCareerProfilePageProps) {
+export default async function CreateCareerProfile() {
   return (
     <div className="space-y-6">
       <div>

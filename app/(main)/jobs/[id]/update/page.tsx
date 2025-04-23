@@ -7,9 +7,10 @@ export const metadata: Metadata = {
   title: 'Update Job',
 };
 
-export default async function UpdateJobPage({ params }: { params: { id: string } }) {
+export default async function UpdateJobPage({ params }: { params: Promise<{ id: string }> }) {
+  const paramsResult = await params;
   const job = await db.job.findUnique({
-    where: { id: params.id },
+    where: { id: paramsResult.id },
   });
 
   if (!job) return null;

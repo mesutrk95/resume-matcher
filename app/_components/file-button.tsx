@@ -48,7 +48,7 @@ export const FileButton = ({
         onFileSelected(file);
       }
     } else {
-      console.log('No file selected');
+      // console.log('No file selected');
     }
   };
 

@@ -6,9 +6,9 @@ import { Metadata } from 'next';
 import { ResumeBuilderPage } from './resume-builder-page';
 
 interface EditResumePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export const metadata: Metadata = {
@@ -18,11 +18,12 @@ export const metadata: Metadata = {
 
 export default async function EditResumePage({ params }: EditResumePageProps) {
   const user = await currentUser();
+  const paramsResult = await params;
 
   // Fetch the ResumeJob record
   const jobResume = await db.jobResume.findUnique({
     where: {
-      id: params.id,
+      id: paramsResult.id,
       userId: user?.id,
     },
     include: {

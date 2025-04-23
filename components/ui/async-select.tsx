@@ -212,7 +212,7 @@ export function AsyncSelect<T>({
     } else if (!value) {
       setSelectedOption(null);
     }
-  }, [value, options, getOptionValue, fetcher]);
+  }, [value, options, getOptionValue, fetcher]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSelect = useCallback(
     (currentValue: string) => {

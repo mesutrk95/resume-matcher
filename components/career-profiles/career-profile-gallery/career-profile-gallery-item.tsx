@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ResumeContent } from '@/types/resume';
 import { useEffect, useState } from 'react';
 import { CreateCareerProfileButton } from './create-career-profile-button';
+import Image from 'next/image';
 
 interface CareerProfileCardProps {
   label: string;
@@ -47,7 +48,7 @@ export const CareerProfileGalleryItem = ({ label, url, caption }: CareerProfileC
             </div>
           ) : imageUrl ? (
             <div className="h-full w-full overflow-hidden p-3">
-              <img
+              <Image
                 src={imageUrl}
                 alt={`${label} template preview`}
                 className="  w-full object-contain p-4 overflow-hidden hover:mb-2 border rounded-lg"

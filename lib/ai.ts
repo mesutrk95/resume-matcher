@@ -34,20 +34,20 @@ export const getAIRawResponse = async (
   return { result: response, prompt, content };
 };
 
-const getDeepSeekResponse = async (prompt: string, contents?: (string | Buffer)[]) => {
-  const openai = new OpenAI({
-    baseURL: 'https://api.deepseek.com',
-    apiKey: process.env.DEEPSEEK_API_KEY,
-  });
+// const getDeepSeekResponse = async (prompt: string, contents?: (string | Buffer)[]) => {
+//   const openai = new OpenAI({
+//     baseURL: 'https://api.deepseek.com',
+//     apiKey: process.env.DEEPSEEK_API_KEY,
+//   });
 
-  const completion = await openai.chat.completions.create({
-    messages: [{ role: 'system', content: prompt + '\n' + contents?.join(', ') }],
-    model: 'deepseek-chat',
-  });
+//   const completion = await openai.chat.completions.create({
+//     messages: [{ role: 'system', content: prompt + '\n' + contents?.join(', ') }],
+//     model: 'deepseek-chat',
+//   });
 
-  const msg = completion.choices[0].message.content;
-  return msg;
-};
+//   const msg = completion.choices[0].message.content;
+//   return msg;
+// };
 
 const getGeminiResponse = async (
   prompt: string,
@@ -109,7 +109,6 @@ export const getGeminiChatResponse = async (
 
   // 3. Send message (model sees instruction)
   const result = await chat.sendMessage(messagesWithInstruction);
-  console.log('usageMetadata', result.response.usageMetadata);
 
   const responseText = result.response.text();
 

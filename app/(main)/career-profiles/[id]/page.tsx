@@ -15,9 +15,11 @@ export const metadata: Metadata = {
   title: 'Resume Template Builder',
 };
 
-export default async function TemplateBuilderPage({ params }: { params: { id: string } }) {
+export default async function TemplateBuilderPage({ params }: { params: Promise<{ id: string }> }) {
+  const paramsResult = await params;
+
   const careerProfile = await db.resumeTemplate.findUnique({
-    where: { id: params.id },
+    where: { id: paramsResult.id },
   });
 
   if (!careerProfile) return notFound();

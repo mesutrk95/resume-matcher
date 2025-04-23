@@ -1,4 +1,4 @@
-import { renderList, SeperateList } from '@/components/shared/seperate-list';
+import { renderList } from '@/components/shared/seperate-list';
 import {
   Experience,
   ResumeContent,
@@ -414,7 +414,7 @@ export const SkillsSection = ({
     <RenderSection sectionName="skills" defaultLabel="Skills">
       {design.sections?.skills?.groupByCategory ? (
         // Render skills grouped by category
-        enabledSkillSets.map((skillSet, index) => (
+        enabledSkillSets.map(skillSet => (
           <View key={skillSet.category}>
             {hasMultipleCategories ? (
               <Text style={resolveStyle(design.sections.skills.category)}>
@@ -505,7 +505,7 @@ export const ProjectsSection = ({
 };
 
 export const LanguagesSection = ({ resume }: { resume: ResumeContent }) => {
-  const { design, resolveStyle } = useResumeRenderer();
+  const { design } = useResumeRenderer();
   const languages = resume.languages;
   if (languages.length === 0) return null;
 
@@ -565,13 +565,7 @@ export const CertificationsSection = ({ resume }: { resume: ResumeContent }) => 
 };
 
 // Awards Section using SectionHeader
-export const AwardsSection = ({
-  resume,
-  withIdentifiers,
-}: {
-  resume: ResumeContent;
-  withIdentifiers?: boolean;
-}) => {
+export const AwardsSection = ({ resume }: { resume: ResumeContent; withIdentifiers?: boolean }) => {
   const { design, resolveStyle, formatDate } = useResumeRenderer();
   const awards = resume.awards;
   if (awards.length === 0) return null;

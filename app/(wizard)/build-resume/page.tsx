@@ -8,13 +8,14 @@ import {
 import { ResumeHighlighter } from './resume-highlighter';
 
 interface CreateResumePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function ResumeWizardPage({ params }: CreateResumePageProps) {
   const user = await currentUser();
+  const paramsResult = await params;
 
   const keys = ['experiences', 'skills', 'projects'];
   return (

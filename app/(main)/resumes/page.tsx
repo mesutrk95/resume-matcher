@@ -5,11 +5,11 @@ import { Job, JobResume, Prisma } from '@prisma/client';
 import { Metadata } from 'next';
 
 interface ResumesPageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     pageSize?: string;
     search?: string;
-  };
+  }>;
 }
 
 export const metadata: Metadata = {

@@ -7,7 +7,11 @@ export const metadata: Metadata = {
   title: 'Reset Password',
 };
 
-export default async function NewPassword({ searchParams }: { searchParams: { token: string } }) {
+export default async function NewPassword({
+  searchParams,
+}: {
+  searchParams: Promise<{ token: string }>;
+}) {
   // Await searchParams before accessing its properties
   const params = await searchParams;
   if (!params.token) redirect('/');

@@ -9,12 +9,12 @@ export const metadata: Metadata = {
 };
 
 interface JobsPageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     pageSize?: string;
     search?: string;
     status?: string;
-  };
+  }>;
 }
 
 export default async function JobsPage({ searchParams }: JobsPageProps) {

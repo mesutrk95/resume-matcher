@@ -23,6 +23,16 @@ import {
   HelpCircle,
 } from 'lucide-react';
 import { ResumeContent } from '@/types/resume';
+import { OptionalStepsPrompt } from './steps/optional-steps-prompt';
+import { TitleStep } from './steps/title-step';
+import { SkillsStep } from './steps/skills-step';
+import { SummaryStep } from './steps/summary-step';
+import { ExperienceStep } from './steps/experience-step';
+import { EducationStep } from './steps/education-step';
+import { CertificationsStep } from './steps/certifications-step';
+import { LanguagesStep } from './steps/languages-step';
+import { ProjectsStep } from './steps/projects-step';
+import { CompletionStep } from './steps/completion-step';
 
 export type WizardStep = {
   id: string;
@@ -120,7 +130,7 @@ interface ResumeWizardContextType {
   addCertifications: (certifications: any[]) => void;
   addLanguages: (languages: any[]) => void;
   addProjects: (projects: any[]) => void;
-  renderStep: () => JSX.Element | null;
+  renderStep: () => ReactNode | null;
 }
 
 // Create the context
@@ -396,20 +406,8 @@ export function ResumeWizardProvider({ children, onResumeWizardDone }: ResumeWiz
     [updateResumeData],
   );
 
-  // Import step components
-  const { TitleStep } = require('./steps/title-step');
-  const { SkillsStep } = require('./steps/skills-step');
-  const { SummaryStep } = require('./steps/summary-step');
-  const { ExperienceStep } = require('./steps/experience-step');
-  const { EducationStep } = require('./steps/education-step');
-  const { CertificationsStep } = require('./steps/certifications-step');
-  const { LanguagesStep } = require('./steps/languages-step');
-  const { ProjectsStep } = require('./steps/projects-step');
-  const { CompletionStep } = require('./steps/completion-step');
-  const { OptionalStepsPrompt } = require('./steps/optional-steps-prompt');
-
   // Render the current step
-  const renderStep = (): JSX.Element | null => {
+  const renderStep = (): ReactNode | null => {
     const currentStepId = activeSteps[currentStep]?.id;
 
     // If we're at the optional prompt step and should show it

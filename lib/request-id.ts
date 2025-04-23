@@ -7,11 +7,11 @@ export const REQUEST_ID_HEADER = 'X-Request-ID';
  * Gets the current request ID from the headers
  * Can be used in server components and API routes
  */
-export function getRequestId(): string {
+export async function getRequestId(): Promise<string> {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     return headersList.get(REQUEST_ID_HEADER) || 'unknown';
-  } catch (error) {
+  } catch (_) {
     // Headers() might not be available in certain contexts
     return 'unknown';
   }
@@ -43,8 +43,10 @@ export function getRequestIdFromRequest(req: NextRequest): string {
 /**
  * Utility to set request ID in headers for fetch requests
  */
-export function createHeadersWithRequestId(additionalHeaders: HeadersInit = {}): Headers {
-  const requestId = getRequestId();
+export async function createHeadersWithRequestId(
+  additionalHeaders: HeadersInit = {},
+): Promise<Headers> {
+  const requestId = await getRequestId();
   const headers = new Headers(additionalHeaders);
 
   // Only add if we have a valid request ID

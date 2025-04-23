@@ -17,9 +17,18 @@
   "ignorePatterns": ["node_modules/**/*"],
   "rules": {
     "prettier/prettier": "error",
-    "no-console": "warn",
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-unused-vars": ["off", { "argsIgnorePattern": "^_|_$" }],
     "@typescript-eslint/no-explicit-any": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "rules": {
+        "no-console": "off",
+        "@typescript-eslint/no-unused-vars": ["off"]
+      }
+    }
+  ]
 }

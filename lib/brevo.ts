@@ -341,7 +341,7 @@ export const addContactToMarketingList = async (email: string, name?: string) =>
       // Try to get the contact info - if it succeeds, the contact exists
       await apiInstance.getContactInfo(email);
       contactExists = true;
-    } catch (error) {
+    } catch (_) {
       // Contact doesn't exist, we'll create it
       contactExists = false;
     }
@@ -421,7 +421,7 @@ export const removeContactFromMarketingList = async (email: string) => {
         listName: MARKETING_LIST_NAME,
       });
       return { success: true, data };
-    } catch (error) {
+    } catch (_) {
       // Contact doesn't exist, nothing to do
       logger.debug('Contact not found, nothing to remove from marketing list', {
         email,

@@ -44,7 +44,7 @@ describe('AI Service Manager Integration Tests', () => {
       // You can create a simple PDF or use any PDF file for testing
       const pdfPath = resolve(process.cwd(), 'sample.pdf');
       pdfBuffer = await readFile(pdfPath);
-    } catch (error) {
+    } catch (_) {
       console.warn('No sample PDF found, PDF tests will be skipped');
       pdfBuffer = Buffer.from('Sample PDF content');
     }

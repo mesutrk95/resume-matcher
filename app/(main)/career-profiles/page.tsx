@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 };
 
 interface CareerProfilesPageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     pageSize?: string;
     search?: string;
-  };
+  }>;
 }
 
 export default async function CareerProfilesPage({ searchParams }: CareerProfilesPageProps) {

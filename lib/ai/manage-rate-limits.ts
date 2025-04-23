@@ -1,6 +1,5 @@
 import { db } from '@/lib/db';
 import Logger from '@/lib/logger';
-import { AIModelClient } from './types';
 
 /**
  * Get rate limits for all clients

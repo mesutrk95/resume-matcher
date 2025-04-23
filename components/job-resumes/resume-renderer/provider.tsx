@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ResumeDesign, ResumeDesignClass, ResumeDesignElementStyle } from '@/types/resume';
 import { createContext, useContext, useState } from 'react';
 import moment from 'moment';
@@ -25,42 +25,39 @@ export const ResumeRendererProvider = ({
 }) => {
   const [design, setDesign] = useState<ResumeDesign>(initialResumeDesign);
 
-  const getClassStyles = (name?: ResumeDesignClass) => {
-    if (!name) return {};
-    const classes = name.split(' ').map(c => design.classDefs[c]);
-    return classes.reduce(
-      (acc, classStyles) => ({
-        ...acc,
-        ...classStyles,
-      }),
-      {},
-    );
-  };
+  const getClassStyles = useCallback(
+    (name?: ResumeDesignClass) => {
+      if (!name) return {};
+      const classes = name.split(' ').map(c => design.classDefs[c]);
+      return classes.reduce(
+        (acc, classStyles) => ({
+          ...acc,
+          ...classStyles,
+        }),
+        {},
+      );
+    },
+    [design],
+  );
 
-  const resolveStyle = (...elementStyles: (ResumeDesignElementStyle | undefined)[]) => {
-    if (!elementStyles.length) {
-      return {};
-    }
+  const resolveStyle = useCallback(
+    (...elementStyles: (ResumeDesignElementStyle | undefined)[]) => {
+      if (!elementStyles.length) {
+        return {};
+      }
 
-    // console.log(elementStyles, elementStyles.reduce(
-    //   (acc, elementStyle) => ({
-    //     ...acc,
-    //     ...typo(elementStyle?.typo),
-    //     ...(elementStyle?.style || {}),
-    //   }),
-    //   {}
-    // ));
-
-    // Merge all styles in the arguments
-    return elementStyles.reduce(
-      (acc, elementStyle) => ({
-        ...acc,
-        ...getClassStyles(elementStyle?.class),
-        ...(elementStyle?.style || {}),
-      }),
-      {},
-    );
-  };
+      // Merge all styles in the arguments
+      return elementStyles.reduce(
+        (acc, elementStyle) => ({
+          ...acc,
+          ...getClassStyles(elementStyle?.class),
+          ...(elementStyle?.style || {}),
+        }),
+        {},
+      );
+    },
+    [getClassStyles],
+  );
 
   const formatDate = (date?: string) => {
     if (!date) return '';

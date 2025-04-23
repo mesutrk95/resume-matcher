@@ -1,5 +1,4 @@
 import { ResumeContent } from '@/types/resume';
-import { randomNDigits } from './utils';
 
 export function findVariation(resume: ResumeContent, varId: string) {
   for (const exp of resume.experiences) {
@@ -40,7 +39,7 @@ export const resumeSkillsToString = (resume: ResumeContent) => {
 export const convertResumeObjectToString = (
   resume: ResumeContent,
   withIdentifiers?: boolean,
-  onlyEnabledItems?: boolean,
+  _onlyEnabledItems?: boolean,
 ) => {
   let content = '';
 

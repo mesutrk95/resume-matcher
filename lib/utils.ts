@@ -52,7 +52,7 @@ export const verifyJwtToken = <T extends object>(token: string) => {
       valid: true,
       decoded: decoded as T,
     };
-  } catch (error) {
+  } catch (_) {
     return {
       valid: false,
       decoded: null,
@@ -88,7 +88,7 @@ export function chunkArray<T>(array: T[], chunkSize: number): T[][] {
     array.slice(i * chunkSize, i * chunkSize + chunkSize),
   );
 }
-export function randomNDigits(n?: number) {
+export function randomNDigits(_n?: number) {
   return Math.random().toString(36).substring(2, 8);
   // return (
   //   Math.floor(Math.random() * (9 * Math.pow(10, n || 5))) +

@@ -73,7 +73,7 @@ export const twoFactor = async (
   await generateTwoFactorConfirmation(existingUser.id);
 
   // Delete credentials-session's payload from login page.
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   cookieStore.delete('credentials-session');
 
   // Then try to sign in with next-auth credentials.

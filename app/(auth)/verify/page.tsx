@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default async function NewVerificationPage({
   searchParams,
 }: {
-  searchParams: { token: string };
+  searchParams: Promise<{ token: string }>;
 }) {
   const params = await searchParams;
   if (!params.token) redirect('/login');

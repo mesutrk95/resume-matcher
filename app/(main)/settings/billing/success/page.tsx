@@ -13,7 +13,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
 interface SuccessPageProps {
-  searchParams: { session_id?: string };
+  searchParams: Promise<{ session_id?: string }>;
 }
 
 export default async function SubscriptionSuccessPage({ searchParams }: SuccessPageProps) {
