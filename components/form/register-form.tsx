@@ -1,8 +1,8 @@
 'use client';
 
 import { CardWrapper } from '@/components/shared/card-wrapper';
-import { FormToggle } from '@/components/shared/form-toggle';
 import { Form } from '@/components/ui/form';
+import { ConsentToggle } from '@/components/shared/consent-toggle';
 import { registerSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -50,6 +50,7 @@ export const RegisterForm = () => {
       headerDescription="Register your account by filling out the form below, make sure the data you enter is correct."
       backButtonLabel="Already have an account? Login"
       backButtonHref="/login"
+      showSocial
     >
       <Form {...form}>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -78,20 +79,30 @@ export const RegisterForm = () => {
               placeholder="******"
               isPending={isPending}
             />
-            <FormToggle
-              control={form.control}
-              name="marketingEmails"
-              label="Marketing Emails"
-              description="Receive updates, tips, and promotional emails about our services."
-              isPending={isPending}
-            />
-            <FormToggle
-              control={form.control}
-              name="termsAccepted"
-              label="Terms and Services"
-              description="I accept the terms and services agreement."
-              isPending={isPending}
-            />
+            <div className="mt-6 space-y-2">
+              <ConsentToggle
+                control={form.control}
+                name="marketingEmails"
+                label={
+                  <span>Receive updates, tips, and promotional emails about our services</span>
+                }
+                isPending={isPending}
+              />
+              <ConsentToggle
+                control={form.control}
+                name="termsAccepted"
+                label={
+                  <span>
+                    I accept the{' '}
+                    <a href="#" className="text-primary hover:underline">
+                      terms and services
+                    </a>{' '}
+                    agreement
+                  </span>
+                }
+                isPending={isPending}
+              />
+            </div>
           </div>
           <Button type="submit" disabled={isPending} className="w-full">
             Create an account

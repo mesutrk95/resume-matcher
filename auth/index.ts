@@ -26,7 +26,10 @@ export const {
   },
   events: {
     async linkAccount({ user }) {
-      await updateUserById(user.id!, { emailVerified: new Date() });
+      await updateUserById(user.id!, {
+        emailVerified: new Date(),
+        marketingEmails: true,
+      });
     },
   },
   callbacks: {
@@ -67,7 +70,10 @@ export const {
       return session;
     },
     async signIn({ user, account }) {
-      if (account?.provider !== 'credentials') return true;
+      // For OAuth providers, we already set marketingEmails to true in the linkAccount event
+      if (account?.provider !== 'credentials') {
+        return true;
+      }
 
       const existingUser = await getUserById(user.id!);
       // Email verification check removed to allow users to login regardless of verification status

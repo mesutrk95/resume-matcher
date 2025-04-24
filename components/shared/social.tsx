@@ -7,7 +7,11 @@ import { IoLogoGithub } from 'react-icons/io5';
 import { FcGoogle } from 'react-icons/fc';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 
-export const Social = () => {
+interface SocialProps {
+  isRegister?: boolean;
+}
+
+export const Social = ({ isRegister }: SocialProps = {}) => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || DEFAULT_LOGIN_REDIRECT;
 
