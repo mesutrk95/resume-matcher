@@ -68,7 +68,6 @@ export const CareerProfileResumeWizard = ({
         });
 
         router.push('/resumes/' + jobResumeResult.data?.id + '/builder');
-      } else {
       }
     });
   };
