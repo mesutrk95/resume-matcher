@@ -75,7 +75,7 @@
     "pdfjs-dist": "5.1.91",
     "react": "^19",
     "react-confirm": "^0.3.0",
-    "react-day-picker": "9.6.6",
+    "react-day-picker": "8.10.1",
     "react-dom": "^19",
     "react-gauge-component": "^1.2.64",
     "react-hook-form": "^7.55.0",

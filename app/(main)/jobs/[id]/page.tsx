@@ -33,7 +33,7 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
   // Fetch all ResumeJob records associated with this job
   const resumeJobs = await db.jobResume.findMany({
     where: {
-      jobId: params.id,
+      jobId: paramsResult.id,
       userId: user?.id,
     },
     // include: {
