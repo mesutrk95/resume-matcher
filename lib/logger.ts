@@ -1,7 +1,7 @@
 import winston from 'winston';
 import 'winston-daily-rotate-file';
 import fs from 'fs';
-import { getCurrentRequestId } from './request-context';
+import { getCurrentRequestId, getRequestContext } from './request-context';
 
 // Get configuration from environment variables
 const env = process.env.NODE_ENV || 'development';
@@ -42,7 +42,8 @@ winston.addColors(colors);
 // Add request ID automatically to the logger format
 const logFormat = winston.format.printf(({ level, message, timestamp, ...metadata }) => {
   // Get requestId from AsyncLocalStorage context
-  const reqId = 'fix it!'; //await getCurrentRequestId();
+  const context = getRequestContext();
+  const reqId = context?.requestId || 'N/A'; // Use 'N/A' or another placeholder if no request ID is found
 
   // Build the log message
   let logMessage = `${timestamp} [${reqId}] ${level}: ${message}`;

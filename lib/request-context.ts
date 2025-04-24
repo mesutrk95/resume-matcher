@@ -1,8 +1,6 @@
 import { AsyncLocalStorage } from 'async_hooks';
 import { getRequestId } from './request-id';
 
-export const REQUEST_ID_HEADER = 'X-Request-ID';
-
 // Context type that will be stored
 export interface RequestContext {
   requestId: string;

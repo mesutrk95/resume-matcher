@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { NextRequest } from 'next/server';
 
-export const REQUEST_ID_HEADER = 'X-Request-ID';
+import { REQUEST_ID_HEADER } from './constants';
 
 /**
  * Gets the current request ID from the headers

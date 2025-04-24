@@ -9,7 +9,7 @@ import { runWithRequestContext } from '@/lib/request-context';
 export const { auth } = NextAuth(authConfig);
 
 // Create a global store for the request context
-const REQUEST_ID_HEADER = 'X-Request-ID';
+import { REQUEST_ID_HEADER } from '@/lib/constants';
 
 export default async function middleware(req: NextRequest) {
   // Generate a request ID
