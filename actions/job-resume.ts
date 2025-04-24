@@ -30,36 +30,38 @@ export const findJobResume = async (id: string) => {
   return jobResume;
 };
 
-export const createJobResume = async (resumeTemplateId?: string, jobId?: string) => {
-  const user = await currentUser();
-  const resumeTemplate = resumeTemplateId
-    ? await db.resumeTemplate.findUnique({
-        where: { id: resumeTemplateId, userId: user?.id },
-      })
-    : null;
-  const job =
-    jobId &&
-    (await db.job.findUnique({
-      where: { id: jobId, userId: user?.id },
-    }));
+export const createJobResume = withErrorHandling(
+  async (careerProfileId?: string, jobId?: string) => {
+    const user = await currentUser();
+    const resumeTemplate = careerProfileId
+      ? await db.resumeTemplate.findUnique({
+          where: { id: careerProfileId, userId: user?.id },
+        })
+      : null;
+    const job =
+      jobId &&
+      (await db.job.findUnique({
+        where: { id: jobId, userId: user?.id },
+      }));
 
-  let name = job ? `${job?.title} at ${job?.companyName}` : null;
-  if (!name) name = resumeTemplate ? resumeTemplate.name : null;
+    let name = job ? `${job?.title} at ${job?.companyName}` : null;
+    if (!name) name = resumeTemplate ? resumeTemplate.name : null;
 
-  const resumeJob = await db.jobResume.create({
-    data: {
-      jobId: jobId,
-      baseResumeTemplateId: resumeTemplateId,
-      content: (resumeTemplate?.content as ResumeContent) || DEFAULT_RESUME_CONTENT,
-      name: name || 'Blank',
-      userId: user?.id!,
-    },
-  });
+    const resumeJob = await db.jobResume.create({
+      data: {
+        jobId: jobId,
+        baseResumeTemplateId: careerProfileId,
+        content: (resumeTemplate?.content as ResumeContent) || DEFAULT_RESUME_CONTENT,
+        name: name || 'Blank',
+        userId: user?.id!,
+      },
+    });
 
-  revalidatePath('/resumes');
+    revalidatePath('/resumes');
 
-  return resumeJob;
-};
+    return resumeJob;
+  },
+);
 
 export const updateJobResume = withErrorHandling(
   async (resume: Partial<JobResume>, forceRevalidate = false) => {

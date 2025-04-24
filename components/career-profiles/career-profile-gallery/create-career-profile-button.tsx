@@ -1,7 +1,6 @@
 'use client';
 
 import { createCareerProfile } from '@/actions/career-profiles';
-import { createJobResume } from '@/actions/job-resume';
 import { LoadingButton } from '@/components/ui/loading-button';
 import { ResumeContent } from '@/types/resume';
 import { MousePointerClick, Pointer } from 'lucide-react';

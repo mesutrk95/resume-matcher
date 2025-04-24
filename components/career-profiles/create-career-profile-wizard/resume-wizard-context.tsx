@@ -22,7 +22,7 @@ import {
   CheckCircle,
   HelpCircle,
 } from 'lucide-react';
-import { ResumeContent } from '@/types/resume';
+import { Experience, ResumeContent } from '@/types/resume';
 import { OptionalStepsPrompt } from './steps/optional-steps-prompt';
 import { TitleStep } from './steps/title-step';
 import { SkillsStep } from './steps/skills-step';
@@ -33,6 +33,8 @@ import { CertificationsStep } from './steps/certifications-step';
 import { LanguagesStep } from './steps/languages-step';
 import { ProjectsStep } from './steps/projects-step';
 import { CompletionStep } from './steps/completion-step';
+import { generateId } from '@/lib/resume-content';
+import { WizardExperience, WizardResumeContent } from './types';
 
 export type WizardStep = {
   id: string;
@@ -83,12 +85,8 @@ export const finalStep = {
   optional: false,
 };
 
-export type WizardResumeContent = ResumeContent & {
-  includeOptionalSteps?: boolean;
-};
-
 // Initialize empty resume data
-export const initialResumeData: WizardResumeContent = {
+export const emptyResumeData: WizardResumeContent = {
   experiences: [],
   titles: [],
   summaries: [],
@@ -139,12 +137,18 @@ const ResumeWizardContext = createContext<ResumeWizardContextType | undefined>(u
 // Create a provider component
 interface ResumeWizardProviderProps {
   children: ReactNode;
+  initialResumeData?: WizardResumeContent;
   onResumeWizardDone?: (resumeData: WizardResumeContent) => void;
 }
 
-export function ResumeWizardProvider({ children, onResumeWizardDone }: ResumeWizardProviderProps) {
+export function ResumeWizardProvider({
+  children,
+  onResumeWizardDone,
+  initialResumeData,
+}: ResumeWizardProviderProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [resumeData, setResumeData] = useState<WizardResumeContent>(() => {
+    if (initialResumeData) return initialResumeData;
     // Try to load from localStorage on initial render (client-side only)
     if (typeof window !== 'undefined') {
       const savedData = localStorage.getItem('resumeData');
@@ -156,7 +160,7 @@ export function ResumeWizardProvider({ children, onResumeWizardDone }: ResumeWiz
         }
       }
     }
-    return initialResumeData;
+    return emptyResumeData;
   });
 
   // Determine which steps to show based on user's choice
@@ -185,22 +189,31 @@ export function ResumeWizardProvider({ children, onResumeWizardDone }: ResumeWiz
     }
   })();
 
+  const isLastStep = currentStep === activeSteps.length - 1;
+  const isFirstStep = currentStep === 0;
+  const isOptionalPromptStep =
+    activeSteps[currentStep]?.id === 'optional-prompt' && showOptionalPrompt;
+
   // Add this useEffect to save to localStorage whenever resumeData changes
   useEffect(() => {
     localStorage.setItem('resumeData', JSON.stringify(resumeData));
   }, [resumeData]);
 
   // Add this useEffect to call the callback when the user reaches the completion step
-  useEffect(() => {
-    if (currentStep === activeSteps.length - 1) {
-      onResumeWizardDone?.(resumeData);
-    }
-  }, [currentStep, onResumeWizardDone, resumeData, activeSteps.length]);
+  // useEffect(() => {
+  //   if (currentStep === activeSteps.length - 1) {
+  //     onResumeWizardDone?.(resumeData);
+  //   }
+  // }, [currentStep, onResumeWizardDone, resumeData, activeSteps.length]);
 
   // Calculate progress based on current step and total steps
   const progress = Math.round((currentStep / (activeSteps.length - 1)) * 100);
 
   const handleNext = () => {
+    if (isLastStep) {
+      onResumeWizardDone?.(resumeData);
+      return;
+    }
     if (currentStep < activeSteps.length - 1) {
       // If we're at the work experience step and haven't decided on optional steps
       if (
@@ -244,7 +257,7 @@ export function ResumeWizardProvider({ children, onResumeWizardDone }: ResumeWiz
     }
   };
 
-  const updateResumeData = useCallback((data: Partial<ResumeContent>) => {
+  const updateResumeData = useCallback((data: Partial<WizardResumeContent>) => {
     setResumeData(prev => ({ ...prev, ...data }));
   }, []);
 
@@ -304,25 +317,33 @@ export function ResumeWizardProvider({ children, onResumeWizardDone }: ResumeWiz
 
   // Helper function to add experiences
   const addExperiences = useCallback(
-    (experiences: any[]) => {
-      const formattedExperiences = experiences.map(exp => ({
-        id: uuidv4(),
-        companyName: exp.companyName,
-        role: exp.jobTitle,
-        startDate: exp.startDate,
-        endDate: exp.endDate,
-        location: exp.location,
-        enabled: true,
-        items: [
-          {
-            id: uuidv4(),
-            description: exp.description,
+    (experiences: WizardExperience[]) => {
+      const formattedExperiences = experiences.map(
+        exp =>
+          ({
+            id: exp.id,
+            companyName: exp.companyName,
+            role: exp.role,
+            startDate: exp.startDate,
+            endDate: exp.endDate,
+            location: exp.location,
             enabled: true,
-            variations: [],
-            skills: exp.tools || [],
-          },
-        ],
-      }));
+            items: exp.descriptions
+              .filter(desc => !!desc)
+              .map(desc => ({
+                id: generateId('experiences.items'),
+                description: '',
+                enabled: true,
+                variations: [
+                  {
+                    id: generateId('experiences.items.variations'),
+                    content: desc,
+                    enabled: true,
+                  },
+                ],
+              })),
+          }) as Experience,
+      );
 
       updateResumeData({
         experiences: formattedExperiences,
@@ -441,14 +462,13 @@ export function ResumeWizardProvider({ children, onResumeWizardDone }: ResumeWiz
             onSaveExperiences={addExperiences}
             initialExperiences={resumeData.experiences.map(exp => ({
               id: exp.id,
-              jobTitle: exp.role || '',
-              companyName: exp.companyName || '',
-              location: exp.location || '',
-              startDate: exp.startDate || '',
-              endDate: exp.endDate || '',
-              currentlyWorking: !exp.endDate,
-              description: exp.items[0]?.description || '',
-              tools: exp.items[0]?.skills || [],
+              role: exp.role,
+              companyName: exp.companyName,
+              startDate: exp.startDate,
+              endDate: exp.endDate,
+              location: exp.location,
+              currentlyWorking: false,
+              descriptions: exp.items.map(item => item.variations.map(v => v.content)?.[0] || ''),
             }))}
           />
         );
@@ -509,11 +529,6 @@ export function ResumeWizardProvider({ children, onResumeWizardDone }: ResumeWiz
         return null;
     }
   };
-
-  const isLastStep = currentStep === activeSteps.length - 1;
-  const isFirstStep = currentStep === 0;
-  const isOptionalPromptStep =
-    activeSteps[currentStep]?.id === 'optional-prompt' && showOptionalPrompt;
 
   const value = {
     currentStep,

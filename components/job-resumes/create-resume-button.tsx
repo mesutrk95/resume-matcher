@@ -1,6 +1,7 @@
 'use client';
 
 import { createJobResume } from '@/actions/job-resume';
+import { runAction } from '@/app/_utils/runAction';
 import { LoadingButton } from '@/components/ui/loading-button';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -20,11 +21,11 @@ export const CreateResumeButton = ({
     startTransition(async () => {
       try {
         // Call the Server Action to create the ResumeJob
-        const result = await createJobResume(careerProfileId, jobId);
+        const result = await runAction(createJobResume(careerProfileId, jobId));
 
-        if (result) {
+        if (result.success) {
           // Redirect to the edit page
-          router.push(`/resumes/${result?.id}/builder`);
+          router.push(`/resumes/${result.data?.id}/builder`);
         } else {
           toast.error('Failed to create resume');
         }

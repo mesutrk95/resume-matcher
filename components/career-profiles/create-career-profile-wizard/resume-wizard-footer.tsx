@@ -42,11 +42,15 @@ export function ResumeWizardFooter({ className }: ResumeWizardFooterProps) {
           </Button>
         )}
 
-        {!isLastStep && (
-          <Button onClick={handleNext} className="flex items-center gap-2">
-            Next <ChevronRight className="h-4 w-4" />
-          </Button>
-        )}
+        <Button onClick={handleNext} className="flex items-center gap-2">
+          {isLastStep ? (
+            <> Finish!</>
+          ) : (
+            <>
+              Next <ChevronRight className="h-4 w-4" />
+            </>
+          )}
+        </Button>
       </div>
     </div>
   );

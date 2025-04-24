@@ -5,13 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, Trash } from 'lucide-react';
+import { YearMonthPicker } from '@/components/ui/year-month-picker';
 
 interface Certification {
   id: string;
-  name: string;
-  organization: string;
-  date: string;
-  credentialId: string;
+  name?: string;
+  organization?: string;
+  date?: string;
+  credentialId?: string;
 }
 
 interface CertificationsStepProps {
@@ -66,7 +67,7 @@ export function CertificationsStep({
     setHasChanged(true);
   };
 
-  const updateCertification = (id: string, field: keyof Certification, value: string) => {
+  const updateCertification = (id: string, field: keyof Certification, value?: string) => {
     setCertifications(
       certifications.map(cert => (cert.id === id ? { ...cert, [field]: value } : cert)),
     );
@@ -123,11 +124,9 @@ export function CertificationsStep({
 
               <div className="space-y-2">
                 <Label htmlFor={`date-${certification.id}`}>Issue Date</Label>
-                <Input
-                  id={`date-${certification.id}`}
-                  type="month"
-                  value={certification.date}
-                  onChange={e => updateCertification(certification.id, 'date', e.target.value)}
+                <YearMonthPicker
+                  date={certification.date}
+                  setDate={date => updateCertification(certification.id, 'date', date)}
                 />
               </div>
 

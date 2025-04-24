@@ -134,14 +134,19 @@ export function NoCareerProfileWizard() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const result = await runAction(createResumeTemplateFromResumePdf, formData);
+      const careerProfile = await runAction(createResumeTemplateFromResumePdf, formData);
+      if (careerProfile.success) {
+        toast.success('Your career profile imported!', {
+          description: `Your career profile has been imported successfully.`,
+        });
 
-      // if (result.success) {
-      //   toast.success('Resume Imported!', {
-      //     description: `Your resume "${result.data?.name}" imported successfully.`,
-      //   });
-      //   router.push('/templates/' + result.data?.id);
-      // }
+        // const jobResume = await createJobResume(careerProfile.data?.id);
+        // toast.info('Creating a resume!', {
+        //   description: `Creating resume for job application.`,
+        // });
+
+        router.push('/build-resume?profile=' + careerProfile.data?.id);
+      }
     });
   };
 
@@ -159,7 +164,7 @@ export function NoCareerProfileWizard() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-center justify-center space-y-4 py-6 text-center">
-              <FileText className="h-16 w-16 text-primary" />
+              <FileText className="h-12 w-12 text-primary" />
               <p className="text-muted-foreground max-w-md">
                 Our guided process helps you create a standout resume with customizable templates
                 and expert suggestions.
@@ -168,7 +173,7 @@ export function NoCareerProfileWizard() {
           </CardContent>
           <CardFooter>
             <Button asChild className="w-full">
-              <Link href="/build-resume">Build Now!</Link>
+              <Link href="/build-resume">Build Step by Step!</Link>
             </Button>
           </CardFooter>
         </Card>
