@@ -35,20 +35,20 @@ export const CardWrapper = (props: CardWrapperProps) => {
 
   return (
     <Card className="w-[400px] shadow-sm mx-4 md:mx-0" {...rest}>
-      {heroImage ? (
-        <div className="w-1/2 relative pt-6 mx-auto">
+      <CardHeader className="text-center flex flex-col items-center justify-center gap-y-4">
+        {heroImage ? (
           <Image
             src={heroImage}
             alt="Hero Image"
-            width={120}
-            height={120}
-            className="relative w-full h-full select-none"
+            width={100}
+            height={100}
+            className="select-none"
           />
+        ) : null}
+        <div>
+          <CardTitle>{headerTitle}</CardTitle>
+          <CardDescription>{headerDescription}</CardDescription>
         </div>
-      ) : null}
-      <CardHeader className="text-center">
-        <CardTitle>{headerTitle}</CardTitle>
-        <CardDescription>{headerDescription}</CardDescription>
       </CardHeader>
       {children ? <CardContent>{children}</CardContent> : null}
       {showSocial ? (
