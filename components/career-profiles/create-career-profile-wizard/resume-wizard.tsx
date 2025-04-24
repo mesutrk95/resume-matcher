@@ -18,8 +18,6 @@ export function ResumeWizard({
   initialResumeData,
   onResumeWizardDone,
 }: ResumeWizardProps) {
-  console.log(initialResumeData);
-
   return (
     <ResumeWizardProvider
       onResumeWizardDone={onResumeWizardDone}

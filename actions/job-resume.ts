@@ -31,7 +31,7 @@ export const findJobResume = async (id: string) => {
 };
 
 export const createJobResume = withErrorHandling(
-  async (careerProfileId?: string, jobId?: string) => {
+  async (careerProfileId?: string, jobId?: string, forceRevalidate?: boolean) => {
     const user = await currentUser();
     const resumeTemplate = careerProfileId
       ? await db.resumeTemplate.findUnique({
@@ -57,7 +57,7 @@ export const createJobResume = withErrorHandling(
       },
     });
 
-    revalidatePath('/resumes');
+    forceRevalidate && revalidatePath('/resumes');
 
     return resumeJob;
   },
