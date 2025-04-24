@@ -9,9 +9,10 @@ import { Plus, Trash } from 'lucide-react';
 
 interface Project {
   id: string;
-  title: string;
-  description: string;
-  link: string;
+  title?: string;
+  description?: string;
+  link?: string;
+  date?: string;
 }
 
 interface ProjectsStepProps {

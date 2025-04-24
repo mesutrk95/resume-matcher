@@ -16,6 +16,7 @@ interface DatePickerProps {
   endYear?: number;
   placeholder?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 const months = [
@@ -46,6 +47,7 @@ export function YearMonthPicker({
   startYear = getYear(new Date()) - 20,
   endYear = getYear(new Date()) + 10,
   placeholder = 'Pick a date',
+  disabled,
 }: DatePickerProps) {
   const years = Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
 
@@ -75,6 +77,14 @@ export function YearMonthPicker({
     setDate(undefined);
   };
 
+  const getText = () => {
+    if (date === 'Present') return date;
+
+    if (date) return `${selectedDate.monthName || ''} ${selectedDate.year}`;
+
+    return placeholder;
+  };
+
   return (
     <div className="flex items-center gap-2">
       <Popover>
@@ -86,34 +96,44 @@ export function YearMonthPicker({
               'justify-start text-left font-normal',
               !date && 'text-muted-foreground',
             )}
+            disabled={disabled}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date ? (
-              `${selectedDate.monthName || ''} ${selectedDate.year}`
-            ) : (
-              <span>{placeholder}</span>
-            )}
+            {getText()}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
-          <div className="flex items-center justify-between gap-2 p-2">
-            <Select
-              onValueChange={handleYearChange}
-              value={selectedDate.year}
-              defaultValue={getYear(new Date()).toString()}
-            >
-              <SelectTrigger className="w-[110px]">
-                <SelectValue placeholder="Year" />
-              </SelectTrigger>
-              <SelectContent className="max-h-44">
-                {years.map(year => (
-                  <SelectItem key={year} value={year.toString()}>
-                    {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select onValueChange={handleMonthChange} value={selectedDate.monthName}>
+          <div className="flex flex-col items-center gap-2 p-2">
+            <div className="flex justify-between gap-5 w-full">
+              <Select
+                onValueChange={handleYearChange}
+                value={selectedDate.year}
+                defaultValue={getYear(new Date()).toString()}
+              >
+                <SelectTrigger className="flex-grow">
+                  <SelectValue placeholder="Year" />
+                </SelectTrigger>
+                <SelectContent className="max-h-44">
+                  {years.map(year => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {date && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 p-0"
+                  onClick={handleClear}
+                  aria-label="Clear date"
+                >
+                  <Delete size={16} />
+                </Button>
+              )}
+            </div>
+            {/* <Select onValueChange={handleMonthChange} value={selectedDate.monthName}>
               <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Month" />
               </SelectTrigger>
@@ -124,18 +144,19 @@ export function YearMonthPicker({
                   </SelectItem>
                 ))}
               </SelectContent>
-            </Select>
-            {date && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 p-0"
-                onClick={handleClear}
-                aria-label="Clear date"
-              >
-                <Delete size={16} />
-              </Button>
-            )}
+            </Select> */}
+            <div className="grid grid-cols-3 gap-2">
+              {months.map((month, index) => (
+                <Button
+                  variant={selectedDate.monthName !== month ? 'outline' : 'default-outline'}
+                  className=""
+                  key={month}
+                  onClick={() => handleMonthChange(month)}
+                >
+                  {month}
+                </Button>
+              ))}
+            </div>
           </div>
         </PopoverContent>
       </Popover>

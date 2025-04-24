@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Plus, Trash } from 'lucide-react';
+import { YearMonthPicker } from '@/components/ui/year-month-picker';
 
 interface Education {
   id: string;
@@ -144,21 +145,19 @@ export function EducationStep({ onSaveEducations, initialEducations = [] }: Educ
 
               <div className="space-y-2">
                 <Label htmlFor={`start-date-${education.id}`}>Start Date</Label>
-                <Input
-                  id={`start-date-${education.id}`}
-                  type="month"
-                  value={education.startDate}
-                  onChange={e => updateEducation(education.id, 'startDate', e.target.value)}
+
+                <YearMonthPicker
+                  date={education.startDate}
+                  setDate={date => updateEducation(education.id, 'startDate', date || '')}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor={`end-date-${education.id}`}>End Date</Label>
-                <Input
-                  id={`end-date-${education.id}`}
-                  type="month"
-                  value={education.endDate}
-                  onChange={e => updateEducation(education.id, 'endDate', e.target.value)}
+
+                <YearMonthPicker
+                  date={education.endDate}
+                  setDate={date => updateEducation(education.id, 'endDate', date || '')}
                 />
               </div>
             </div>

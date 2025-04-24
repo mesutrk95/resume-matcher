@@ -25,6 +25,7 @@ export default async function CreateResumePage({ params }: CreateResumePageProps
   const careerProfiles = await db.resumeTemplate.findMany({
     where: {
       userId: user?.id,
+      draft: false,
     },
   });
 

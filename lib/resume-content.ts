@@ -1,4 +1,5 @@
 import { ResumeContent } from '@/types/resume';
+import { randomNDigits } from './utils';
 
 export function findVariation(resume: ResumeContent, varId: string) {
   for (const exp of resume.experiences) {
@@ -8,6 +9,59 @@ export function findVariation(resume: ResumeContent, varId: string) {
       }
     }
   }
+}
+
+export function generateId(
+  key:
+    | 'experiences'
+    | 'experiences.items'
+    | 'experiences.items.variations'
+    | 'titles'
+    | 'summaries'
+    | 'educations'
+    | 'skills'
+    | 'skills.skills'
+    | 'projects'
+    | 'awards'
+    | 'certifications'
+    | 'languages'
+    | 'interests'
+    | 'references',
+) {
+  function getPrefix() {
+    switch (key) {
+      case 'experiences':
+        return 'exp_';
+      case 'experiences.items':
+        return 'expitem_';
+      case 'experiences.items.variations':
+        return 'var_';
+      case 'titles':
+        return 'title_';
+      case 'summaries':
+        return 'summary_';
+      case 'educations':
+        return 'edu_';
+      case 'skills':
+        return 'skill_';
+      case 'skills.skills':
+        return 'skill_';
+      case 'projects':
+        return 'project_';
+      case 'awards':
+        return 'award_';
+      case 'certifications':
+        return 'cert_';
+      case 'languages':
+        return 'lang_';
+      case 'interests':
+        return 'interest_';
+      case 'references':
+        return 'ref_';
+    }
+  }
+
+  return getPrefix() + randomNDigits();
 }
 
 export const resumeExperiencesToString = (

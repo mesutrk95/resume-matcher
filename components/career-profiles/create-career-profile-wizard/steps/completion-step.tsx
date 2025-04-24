@@ -2,31 +2,15 @@
 
 import { CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { WizardResumeContent } from '../resume-wizard-context';
+import { WizardResumeContent } from '../types';
+import { useResumeWizard } from '../resume-wizard-context';
 
 interface CompletionStepProps {
   resumeData: WizardResumeContent;
 }
 
 export function CompletionStep({ resumeData }: CompletionStepProps) {
-  const handleDownload = () => {
-    // Create a blob with the JSON data
-    const blob = new Blob([JSON.stringify(resumeData, null, 2)], {
-      type: 'application/json',
-    });
-    const url = URL.createObjectURL(blob);
-
-    // Create a link and trigger download
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'resume-data.json';
-    document.body.appendChild(a);
-    a.click();
-
-    // Clean up
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+  const { handleNext } = useResumeWizard();
 
   return (
     <div className="flex flex-col items-center justify-center py-10 space-y-6 text-center">
@@ -42,8 +26,8 @@ export function CompletionStep({ resumeData }: CompletionStepProps) {
         </p>
       </div>
       <div className="space-y-4 w-full max-w-md">
-        <Button onClick={handleDownload} className="w-full">
-          Download Resume Data
+        <Button onClick={handleNext} className="w-full">
+          Finish!
         </Button>
       </div>
       {/* <div className="space-y-4 w-full max-w-md">

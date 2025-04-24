@@ -9,7 +9,7 @@ import { withErrorHandling } from '@/lib/with-error-handling';
 import { getAIJsonResponse } from '@/lib/ai';
 import { resumeContentSchema } from '@/schemas/resume';
 import { zodSchemaToString } from '@/lib/zod';
-import { getMimeType } from '@/lib/utils';
+import { getMimeType, randomNDigits } from '@/lib/utils';
 import { CareerProfile } from '@/types/career-profile';
 
 export const deleteCareerProfile = async (id: string) => {
@@ -21,27 +21,30 @@ export const deleteCareerProfile = async (id: string) => {
   return true;
 };
 
-export const updateCareerProfile = withErrorHandling(async (template: CareerProfile) => {
-  const user = await currentUser();
+export const updateCareerProfile = withErrorHandling(
+  async (careerProfile: Partial<CareerProfile>) => {
+    const user = await currentUser();
 
-  // Update job in database
-  const updatedJob = await db.resumeTemplate.update({
-    where: {
-      id: template.id,
-      userId: user?.id,
-    },
-    data: {
-      name: template.name,
-      description: template.description,
-      content: template.content || DEFAULT_RESUME_CONTENT,
-    },
-  });
+    // Update job in database
+    const updatedJob = await db.resumeTemplate.update({
+      where: {
+        id: careerProfile.id,
+        userId: user?.id,
+      },
+      data: {
+        name: careerProfile.name,
+        description: careerProfile.description,
+        draft: careerProfile.draft,
+        content: careerProfile.content || DEFAULT_RESUME_CONTENT,
+      },
+    });
 
-  revalidatePath('/career-profiles');
-  revalidatePath(`/career-profiles/${template.id}`);
+    revalidatePath('/career-profiles');
+    revalidatePath(`/career-profiles/${careerProfile.id}`);
 
-  return updatedJob;
-});
+    return updatedJob;
+  },
+);
 
 export const updateCareerProfileContent = async (
   templateId: string,
@@ -102,7 +105,7 @@ export const createResumeTemplateFromResumePdf = withErrorHandling(async (formDa
   - All dates must be in this format: MM/YYYY
   - ids convention is based on the path they have prefix then an underscore like the following:
     Generate IDs with format prefix_xxxxx. Path determines prefix: experiences=exp_, experiences.items=expitem_, experiences.items.variations=var_, titles=title_, summaries=summary_, educations=edu_, skills/skills.skills=skill_, projects=project_, awards=award_, certifications=cert_, languages=lang_, interests=interest_, references=ref_. The xxxxx is a random 5-character alphabetic string. Example: skill_abcde for a skill.
-  - For each experience item in resume file, add one experience item with a variation item and fill its content by resume file experience item
+  - For each experience item in resume file, add one experience item and fill its description, live the variations with an empty array
   
   make sure your output is complete in json format without any extra character!`;
   const prompt = 'Convert it!';
@@ -113,6 +116,21 @@ export const createResumeTemplateFromResumePdf = withErrorHandling(async (formDa
   );
 
   const content = result as ResumeContent;
+  content.experiences = content.experiences.map(exp => ({
+    ...exp,
+    items: exp.items.map(item => ({
+      ...item,
+      variations: [{ id: 'var_' + randomNDigits(), content: item.description, enabled: true }],
+      description: '',
+    })),
+  }));
+  content.skills = [
+    {
+      category: 'Default',
+      enabled: true,
+      skills: content.skills.map(set => set.skills).flat(),
+    },
+  ];
 
   // Update job in database
   const template = await db.resumeTemplate.create({

@@ -6,45 +6,51 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, Trash } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { X } from 'lucide-react';
+import { Plus, PlusIcon, Trash, TrashIcon } from 'lucide-react';
+import { YearMonthPicker } from '@/components/ui/year-month-picker';
+import { WizardExperience } from '../types';
+import { generateId } from '@/lib/resume-content';
 
-interface Experience {
-  id: string;
-  jobTitle: string;
-  companyName: string;
-  location: string;
-  startDate: string;
-  endDate: string;
-  currentlyWorking: boolean;
-  description: string;
-  tools: string[];
-}
+// const EMPTY_EXPERIENCE = {
+//   id: generateId('experiences'),
+//   role: '',
+//   companyName: '',
+//   location: '',
+//   startDate: '',
+//   endDate: '',
+//   enabled: true,
+//   items: [
+//     {
+//       id: generateId('experiences.items'),
+//       enabled: true,
+//       variations: [],
+//       description: '',
+//     },
+//   ],
+// };
 
 interface ExperienceStepProps {
-  onSaveExperiences: (experiences: Experience[]) => void;
-  initialExperiences?: Experience[];
+  onSaveExperiences: (experiences: WizardExperience[]) => void;
+  initialExperiences?: WizardExperience[];
 }
 
 export function ExperienceStep({
   onSaveExperiences,
   initialExperiences = [],
 }: ExperienceStepProps) {
-  const [experiences, setExperiences] = useState<Experience[]>(
+  const [experiences, setExperiences] = useState<WizardExperience[]>(
     initialExperiences.length > 0
       ? initialExperiences
       : [
           {
-            id: '1',
-            jobTitle: '',
+            id: generateId('experiences'),
+            role: '',
             companyName: '',
             location: '',
             startDate: '',
             endDate: '',
             currentlyWorking: false,
-            description: '',
-            tools: [],
+            descriptions: [''],
           },
         ],
   );
@@ -65,46 +71,67 @@ export function ExperienceStep({
       ...experiences,
       {
         id: Date.now().toString(),
-        jobTitle: '',
+        role: '',
         companyName: '',
         location: '',
         startDate: '',
         endDate: '',
         currentlyWorking: false,
-        description: '',
-        tools: [],
+        descriptions: [''],
+        // tools: [],
       },
     ]);
     setHasChanged(true);
   };
-
   const removeExperience = (id: string) => {
     setExperiences(experiences.filter(exp => exp.id !== id));
     setHasChanged(true);
   };
-
-  const updateExperience = (id: string, field: keyof Experience, value: any) => {
+  const updateExperience = (id: string, field: keyof WizardExperience, value: any) => {
     setExperiences(experiences.map(exp => (exp.id === id ? { ...exp, [field]: value } : exp)));
     setHasChanged(true);
   };
-
-  const addTool = (id: string) => {
-    if (currentTool && !experiences.find(exp => exp.id === id)?.tools.includes(currentTool)) {
-      updateExperience(id, 'tools', [
-        ...(experiences.find(exp => exp.id === id)?.tools || []),
-        currentTool,
-      ]);
-      setCurrentTool('');
-    }
+  const updateExperienceItem = (id: string, itemId: number, value: any) => {
+    const exp = experiences.find(exp => exp.id === id);
+    if (!exp) return;
+    exp.descriptions[itemId] = value;
+    setExperiences([...experiences]);
+    setHasChanged(true);
+  };
+  const addNewExperienceItem = (id: string) => {
+    const exp = experiences.find(exp => exp.id === id);
+    if (!exp) return;
+    exp.descriptions.push('');
+    setExperiences([...experiences]);
+    setHasChanged(true);
+  };
+  const deleteExperienceItem = (id: string, index: number) => {
+    const exp = experiences.find(exp => exp.id === id);
+    if (!exp) return;
+    exp.descriptions.splice(index, 1);
+    setExperiences([...experiences]);
+    setHasChanged(true);
   };
 
-  const removeTool = (id: string, tool: string) => {
-    updateExperience(
-      id,
-      'tools',
-      experiences.find(exp => exp.id === id)?.tools.filter(t => t !== tool) || [],
-    );
-  };
+  // const addTool = (id: string) => {
+  //   if (currentTool && !experiences.find(exp => exp.id === id)?.tools.includes(currentTool)) {
+  //     updateExperience(id, 'tools', [
+  //       ...(experiences.find(exp => exp.id === id)?.tools || []),
+  //       currentTool,
+  //     ]);
+  //     setCurrentTool('');
+  //   }
+  // };
+
+  // const removeTool = (id: string, tool: string) => {
+  //   updateExperience(
+  //     id,
+  //     'tools',
+  //     experiences.find(exp => exp.id === id)?.tools.filter(t => t !== tool) || [],
+  //   );
+  // };
+
+  // console.log(experiences);
 
   return (
     <div className="space-y-6">
@@ -138,8 +165,8 @@ export function ExperienceStep({
                 <Label htmlFor={`job-title-${experience.id}`}>Job Title</Label>
                 <Input
                   id={`job-title-${experience.id}`}
-                  value={experience.jobTitle}
-                  onChange={e => updateExperience(experience.id, 'jobTitle', e.target.value)}
+                  value={experience.role}
+                  onChange={e => updateExperience(experience.id, 'role', e.target.value)}
                   placeholder="e.g. Software Engineer"
                 />
               </div>
@@ -164,61 +191,73 @@ export function ExperienceStep({
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor={`start-date-${experience.id}`}>Start Date</Label>
-                <Input
-                  id={`start-date-${experience.id}`}
-                  type="month"
-                  value={experience.startDate}
-                  onChange={e => updateExperience(experience.id, 'startDate', e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Checkbox
-                    id={`currently-working-${experience.id}`}
-                    checked={experience.currentlyWorking}
-                    onCheckedChange={checked => {
-                      updateExperience(experience.id, 'currentlyWorking', checked);
-                      if (checked) {
-                        updateExperience(experience.id, 'endDate', '');
-                      }
-                    }}
+              <div className="flex gap-2">
+                <div className="space-y-2 flex-grow">
+                  <Label htmlFor={`start-date-${experience.id}`}>Start Date</Label>
+                  <YearMonthPicker
+                    date={experience.startDate}
+                    setDate={date => updateExperience(experience.id, 'startDate', date)}
                   />
-                  <label
-                    htmlFor={`currently-working-${experience.id}`}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Currently working here
-                  </label>
                 </div>
-                {!experience.currentlyWorking && (
-                  <>
-                    <Label htmlFor={`end-date-${experience.id}`}>End Date</Label>
-                    <Input
-                      id={`end-date-${experience.id}`}
-                      type="month"
-                      value={experience.endDate}
-                      onChange={e => updateExperience(experience.id, 'endDate', e.target.value)}
+
+                <div className="space-y-2 flex-grow">
+                  {!experience.currentlyWorking && (
+                    <>
+                      <Label htmlFor={`end-date-${experience.id}`}>End Date</Label>
+                      <YearMonthPicker
+                        date={experience.endDate}
+                        setDate={date => updateExperience(experience.id, 'endDate', date)}
+                        disabled={experience.endDate === 'Present'}
+                      />
+                    </>
+                  )}
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Checkbox
+                      id={`currently-working-${experience.id}`}
+                      checked={experience.endDate === 'Present'}
+                      onCheckedChange={checked => {
+                        updateExperience(experience.id, 'endDate', checked ? 'Present' : '');
+                      }}
                     />
-                  </>
-                )}
+                    <label
+                      htmlFor={`currently-working-${experience.id}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Currently working here
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor={`description-${experience.id}`}>Description / Responsibilities</Label>
-              <Textarea
-                id={`description-${experience.id}`}
-                value={experience.description}
-                onChange={e => updateExperience(experience.id, 'description', e.target.value)}
-                placeholder="Describe your responsibilities and achievements..."
-                className="min-h-[100px]"
-              />
+              {experience.descriptions.map((desc, index) => (
+                <div key={index} className="flex gap-2">
+                  <Textarea
+                    key={`description-${experience.id}-${index}`}
+                    id={`description-${experience.id}-${index}`}
+                    value={desc}
+                    onChange={e => updateExperienceItem(experience.id, index, e.target.value)}
+                    placeholder="Describe your responsibilities and achievements..."
+                    className="min-h-[100px]"
+                  />
+
+                  <Button
+                    variant={'outline-destructive'}
+                    onClick={() => deleteExperienceItem(experience.id, index)}
+                  >
+                    <TrashIcon size="16" />
+                  </Button>
+                </div>
+              ))}
+              <Button variant={'outline'} onClick={() => addNewExperienceItem(experience.id)}>
+                <PlusIcon size="16" />
+                Add Responsibility
+              </Button>
             </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2 hidden">
               <Label>Tools/Technologies Used (Optional)</Label>
               <div className="flex space-x-2">
                 <Input
@@ -258,7 +297,7 @@ export function ExperienceStep({
                   <p className="text-sm text-gray-400 italic">No tools/technologies added</p>
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
         ))}
 
