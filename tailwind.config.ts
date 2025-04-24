@@ -29,7 +29,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        roboto: ['Montserrat', 'sans-serif'],
+        // roboto: ['Montserrat', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',
