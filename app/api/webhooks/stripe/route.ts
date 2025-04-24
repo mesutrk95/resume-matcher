@@ -12,6 +12,7 @@ import {
   sendTrialEndingEmail,
   sendWinBackEmail,
 } from '@/services/mail';
+import logger from '@/lib/logger';
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -24,11 +25,8 @@ export async function POST(req: Request) {
   try {
     event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET!);
   } catch (error: any) {
-    console.error(`Webhook signature verification failed: ${error.message}`);
     return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
   }
-
-  console.log(`Processing Stripe webhook: ${event.type}`);
 
   try {
     // Handle different event types with proper typing
@@ -190,9 +188,6 @@ export async function POST(req: Request) {
             // Schedule a win-back email (send it after 7 days)
             // Since we're not using a scheduler, we can't actually schedule this
             // In a real application, you would use a CRON job or a task queue
-
-            // For demo purposes, we'll just log it
-            console.log(`Should send win-back email to ${user.email} in 7 days`);
           }
         }
         break;
@@ -222,12 +217,11 @@ export async function POST(req: Request) {
       }
 
       default:
-        console.log(`Unhandled event type ${event.type}`);
+        logger.info(`Unhandled event type ${event.type}`);
     }
 
     return new NextResponse(null, { status: 200 });
   } catch (error: any) {
-    console.error(`Error processing Stripe webhook: ${error.message}`);
     return new NextResponse(`Webhook processing error: ${error.message}`, {
       status: 500,
     });

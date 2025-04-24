@@ -23,18 +23,23 @@ export const RegisterForm = () => {
       name: '',
       email: '',
       password: '',
-      marketingEmails: false,
+      marketingEmails: true,
+      termsAccepted: false,
     },
   });
 
   const handleSubmit = form.handleSubmit(values => {
     startTransition(() => {
       register(values).then(data => {
-        if (data.success) {
+        if (data?.success) {
           router.push('/login');
-          return toast.success(data.message);
+          if ('message' in data) {
+            return toast.success(data.message);
+          }
         }
-        return toast.error(data.error.message);
+        if (data && 'error' in data) {
+          return toast.error(data.error.message);
+        }
       });
     });
   });
@@ -78,6 +83,13 @@ export const RegisterForm = () => {
               name="marketingEmails"
               label="Marketing Emails"
               description="Receive updates, tips, and promotional emails about our services."
+              isPending={isPending}
+            />
+            <FormToggle
+              control={form.control}
+              name="termsAccepted"
+              label="Terms and Services"
+              description="I accept the terms and services agreement."
               isPending={isPending}
             />
           </div>

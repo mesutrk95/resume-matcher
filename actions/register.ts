@@ -8,6 +8,7 @@ import { sendVerificationEmail } from '@/services/mail';
 import { hashPassword, response } from '@/lib/utils';
 import { updateContactMarketingPreferences } from '@/lib/brevo';
 import logger from '@/lib/logger';
+import { signInCredentials } from './login';
 
 export const register = async (payload: z.infer<typeof registerSchema>) => {
   // Check if user input is not valid.
@@ -21,7 +22,18 @@ export const register = async (payload: z.infer<typeof registerSchema>) => {
       },
     });
   }
-  const { name, email, password, marketingEmails } = validatedFields.data;
+  const { name, email, password, marketingEmails, termsAccepted } = validatedFields.data;
+
+  // Ensure terms are accepted
+  if (!termsAccepted) {
+    return response({
+      success: false,
+      error: {
+        code: 422,
+        message: 'You must accept the terms and services to continue.',
+      },
+    });
+  }
 
   // Check if user already exist, then return an error.
   const existingUser = await getUserByEmail(email);
@@ -38,7 +50,7 @@ export const register = async (payload: z.infer<typeof registerSchema>) => {
   // Hash password that user entered.
   const hashedPassword = await hashPassword(password);
 
-  // Create an user.
+  // Create an user (without termsAccepted field as it's just for validation)
   await createUser({ name, email, password: hashedPassword, marketingEmails });
 
   // Add user to Brevo contact list based on marketing preferences
@@ -60,10 +72,9 @@ export const register = async (payload: z.infer<typeof registerSchema>) => {
   const verificationToken = await generateVerificationToken(email);
   await sendVerificationEmail(verificationToken.email, verificationToken.token, name);
 
-  // Return response success.
-  return response({
-    success: true,
-    code: 201,
-    message: 'Confirmation email sent. Please check your email.',
-  });
+  // Send verification email
+  await sendVerificationEmail(verificationToken.email, verificationToken.token, name);
+
+  // Automatically sign in the user after registration
+  return await signInCredentials(email, password);
 };

@@ -23,7 +23,10 @@ export const registerSchema = z.object({
     .string()
     .min(1, 'Password is required.')
     .min(6, 'Password must be at least 6 characters.'),
-  marketingEmails: z.boolean().default(false),
+  marketingEmails: z.boolean().default(true),
+  termsAccepted: z.boolean().refine(val => val === true, {
+    message: 'You must accept the terms and services to continue.',
+  }),
 });
 
 export const resendSchema = z.object({

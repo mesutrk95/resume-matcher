@@ -23,7 +23,9 @@ export const getUserById = async (id: string) => {
   }
 };
 
-export const createUser = async (payload: z.infer<typeof registerSchema>) => {
+export const createUser = async (
+  payload: Omit<z.infer<typeof registerSchema>, 'termsAccepted'>,
+) => {
   try {
     return await db.user.create({
       data: payload,

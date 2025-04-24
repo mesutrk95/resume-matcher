@@ -50,21 +50,12 @@ export const login = async (payload: z.infer<typeof loginSchema>) => {
       success: false,
       error: {
         code: 401,
-        message: 'Invalid credentials.',
+        message: 'Invalid password.',
       },
     });
   }
 
-  // Check if user email isn't verified yet, then return an error.
-  if (!existingUser.emailVerified) {
-    return response({
-      success: false,
-      error: {
-        code: 401,
-        message: 'Your email address is not verified yet. Please check your email.',
-      },
-    });
-  }
+  // Email verification check removed to allow users to login regardless of verification status
 
   // Check if user's 2FA are enabled
   if (existingUser.isTwoFactorEnabled && existingUser.email) {

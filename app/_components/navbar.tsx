@@ -121,7 +121,7 @@ export default function Navbar() {
         {/* Include the CSS */}
         <div className="flex gap-x-4 items-center justify-between">
           <div className="flex gap-2 items-center text-sm font-medium navbar-hover-effect">
-            <Image src="/logo.svg" height={35} alt="Logo" />
+            <Image src="/logo.svg" height={35} width={150} alt="Logo" />
             {/* <NavItem
               icon="/iconly/Inbox.json"
               title="Resume Templates"

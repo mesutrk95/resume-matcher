@@ -70,11 +70,10 @@ export const {
       if (account?.provider !== 'credentials') return true;
 
       const existingUser = await getUserById(user.id!);
-      // Prevent sign in without email verification
-      if (!existingUser?.emailVerified) return false;
+      // Email verification check removed to allow users to login regardless of verification status
 
       // If user's 2FA checked
-      if (existingUser.isTwoFactorEnabled) {
+      if (existingUser?.isTwoFactorEnabled) {
         const existingTwoFactorConfirmation = await getTwoFactorConfirmationByUserId(
           existingUser.id,
         );
