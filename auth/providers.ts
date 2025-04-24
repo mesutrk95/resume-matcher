@@ -27,6 +27,7 @@ export const CredentialsProvider = Credentials({
 export const GithubProvider = Github({
   clientId: process.env.GITHUB_ID as string,
   clientSecret: process.env.GITHUB_SECRET as string,
+  allowDangerousEmailAccountLinking: true,
 });
 
 export const GoogleProvider = Google({
