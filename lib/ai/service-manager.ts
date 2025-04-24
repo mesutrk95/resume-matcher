@@ -53,7 +53,7 @@ export class AIServiceManager {
         request.prompt = `${request.prompt}\n\nJson Response should match this Json schema: ${schemaInfo}`;
       }
     }
-    const requestId = request.context?.requestId || getCurrentRequestId();
+    const requestId = request.context?.requestId || (await getCurrentRequestId());
     const userId = request.context?.userId;
     let retryCount = 0;
     let lastError: Error | null = null;

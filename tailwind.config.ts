@@ -1,21 +1,23 @@
 import type { Config } from 'tailwindcss';
 
 const config = {
-  darkMode: ['class'],
-  content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-  ],
-  safelist: [
-    {
-      pattern: /text-(red|blue|green|yellow|gray|white|black)-\d{1,5}/,
-    },
-    {
-      pattern: /bg-(red|blue|green|yellow|gray|white|black)-\d{1,5}/,
-    },
-  ],
+  darkMode: 'class',
+  content: {
+    files: [
+      './pages/**/*.{ts,tsx}',
+      './components/**/*.{ts,tsx}',
+      './app/**/*.{ts,tsx}',
+      './src/**/*.{ts,tsx}',
+    ],
+    // safelist: [
+    //   {
+    //     pattern: /text-(red|blue|green|yellow|gray|white|black)-\d{1,5}/,
+    //   },
+    //   {
+    //     pattern: /bg-(red|blue|green|yellow|gray|white|black)-\d{1,5}/,
+    //   },
+    // ],
+  },
   prefix: '',
   theme: {
     container: {

@@ -155,7 +155,7 @@ async function processAIRequest<T>(request: {
     const userId = user?.id;
 
     // Get request ID for tracking
-    const requestId = getCurrentRequestId();
+    const requestId = await getCurrentRequestId();
 
     // Create the request model
     const requestModel: AIRequestModel<T> = {

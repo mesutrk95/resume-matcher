@@ -42,7 +42,7 @@ winston.addColors(colors);
 // Add request ID automatically to the logger format
 const logFormat = winston.format.printf(({ level, message, timestamp, ...metadata }) => {
   // Get requestId from AsyncLocalStorage context
-  const reqId = getCurrentRequestId();
+  const reqId = 'fix it!'; //await getCurrentRequestId();
 
   // Build the log message
   let logMessage = `${timestamp} [${reqId}] ${level}: ${message}`;

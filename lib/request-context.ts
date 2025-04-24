@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from 'async_hooks';
-import { headers } from 'next/headers';
+import { getRequestId } from './request-id';
 
 export const REQUEST_ID_HEADER = 'X-Request-ID';
 
@@ -15,7 +15,7 @@ export function getRequestContext(): RequestContext | undefined {
   return asyncLocalStorage.getStore();
 }
 
-export function getCurrentRequestId(): string {
+export async function getCurrentRequestId(): Promise<string> {
   // First, try AsyncLocalStorage
   const context = getRequestContext();
   if (context?.requestId) {
@@ -23,11 +23,8 @@ export function getCurrentRequestId(): string {
   }
 
   try {
-    const headersList = headers();
-    const requestId = headersList.get(REQUEST_ID_HEADER);
-    if (requestId) {
-      return requestId;
-    }
+    const requestId = await getRequestId();
+    return requestId;
   } catch (error) {
     console.error('Failed to get request ID from headers:', error);
   }

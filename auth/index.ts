@@ -5,7 +5,6 @@ import { db } from '@/lib/db';
 import { getUserById, updateUserById } from '@/services/user';
 import { getTwoFactorConfirmationByUserId } from '@/services/two-factor-confirmation';
 import { isExpired } from '@/lib/utils';
-import { getAccountByUserId } from '@/services/account';
 import { UserRole } from '@prisma/client';
 
 export const {
