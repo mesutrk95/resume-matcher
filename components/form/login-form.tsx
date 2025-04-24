@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-export const LoginForm = () => {
+export const LoginForm = ({ heroImage }: { heroImage?: string }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -42,6 +42,7 @@ export const LoginForm = () => {
 
   return (
     <CardWrapper
+      heroImage={heroImage}
       headerTitle="Login"
       headerDescription="Welcome back! Please fill out the form below before logging in to the website."
       backButtonLabel="Don't have an account? Register"
