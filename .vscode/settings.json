@@ -28,5 +28,10 @@
     "javascriptreact",
     "typescript",
     "typescriptreact"
+  ],
+  "cSpell.words": [
+    "brevo",
+    "cuid",
+    "Minova"
   ]
 }
