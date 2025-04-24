@@ -39,4 +39,5 @@ export const GoogleProvider = Google({
       response_type: 'code',
     },
   },
+  allowDangerousEmailAccountLinking: true,
 });

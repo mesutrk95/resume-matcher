@@ -43,7 +43,7 @@ export const newPassword = async (payload: z.infer<typeof newPasswordSchema>, to
 
   // Check if email address doesn't exist, then return an error.
   const existingUser = await getUserByEmail(existingToken.email);
-  if (!existingUser || !existingUser.email || !existingUser.password) {
+  if (!existingUser || !existingUser.email) {
     return response({
       success: false,
       error: {

@@ -24,7 +24,7 @@ export const resetPassword = async (payload: z.infer<typeof resetPasswordSchema>
 
   // Check if user doesn't exist, then return an error.
   const existingUser = await getUserByEmail(email);
-  if (!existingUser || !existingUser.email || !existingUser.password) {
+  if (!existingUser || !existingUser.email) {
     return response({
       success: false,
       error: {

@@ -16,7 +16,7 @@ export const ErrorCard = ({ message }: ErrorCardProps) => {
 
   if (message === 'OAuthAccountNotLinked') {
     headerDescription =
-      'Another account already registered with the same Email Address. Please login the different one.';
+      'Authentication error. Please try again or contact support if the issue persists.';
   }
 
   return (

@@ -2,7 +2,7 @@ import NextAuth from 'next-auth';
 import { authConfig } from '@/auth/config';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { db } from '@/lib/db';
-import { getUserById, updateUserById } from '@/services/user';
+import { getUserById, getUserByEmail, updateUserById } from '@/services/user';
 import { getTwoFactorConfirmationByUserId } from '@/services/two-factor-confirmation';
 import { isExpired } from '@/lib/utils';
 import { UserRole } from '@prisma/client';
@@ -68,12 +68,25 @@ export const {
 
       return session;
     },
-    async signIn({ user, account }) {
-      // For OAuth providers, we already set marketingEmails to true in the linkAccount event
+    async signIn({ user, account, profile }) {
+      // For OAuth providers (like Google)
       if (account?.provider !== 'credentials') {
+        // Check if a user with this email already exists
+        if (user.email) {
+          const existingUser = await getUserByEmail(user.email);
+
+          // If user exists but was created with a different method, we still want to allow login
+          // and mark the email as verified if it wasn't already
+          if (existingUser && !existingUser.emailVerified) {
+            await updateUserById(existingUser.id, {
+              emailVerified: new Date(),
+            });
+          }
+        }
         return true;
       }
 
+      // For credentials provider
       const existingUser = await getUserById(user.id!);
       // Email verification check removed to allow users to login regardless of verification status
 
