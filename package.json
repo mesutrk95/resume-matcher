@@ -24,7 +24,8 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
     "resume-templates:migrate": "npx tsx ./scripts/migrate-resume.ts ./public/templates",
-    "resume-templates:generate-pdf": "npx tsx scripts/generate-resume-image.tsx public/templates"
+    "generate:resume-templates-pdf": "npx tsx scripts/generate-resume-image.tsx public/templates",
+    "generate:png-logo": "npx tsx scripts/generate-logo-pngs.ts public/logos/svg/ public/logos/png/ "
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.9.0",
