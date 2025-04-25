@@ -115,6 +115,26 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
                 </>
               )}
             </div>
+            {user.emailVerified && (
+              <div className="rounded-md border border-green-200 bg-green-50 p-4">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <img
+                      src="/assets/email-verified.svg"
+                      alt="Email Verified"
+                      className="h-5 w-5 text-green-400"
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-green-800">Email verified</h3>
+                    <div className="mt-2 text-sm text-green-700">
+                      <p>Your email address has been successfully verified.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             {!user.emailVerified && (
               <div className="rounded-md border border-amber-200 bg-amber-50 p-4">
                 <div className="flex items-center">
