@@ -2,11 +2,6 @@ import type { Metadata } from 'next';
 import '@/styles/globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import NextTopLoader from 'nextjs-toploader';
-import { SubscriptionProvider } from '@/providers/SubscriptionProvider';
-import { getUserSubscription } from '@/actions/subscription/customer';
-import { UserProvider } from '@/providers/UserProvider';
-import { currentUser } from '@/lib/auth';
-import { User } from 'next-auth';
 import Head from 'next/head';
 import { Montserrat } from 'next/font/google';
 import clsx from 'clsx';
@@ -24,9 +19,6 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const subscription = await getUserSubscription().catch(() => null);
-  const user = (await currentUser()) as User;
-
   return (
     <html lang="en">
       <Head>
@@ -35,9 +27,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={clsx(montserrat.className, 'bg-slate-100')}>
         <NextTopLoader />
         <Toaster position="bottom-left" richColors theme="light" />
-        <UserProvider initialUser={user}>
-          <SubscriptionProvider initialSubscription={subscription}>{children}</SubscriptionProvider>
-        </UserProvider>
+        {children}
       </body>
     </html>
   );
