@@ -19,7 +19,7 @@ import { toast } from 'sonner';
 import Moment from 'react-moment';
 import { confirmDialog } from '../shared/confirm-dialog';
 import { LinkableTableCell } from '../ui/linkable-table-cell';
-import { CareerProfile } from '@/types/career-profile';
+import { CareerProfile } from '@prisma/client';
 
 interface CareerProfilesDataTableProps {
   data: CareerProfile[];

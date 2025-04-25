@@ -10,11 +10,11 @@ import { getAIJsonResponse } from '@/lib/ai';
 import { resumeContentSchema } from '@/schemas/resume';
 import { zodSchemaToString } from '@/lib/zod';
 import { getMimeType, randomNDigits } from '@/lib/utils';
-import { CareerProfile } from '@/types/career-profile';
+import { CareerProfile } from '@prisma/client';
 
 export const deleteCareerProfile = async (id: string) => {
   const user = await currentUser();
-  await db.resumeTemplate.delete({
+  await db.careerProfile.delete({
     where: { id, userId: user?.id },
   });
   revalidatePath('/career-profiles');
@@ -26,7 +26,7 @@ export const updateCareerProfile = withErrorHandling(
     const user = await currentUser();
 
     // Update job in database
-    const updatedJob = await db.resumeTemplate.update({
+    const updatedJob = await db.careerProfile.update({
       where: {
         id: careerProfile.id,
         userId: user?.id,
@@ -47,23 +47,23 @@ export const updateCareerProfile = withErrorHandling(
 );
 
 export const updateCareerProfileContent = async (
-  templateId: string,
-  resumeContent: ResumeContent,
+  careerProfileId: string,
+  resmueContent: ResumeContent,
 ) => {
   const user = await currentUser();
 
-  const updatedJob = await db.resumeTemplate.update({
+  const updatedJob = await db.careerProfile.update({
     where: {
-      id: templateId,
+      id: careerProfileId,
       userId: user?.id,
     },
     data: {
-      content: resumeContent || DEFAULT_RESUME_CONTENT,
+      content: resmueContent || DEFAULT_RESUME_CONTENT,
     },
   });
 
   revalidatePath('/career-profiles');
-  revalidatePath(`/career-profiles/${templateId}`);
+  revalidatePath(`/career-profiles/${careerProfileId}`);
 
   return updatedJob;
 };
@@ -76,7 +76,7 @@ export const createCareerProfile = async (
   const user = await currentUser();
 
   // Update job in database
-  const template = await db.resumeTemplate.create({
+  const careerProfile = await db.careerProfile.create({
     data: {
       name: name || 'No name Career Profile',
       description: description,
@@ -87,10 +87,10 @@ export const createCareerProfile = async (
 
   revalidatePath('/career-profiles');
 
-  return template;
+  return careerProfile;
 };
 
-export const createResumeTemplateFromResumePdf = withErrorHandling(async (formData: FormData) => {
+export const createCareerProfileFromResumePdf = withErrorHandling(async (formData: FormData) => {
   const user = await currentUser();
   const file = formData.get('file') as File;
 
@@ -133,7 +133,7 @@ export const createResumeTemplateFromResumePdf = withErrorHandling(async (formDa
   ];
 
   // Update job in database
-  const template = await db.resumeTemplate.create({
+  const careerProfile = await db.careerProfile.create({
     data: {
       name: content.titles?.[0]?.content || 'No name career profile',
       content: content,
@@ -143,14 +143,14 @@ export const createResumeTemplateFromResumePdf = withErrorHandling(async (formDa
 
   revalidatePath('/career-profiles');
 
-  return template;
+  return careerProfile;
 });
 
 export const getCareerProfile = async (id: string) => {
   const user = await currentUser();
 
   // Update job in database
-  const rt = await db.resumeTemplate.findUnique({
+  const rt = await db.careerProfile.findUnique({
     where: {
       id,
       userId: user?.id!,

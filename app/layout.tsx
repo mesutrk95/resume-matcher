@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import NextTopLoader from 'nextjs-toploader';
@@ -10,12 +9,11 @@ import { currentUser } from '@/lib/auth';
 import { User } from 'next-auth';
 import Head from 'next/head';
 import { Montserrat } from 'next/font/google';
+import clsx from 'clsx';
 
 const montserrat = Montserrat({
   subsets: ['latin'],
 });
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
@@ -34,7 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
-      <body className={'inter.className bg-slate-50 ' + montserrat.className}>
+      <body className={clsx(montserrat.className, 'bg-slate-100')}>
         <NextTopLoader />
         <Toaster position="bottom-left" richColors theme="light" />
         <UserProvider initialUser={user}>

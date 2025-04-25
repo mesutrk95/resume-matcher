@@ -8,7 +8,7 @@ import { Edit, Save, X } from 'lucide-react';
 import { updateCareerProfile } from '@/actions/career-profiles';
 import { LoadingButton } from '../ui/loading-button';
 import { runAction } from '@/app/_utils/runAction';
-import { CareerProfile } from '@/types/career-profile';
+import { CareerProfile } from '@prisma/client';
 
 export const CareerProfileForm = ({ careerProfile }: { careerProfile: CareerProfile }) => {
   const [editingCareerProfile, setEditingCareerProfile] = useState(false);

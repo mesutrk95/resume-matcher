@@ -3,7 +3,7 @@
 import React from 'react';
 import { Button } from '../ui/button';
 import { getCareerProfile, updateCareerProfile } from '@/actions/career-profiles';
-import { CareerProfile } from '@/types/career-profile';
+import { CareerProfile } from '@prisma/client';
 
 export const ImportExportBar = ({ careerProfile }: { careerProfile: CareerProfile }) => {
   const exportJson = async () => {

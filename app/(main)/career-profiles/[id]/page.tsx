@@ -12,13 +12,17 @@ import { CareerProfilePage } from './career-profile-page';
 import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Resume Template Builder',
+  title: 'Career Profile Builder',
 };
 
-export default async function TemplateBuilderPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function CareerProfileBuilderPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const paramsResult = await params;
 
-  const careerProfile = await db.resumeTemplate.findUnique({
+  const careerProfile = await db.careerProfile.findUnique({
     where: { id: paramsResult.id },
   });
 

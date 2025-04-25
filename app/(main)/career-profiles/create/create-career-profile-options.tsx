@@ -1,7 +1,7 @@
 'use client';
 
 import { authorizeCode } from '@/actions/linkedin';
-import { createResumeTemplateFromResumePdf } from '@/actions/career-profiles';
+import { createCareerProfileFromResumePdf } from '@/actions/career-profiles';
 import { FileButton } from '@/app/_components/file-button';
 import { runAction } from '@/app/_utils/runAction';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -52,7 +52,7 @@ export const CreateCareerProfileOptions = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const result = await runAction(createResumeTemplateFromResumePdf, formData);
+      const result = await runAction(createCareerProfileFromResumePdf, formData);
 
       if (result.success) {
         toast.success('Resume Imported!', {
@@ -83,7 +83,7 @@ export const CreateCareerProfileOptions = () => {
         <CardContent className="flex justify-between items-center p-6">
           <div className="">
             <h3 className="text-xl font-bold">Start Fresh 🌿</h3>
-            <p>Create a completely customized resume template without content</p>
+            <p>Create a completely customized career profile without content</p>
           </div>
           <div></div>
         </CardContent>

@@ -14,7 +14,7 @@ export default async function ResumeWizardPage({ searchParams }: CreateResumePag
   const paramsResult = await searchParams;
   const careerProfileId = paramsResult.profile;
   const careerProfile = careerProfileId
-    ? await db.resumeTemplate.findUnique({
+    ? await db.careerProfile.findUnique({
         where: { id: careerProfileId, userId: user?.id, draft: true },
       })
     : undefined;
