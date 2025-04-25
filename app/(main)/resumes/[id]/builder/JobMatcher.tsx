@@ -185,7 +185,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                 className="flex flex-col h-full justify-stretch shrink-0 w-full "
               >
                 <div
-                  className="pt-2 sticky z-10 bg-slate-50 rounded-xl-b"
+                  className="pt-2 sticky z-10 bg-slate-100 rounded-xl-b"
                   style={{ top: navbarHeight + 'px' }}
                 >
                   <TabsList className="w-full shrink-0 border-b bg-background" variant={'outline'}>

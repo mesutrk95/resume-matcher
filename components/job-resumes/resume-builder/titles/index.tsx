@@ -24,6 +24,7 @@ import { TitleList } from './title-list';
 import { randomNDigits } from '@/lib/utils';
 import { ResumeBuilderCard } from '../resume-builder-card';
 import { useResumeBuilder } from '../context/useResumeBuilder';
+import { generateId } from '@/lib/resume-content';
 
 export function TitlesSection() {
   const { resume, saveResume } = useResumeBuilder();
@@ -43,7 +44,7 @@ export function TitlesSection() {
 
   const handleSaveNewTitle = (content: string) => {
     const newTitle: ResumeTargetTitle = {
-      id: `title_${randomNDigits()}`,
+      id: generateId('titles'),
       content,
       enabled: true,
     };

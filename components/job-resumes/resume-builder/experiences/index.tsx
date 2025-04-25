@@ -19,6 +19,7 @@ import { AddExperienceForm } from './add-experience-form';
 import { randomNDigits } from '@/lib/utils';
 import { ResumeBuilderCard } from '../resume-builder-card';
 import { useResumeBuilder } from '../context/useResumeBuilder';
+import { generateId } from '@/lib/resume-content';
 
 export function ExperiencesSection() {
   const { resume, saveResume } = useResumeBuilder();
@@ -38,7 +39,7 @@ export function ExperiencesSection() {
 
   const handleSaveNewExperience = (newExperience: Omit<Experience, 'id' | 'items' | 'enabled'>) => {
     const newExp = {
-      id: `exp_${randomNDigits()}`,
+      id: generateId('experiences'),
       ...newExperience,
       enabled: true,
       items: [],

@@ -11,6 +11,7 @@ import { resumeContentSchema } from '@/schemas/resume';
 import { zodSchemaToString } from '@/lib/zod';
 import { getMimeType, randomNDigits } from '@/lib/utils';
 import { CareerProfile } from '@prisma/client';
+import { generateId } from '@/lib/resume-content';
 
 export const deleteCareerProfile = async (id: string) => {
   const user = await currentUser();
@@ -120,7 +121,13 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
     ...exp,
     items: exp.items.map(item => ({
       ...item,
-      variations: [{ id: 'var_' + randomNDigits(), content: item.description, enabled: true }],
+      variations: [
+        {
+          id: generateId('experiences.items.variations'),
+          content: item.description,
+          enabled: true,
+        },
+      ],
       description: '',
     })),
   }));

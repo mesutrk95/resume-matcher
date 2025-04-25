@@ -35,6 +35,7 @@ import { randomNDigits } from '@/lib/utils';
 import clsx from 'clsx';
 import { SeperateList } from '@/components/shared/seperate-list';
 import { YearMonthPicker } from '@/components/ui/year-month-picker';
+import { generateId } from '@/lib/resume-content';
 
 type ExperienceItemProps = {
   experience: Experience;
@@ -114,7 +115,7 @@ export function ExperienceItem({ experience, onUpdate, onDelete }: ExperienceIte
       skills: [],
       variations: [
         {
-          id: `var_${randomNDigits()}`,
+          id: generateId('experiences.items.variations'),
           content: description,
           enabled: true,
         },

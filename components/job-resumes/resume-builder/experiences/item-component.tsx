@@ -28,6 +28,7 @@ import { AddVariationForm } from './add-variation-form';
 import { randomNDigits } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
 import { VariationMatchingScores } from './variation-matching-scores';
+import { generateId } from '@/lib/resume-content';
 
 type ItemComponentProps = {
   experienceId: string;
@@ -103,7 +104,7 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
       .split('\n')
       .filter(item => item.trim().length > 0)
       .map(content => ({
-        id: `var_${randomNDigits()}`,
+        id: generateId('experiences.items.variations'),
         content,
         enabled: true,
       }));

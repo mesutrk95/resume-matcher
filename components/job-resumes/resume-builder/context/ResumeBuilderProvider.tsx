@@ -1,7 +1,7 @@
 'use client';
 
 import { ResumeAnalyzeResults, ResumeContent, ResumeDesign } from '@/types/resume';
-import { migrateResumeContent } from '@/utils/resume-migration';
+// import { migrateResumeContent } from '@/utils/resume-migration';
 import React, { createContext, useState } from 'react';
 
 export type ICareerProfileEditor = {
@@ -38,9 +38,9 @@ export const ResumeBuilderProvider = ({
   onUpdated?: (resume: ResumeContent) => void;
   onDesignUpdated?: (design: ResumeDesign) => void;
 }) => {
-  const migratedResume = migrateResumeContent(initialResume);
+  // const migratedResume = migrateResumeContent(initialResume);
 
-  const [resume, setResume] = useState<ResumeContent>(migratedResume);
+  const [resume, setResume] = useState<ResumeContent>(initialResume);
   const [design, setDesign] = useState<ResumeDesign | null>(initialDesign);
 
   const [resumeAnalyzeResults, setResumeAnalyzeResults] = useState<
