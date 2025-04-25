@@ -48,7 +48,7 @@ export const updateCareerProfile = withErrorHandling(
 
 export const updateCareerProfileContent = async (
   templateId: string,
-  resmueContent: ResumeContent,
+  resumeContent: ResumeContent,
 ) => {
   const user = await currentUser();
 
@@ -58,7 +58,7 @@ export const updateCareerProfileContent = async (
       userId: user?.id,
     },
     data: {
-      content: resmueContent || DEFAULT_RESUME_CONTENT,
+      content: resumeContent || DEFAULT_RESUME_CONTENT,
     },
   });
 
