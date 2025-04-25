@@ -1,5 +1,6 @@
 'use server';
 
+import { ForbiddenException } from '@/lib/exceptions';
 import { currentUser } from '@/lib/auth';
 import { getStripeServer } from '@/lib/stripe';
 import { createOrRetrieveCustomer, getSubscriptionByUserId } from './customer';
@@ -20,6 +21,9 @@ export const createSubscription = async (
   withCardDetails: boolean = true,
 ) => {
   const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
 
   if (!user || !user.id || !user.email) {
     throw new UnauthorizedException('User not authenticated');
@@ -125,6 +129,10 @@ async function hasUserHadSubscription(userId: string): Promise<boolean> {
 }
 
 export const getUserSubscriptionHistory = async (userId: string) => {
+  const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
   if (!userId) {
     throw new BadRequestException('User ID is required');
   }
@@ -217,6 +225,9 @@ export const verifySubscriptionFromSession = async (sessionId: string) => {
 
 export const createCustomerPortalSession = async (returnUrl?: string) => {
   const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
   if (!user || !user.id) {
     throw new UnauthorizedException('User not authenticated');
   }

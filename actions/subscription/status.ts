@@ -10,12 +10,16 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
   NotFoundException,
+  ForbiddenException,
 } from '@/lib/exceptions';
 import Logger from '@/lib/logger';
 
 export const cancelUserSubscription = async () => {
   try {
     const user = await currentUser();
+    if (!user?.emailVerified) {
+      throw new ForbiddenException('Email not verified.');
+    }
     if (!user || !user.id) {
       throw new UnauthorizedException('Unauthorized');
     }
@@ -87,6 +91,9 @@ export const cancelSubscription = async (userId: string) => {
 export const reactivateUserSubscription = async () => {
   try {
     const user = await currentUser();
+    if (!user?.emailVerified) {
+      throw new ForbiddenException('Email not verified.');
+    }
     if (!user || !user.id) {
       throw new UnauthorizedException('Unauthorized');
     }
