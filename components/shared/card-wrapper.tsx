@@ -59,7 +59,7 @@ export const CardWrapper = (props: CardWrapperProps) => {
             <Separator className="shrink" />
           </CardFooter>
           <CardFooter>
-            <Social isRegister={headerTitle === 'Register'} />
+            <Social />
           </CardFooter>
         </>
       ) : null}

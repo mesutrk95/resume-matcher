@@ -9,11 +9,7 @@ import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 
-interface SocialProps {
-  isRegister?: boolean;
-}
-
-export const Social = ({}: SocialProps = {}) => {
+export const Social = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || DEFAULT_LOGIN_REDIRECT;
   const [isLoadingGoogle, setIsLoadingGoogle] = useState(false);
