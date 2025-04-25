@@ -6,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function RegisterPage() {
-  return <RegisterForm heroImage="/logos/text-logo-outlines.svg" />;
+  return <RegisterForm heroImage="/logos/svg/text-logo-outlines.svg" />;
 }

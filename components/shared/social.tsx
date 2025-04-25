@@ -30,21 +30,22 @@ export const Social = () => {
     <div className="flex gap-x-2 items-center w-full">
       <Button
         size="lg"
-        className="w-full text-2xl"
+        className="w-full  "
         variant="outline"
         onClick={() => onClick('google')}
         disabled={isLoadingGoogle || isLoadingGithub}
       >
-        {isLoadingGoogle ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FcGoogle />}
+        {isLoadingGoogle ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FcGoogle />} Google
       </Button>
       <Button
         size="lg"
-        className="w-full text-2xl"
+        className="w-full  "
         variant="outline"
         onClick={() => onClick('github')}
         disabled={isLoadingGoogle || isLoadingGithub}
       >
-        {isLoadingGithub ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <IoLogoGithub />}
+        {isLoadingGithub ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <IoLogoGithub />}{' '}
+        Github
       </Button>
     </div>
   );

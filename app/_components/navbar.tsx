@@ -122,7 +122,12 @@ export default function Navbar() {
         <div className="flex gap-x-4 items-center justify-between">
           <div className="flex gap-2 items-center text-sm font-medium navbar-hover-effect">
             <Link href="/">
-              <Image src="/logos/text-logo-outlines.svg" width={120} height={35} alt="Logo" />
+              <Image
+                src="/logos/png/256/text-logo-outlines.png"
+                width={120}
+                height={35}
+                alt="Logo"
+              />
             </Link>
             {/* <NavItem
               icon="/iconly/Inbox.json"

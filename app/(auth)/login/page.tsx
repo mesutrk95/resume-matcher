@@ -14,5 +14,5 @@ export default async function LoginPage({
   // Await searchParams before accessing its properties
   const params = await searchParams;
   if (params.error) redirect(`/error?message=${params.error}`);
-  return <LoginForm heroImage="/logos/text-logo-outlines.svg" />;
+  return <LoginForm heroImage="/logos/svg/text-logo-outlines.svg" />;
 }

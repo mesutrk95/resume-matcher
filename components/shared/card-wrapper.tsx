@@ -41,13 +41,13 @@ export const CardWrapper = (props: CardWrapperProps) => {
           <Image
             src={heroImage}
             alt="Hero Image"
-            width={100}
-            height={100}
+            width={200}
+            height={200}
             className="select-none"
           />
         ) : null}
-        <div>
-          <CardTitle>{headerTitle}</CardTitle>
+        <div className="text-center flex flex-col gap-y-4">
+          <CardTitle className="font-bold">{headerTitle}</CardTitle>
           <CardDescription>{headerDescription}</CardDescription>
         </div>
       </CardHeader>
