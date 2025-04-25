@@ -27,7 +27,7 @@ export default async function CreateResumePage({ params }: CreateResumePageProps
   const paramsResult = await params;
 
   // Fetch all resume careerProfiles for the user
-  const allCareerProfiles = await db.resumeTemplate.findMany({
+  const allCareerProfiles = await db.careerProfile.findMany({
     where: {
       userId: user?.id,
     },

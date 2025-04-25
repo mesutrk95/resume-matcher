@@ -33,8 +33,8 @@ export const findJobResume = async (id: string) => {
 export const createJobResume = withErrorHandling(
   async (careerProfileId?: string, jobId?: string, forceRevalidate?: boolean) => {
     const user = await currentUser();
-    const resumeTemplate = careerProfileId
-      ? await db.resumeTemplate.findUnique({
+    const careerProfile = careerProfileId
+      ? await db.careerProfile.findUnique({
           where: { id: careerProfileId, userId: user?.id },
         })
       : null;
@@ -45,13 +45,13 @@ export const createJobResume = withErrorHandling(
       }));
 
     let name = job ? `${job?.title} at ${job?.companyName}` : null;
-    if (!name) name = resumeTemplate ? resumeTemplate.name : null;
+    if (!name) name = careerProfile ? careerProfile.name : null;
 
     const resumeJob = await db.jobResume.create({
       data: {
         jobId: jobId,
-        baseResumeTemplateId: careerProfileId,
-        content: (resumeTemplate?.content as ResumeContent) || DEFAULT_RESUME_CONTENT,
+        baseCareerProfileId: careerProfileId,
+        content: (careerProfile?.content as ResumeContent) || DEFAULT_RESUME_CONTENT,
         name: name || 'Blank',
         userId: user?.id!,
       },

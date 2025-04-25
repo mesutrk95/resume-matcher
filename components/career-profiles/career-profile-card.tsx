@@ -3,7 +3,7 @@
 import Moment from 'react-moment';
 import { Card, CardContent } from '../ui/card';
 import { CreateResumeButton } from '../job-resumes/create-resume-button';
-import { CareerProfile } from '@/types/career-profile';
+import { CareerProfile } from '@prisma/client';
 
 interface CareerProfileCardProps {
   careerProfile: CareerProfile;

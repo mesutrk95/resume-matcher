@@ -7,8 +7,8 @@ import { ResumeBuilderProvider } from '@/components/job-resumes/resume-builder/c
 import { ImportExportBar } from '@/components/career-profiles/import-export-bar';
 import { CareerProfileForm } from '@/components/career-profiles/career-profile-form';
 import { ResumeContent } from '@/types/resume';
+import { CareerProfile } from '@prisma/client';
 import React from 'react';
-import { CareerProfile } from '@/types/career-profile';
 
 export const CareerProfilePage = ({ careerProfile }: { careerProfile: CareerProfile }) => {
   const handleResumeUpdate = async (resumeContent: ResumeContent) => {

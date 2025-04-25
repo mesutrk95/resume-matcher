@@ -4,7 +4,7 @@ import { ResumeAnalyzeResults, ResumeContent, ResumeDesign } from '@/types/resum
 import { migrateResumeContent } from '@/utils/resume-migration';
 import React, { createContext, useState } from 'react';
 
-export type IResumeTemplateEditor = {
+export type ICareerProfileEditor = {
   scheme?: 'cards' | 'accordion';
 
   resume: ResumeContent;
@@ -17,9 +17,9 @@ export type IResumeTemplateEditor = {
   setResumeAnalyzeResults: React.Dispatch<React.SetStateAction<ResumeAnalyzeResults | undefined>>;
 };
 
-export const ResumeBuilderContext = createContext<IResumeTemplateEditor>({
+export const ResumeBuilderContext = createContext<ICareerProfileEditor>({
   scheme: 'cards',
-} as IResumeTemplateEditor);
+} as ICareerProfileEditor);
 
 export const ResumeBuilderProvider = ({
   children,

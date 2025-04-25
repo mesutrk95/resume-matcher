@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/card';
 import { Upload, FileText, Loader2 } from 'lucide-react';
 import { runAction } from '@/app/_utils/runAction';
-import { createResumeTemplateFromResumePdf } from '@/actions/career-profiles';
+import { createCareerProfileFromResumePdf } from '@/actions/career-profiles';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -134,7 +134,7 @@ export function NoCareerProfileWizard() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const careerProfile = await runAction(createResumeTemplateFromResumePdf, formData);
+      const careerProfile = await runAction(createCareerProfileFromResumePdf, formData);
       if (careerProfile.success) {
         toast.success('Your career profile imported!', {
           description: `Your career profile has been imported successfully.`,

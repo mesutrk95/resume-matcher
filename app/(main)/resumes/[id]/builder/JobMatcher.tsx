@@ -60,7 +60,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
     });
   };
   const handleSyncToCareerProfile = async () => {
-    const careerProfileId = jobResume.baseResumeTemplateId;
+    const careerProfileId = jobResume.baseCareerProfileId;
     if (!careerProfileId) {
       toast.error('This resume is not connected to any career profile!');
       return;
@@ -158,7 +158,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                         Auto-choose by keywords
                       </DropdownMenuItem> */}
 
-                    {jobResume.baseResumeTemplateId && (
+                    {jobResume.baseCareerProfileId && (
                       <DropdownMenuItem
                         disabled={isSyncingToCareerProfile}
                         onClick={handleSyncToCareerProfile}
