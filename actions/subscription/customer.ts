@@ -19,9 +19,6 @@ type SubscriptionWithPlanDetails = Subscription & {
 
 export const getUserSubscription = async (): Promise<SubscriptionWithPlanDetails | null> => {
   const user = await currentUser();
-  if (!user?.emailVerified) {
-    throw new ForbiddenException('Email not verified.');
-  }
   if (!user || !user.id) return null;
 
   const subscription = await getSubscriptionByUserId(user.id);
@@ -128,9 +125,6 @@ export const getSubscriptionByUserId = async (userId: string) => {
 
 export const getUserSubscriptionHistory = async (userId: string) => {
   const user = await currentUser();
-  if (!user?.emailVerified) {
-    throw new ForbiddenException('Email not verified.');
-  }
   if (!userId) {
     throw new BadRequestException('User ID is required');
   }

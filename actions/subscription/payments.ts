@@ -26,9 +26,6 @@ export const getPaymentHistory = async (): Promise<{
 }> => {
   try {
     const user = await currentUser();
-    if (!user?.emailVerified) {
-      throw new ForbiddenException('Email not verified.');
-    }
     if (!user?.id) {
       throw new BadRequestException('User not authenticated');
     }

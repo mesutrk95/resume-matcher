@@ -140,9 +140,25 @@ export async function POST(req: Request) {
         break;
       }
 
+      case 'customer.subscription.created': {
+        const subscription = event.data.object as Stripe.Subscription;
+        const userId = subscription.metadata.userId;
+
+        if (userId) {
+          await updateSubscriptionInDatabase(
+            userId,
+            subscription.id,
+            subscription.items.data[0].price.id,
+            mapStripeStatusToDBStatus(subscription.status),
+            new Date(subscription.current_period_start * 1000),
+            new Date(subscription.current_period_end * 1000),
+          );
+        }
+        break;
+      }
+
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription;
-        const previousAttributes = event.data.previous_attributes as Partial<Stripe.Subscription>;
         const userId = subscription.metadata.userId;
 
         if (userId) {
@@ -213,6 +229,14 @@ export async function POST(req: Request) {
             );
           }
         }
+        break;
+      }
+
+      case 'customer.created': {
+        const customer = event.data.object as Stripe.Customer;
+      }
+      case 'customer.updated': {
+        const customer = event.data.object as Stripe.Customer;
         break;
       }
 
