@@ -2,6 +2,7 @@
 
 import Navbar from '@/app/_components/navbar';
 import { TrialBanner } from '@/components/subscription/trial-banner';
+import { EmailVerificationBanner } from '@/components/shared/email-verification-banner';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
 import { pdfjs } from 'react-pdf';
@@ -20,6 +21,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <>
       <main>
         <TrialBanner />
+        <EmailVerificationBanner />
         <Navbar />
         {shouldIgnoreStyling ? (
           children
