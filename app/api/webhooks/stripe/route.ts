@@ -13,6 +13,7 @@ import {
   sendWinBackEmail,
 } from '@/services/mail';
 import logger from '@/lib/logger';
+import { b } from 'vitest/dist/chunks/suite.d.FvehnV49.js';
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -234,6 +235,7 @@ export async function POST(req: Request) {
 
       case 'customer.created': {
         const customer = event.data.object as Stripe.Customer;
+        break;
       }
       case 'customer.updated': {
         const customer = event.data.object as Stripe.Customer;
