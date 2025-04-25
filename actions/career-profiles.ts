@@ -1,4 +1,5 @@
-'use server';
+import { ForbiddenException } from '@/lib/exceptions';
+('use server');
 
 import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
@@ -15,6 +16,9 @@ import { generateId } from '@/lib/resume-content';
 
 export const deleteCareerProfile = async (id: string) => {
   const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
   await db.careerProfile.delete({
     where: { id, userId: user?.id },
   });
@@ -25,6 +29,9 @@ export const deleteCareerProfile = async (id: string) => {
 export const updateCareerProfile = withErrorHandling(
   async (careerProfile: Partial<CareerProfile>) => {
     const user = await currentUser();
+    if (!user?.emailVerified) {
+      throw new ForbiddenException('Email not verified.');
+    }
 
     // Update job in database
     const updatedJob = await db.careerProfile.update({
@@ -52,6 +59,9 @@ export const updateCareerProfileContent = async (
   resmueContent: ResumeContent,
 ) => {
   const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
 
   const updatedJob = await db.careerProfile.update({
     where: {
@@ -75,6 +85,9 @@ export const createCareerProfile = async (
   description?: string,
 ) => {
   const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
 
   // Update job in database
   const careerProfile = await db.careerProfile.create({
@@ -93,6 +106,9 @@ export const createCareerProfile = async (
 
 export const createCareerProfileFromResumePdf = withErrorHandling(async (formData: FormData) => {
   const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
   const file = formData.get('file') as File;
 
   // throw new NotFoundException();

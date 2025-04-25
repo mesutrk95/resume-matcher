@@ -16,7 +16,12 @@ import { JobAnalyzeResult } from '@/types/job';
 import { chunkArray, hashString } from '@/lib/utils';
 import { analyzeJobByAI } from './job';
 import { convertResumeObjectToString, resumeExperiencesToString } from '@/lib/resume-content';
-import { BadRequestException, InvalidInputException, NotFoundException } from '@/lib/exceptions';
+import {
+  BadRequestException,
+  ForbiddenException,
+  InvalidInputException,
+  NotFoundException,
+} from '@/lib/exceptions';
 import { resumeContentSchema } from '@/schemas/resume';
 import z from 'zod';
 import { withErrorHandling } from '@/lib/with-error-handling';
@@ -33,6 +38,9 @@ export const findJobResume = async (id: string) => {
 export const createJobResume = withErrorHandling(
   async (careerProfileId?: string, jobId?: string, forceRevalidate?: boolean) => {
     const user = await currentUser();
+    if (!user?.emailVerified) {
+      throw new ForbiddenException('Email not verified.');
+    }
     const careerProfile = careerProfileId
       ? await db.careerProfile.findUnique({
           where: { id: careerProfileId, userId: user?.id },
@@ -66,6 +74,9 @@ export const createJobResume = withErrorHandling(
 export const updateJobResume = withErrorHandling(
   async (resume: Partial<JobResume>, forceRevalidate = false) => {
     const user = await currentUser();
+    if (!user?.emailVerified) {
+      throw new ForbiddenException('Email not verified.');
+    }
     const content = resume.content as ResumeContent;
     const design = resume.design as ResumeDesign;
 
@@ -108,6 +119,9 @@ export const updateJobResume = withErrorHandling(
 
 export const connectJobResumeToJob = async (jobResumeId: string, jobId: string) => {
   const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
 
   const job = await db.job.findUnique({
     where: { id: jobId, userId: user?.id },
@@ -136,6 +150,10 @@ export const connectJobResumeToJob = async (jobResumeId: string, jobId: string) 
 };
 
 export const deleteJobResume = async (id: string) => {
+  const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
   await db.jobResume.delete({
     where: { id },
   });

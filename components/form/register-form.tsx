@@ -105,7 +105,11 @@ export const RegisterForm = ({ heroImage }: { heroImage?: string }) => {
               />
             </div>
           </div>
-          <Button type="submit" disabled={isPending} className="w-full">
+          <Button
+            type="submit"
+            disabled={isPending || !form.getValues('termsAccepted')}
+            className="w-full"
+          >
             Create an account
           </Button>
         </form>
