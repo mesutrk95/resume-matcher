@@ -98,7 +98,7 @@ export const signInCredentials = async (email: string, password: string) => {
     });
   } catch (error) {
     if (error instanceof AuthError) {
-      switch (error.type) {
+      switch ((error as any).type) {
         case 'CredentialsSignin':
           return response({
             success: false,
@@ -107,32 +107,6 @@ export const signInCredentials = async (email: string, password: string) => {
               message: 'Invalid credentials.',
             },
           });
-
-        // We're now handling this case in auth/index.ts to allow login with the same email
-        // regardless of the provider, so this error should no longer occur
-        case 'OAuthAccountNotLinked':
-          // Try to sign in with the existing account
-          const existingUser = await getUserByEmail(email);
-          if (existingUser) {
-            // If the user exists, we'll try to sign them in
-            return response({
-              success: true,
-              code: 200,
-              message: 'Redirecting to login...',
-              data: {
-                redirectTo: DEFAULT_LOGIN_REDIRECT,
-              },
-            });
-          } else {
-            // This is an edge case that shouldn't happen with our changes
-            return response({
-              success: false,
-              error: {
-                code: 403,
-                message: 'Authentication error. Please try again.',
-              },
-            });
-          }
 
         case 'Verification':
           return response({

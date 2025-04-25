@@ -3,7 +3,7 @@ import { AuthError } from 'next-auth';
 import { redirect } from 'next/navigation';
 
 type ErrorCardProps = {
-  message?: AuthError['type'];
+  message?: any /*AuthError['type']*/;
 };
 
 export const ErrorCard = ({ message }: ErrorCardProps) => {
