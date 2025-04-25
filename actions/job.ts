@@ -14,10 +14,14 @@ import { withErrorHandling } from '@/lib/with-error-handling';
 import { load as cheerioLoad } from 'cheerio';
 import axios from 'axios';
 import moment from 'moment';
+import { ForbiddenException } from '@/lib/exceptions';
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {
     const user = await currentUser();
+    if (!user?.emailVerified) {
+      throw new ForbiddenException('Email not verified.');
+    }
     const job = await db.job.create({
       data: {
         title: values.title,
@@ -118,6 +122,9 @@ export const getJobs = async (
 export const updateJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema> & { id: string }): Promise<Job> => {
     const user = await currentUser();
+    if (!user?.emailVerified) {
+      throw new ForbiddenException('Email not verified.');
+    }
 
     const updatedJob = await db.job.update({
       where: {
@@ -143,6 +150,9 @@ export const updateJob = withErrorHandling(
 
 export const updateJobStatus = async (jobId: string, newStatus: JobStatus) => {
   const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
 
   await db.job.update({
     where: {
@@ -162,6 +172,9 @@ export const updateJobStatus = async (jobId: string, newStatus: JobStatus) => {
 
 export const deleteJob = withErrorHandling(async (id: string): Promise<boolean> => {
   const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
   const job = await db.job.findUnique({
     where: {
       id,
