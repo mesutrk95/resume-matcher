@@ -214,9 +214,6 @@ const analyzeJobSummary = async (job: Job) => {
 
 export const analyzeJobByAI = async (jobId: string) => {
   const user = await currentUser();
-  if (!user?.emailVerified) {
-    throw new ForbiddenException('Email not verified.');
-  }
 
   const job = await db.job.findUnique({
     where: {
