@@ -13,6 +13,7 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
     strategy: 'jwt',
     maxAge: 60 * 60 * 24, // 1 Day
   },
+  trustHost: true,
   pages: {
     signIn: '/login',
     error: '/error',
