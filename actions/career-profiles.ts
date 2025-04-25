@@ -1,6 +1,6 @@
-import { ForbiddenException } from '@/lib/exceptions';
-('use server');
+'use server';
 
+import { ForbiddenException } from '@/lib/exceptions';
 import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
