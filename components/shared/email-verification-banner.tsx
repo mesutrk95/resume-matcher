@@ -1,6 +1,7 @@
 'use client';
 
 import { useUser } from '@/providers/UserProvider';
+import { ExtendedUser } from '@/types/next-auth';
 import { AlertCircle, X } from 'lucide-react';
 import { Button } from '../ui/button';
 import Link from 'next/link';
@@ -10,7 +11,8 @@ export function EmailVerificationBanner() {
   const { user } = useUser();
   const [dismissed, setDismissed] = useState(false);
 
-  if (!user || (user as any).emailVerified !== null || dismissed) {
+  // Show banner only when user exists, email is not verified, and banner is not dismissed
+  if (!user || (user as ExtendedUser).emailVerified || dismissed) {
     return null;
   }
 

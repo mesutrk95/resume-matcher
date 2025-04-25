@@ -45,6 +45,7 @@ export const {
       token.role = existingUser.role;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
       token.marketingEmails = existingUser.marketingEmails;
+      token.emailVerified = existingUser.emailVerified;
       // token.isOAuth = !!existingAccount;
 
       return token;
@@ -64,6 +65,7 @@ export const {
         session.user.isTwoFactorEnabled = !!token.isTwoFactorEnabled;
         session.user.isOAuth = !!token.isOAuth;
         session.user.marketingEmails = !!token.marketingEmails;
+        session.user.emailVerified = token.emailVerified as Date | null;
       }
 
       return session;
