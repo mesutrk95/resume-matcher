@@ -7,13 +7,7 @@ import { getTwoFactorConfirmationByUserId } from '@/services/two-factor-confirma
 import { isExpired } from '@/lib/utils';
 import { UserRole } from '@prisma/client';
 
-export const {
-  handlers: { GET, POST },
-  auth,
-  signIn,
-  signOut,
-  unstable_update,
-} = NextAuth({
+export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
   adapter: PrismaAdapter(db),
   session: {
     strategy: 'jwt',
