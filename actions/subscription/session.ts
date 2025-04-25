@@ -129,10 +129,6 @@ async function hasUserHadSubscription(userId: string): Promise<boolean> {
 }
 
 export const getUserSubscriptionHistory = async (userId: string) => {
-  const user = await currentUser();
-  if (!user?.emailVerified) {
-    throw new ForbiddenException('Email not verified.');
-  }
   if (!userId) {
     throw new BadRequestException('User ID is required');
   }
