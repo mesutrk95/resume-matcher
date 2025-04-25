@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import logger from '@/lib/logger';
 
 /**
  * Health check endpoint to verify API availability
@@ -38,7 +37,6 @@ export async function GET() {
       message: 'Database connection is healthy',
     };
   } catch (error) {
-    logger.error('Health check database error:', error);
     healthStatus.services.database = {
       status: 'error',
       responseTime: Date.now() - startTime,
