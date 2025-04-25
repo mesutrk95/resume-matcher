@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Social } from '@/components/shared/social';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
+import { Suspense } from 'react';
 
 type CardWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
   headerTitle: string;
@@ -59,7 +60,9 @@ export const CardWrapper = (props: CardWrapperProps) => {
             <Separator className="shrink" />
           </CardFooter>
           <CardFooter>
-            <Social />
+            <Suspense>
+              <Social />
+            </Suspense>
           </CardFooter>
         </>
       ) : null}
