@@ -13,7 +13,7 @@ interface SocialProps {
   isRegister?: boolean;
 }
 
-export const Social = ({ isRegister }: SocialProps = {}) => {
+export const Social = ({}: SocialProps = {}) => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || DEFAULT_LOGIN_REDIRECT;
   const [isLoadingGoogle, setIsLoadingGoogle] = useState(false);
