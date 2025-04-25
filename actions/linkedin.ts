@@ -1,9 +1,16 @@
 'use server';
 
+import { currentUser } from '@/lib/auth';
+import { ForbiddenException } from '@/lib/exceptions';
+
 import { withErrorHandling } from '@/lib/with-error-handling';
 import axios from 'axios';
 
 export const authorizeCode = withErrorHandling(async (code: string) => {
+  const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
   let data = {
     code,
     grant_type: 'authorization_code',

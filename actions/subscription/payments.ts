@@ -1,6 +1,6 @@
-// actions/subscription/payments.ts
 'use server';
 
+import { ForbiddenException } from '@/lib/exceptions';
 import { currentUser } from '@/lib/auth';
 import { getStripeServer } from '@/lib/stripe';
 import { getSubscriptionByUserId } from './customer';
@@ -26,6 +26,9 @@ export const getPaymentHistory = async (): Promise<{
 }> => {
   try {
     const user = await currentUser();
+    if (!user?.emailVerified) {
+      throw new ForbiddenException('Email not verified.');
+    }
     if (!user?.id) {
       throw new BadRequestException('User not authenticated');
     }

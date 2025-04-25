@@ -170,6 +170,9 @@ export const analyzeResumeScore = async (formData: FormData, jobResumeId: string
   const pdfBuffer = Buffer.from(bytes);
 
   const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
   const jobResume = await db.jobResume.findUnique({
     where: { id: jobResumeId, userId: user?.id },
     include: {
@@ -418,6 +421,9 @@ const analyzeResumeProjectsScores = async (analyzeResults: JobAnalyzeResult, con
 
 export const analyzeResumeItemsScores = async (jobResumeId: string, forceCheckAll?: boolean) => {
   const user = await currentUser();
+  if (!user?.emailVerified) {
+    throw new ForbiddenException('Email not verified.');
+  }
 
   const jobResume = await db.jobResume.findUnique({
     where: {

@@ -14,6 +14,16 @@ import { updateContactMarketingPreferences } from '@/lib/brevo';
 import logger from '@/lib/logger';
 
 export const profile = async (payload: z.infer<typeof profileSchema>) => {
+  const user = await currentUser();
+  if (!user?.emailVerified) {
+    return response({
+      success: false,
+      error: {
+        code: 403,
+        message: 'Email not verified.',
+      },
+    });
+  }
   // Check if user input is not valid, then return an error.
   const validatedFields = profileSchema.safeParse(payload);
   if (!validatedFields.success) {
@@ -30,7 +40,6 @@ export const profile = async (payload: z.infer<typeof profileSchema>) => {
   const { name, marketingEmails } = validatedFields.data;
 
   // Check if current user does not exist, then return an error.
-  const user = await currentUser();
   if (!user) {
     return response({
       success: false,
