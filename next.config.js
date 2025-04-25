@@ -20,6 +20,13 @@ const nextConfig = {
 
     return config;
   },
+  // Copy the templates directory to the build output
+  output: 'standalone',
+  experimental: {
+    outputFileTracingIncludes: {
+      '/**': ['./templates/**/*'],
+    },
+  },
 };
 
 module.exports = nextConfig;
