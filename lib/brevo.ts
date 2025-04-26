@@ -1,3 +1,4 @@
+import { error } from 'console';
 import logger from './logger';
 import brevo from '@getbrevo/brevo';
 
@@ -5,6 +6,9 @@ import brevo from '@getbrevo/brevo';
 // This should be configured in environment variables in production
 const MARKETING_LIST_NAME = process.env.BREVO_MARKETING_LIST_NAME || 'Minova';
 const BREVO_API_KEY = process.env.BREVO_API_KEY || '';
+
+// Cache for list IDs found by name
+const listIdCache: Record<string, number | null> = {};
 
 /**
  * Initialize the Brevo API client with authentication
@@ -231,81 +235,36 @@ export const getLists = async (limit?: number, offset?: number) => {
  * @returns Promise with the list ID if found, null if not found
  */
 export const findListByName = async (name: string) => {
+  const lowerCaseName = name.toLowerCase();
+
+  // Check cache first
+  if (listIdCache.hasOwnProperty(lowerCaseName)) {
+    logger.debug('Found list ID in cache', { name, id: listIdCache[lowerCaseName] });
+    return { success: true, listId: listIdCache[lowerCaseName] };
+  }
+
   try {
     const apiInstance = getContactsApi();
     const result = await apiInstance.getLists();
 
     if (result && result.body && result.body.lists && result.body.count) {
-      const list = result.body.lists.find(
-        (list: any) => list.name.toLowerCase() === name.toLowerCase(),
-      );
+      const list = result.body.lists.find((list: any) => list.name.toLowerCase() === lowerCaseName);
 
       if (list) {
         logger.debug('Found list by name', { name, id: list.id });
+        // Cache the found list ID
+        listIdCache[lowerCaseName] = list.id;
         return { success: true, listId: list.id };
       }
     }
 
     logger.debug('List not found by name', { name });
-    return { success: true, listId: null };
+    // Cache null for not found lists to avoid repeated API calls
+    listIdCache[lowerCaseName] = null;
+    return { success: false, error: new Error('List not found') };
   } catch (error) {
     logger.error('Failed to find list by name', { error, name });
-    return { success: false, error };
-  }
-};
-
-/**
- * Create a new list
- * @param name List name
- * @param folderId Optional folder ID
- * @returns Promise with create result
- */
-export const createList = async (name: string, folderId?: number) => {
-  try {
-    const apiInstance = getContactsApi();
-    const createList = new brevo.CreateList();
-
-    createList.name = name;
-    if (folderId) createList.folderId = folderId;
-
-    const { body: data } = await apiInstance.createList(createList);
-    logger.debug('Created new list', { name, id: data.id });
-    return { success: true, listId: data.id };
-  } catch (error) {
-    logger.error('Failed to create list', { error, name });
-    return { success: false, error };
-  }
-};
-
-/**
- * Get or create a list by name
- * @param name List name
- * @returns Promise with the list ID
- */
-export const getOrCreateListByName = async (name: string) => {
-  try {
-    // First try to find the list by name
-    const findResult = await findListByName(name);
-
-    if (!findResult.success) {
-      return findResult; // Return the error
-    }
-
-    // If list was found, return its ID
-    if (findResult.listId) {
-      return { success: true, listId: findResult.listId };
-    }
-
-    // If list was not found, create it
-    const createResult = await createList(name);
-
-    if (!createResult.success) {
-      return createResult; // Return the error
-    }
-
-    return { success: true, listId: createResult.listId };
-  } catch (error) {
-    logger.error('Failed to get or create list by name', { error, name });
+    // Do not cache on error
     return { success: false, error };
   }
 };
@@ -319,7 +278,7 @@ export const getOrCreateListByName = async (name: string) => {
 export const addContactToMarketingList = async (email: string, name?: string) => {
   try {
     // Get or create the marketing list
-    const listResult = await getOrCreateListByName(MARKETING_LIST_NAME);
+    const listResult = await findListByName(MARKETING_LIST_NAME);
 
     if (!listResult.success) {
       return listResult; // Return the error
@@ -351,7 +310,7 @@ export const addContactToMarketingList = async (email: string, name?: string) =>
       const updateContact = new brevo.UpdateContact();
       updateContact.listIds = [listId];
       if (name) {
-        updateContact.attributes = { NAME: name };
+        updateContact.attributes = { FIRSTNAME: name };
       }
 
       await apiInstance.updateContact(email, updateContact);
@@ -365,7 +324,7 @@ export const addContactToMarketingList = async (email: string, name?: string) =>
       createContact.email = email;
       createContact.listIds = [listId];
       if (name) {
-        createContact.attributes = { NAME: name };
+        createContact.attributes = { FIRSTNAME: name };
       }
 
       await apiInstance.createContact(createContact);
