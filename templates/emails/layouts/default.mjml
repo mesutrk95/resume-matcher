@@ -17,7 +17,7 @@
   </mj-head>
   <mj-body background-color="#f4f4f4">
     <!-- Header -->
-    <mj-section padding="20px 0">
+    <mj-section padding="0">
       <mj-column>
         <mj-image
           width="200px"
