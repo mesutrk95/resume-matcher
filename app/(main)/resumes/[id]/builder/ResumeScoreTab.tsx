@@ -154,7 +154,7 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
 
         const analyzeResults = await analyzeResumeScore(formData, jobResume.id);
         if (!analyzeResults.data) {
-          toast.error('Failed to analyze resume score.');
+          toast.error(analyzeResults.error?.message || 'Failed to analyze resume score.');
           return;
         }
         setResumeAnalyzeResults(analyzeResults.data);

@@ -52,7 +52,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
       try {
         const results = await analyzeResumeItemsScores(jobResumeId as string, forceRefresh);
         if (!results.data) {
-          toast.error('Failed to analyze scores.');
+          toast.error(results.error?.message || 'Failed to analyze scores.');
           return;
         }
         setResumeAnalyzeResults(results.data);

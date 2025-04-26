@@ -16,7 +16,7 @@ export function CreateNewCareerProfileForm({ blank }: { blank?: boolean }) {
       createCareerProfile()
         .then(data => {
           if (!data.data) {
-            toast.error('Failed to create career profile!');
+            toast.error(data.error?.message || 'Failed to create career profile!');
             return;
           }
           const templateId = data?.data.id;

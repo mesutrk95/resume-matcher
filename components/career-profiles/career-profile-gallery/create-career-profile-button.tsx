@@ -25,15 +25,10 @@ export const CreateCareerProfileButton = ({
         // Call the Server Action to create the ResumeJob
         const result = await createCareerProfile(resumeContent, resumeContent.titles?.[0]?.content);
         if (!result.data) {
-          toast.error('Failed to create career profile!');
+          toast.error(result.error?.message || 'Failed to create career profile!');
           return;
         }
-        if (result) {
-          // Redirect to the edit page
-          router.push(`/career-profiles/${result?.data.id}`);
-        } else {
-          toast.error('Failed to create career profile!');
-        }
+        router.push(`/career-profiles/${result?.data.id}`);
       } catch (error) {
         toast.error('Something went wrong!');
       }

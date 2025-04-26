@@ -128,7 +128,7 @@ export function ChatInterface({
         messages.filter(m => m.id !== '1'),
       );
       if (!newMessages.data) {
-        toast.error(newMessages.error?.message);
+        toast.error(newMessages.error?.message || 'Something went wrong');
         setIsLoading(false);
         return;
       }
