@@ -469,7 +469,11 @@ export const analyzeResumeItemsScores = withErrorHandling(
 
     let jobAnalyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
     if (!jobAnalyzeResults?.summary) {
-      jobAnalyzeResults = (await analyzeJobByAI(jobResume.jobId!)).analyzeResults!;
+      const jobAnalyzeResult = await analyzeJobByAI(jobResume.job.id);
+      if (!jobAnalyzeResult.data) {
+        throw new Error(jobAnalyzeResult.error?.message || 'Failed to analyze job');
+      }
+      jobAnalyzeResults = jobAnalyzeResult.data.analyzeResults!;
     }
 
     // const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");

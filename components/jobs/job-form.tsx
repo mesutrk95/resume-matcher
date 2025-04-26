@@ -63,7 +63,12 @@ export const JobForm = ({ initialData }: JobFormProps) => {
   const handleExtractJD = () => {
     startExtractingJDTransition(async () => {
       try {
-        const data = await extractJobDescriptionFromUrl(form.getValues().url || '');
+        const res = await extractJobDescriptionFromUrl(form.getValues().url || '');
+        if (!res.data) {
+          toast.error(res.error?.message || 'Something went wrong!');
+          return;
+        }
+        const data = res.data;
         data?.description && form.setValue('description', data?.description);
         data?.companyName && form.setValue('companyName', data?.companyName);
         data?.location && form.setValue('location', data?.location);

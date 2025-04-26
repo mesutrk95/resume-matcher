@@ -40,84 +40,86 @@ export const createJob = withErrorHandling(
   },
 );
 
-export const getJobs = async (
-  params: PaginationParams & {
-    statuses?: JobStatus[] | undefined;
-    search?: string;
+export const getJobs = withErrorHandling(
+  async (
+    params: PaginationParams & {
+      statuses?: JobStatus[] | undefined;
+      search?: string;
+    },
+  ) => {
+    const user = await currentUser();
+    const page = Number(params.page) || 1;
+    const pageSize = Number(params.pageSize) || 10;
+    const search = params.search || '';
+    // const statuses = params.status ? params.status.split(",") : undefined;
+    const skip = (page - 1) * pageSize;
+
+    // Prepare search filter
+    const searchFilter = search
+      ? {
+          OR: [
+            { title: { contains: search, mode: Prisma.QueryMode.insensitive } },
+            {
+              companyName: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+            {
+              description: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+          ],
+        }
+      : {};
+
+    // Prepare status filter
+    const statusFilter =
+      params.statuses && params.statuses.length > 0 ? { status: { in: params.statuses } } : {};
+
+    // Get jobs with filters, pagination and sorting
+    const jobs = await db.job.findMany({
+      where: {
+        userId: user?.id,
+        ...searchFilter,
+        ...statusFilter,
+      },
+      select: {
+        id: true,
+        title: true,
+        companyName: true,
+        location: true,
+        createdAt: true,
+        postedAt: true,
+        status: true,
+        url: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      skip,
+      take: pageSize,
+    });
+
+    // Get total count for pagination
+    const totalJobs = await db.job.count({
+      where: {
+        userId: user?.id,
+        ...searchFilter,
+        ...statusFilter,
+      },
+    });
+
+    return {
+      total: totalJobs,
+      jobs,
+      page,
+      pageSize,
+    };
   },
-) => {
-  const user = await currentUser();
-  const page = Number(params.page) || 1;
-  const pageSize = Number(params.pageSize) || 10;
-  const search = params.search || '';
-  // const statuses = params.status ? params.status.split(",") : undefined;
-  const skip = (page - 1) * pageSize;
-
-  // Prepare search filter
-  const searchFilter = search
-    ? {
-        OR: [
-          { title: { contains: search, mode: Prisma.QueryMode.insensitive } },
-          {
-            companyName: {
-              contains: search,
-              mode: Prisma.QueryMode.insensitive,
-            },
-          },
-          {
-            description: {
-              contains: search,
-              mode: Prisma.QueryMode.insensitive,
-            },
-          },
-        ],
-      }
-    : {};
-
-  // Prepare status filter
-  const statusFilter =
-    params.statuses && params.statuses.length > 0 ? { status: { in: params.statuses } } : {};
-
-  // Get jobs with filters, pagination and sorting
-  const jobs = await db.job.findMany({
-    where: {
-      userId: user?.id,
-      ...searchFilter,
-      ...statusFilter,
-    },
-    select: {
-      id: true,
-      title: true,
-      companyName: true,
-      location: true,
-      createdAt: true,
-      postedAt: true,
-      status: true,
-      url: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-    skip,
-    take: pageSize,
-  });
-
-  // Get total count for pagination
-  const totalJobs = await db.job.count({
-    where: {
-      userId: user?.id,
-      ...searchFilter,
-      ...statusFilter,
-    },
-  });
-
-  return {
-    total: totalJobs,
-    jobs,
-    page,
-    pageSize,
-  };
-};
+);
 
 export const updateJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema> & { id: string }): Promise<Job> => {
@@ -148,7 +150,7 @@ export const updateJob = withErrorHandling(
   },
 );
 
-export const updateJobStatus = async (jobId: string, newStatus: JobStatus) => {
+export const updateJobStatus = withErrorHandling(async (jobId: string, newStatus: JobStatus) => {
   const user = await currentUser();
   if (!user?.emailVerified) {
     throw new ForbiddenException('Email not verified.');
@@ -168,7 +170,7 @@ export const updateJobStatus = async (jobId: string, newStatus: JobStatus) => {
   revalidatePath(`/jobs/${jobId}`);
 
   return true;
-};
+});
 
 export const deleteJob = withErrorHandling(async (id: string): Promise<boolean> => {
   const user = await currentUser();
@@ -212,7 +214,7 @@ const analyzeJobSummary = async (job: Job) => {
   return getAIHtmlResponse(prompt, [job.description || '']);
 };
 
-export const analyzeJobByAI = async (jobId: string) => {
+export const analyzeJobByAI = withErrorHandling(async (jobId: string) => {
   const user = await currentUser();
 
   const job = await db.job.findUnique({
@@ -259,9 +261,9 @@ export const analyzeJobByAI = async (jobId: string) => {
   revalidatePath(`/jobs/${jobId}`);
 
   return { status: 'done', analyzeResults };
-};
+});
 
-export const extractJobDescriptionFromUrl = async (url: string) => {
+export const extractJobDescriptionFromUrl = withErrorHandling(async (url: string) => {
   // Fetch the content of the URL
   const response = await axios.get(url);
   const html = response.data;
@@ -285,4 +287,4 @@ export const extractJobDescriptionFromUrl = async (url: string) => {
   } catch (ex) {}
   const result = await getAIJsonResponse(prompt);
   return { ...result.result, image };
-};
+});

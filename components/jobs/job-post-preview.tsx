@@ -75,11 +75,15 @@ export const JobPostPreview = ({
     startJobAnalyzeTransition(async () => {
       try {
         const result = await analyzeJobByAI(job.id);
+        if (!result.data) {
+          toast.error(result.error?.message || 'Failed to analyze job.');
+          return;
+        }
 
         toast.success('Job analyzed successfully.');
         onJobUpdated?.({
           ...job,
-          analyzeResults: result.analyzeResults,
+          analyzeResults: result.data.analyzeResults,
         });
       } catch (error) {
         toast.error('Failed to analyze job.');
