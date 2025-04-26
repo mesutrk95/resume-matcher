@@ -10,11 +10,11 @@ import { withErrorHandling } from '@/lib/with-error-handling';
 import { getAIJsonResponse } from '@/lib/ai';
 import { resumeContentSchema } from '@/schemas/resume';
 import { zodSchemaToString } from '@/lib/zod';
-import { getMimeType, randomNDigits } from '@/lib/utils';
+import { getMimeType } from '@/lib/utils';
 import { CareerProfile } from '@prisma/client';
 import { generateId } from '@/lib/resume-content';
 
-export const deleteCareerProfile = async (id: string) => {
+export const deleteCareerProfile = withErrorHandling(async (id: string) => {
   const user = await currentUser();
   if (!user?.emailVerified) {
     throw new ForbiddenException('Email not verified.');
@@ -24,7 +24,7 @@ export const deleteCareerProfile = async (id: string) => {
   });
   revalidatePath('/career-profiles');
   return true;
-};
+});
 
 export const updateCareerProfile = withErrorHandling(
   async (careerProfile: Partial<CareerProfile>) => {
@@ -54,55 +54,52 @@ export const updateCareerProfile = withErrorHandling(
   },
 );
 
-export const updateCareerProfileContent = async (
-  careerProfileId: string,
-  resmueContent: ResumeContent,
-) => {
-  const user = await currentUser();
-  if (!user?.emailVerified) {
-    throw new ForbiddenException('Email not verified.');
-  }
+export const updateCareerProfileContent = withErrorHandling(
+  async (careerProfileId: string, resmueContent: ResumeContent) => {
+    const user = await currentUser();
+    if (!user?.emailVerified) {
+      throw new ForbiddenException('Email not verified.');
+    }
 
-  const updatedJob = await db.careerProfile.update({
-    where: {
-      id: careerProfileId,
-      userId: user?.id,
-    },
-    data: {
-      content: resmueContent || DEFAULT_RESUME_CONTENT,
-    },
-  });
+    const updatedJob = await db.careerProfile.update({
+      where: {
+        id: careerProfileId,
+        userId: user?.id,
+      },
+      data: {
+        content: resmueContent || DEFAULT_RESUME_CONTENT,
+      },
+    });
 
-  revalidatePath('/career-profiles');
-  revalidatePath(`/career-profiles/${careerProfileId}`);
+    revalidatePath('/career-profiles');
+    revalidatePath(`/career-profiles/${careerProfileId}`);
 
-  return updatedJob;
-};
+    return updatedJob;
+  },
+);
 
-export const createCareerProfile = async (
-  resumeContent?: ResumeContent,
-  name?: string,
-  description?: string,
-) => {
-  const user = await currentUser();
-  if (!user?.emailVerified) {
-    throw new ForbiddenException('Email not verified.');
-  }
+export const createCareerProfile = withErrorHandling(
+  async (resumeContent?: ResumeContent, name?: string, description?: string) => {
+    const user = await currentUser();
+    if (!user?.emailVerified) {
+      throw new ForbiddenException('Email not verified.');
+    }
 
-  // Update job in database
-  const careerProfile = await db.careerProfile.create({
-    data: {
-      name: name || 'No name Career Profile',
-      description: description,
-      content: resumeContent || DEFAULT_RESUME_CONTENT,
-      userId: user?.id!,
-    },
-  });
+    // Update job in database
+    const careerProfile = await db.careerProfile.create({
+      data: {
+        name: name || 'No name Career Profile',
+        description: description,
+        content: resumeContent || DEFAULT_RESUME_CONTENT,
+        userId: user?.id!,
+      },
+    });
 
-  revalidatePath('/career-profiles');
+    revalidatePath('/career-profiles');
 
-  return careerProfile;
-};
+    return careerProfile;
+  },
+);
 
 export const createCareerProfileFromResumePdf = withErrorHandling(async (formData: FormData) => {
   const user = await currentUser();
@@ -169,7 +166,7 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
   return careerProfile;
 });
 
-export const getCareerProfile = async (id: string) => {
+export const getCareerProfile = withErrorHandling(async (id: string) => {
   const user = await currentUser();
 
   // Update job in database
@@ -181,4 +178,4 @@ export const getCareerProfile = async (id: string) => {
   });
 
   return rt;
-};
+});
