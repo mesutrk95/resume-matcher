@@ -38,6 +38,18 @@ export const resendToken = async (payload: z.infer<typeof resendSchema>) => {
 
   // Generate verification token and resend to the email.
   const verificationToken = await generateVerificationToken(existingToken.email);
+
+  // Check if cooldown is active
+  if (verificationToken.cooldownActive) {
+    return response({
+      success: false,
+      error: {
+        code: 429, // Too Many Requests
+        message: `Please wait ${verificationToken.remainingMinutes} minute${verificationToken.remainingMinutes > 1 ? 's' : ''} before requesting another verification email.`,
+      },
+    });
+  }
+
   await sendVerificationEmail(verificationToken.email, verificationToken.token);
 
   // Return response success.
