@@ -51,7 +51,11 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
       toast.info('Analyzing resume rates is in progress!');
       try {
         const results = await analyzeResumeItemsScores(jobResumeId as string, forceRefresh);
-        setResumeAnalyzeResults(results);
+        if (!results.data) {
+          toast.error('Failed to analyze scores.');
+          return;
+        }
+        setResumeAnalyzeResults(results.data);
         // console.log(results);
         toast.success('Analyze resume rates and scores are successfully done!');
       } catch (error) {

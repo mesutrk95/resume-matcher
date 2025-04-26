@@ -15,7 +15,11 @@ export function CreateNewCareerProfileForm({ blank }: { blank?: boolean }) {
     startTransition(() => {
       createCareerProfile()
         .then(data => {
-          const templateId = data?.id;
+          if (!data.data) {
+            toast.error('Failed to create career profile!');
+            return;
+          }
+          const templateId = data?.data.id;
           router.push('/career-profiles/' + templateId);
           toast.success('Career Profile successfully created!');
         })
