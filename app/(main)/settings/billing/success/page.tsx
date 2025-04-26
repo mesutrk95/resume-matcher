@@ -55,7 +55,7 @@ export default async function SubscriptionSuccessPage({ searchParams }: SuccessP
           </CardTitle>
           <CardDescription className="text-center">
             {success
-              ? 'Thank you for subscribing to Resume Matcher Pro!'
+              ? 'Thank you for subscribing to Minova Pro!'
               : 'We encountered an issue with your subscription.'}
           </CardDescription>
         </CardHeader>
