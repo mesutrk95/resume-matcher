@@ -238,7 +238,7 @@ export const findListByName = async (name: string) => {
   const lowerCaseName = name.toLowerCase();
 
   // Check cache first
-  if (listIdCache.hasOwnProperty(lowerCaseName)) {
+  if (Object.prototype.hasOwnProperty.call(listIdCache, lowerCaseName)) {
     logger.debug('Found list ID in cache', { name, id: listIdCache[lowerCaseName] });
     return { success: true, listId: listIdCache[lowerCaseName] };
   }
