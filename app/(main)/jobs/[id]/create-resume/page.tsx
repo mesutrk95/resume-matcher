@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { CreateResumeButton } from '@/components/job-resumes/create-resume-button';
 import { CareerProfileCard } from '@/components/career-profiles/career-profile-card';
+import { createJobResume } from '@/actions/job-resume';
 
 interface CreateResumePageProps {
   params: Promise<{
@@ -40,8 +41,22 @@ export default async function CreateResumePage({ params }: CreateResumePageProps
   const careerProfiles = await db.careerProfile.findMany({
     where: {
       userId: user?.id,
+      draft: false,
     },
   });
+
+  // don't wait directly create resume of the career profile!
+  if (careerProfiles.length === 1) {
+    const jobResumeResult = await createJobResume(careerProfiles[0].id, job.id);
+
+    // handle creating job resume failed from server side
+    if (!jobResumeResult.success) {
+      return <>{jobResumeResult.error?.message || 'Ops! Something went wrong!'} </>;
+    }
+
+    const id = jobResumeResult.data?.id;
+    return redirect('/resumes/' + id + '/builder');
+  }
 
   return (
     <div className="space-y-6">
