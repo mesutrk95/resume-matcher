@@ -154,11 +154,13 @@
     </mj-wrapper>
     {{/if}}
 
-    <!-- Social Media Section -->
-    <mj-section background-color="#ffffff" padding="15px 0">
+    <!-- Footer Combined -->
+    <mj-section background-color="#ffffff" padding="10px 0 5px">
       <mj-column>
-        <mj-text align="center" font-size="14px" color="#888888"> Connect with us </mj-text>
-        <mj-social mode="horizontal" padding="10px 25px">
+        <mj-text align="center" font-size="12px" color="#888888" padding="0 25px 2px">
+          Connect with us
+        </mj-text>
+        <mj-social mode="horizontal" padding="2px 25px" icon-size="20px" icon-padding="4px">
           <mj-social-element name="facebook" href="{{facebookUrl}}" background-color="#3b5998">
           </mj-social-element>
           <mj-social-element name="twitter" href="{{twitterUrl}}" background-color="#55acee">
@@ -168,26 +170,14 @@
           <mj-social-element name="instagram" href="{{instagramUrl}}" background-color="#3f729b">
           </mj-social-element>
         </mj-social>
-      </mj-column>
-    </mj-section>
 
-    <!-- Contact Information -->
-    <mj-section padding="10px 0" background-color="#ffffff">
-      <mj-column>
-        <mj-text font-size="12px" color="#888888" align="center"> {{companyAddress}} </mj-text>
-        <mj-text font-size="12px" color="#888888" align="center">
-          <a href="mailto:{{contactEmail}}" class="footer-link">{{contactEmail}}</a> |
+        <mj-text font-size="11px" color="#888888" align="center" padding="2px 25px">
+          {{companyAddress}} •
+          <a href="mailto:{{contactEmail}}" class="footer-link">{{contactEmail}}</a>
         </mj-text>
-      </mj-column>
-    </mj-section>
 
-    <!-- Footer -->
-    <mj-section padding="20px 0 30px">
-      <mj-column>
-        <mj-text font-size="12px" color="#888888" align="center">
-          © {{currentYear}} Minova. All rights reserved.
-        </mj-text>
-        <mj-text font-size="12px" color="#888888" align="center">
+        <mj-text font-size="11px" color="#888888" align="center" padding="2px 25px">
+          © {{currentYear}} Minova. All rights reserved. •
           <a href="{{privacyUrl}}" class="footer-link">Privacy Policy</a> •
           <a href="{{termsUrl}}" class="footer-link">Terms of Service</a>
           {{#if unsubscribeLink}} •
