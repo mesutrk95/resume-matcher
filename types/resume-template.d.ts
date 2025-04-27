@@ -1,14 +1,12 @@
 import {
   resumeTemplateSchema,
-  elementStyleSchema,
-  resumeDesignClassSchema,
-  resumeDesignStyleSchema,
   resumeTemplateElementSchema,
+  resumeTemplateClassSchema,
+  resumeTemplateStyleSchema,
 } from '@/schemas/resume-template.schema';
 import { z } from 'zod';
 
 export type ResumeTemplate = z.infer<typeof resumeTemplateSchema>;
-export type ResumeTemplateClass = z.infer<typeof resumeDesignClassSchema>;
-export type ResumeTemplateStyle = z.infer<typeof resumeDesignStyleSchema>;
-export type ResumeTemplateElementStyle = z.infer<typeof elementStyleSchema>;
+export type ResumeTemplateClass = z.infer<typeof resumeTemplateClassSchema>;
+export type ResumeTemplateStyle = z.infer<typeof resumeTemplateStyleSchema>;
 export type ResumeTemplateElement = z.infer<typeof resumeTemplateElementSchema>;

@@ -43,7 +43,7 @@ async function processFile(filePath: string): Promise<void> {
       path.basename(filePath, path.extname(filePath)) + '.pdf',
     );
     await renderToFile(
-      <ResumeDocument resume={resumeContent} resumeDesign={DEFAULT_RESUME_DESIGN} />,
+      <ResumeDocumentV2 resume={resumeContent} resumeTemplate={DEFAULT_RESUME_DESIGN} />,
       pdfFilePath,
     );
 

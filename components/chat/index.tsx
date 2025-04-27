@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import { randomNDigits } from '@/lib/utils';
 import { ContentWithMeta } from './types';
 import ErrorBoundary from '../shared/error-boundary';
+import { DEFAULT_RESUME_TEMPLATE } from '../job-resumes/resume-renderer/default-resume-template';
 
 // Predefined questions
 const PREDEFINED_QUESTIONS = [
@@ -116,7 +117,11 @@ export function ChatInterface({
       let file = null;
       if (shareResume) {
         const pdfBlob = await pdf(
-          <ResumeDocument resume={resume} resumeDesign={null} skipFont={true} />,
+          <ResumeDocument
+            resume={resume}
+            resumeTemplate={DEFAULT_RESUME_TEMPLATE}
+            skipFont={true}
+          />,
         ).toBlob();
         file = await blob2base64(pdfBlob!);
       }

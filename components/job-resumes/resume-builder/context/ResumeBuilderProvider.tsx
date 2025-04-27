@@ -1,7 +1,7 @@
 'use client';
 
 import { ResumeAnalyzeResults, ResumeContent } from '@/types/resume';
-import { ResumeDesign } from '@/types/resume-design';
+import { ResumeTemplate } from '@/types/resume-template';
 // import { migrateResumeContent } from '@/utils/resume-migration';
 import React, { createContext, useState } from 'react';
 
@@ -11,8 +11,8 @@ export type ICareerProfileEditor = {
   resume: ResumeContent;
   saveResume: (resume: ResumeContent) => void;
 
-  design: ResumeDesign | null;
-  saveDesign: (design: ResumeDesign) => void;
+  resumeTemplate: ResumeTemplate | null;
+  saveResumeTemplate: (resumeTemplate: ResumeTemplate) => void;
 
   resumeAnalyzeResults?: ResumeAnalyzeResults;
   setResumeAnalyzeResults: React.Dispatch<React.SetStateAction<ResumeAnalyzeResults | undefined>>;
@@ -25,24 +25,26 @@ export const ResumeBuilderContext = createContext<ICareerProfileEditor>({
 export const ResumeBuilderProvider = ({
   children,
   initialResume,
-  initialDesign,
+  initialResumeTemplate,
   initialResumeAnalyzeResults,
   scheme,
   onUpdated,
-  onDesignUpdated,
+  onResumeTemplateUpdated,
 }: {
   children: React.ReactNode;
   initialResume: ResumeContent;
-  initialDesign: ResumeDesign | null;
+  initialResumeTemplate: ResumeTemplate | null;
   initialResumeAnalyzeResults?: ResumeAnalyzeResults;
   scheme?: 'cards' | 'accordion';
   onUpdated?: (resume: ResumeContent) => void;
-  onDesignUpdated?: (design: ResumeDesign) => void;
+  onResumeTemplateUpdated?: (t: ResumeTemplate) => void;
 }) => {
   // const migratedResume = migrateResumeContent(initialResume);
 
   const [resume, setResume] = useState<ResumeContent>(initialResume);
-  const [design, setDesign] = useState<ResumeDesign | null>(initialDesign);
+  const [resumeTemplate, setResumeTemplate] = useState<ResumeTemplate | null>(
+    initialResumeTemplate,
+  );
 
   const [resumeAnalyzeResults, setResumeAnalyzeResults] = useState<
     ResumeAnalyzeResults | undefined
@@ -53,9 +55,9 @@ export const ResumeBuilderProvider = ({
     onUpdated?.(resume);
   };
 
-  const saveDesign = (design: ResumeDesign) => {
-    setDesign(design);
-    onDesignUpdated?.(design);
+  const saveResumeTemplate = (t: ResumeTemplate) => {
+    setResumeTemplate(t);
+    onResumeTemplateUpdated?.(t);
   };
 
   return (
@@ -66,8 +68,8 @@ export const ResumeBuilderProvider = ({
         scheme,
         resume,
         saveResume,
-        design,
-        saveDesign,
+        resumeTemplate,
+        saveResumeTemplate,
         resumeAnalyzeResults,
         setResumeAnalyzeResults,
       }}

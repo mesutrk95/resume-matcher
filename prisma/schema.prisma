@@ -95,7 +95,7 @@ model CareerProfile {
   description String?
   userId      String
   content     Json?
-  design      Json?
+  template    Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   draft       Boolean  @default(true)
@@ -141,7 +141,7 @@ model JobResume {
   content             Json?
   analyzeResults      Json?    @default("{}") @db.Json
   baseCareerProfileId String?
-  design              Json?
+  template            Json?
   name                String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

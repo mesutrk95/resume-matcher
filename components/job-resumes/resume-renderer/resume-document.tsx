@@ -1,26 +1,15 @@
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 import { ResumeContent } from '@/types/resume';
-// import { SeperateList } from "../shared/seperate-list";
-import React, { useMemo } from 'react';
-// import { DEFAULT_RESUME_DESIGN } from "@/config/resume-designs";
+import React, { useCallback, useMemo } from 'react';
 import {
-  AwardsSection,
-  CertificationsSection,
-  ContactInfoSection,
-  EducationSection,
-  ExperienceSection,
-  FullNameSection,
-  InterestsSection,
-  LanguagesSection,
-  ProjectsSection,
-  ReferencesSection,
-  SkillsSection,
-  SummarySection,
-  TitleSection,
-} from './sections';
-import { DEFAULT_RESUME_DESIGN } from '@/schemas/resume-design.schema';
-import { ResumeRendererProvider, useResumeRenderer } from './provider';
-import { ResumeDesign } from '@/types/resume-design';
+  ResumeTemplate,
+  ResumeTemplateClass,
+  ResumeTemplateElement,
+} from '@/types/resume-template';
+
+import { JSONPath } from 'jsonpath-plus';
+import moment from 'moment';
+import { parseDate } from '@/components/ui/year-month-picker';
 
 // Register fonts (optional but recommended for professional CVs)
 Font.register({
@@ -58,185 +47,275 @@ Font.register({
 });
 
 // Helper function to register additional custom fonts if needed
-const registerFonts = (design: ResumeDesign) => {
+const registerFonts = (design: ResumeTemplate) => {
   // If the design uses a different font than what we already registered, register it here
-  if (
-    design.fonts.family !== 'Open Sans' &&
-    !Font.getRegisteredFontFamilies().includes(design.fonts.family)
-  ) {
-    // Logic to register additional fonts if needed
-    // This would require a font registry/lookup table to map font names to CDN URLs
-  }
-
-  // Same for heading font if specified separately
-  if (
-    design.fonts.headingFamily &&
-    design.fonts.headingFamily !== design.fonts.family &&
-    !Font.getRegisteredFontFamilies().includes(design.fonts.headingFamily)
-  ) {
-    // Register heading font
-  }
+  // if (
+  //   design.fonts.family !== 'Open Sans' &&
+  //   !Font.getRegisteredFontFamilies().includes(design.fonts.family)
+  // ) {
+  //   // Logic to register additional fonts if needed
+  //   // This would require a font registry/lookup table to map font names to CDN URLs
+  // }
+  // // Same for heading font if specified separately
+  // if (
+  //   design.fonts.headingFamily &&
+  //   design.fonts.headingFamily !== design.fonts.family &&
+  //   !Font.getRegisteredFontFamilies().includes(design.fonts.headingFamily)
+  // ) {
+  //   // Register heading font
+  // }
 };
 
-// Helper to dynamically render sections in order
-const renderSection = (sectionName: string, resume: ResumeContent) => {
-  switch (sectionName) {
-    case 'contactInfo':
-      return <ContactInfoSection resume={resume} />;
-    case 'fullname':
-      return <FullNameSection resume={resume} />;
-    case 'title':
-      return <TitleSection resume={resume} />;
-    case 'summary':
-      return <SummarySection resume={resume} />;
-    case 'experiences':
-      return <ExperienceSection resume={resume} />;
-    case 'educations':
-      return <EducationSection resume={resume} />;
-    case 'skills':
-      return <SkillsSection resume={resume} />;
-    case 'projects':
-      return <ProjectsSection resume={resume} />;
-    case 'languages':
-      return <LanguagesSection resume={resume} />;
-    case 'certifications':
-      return <CertificationsSection resume={resume} />;
-    case 'awards':
-      return <AwardsSection resume={resume} />;
-    case 'interests':
-      return <InterestsSection resume={resume} />;
-    case 'references':
-      return <ReferencesSection resume={resume} />;
-    default:
-      return null;
-  }
-};
+// export const ResumeDocument = ({
+//   resumeDesign,
+//   ...props
+// }: {
+//   resume: ResumeContent;
+//   withIdentifiers?: boolean;
+//   skipFont?: boolean;
+//   resumeDesign?: ResumeDesign | null;
+// }) => {
+//   return (
+//     <ResumeRendererProvider initialResumeDesign={resumeDesign || DEFAULT_RESUME_DESIGN}>
+//       <ResumeDocumentRenderer {...props} />
+//     </ResumeRendererProvider>
+//   );
+// };
 
+/*
+text component valid props:
+  render:
+    p: (relPath: string) => string
+    p is used to get data using jsonpath-plus the path must be relative
+    
+    renderDates: (dates: string[], separator?: string = '-') => string
+    it does the formating on the input dates and seperate them by separator
+
+    join: (strs: string[], separator?: string = '•') => string
+    it joins all the input strings and disposes null & undefined then seperates them by separator
+
+    $r : refers to resume data object
+
+    $item : refers to current object is trying to render
+
+  data: 
+    displays literal string
+
+  path: 
+    directly gives the content to json path (relative)
+*/
 export const ResumeDocument = ({
-  resumeDesign,
-  ...props
-}: {
-  resume: ResumeContent;
-  withIdentifiers?: boolean;
-  skipFont?: boolean;
-  resumeDesign?: ResumeDesign | null;
-}) => {
-  return (
-    <ResumeRendererProvider initialResumeDesign={resumeDesign || DEFAULT_RESUME_DESIGN}>
-      <ResumeDocumentRenderer {...props} />
-    </ResumeRendererProvider>
-  );
-};
-
-// Main ResumeDocument component
-const ResumeDocumentRenderer = ({
   resume,
   withIdentifiers,
   skipFont,
+  resumeTemplate,
 }: {
   resume: ResumeContent;
   withIdentifiers?: boolean;
   skipFont?: boolean;
+  resumeTemplate?: ResumeTemplate | null;
 }) => {
-  const { design, resolveStyle } = useResumeRenderer();
-  // Register any custom fonts needed by this design
-  if (!skipFont) {
-    registerFonts(design);
-  }
+  // // Register any custom fonts needed by this design
+  // if (!skipFont) {
+  //   registerFonts(resumeDesign);
+  // }
+
+  const getClassStyles = useCallback(
+    (name?: ResumeTemplateClass) => {
+      if (!name || !resumeTemplate) return {};
+      const classes = name.split(' ').map(c => resumeTemplate.classDefs[c]);
+      return classes.reduce(
+        (acc, classStyles) => ({
+          ...acc,
+          ...classStyles,
+        }),
+        {},
+      );
+    },
+    [resumeTemplate],
+  );
+
+  const getData = (source: any, path: string, params?: number[]): string => {
+    const result = JSONPath({
+      path,
+      json: source,
+      // sandbox: params?.reduce((acc, item, index) => {
+      //   acc['i' + index] = item;
+      //   return acc;
+      // }, {} as any),
+    });
+    return result;
+  };
+
+  const runFunction = useMemo(() => {
+    const formatDate = (date?: string) => {
+      if (!date) return '';
+      if (date === 'Present') return 'Present';
+      return moment(parseDate(date)).format(resumeTemplate?.dateFormat || 'MMM YYYY');
+    };
+
+    const renderDates = (dates: string[], separator: string = '-'): string => {
+      const validDates = dates.filter(date => !!date).map(d => formatDate(d));
+      return validDates.join(separator);
+    };
+
+    const join = (strs: string[], separator: string = ' • '): string => {
+      const validStrs = strs.filter(str => !!str);
+      return validStrs.join(separator);
+    };
+
+    function createFunction<T, R>(
+      functionStr: string,
+      resume: ResumeContent,
+      propertyAccessor: (path: string) => any,
+    ): (itemData?: any) => R {
+      const dynamicFn = new Function(
+        '$r',
+        '$item',
+        'p',
+        'join',
+        'renderDates',
+        `return ${functionStr}`,
+      );
+
+      return (itemData: any) => dynamicFn(resume, itemData, propertyAccessor, join, renderDates);
+    }
+
+    function runFunction(func: string, itemData: any) {
+      const evaluate = createFunction<ResumeContent, string>(func, resume, (path: string) =>
+        getData(itemData, path),
+      );
+      let result = evaluate(itemData);
+      if (typeof result === 'function') {
+        result = (result as () => string)();
+      }
+
+      return result;
+    }
+
+    return runFunction;
+  }, [resume, resumeTemplate, resumeTemplate?.dateFormat]);
+
+  const renderNode = (
+    baseElement: ResumeTemplateElement,
+    baseItemData: any,
+    baseParams: number[],
+  ) => {
+    if (!baseElement) return null;
+
+    function renderChilds(itemData: any, itemIndex?: number) {
+      return baseElement?.elements?.map((element, index) => {
+        const props = {
+          ...(typeof element.wrap !== 'undefined' && { wrap: element.wrap }),
+          ...(typeof element.break !== 'undefined' && { break: element.break }),
+        };
+
+        const tHide = typeof element.hide;
+        if (tHide !== 'undefined') {
+          if (tHide === 'boolean') return null;
+          else if (tHide === 'string') {
+            const result = runFunction(element.hide as string, itemData);
+            if (!result) return null;
+          }
+        }
+
+        if (element.type === 'View') {
+          return (
+            <View
+              key={index}
+              style={{ ...element.style, ...getClassStyles(element.class) }}
+              {...props}
+            >
+              {element.elements &&
+                renderNode(
+                  element,
+                  itemData || baseItemData,
+                  index ? [...baseParams, index] : baseParams,
+                )}
+            </View>
+          );
+        } else if (element.type === 'Text') {
+          let textData;
+
+          if (element.data) {
+            textData = element.data;
+          } else if (element.render) {
+            const result = runFunction(element.render, itemData);
+            if (typeof result === 'string') textData = result;
+          } else {
+            textData = element.path && getData(itemData, element.path)[0];
+          }
+          return (
+            <Text
+              key={index}
+              style={{ ...element.style, ...getClassStyles(element.class) }}
+              {...props}
+            >
+              {/* ({element.path})  */}
+              {textData}
+            </Text>
+          );
+        }
+
+        return null;
+      });
+    }
+
+    const elementData = baseElement.path && getData(baseItemData, baseElement.path, baseParams);
+
+    if (Array.isArray(elementData)) {
+      return (
+        <>
+          {elementData.map((childData, index) => (
+            <React.Fragment key={index}>{renderChilds(childData, index)}</React.Fragment>
+          ))}
+        </>
+      );
+    } else {
+      return renderChilds(baseItemData);
+    }
+  };
 
   // Generate styles based on the resume design configuration
   const styles = useMemo(() => {
     // const spacing = (units: number) => units * design.spacing.unit;
 
+    if (!resumeTemplate) return null;
     const styles = StyleSheet.create({
       page: {
         // flexDirection: "column",
         // backgroundColor: design.colors.background,
-        padding: `${design.spacing.pagePadding.top}pt ${design.spacing.pagePadding.right}pt ${design.spacing.pagePadding.bottom}pt ${design.spacing.pagePadding.left}pt`,
+        padding: `${resumeTemplate.spacing.pagePadding.top}pt ${resumeTemplate.spacing.pagePadding.right}pt ${resumeTemplate.spacing.pagePadding.bottom}pt ${resumeTemplate.spacing.pagePadding.left}pt`,
         margin: 0,
-        fontFamily: skipFont ? undefined : design.fonts.family,
-        fontSize: design.fonts.baseSize,
+        fontFamily: skipFont ? undefined : resumeTemplate.fonts.family,
+        fontSize: resumeTemplate.fonts.baseSize,
         // color: design.colors.text,
       },
       twoColumnContainer: {
         flexDirection: 'row',
         flexGrow: 1,
       },
-      header: resolveStyle(design.header),
-      leftColumn: resolveStyle(design.leftColumn),
-      rightColumn: resolveStyle(design.rightColumn),
-      fullName: resolveStyle(design.sections.fullname),
 
       pageNumber: {
         borderBottom: '',
         position: 'absolute',
-        bottom: design.spacing.pagePadding.bottom / 2,
-        right: design.spacing.pagePadding.right,
+        bottom: resumeTemplate.spacing.pagePadding.bottom / 2,
+        right: resumeTemplate.spacing.pagePadding.right,
         fontSize: 9,
       },
     });
     return styles;
-  }, [design, skipFont, resolveStyle]);
-
-  // For single column layout
-  if (design.columnLayout === 'single') {
-    return (
-      <Document>
-        <Page size={design.pageSize} style={styles.page} orientation={design.orientation}>
-          {design.sectionOrder?.map((sectionName, index) => (
-            <React.Fragment key={sectionName}>
-              {/* style={styles.section}  */}
-              {renderSection(sectionName, resume)}
-            </React.Fragment>
-          ))}
-
-          {design.enablePageNumbers && (
-            <Text
-              style={styles.pageNumber}
-              render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
-              fixed
-            />
-          )}
-        </Page>
-      </Document>
-    );
-  }
+  }, [resumeTemplate, skipFont]);
 
   return (
     <Document>
-      <Page size={design.pageSize} style={styles.page} orientation={design.orientation}>
-        {(design.header?.sections?.length || 0) > 0 && (
-          <View style={styles.header}>
-            {design.header?.sections?.map((sectionName, index) => (
-              <React.Fragment key={sectionName}>
-                {renderSection(sectionName, resume)}
-              </React.Fragment>
-            ))}
-          </View>
-        )}
-        <View style={styles.twoColumnContainer}>
-          {/* Left/Main Column */}
-          <View style={styles.leftColumn}>
-            {design.leftColumn?.sections?.map((sectionName, index) => (
-              <React.Fragment key={sectionName}>
-                {renderSection(sectionName, resume)}
-              </React.Fragment>
-            ))}
-          </View>
+      <Page size={'A4'} style={styles?.page} orientation={'portrait'}>
+        {resumeTemplate &&
+          renderNode({ ...resumeTemplate, type: 'View' } as ResumeTemplateElement, resume, [])}
 
-          {/* Right/Side Column */}
-          <View style={styles.rightColumn}>
-            {design.rightColumn?.sections?.map((sectionName, index) => (
-              <React.Fragment key={sectionName}>
-                {renderSection(sectionName, resume)}
-              </React.Fragment>
-            ))}
-          </View>
-        </View>
-
-        {design.enablePageNumbers && (
+        {resumeTemplate?.enablePageNumbers && (
           <Text
-            style={styles.pageNumber}
+            style={styles?.pageNumber}
             render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
             fixed
           />

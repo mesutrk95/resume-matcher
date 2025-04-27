@@ -1,31 +1,29 @@
 import { ResumeContent } from '@/types/resume';
 import { JobResume } from '@prisma/client';
-import { ResumeDocument } from './resume-renderer/resume-document';
 import { useEffect, useState } from 'react';
 import { pdf } from '@react-pdf/renderer';
 import { Button } from '../ui/button';
-import PDFViewer from './resume-renderer/pdf-viewer';
 import { ScrollArea } from '../ui/scroll-area';
 import { Download } from 'lucide-react';
 import { useResumeBuilder } from './resume-builder/context/useResumeBuilder';
 import { ChooseResumeDesignDialog } from './choose-resume-design-dialog';
-import { ResumeDesign } from '@/types/resume-design';
-import { ResumeDocumentV2 } from './resume-renderer/resume-document-v2';
+import { ResumeDocument } from './resume-renderer/resume-document';
+import PDFViewer from './resume-renderer/pdf-viewer';
 
 // CV Preview Component with Download Button
 export const ResumePreview = ({
   resume,
-  design,
   jobResume,
 }: {
   resume: ResumeContent;
-  design: ResumeDesign | null;
   jobResume: JobResume;
 }) => {
   // For client-side rendering only
   const [isClient, setIsClient] = useState(false);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>();
-  const { saveDesign } = useResumeBuilder();
+  const { saveResumeTemplate, resumeTemplate } = useResumeBuilder();
+
+  console.log(resumeTemplate);
 
   useEffect(() => {
     setIsClient(true);
@@ -34,9 +32,9 @@ export const ResumePreview = ({
   useEffect(() => {
     async function load() {
       const blob = await pdf(
-        <ResumeDocumentV2
+        <ResumeDocument
           resume={resume}
-          // resumeDesign={design}
+          resumeTemplate={resumeTemplate}
           withIdentifiers={false}
           skipFont={false}
         />,
@@ -44,7 +42,7 @@ export const ResumePreview = ({
       setPdfBlob(blob);
     }
     load();
-  }, [resume, design]);
+  }, [resume, resumeTemplate]);
 
   if (!isClient || !pdfBlob) {
     return <div className="flex justify-center items-center h-96">Loading CV preview...</div>;
@@ -58,8 +56,8 @@ export const ResumePreview = ({
       <div className="flex gap-2 justify-center absolute right-8 top-4">
         <ChooseResumeDesignDialog
           resume={resume}
-          onDesignChange={newDesign => {
-            saveDesign(newDesign);
+          onResumeTemplateChange={t => {
+            saveResumeTemplate(t);
           }}
         />
         <Button

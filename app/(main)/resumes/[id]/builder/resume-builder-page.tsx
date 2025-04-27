@@ -7,7 +7,8 @@ import { ResumeAnalyzeResults, ResumeContent } from '@/types/resume';
 import { Job, JobResume } from '@prisma/client';
 import { JobMatcher } from './JobMatcher';
 import { runAction } from '@/app/_utils/runAction';
-import { ResumeDesign } from '@/types/resume-design';
+import { ResumeTemplate } from '@/types/resume-template';
+import { DEFAULT_RESUME_TEMPLATE } from '@/components/job-resumes/resume-renderer/default-resume-template';
 
 export const ResumeBuilderPage = ({
   jobResume,
@@ -26,15 +27,15 @@ export const ResumeBuilderPage = ({
       },
     );
   };
-  const handleDesignUpdate = async (design: ResumeDesign) => {
+  const handleResumeTemplateUpdated = async (template: ResumeTemplate) => {
     await runAction(
       updateJobResume,
       {
-        successMessage: 'Resume design updated successfully',
+        successMessage: 'Resume template updated successfully',
       },
       {
         id: jobResume.id,
-        design,
+        template,
       },
     );
   };
@@ -42,10 +43,10 @@ export const ResumeBuilderPage = ({
   return (
     <ResumeBuilderProvider
       initialResume={jobResume.content as ResumeContent}
-      initialDesign={jobResume.design as ResumeDesign}
+      initialResumeTemplate={(jobResume.template || DEFAULT_RESUME_TEMPLATE) as ResumeTemplate}
       initialResumeAnalyzeResults={jobResume.analyzeResults as ResumeAnalyzeResults}
       onUpdated={handleUpdate}
-      onDesignUpdated={handleDesignUpdate}
+      onResumeTemplateUpdated={handleResumeTemplateUpdated}
     >
       <JobMatcher jobResume={jobResume} job={jobResume.job} />
     </ResumeBuilderProvider>

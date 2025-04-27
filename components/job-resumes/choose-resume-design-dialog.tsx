@@ -1,5 +1,4 @@
 import PDFViewer from '@/components/job-resumes/resume-renderer/pdf-viewer';
-import { ResumeDocument } from '@/components/job-resumes/resume-renderer/resume-document';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -18,7 +17,8 @@ import { ResumeContent } from '@/types/resume';
 import { pdf } from '@react-pdf/renderer';
 import { Paintbrush, CheckCircle, AlertTriangle, CheckCheck, Check } from 'lucide-react';
 import React, { useEffect, useState, useCallback } from 'react';
-import { ResumeDesign } from '@/types/resume-design';
+import { ResumeTemplate } from '@/types/resume-template';
+import { ResumeDocument } from './resume-renderer/resume-document';
 
 /**
  * Individual resume design item with skeleton loading
@@ -32,9 +32,9 @@ const ResumeDesignItem = ({
   resume: ResumeContent;
   designUrl: string;
   isSelected?: boolean;
-  onSelect?: (design: ResumeDesign) => void;
+  onSelect?: (design: ResumeTemplate) => void;
 }) => {
-  const [design, setDesign] = useState<ResumeDesign | null>(null);
+  const [template, setTemplate] = useState<ResumeTemplate | null>(null);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -46,11 +46,11 @@ const ResumeDesignItem = ({
         const res = await fetch(designUrl);
         if (!res.ok) throw new Error('Failed to fetch design');
 
-        const resumeDesign = (await res.json()) as ResumeDesign;
-        setDesign(resumeDesign);
+        const tesumeTemplate = (await res.json()) as ResumeTemplate;
+        setTemplate(tesumeTemplate);
 
         const blob = await pdf(
-          <ResumeDocument resumeDesign={resumeDesign} resume={resume} />,
+          <ResumeDocument resumeTemplate={tesumeTemplate} resume={resume} />,
         ).toBlob();
 
         setPdfBlob(blob);
@@ -74,10 +74,10 @@ const ResumeDesignItem = ({
   }, [designUrl, resume]);
 
   const handleSelect = useCallback(() => {
-    if (design && onSelect) {
-      onSelect(design);
+    if (template && onSelect) {
+      onSelect(template);
     }
-  }, [design, onSelect]);
+  }, [template, onSelect]);
 
   return (
     <Card
@@ -96,7 +96,7 @@ const ResumeDesignItem = ({
           <div className="h-60 w-full flex items-center justify-center bg-muted">
             <div className="text-center">
               <AlertTriangle className="h-8 w-8 text-destructive mx-auto mb-2" />
-              <p className="text-sm text-muted-foreground">Failed to load design</p>
+              <p className="text-sm text-muted-foreground">Failed to load template</p>
             </div>
           </div>
         ) : (
@@ -110,8 +110,8 @@ const ResumeDesignItem = ({
                 </div>
               )}
             </div>
-            {design && (
-              <h5 className="font-medium text-center mt-2 text-sm truncate">{design.name}</h5>
+            {template && (
+              <h5 className="font-medium text-center mt-2 text-sm truncate">{template.name}</h5>
             )}
           </>
         )}
@@ -125,10 +125,10 @@ const ResumeDesignItem = ({
  */
 const ResumeDesignList = ({
   resume,
-  onSelectDesign,
+  onSelectTemplate,
 }: {
   resume: ResumeContent;
-  onSelectDesign?: (design: ResumeDesign) => void;
+  onSelectTemplate?: (t: ResumeTemplate) => void;
 }) => {
   const [items, setItems] = useState<string[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -136,35 +136,35 @@ const ResumeDesignList = ({
   // Using Sonner toast
 
   useEffect(() => {
-    const fetchDesigns = async () => {
+    const fetchTemplates = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/designs/all.json');
-        if (!res.ok) throw new Error('Failed to fetch design list');
+        const res = await fetch('/templates/all.json');
+        if (!res.ok) throw new Error('Failed to fetch resume template list');
 
         const designUrls = await res.json();
         setItems(designUrls);
       } catch (err) {
         console.error('Error loading design list:', err);
-        toast.error('Failed to load designs', {
-          description: 'There was an error fetching the resume designs.',
+        toast.error('Failed to load templates', {
+          description: 'There was an error fetching the resume templates.',
         });
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDesigns();
+    fetchTemplates();
   }, []);
 
   const handleSelectDesign = useCallback(
-    (design: ResumeDesign, designUrl: string) => {
+    (t: ResumeTemplate, designUrl: string) => {
       setSelectedDesignUrl(designUrl);
-      if (onSelectDesign) {
-        onSelectDesign(design);
+      if (onSelectTemplate) {
+        onSelectTemplate(t);
       }
     },
-    [onSelectDesign],
+    [onSelectTemplate],
   );
 
   return (
@@ -202,28 +202,28 @@ const ResumeDesignList = ({
  */
 export const ChooseResumeDesignDialog = ({
   resume,
-  onDesignChange,
+  onResumeTemplateChange,
 }: {
   resume: ResumeContent;
-  onDesignChange?: (design: ResumeDesign) => void;
+  onResumeTemplateChange?: (t: ResumeTemplate) => void;
 }) => {
-  const [selectedDesign, setSelectedDesign] = useState<ResumeDesign | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<ResumeTemplate | null>(null);
   const [open, setOpen] = useState(false);
   // Using Sonner toast
 
   const handleSave = useCallback(() => {
-    if (selectedDesign && onDesignChange) {
-      onDesignChange(selectedDesign);
-      toast.success('Design updated', {
-        description: `Your resume now uses the "${selectedDesign.name}" design.`,
+    if (selectedTemplate && onResumeTemplateChange) {
+      onResumeTemplateChange(selectedTemplate);
+      toast.success('Resume template updated', {
+        description: `Your resume now uses the "${selectedTemplate.name}" design.`,
       });
       setOpen(false);
-    } else if (!selectedDesign) {
-      toast.error('No design selected', {
-        description: 'Please select a design first.',
+    } else if (!selectedTemplate) {
+      toast.error('No template is selected', {
+        description: 'Please select a template first.',
       });
     }
-  }, [selectedDesign, onDesignChange]);
+  }, [selectedTemplate, onResumeTemplateChange]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -234,20 +234,20 @@ export const ChooseResumeDesignDialog = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
-          <DialogTitle className="text-xl">Resume Design & Style</DialogTitle>
+          <DialogTitle className="text-xl">Resume Template & Style</DialogTitle>
           <DialogDescription>
             Choose a design template for your resume. Preview each option and click save when you
             are done.
           </DialogDescription>
         </DialogHeader>
 
-        <ResumeDesignList resume={resume} onSelectDesign={setSelectedDesign} />
+        <ResumeDesignList resume={resume} onSelectTemplate={setSelectedTemplate} />
 
         <DialogFooter className="mt-4 gap-2">
           <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button type="submit" onClick={handleSave} disabled={!selectedDesign}>
+          <Button type="submit" onClick={handleSave} disabled={!selectedTemplate}>
             Save changes
           </Button>
         </DialogFooter>

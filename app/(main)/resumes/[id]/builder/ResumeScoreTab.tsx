@@ -1,14 +1,11 @@
 import React, { useMemo, useState, useTransition } from 'react';
 import { analyzeResumeScore } from '@/actions/job-resume';
 import { useResumeBuilder } from '@/components/job-resumes/resume-builder/context/useResumeBuilder';
-import { ResumeDocument } from '@/components/job-resumes/resume-renderer/resume-document';
 import { Button } from '@/components/ui/button';
 import { LoadingButton } from '@/components/ui/loading-button';
 import { Textarea } from '@/components/ui/textarea';
 import { findVariation, resumeSkillsToString } from '@/lib/resume-content';
-import { randomNDigits } from '@/lib/utils';
 import { ResumeAnalyzedImprovementNote } from '@/types/resume';
-import { arrayMove } from '@dnd-kit/sortable';
 import { JobResume } from '@prisma/client';
 import { pdf } from '@react-pdf/renderer';
 import { CheckCircle, CircleX, RefreshCw, WandSparkles } from 'lucide-react';
@@ -17,8 +14,8 @@ import { ConnectJobToResume } from '../../../../../components/job-resumes/connec
 
 import dynamic from 'next/dynamic';
 import { Card, CardContent } from '@/components/ui/card';
-import { LottieAnimatedIcon } from '@/app/_components/lottie-animated-icon';
 import Image from 'next/image';
+import { ResumeDocument } from '@/components/job-resumes/resume-renderer/resume-document';
 const GaugeComponent = dynamic(() => import('react-gauge-component'), {
   ssr: false,
 });

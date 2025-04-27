@@ -15,10 +15,10 @@ const spacingSchema = z.object({
     left: z.number().default(30),
   }),
 });
-export const resumeDesignPageSize = z.enum(['A4', 'LETTER', 'A5']).default('A4');
-export const resumeDesignOrientation = z.enum(['portrait', 'landscape']).default('portrait');
-export const resumeDesignClassSchema = z.string();
-export const resumeDesignStyleSchema = z.object({
+export const resumeTemplatePageSize = z.enum(['A4', 'LETTER', 'A5']).default('A4');
+export const resumeTemplateOrientation = z.enum(['portrait', 'landscape']).default('portrait');
+export const resumeTemplateClassSchema = z.string();
+export const resumeTemplateStyleSchema = z.object({
   textDecoration: z
     .enum(['line-through', 'underline', 'none', 'line-through underline', 'underline line-through'])
     .optional(),
@@ -67,14 +67,14 @@ export const resumeDesignStyleSchema = z.object({
   borderWidth: z.union([z.number(), z.string()]).optional(),
 });
 const typographyClassesSchema = z.object({
-  h6: resumeDesignStyleSchema.optional(),
-  h5: resumeDesignStyleSchema.optional(),
-  h4: resumeDesignStyleSchema.optional(),
-  h3: resumeDesignStyleSchema.optional(),
-  h2: resumeDesignStyleSchema.optional(),
-  h1: resumeDesignStyleSchema.optional(),
-  p: resumeDesignStyleSchema.optional(),
-  'text-muted': resumeDesignStyleSchema.optional(),
+  h6: resumeTemplateStyleSchema.optional(),
+  h5: resumeTemplateStyleSchema.optional(),
+  h4: resumeTemplateStyleSchema.optional(),
+  h3: resumeTemplateStyleSchema.optional(),
+  h2: resumeTemplateStyleSchema.optional(),
+  h1: resumeTemplateStyleSchema.optional(),
+  p: resumeTemplateStyleSchema.optional(),
+  'text-muted': resumeTemplateStyleSchema.optional(),
 });
 
 const fontSchema = z.object({
@@ -86,7 +86,7 @@ const fontSchema = z.object({
 
 export const baseResumeTemplateElementSchema = z.object({
   type: z.enum(['Text', 'View']),
-  style: resumeDesignStyleSchema.optional(),
+  style: resumeTemplateStyleSchema.optional(),
   path: z.string().optional(),
   render: z.string().optional(),
   data: z.string().optional(),
@@ -110,10 +110,10 @@ const dateFormatSchema = z.enum(['YYYY/MM', 'YYYY MM', 'MM/YYYY', 'MMM YYYY']).d
 export const resumeTemplateSchema = z.object({
   name: z.string().default('Default'),
   version: z.number().default(1),
-  pageSize: resumeDesignPageSize,
-  orientation: resumeDesignOrientation,
+  pageSize: resumeTemplatePageSize,
+  orientation: resumeTemplateOrientation,
   fonts: fontSchema,
-  classDefs: z.record(z.string(), resumeDesignStyleSchema).and(typographyClassesSchema),
+  classDefs: z.record(z.string(), resumeTemplateStyleSchema).and(typographyClassesSchema),
   spacing: spacingSchema,
   dateFormat: dateFormatSchema.optional(),
   enablePageNumbers: z.boolean().default(true),

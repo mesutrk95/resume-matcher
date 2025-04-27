@@ -29,7 +29,7 @@ export const CareerProfilePage = ({ careerProfile }: { careerProfile: CareerProf
       <CareerProfileForm careerProfile={careerProfile} />
       <ResumeBuilderProvider
         initialResume={careerProfile.content as ResumeContent}
-        initialDesign={null}
+        initialResumeTemplate={null}
         onUpdated={handleResumeUpdate}
       >
         <ResumeBuilder />

@@ -41,7 +41,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
   const router = useRouter();
   const { isTrialingBannerEnable } = useSubscription();
   const { id: jobResumeId } = useParams();
-  const { resume, design, setResumeAnalyzeResults } = useResumeBuilder();
+  const { resume, resumeTemplate, setResumeAnalyzeResults } = useResumeBuilder();
 
   const [isDeleting, startDeletingTransition] = useTransition();
   const [isSyncingToCareerProfile, startSyncToCareerProfileTransition] = useTransition();
@@ -249,7 +249,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                         className="shrink-0 pt-0 relative w-full h-full p-0 m-0"
                         value="preview"
                       >
-                        <ResumePreview resume={resume} design={design} jobResume={jobResume} />
+                        <ResumePreview resume={resume} jobResume={jobResume} />
                       </TabsContent>
 
                       <TabsContent className="flex-auto h-0 p-0 m-0" value="jd">
