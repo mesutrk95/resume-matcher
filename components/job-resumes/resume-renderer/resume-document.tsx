@@ -66,22 +66,6 @@ const registerFonts = (design: ResumeTemplate) => {
   // }
 };
 
-// export const ResumeDocument = ({
-//   resumeDesign,
-//   ...props
-// }: {
-//   resume: ResumeContent;
-//   withIdentifiers?: boolean;
-//   skipFont?: boolean;
-//   resumeDesign?: ResumeDesign | null;
-// }) => {
-//   return (
-//     <ResumeRendererProvider initialResumeDesign={resumeDesign || DEFAULT_RESUME_DESIGN}>
-//       <ResumeDocumentRenderer {...props} />
-//     </ResumeRendererProvider>
-//   );
-// };
-
 /*
 text component valid props:
   render:

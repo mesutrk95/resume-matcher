@@ -653,7 +653,7 @@
                         "style": {
                           "paddingBottom": 2
                         },
-                        "hide": "p('contactInfo.email').length === 0",
+                        "hide": "!$r.contactInfo.email",
                         "elements": [
                           {
                             "type": "Text",
@@ -672,7 +672,7 @@
                         "style": {
                           "paddingBottom": 2
                         },
-                        "hide": "p('contactInfo.phone').length === 0",
+                        "hide": "!$r.contactInfo.phone",
                         "elements": [
                           {
                             "type": "Text",
@@ -691,7 +691,7 @@
                         "style": {
                           "paddingBottom": 2
                         },
-                        "hide": "p('contactInfo.address').length === 0",
+                        "hide": "!$r.contactInfo.address",
                         "elements": [
                           {
                             "type": "Text",
@@ -710,7 +710,7 @@
                         "style": {
                           "paddingBottom": 2
                         },
-                        "hide": "p('contactInfo.linkedIn').length === 0",
+                        "hide": "!$r.contactInfo.linkedIn",
                         "elements": [
                           {
                             "type": "Text",
@@ -729,7 +729,7 @@
                         "style": {
                           "paddingBottom": 2
                         },
-                        "hide": "p('contactInfo.github').length === 0",
+                        "hide": "!$r.contactInfo.github",
                         "elements": [
                           {
                             "type": "Text",
@@ -748,7 +748,7 @@
                         "style": {
                           "paddingBottom": 2
                         },
-                        "hide": "p('contactInfo.website').length === 0",
+                        "hide": "!$r.contactInfo.website",
                         "elements": [
                           {
                             "type": "Text",
