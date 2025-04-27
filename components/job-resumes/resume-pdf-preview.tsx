@@ -23,8 +23,6 @@ export const ResumePreview = ({
   const [pdfBlob, setPdfBlob] = useState<Blob | null>();
   const { saveResumeTemplate, resumeTemplate } = useResumeBuilder();
 
-  console.log(resumeTemplate);
-
   useEffect(() => {
     setIsClient(true);
   }, []);

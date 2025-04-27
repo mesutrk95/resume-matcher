@@ -190,6 +190,7 @@ export const ResumeDocument = ({
         result = (result as () => string)();
       }
 
+      // console.log('run function', func, result);
       return result;
     }
 
@@ -212,10 +213,13 @@ export const ResumeDocument = ({
 
         const tHide = typeof element.hide;
         if (tHide !== 'undefined') {
+          // console.log('tHide', tHide);
           if (tHide === 'boolean') return null;
           else if (tHide === 'string') {
-            const result = runFunction(element.hide as string, itemData);
-            if (!result) return null;
+            const hide = runFunction(element.hide as string, itemData);
+            // console.log(element.hide, hide);
+
+            if (typeof hide === 'boolean' && hide) return null;
           }
         }
 
