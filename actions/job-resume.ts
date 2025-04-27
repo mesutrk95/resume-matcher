@@ -5,12 +5,7 @@ import { db } from '@/lib/db';
 import { JobResume } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { DEFAULT_RESUME_CONTENT } from './constants';
-import {
-  ResumeAnalyzeResults,
-  ResumeContent,
-  ResumeDesign,
-  ResumeItemScoreAnalyze,
-} from '@/types/resume';
+import { ResumeAnalyzeResults, ResumeContent, ResumeItemScoreAnalyze } from '@/types/resume';
 import { ContentWithMeta, getAIJsonResponse, getGeminiChatResponse } from '@/lib/ai';
 import { JobAnalyzeResult } from '@/types/job';
 import { chunkArray, hashString } from '@/lib/utils';
@@ -26,6 +21,7 @@ import { resumeContentSchema } from '@/schemas/resume';
 import z from 'zod';
 import { withErrorHandling } from '@/lib/with-error-handling';
 import { resumeDesignSchema } from '@/schemas/resume-design.schema';
+import { ResumeDesign } from '@/types/resume-design';
 
 export const findJobResume = async (id: string) => {
   const user = await currentUser();

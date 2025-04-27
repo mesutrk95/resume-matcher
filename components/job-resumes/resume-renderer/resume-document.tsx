@@ -1,6 +1,5 @@
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
-import { ResumeContent, ResumeDesign } from '@/types/resume';
-// import { ResumeDesign } from "@/types/resume-design";
+import { ResumeContent } from '@/types/resume';
 // import { SeperateList } from "../shared/seperate-list";
 import React, { useMemo } from 'react';
 // import { DEFAULT_RESUME_DESIGN } from "@/config/resume-designs";
@@ -21,6 +20,7 @@ import {
 } from './sections';
 import { DEFAULT_RESUME_DESIGN } from '@/schemas/resume-design.schema';
 import { ResumeRendererProvider, useResumeRenderer } from './provider';
+import { ResumeDesign } from '@/types/resume-design';
 
 // Register fonts (optional but recommended for professional CVs)
 Font.register({

@@ -1,17 +1,14 @@
 import { renderList } from '@/components/shared/seperate-list';
+import { Experience, ResumeContent, ResumeEducation, ResumeProject } from '@/types/resume';
+import { Text, View } from '@react-pdf/renderer';
+import React from 'react';
+import { useResumeRenderer } from './provider';
 import {
-  Experience,
-  ResumeContent,
   ResumeDesignElementStyle,
   ResumeDesignSection,
   ResumeDesignSectionName,
   ResumeDesignSectionSubHeader,
-  ResumeEducation,
-  ResumeProject,
-} from '@/types/resume';
-import { Text, View } from '@react-pdf/renderer';
-import React from 'react';
-import { useResumeRenderer } from './provider';
+} from '@/types/resume-design';
 
 interface SectionHeaderProps {
   sectionName: ResumeDesignSectionName;

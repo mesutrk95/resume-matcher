@@ -14,10 +14,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ResumeContent, ResumeDesign } from '@/types/resume';
+import { ResumeContent } from '@/types/resume';
 import { pdf } from '@react-pdf/renderer';
 import { Paintbrush, CheckCircle, AlertTriangle, CheckCheck, Check } from 'lucide-react';
 import React, { useEffect, useState, useCallback } from 'react';
+import { ResumeDesign } from '@/types/resume-design';
 
 /**
  * Individual resume design item with skeleton loading

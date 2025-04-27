@@ -1,4 +1,4 @@
-import { ResumeContent, ResumeDesign } from '@/types/resume';
+import { ResumeContent } from '@/types/resume';
 import { JobResume } from '@prisma/client';
 import { ResumeDocument } from './resume-renderer/resume-document';
 import { useEffect, useState } from 'react';
@@ -9,6 +9,8 @@ import { ScrollArea } from '../ui/scroll-area';
 import { Download } from 'lucide-react';
 import { useResumeBuilder } from './resume-builder/context/useResumeBuilder';
 import { ChooseResumeDesignDialog } from './choose-resume-design-dialog';
+import { ResumeDesign } from '@/types/resume-design';
+import { ResumeDocumentV2 } from './resume-renderer/resume-document-v2';
 
 // CV Preview Component with Download Button
 export const ResumePreview = ({
@@ -32,9 +34,9 @@ export const ResumePreview = ({
   useEffect(() => {
     async function load() {
       const blob = await pdf(
-        <ResumeDocument
+        <ResumeDocumentV2
           resume={resume}
-          resumeDesign={design}
+          // resumeDesign={design}
           withIdentifiers={false}
           skipFont={false}
         />,

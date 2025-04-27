@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useCallback } from 'react';
-import { ResumeDesign, ResumeDesignClass, ResumeDesignElementStyle } from '@/types/resume';
 import { createContext, useContext, useState } from 'react';
 import moment from 'moment';
 import { parseDate } from '@/components/ui/year-month-picker';
+import { ResumeDesign, ResumeDesignClass, ResumeDesignElementStyle } from '@/types/resume-design';
 
 interface ResumeRendererContextType {
   design: ResumeDesign;

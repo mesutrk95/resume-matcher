@@ -1,6 +1,7 @@
 'use client';
 
-import { ResumeAnalyzeResults, ResumeContent, ResumeDesign } from '@/types/resume';
+import { ResumeAnalyzeResults, ResumeContent } from '@/types/resume';
+import { ResumeDesign } from '@/types/resume-design';
 // import { migrateResumeContent } from '@/utils/resume-migration';
 import React, { createContext, useState } from 'react';
 

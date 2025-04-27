@@ -15,17 +15,12 @@ import {
   resumeAnalyzeResultsSchema,
   resumeSkillSetSchema,
   resumeSkillItemSchema,
+  resumeAwardSchema,
+  resumeCertificationSchema,
+  resumeLanguageSchema,
+  resumeReferenceSchema,
+  resumeInterestSchema,
 } from '@/schemas/resume';
-import {
-  elementStyleSchema,
-  resumeDesignClassSchema,
-  resumeDesignSchema,
-  resumeDesignStyleSchema,
-  sectionNamesSchema,
-  sectionSchema,
-  sectionSubheaderSchema,
-  typographySchema,
-} from '@/schemas/resume-design.schema';
 
 // Infer types from Zod schemas
 export type Variation = z.infer<typeof variationSchema>;
@@ -49,11 +44,3 @@ export type ResumeContent = z.infer<typeof resumeContentSchema>;
 export type ResumeItemScoreAnalyze = z.infer<typeof resumeItemScoreAnalyzeSchema>;
 export type ResumeAnalyzedImprovementNote = z.infer<typeof resumeAnalyzedImprovementNoteSchema>;
 export type ResumeAnalyzeResults = z.infer<typeof resumeAnalyzeResultsSchema>;
-
-export type ResumeDesign = z.infer<typeof resumeDesignSchema>;
-export type ResumeDesignClass = z.infer<typeof resumeDesignClassSchema>;
-export type ResumeDesignStyle = z.infer<typeof resumeDesignStyleSchema>;
-export type ResumeDesignElementStyle = z.infer<typeof elementStyleSchema>;
-export type ResumeDesignSection = z.infer<typeof sectionSchema>;
-export type ResumeDesignSectionSubHeader = z.infer<typeof sectionSubheaderSchema>;
-export type ResumeDesignSectionName = z.infer<typeof sectionNamesSchema>;
