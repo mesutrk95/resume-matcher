@@ -14,6 +14,46 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const templateCache: Record<string, (data: any) => string> = {};
 
 /**
+ * Get base email data that should be included in all emails
+ */
+function getBaseEmailData() {
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Minova AI';
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://minova.ai';
+
+  return {
+    // Basic app info
+    appName,
+    appUrl,
+    title: appName,
+    previewText: `Message from ${appName}`,
+
+    // URLs for navigation
+    websiteUrl: appUrl,
+    productUrl: `${appUrl}/products`,
+    blogUrl: `${appUrl}/blog`,
+    contactUrl: `${appUrl}/contact`,
+
+    // Social media links
+    facebookUrl: 'https://facebook.com/minovaai',
+    twitterUrl: 'https://twitter.com/minovaai',
+    linkedinUrl: 'https://linkedin.com/company/minovaai',
+    instagramUrl: 'https://instagram.com/minovaai',
+
+    // Contact information
+    companyAddress: 'Minova AI, Inc.',
+    contactEmail: process.env.EMAIL_FROM?.split('<')[1]?.split('>')[0] || 'contact@minova.ai',
+
+    // Footer links
+    privacyUrl: process.env.PRIVACY_POLICY_URL || `${appUrl}/privacy-policy`,
+    termsUrl: process.env.TERMS_OF_SERVICE_URL || `${appUrl}/terms-of-service`,
+    unsubscribeUrl: `${appUrl}/unsubscribe`,
+
+    // Current year for copyright
+    currentYear: new Date().getFullYear(),
+  };
+}
+
+/**
  * Load and compile an MJML template
  */
 async function loadMjmlTemplate(
@@ -58,14 +98,11 @@ export const sendVerificationEmail = async (email: string, token: string, name?:
     const template = await loadMjmlTemplate('verification');
 
     const data = {
-      title: `Email Verification - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'}`,
+      ...getBaseEmailData(),
+      title: `Email Verification - ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'}`,
+      previewText: 'Please verify your email address to complete your registration',
       name: name || email.split('@')[0],
       verificationLink: verifyEmailLink,
-      appName: process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher',
-      appUrl: process.env.NEXT_PUBLIC_APP_URL,
-      privacyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
-      termsUrl: `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
-      currentYear: new Date().getFullYear(),
     };
 
     const html = template(data);
@@ -90,21 +127,18 @@ export const sendResetPasswordEmail = async (email: string, token: string) => {
   try {
     const template = await loadMjmlTemplate('reset-password');
     const html = template({
-      title: `Reset Your Password - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'}`,
+      ...getBaseEmailData(),
+      title: `Reset Your Password - ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'}`,
+      previewText: 'Instructions to reset your password',
       name: email.split('@')[0],
       resetPasswordLink: resetPasswordLink,
-      appName: process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher',
-      appUrl: process.env.NEXT_PUBLIC_APP_URL,
-      privacyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
-      termsUrl: `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
-      currentYear: new Date().getFullYear(),
     });
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
       to: email,
       subject: `[${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
+        process.env.NEXT_PUBLIC_APP_NAME || 'Minova'
       }] Action required: Reset your password`,
       html: html,
     });
@@ -120,21 +154,18 @@ export const sendTwoFactorEmail = async (email: string, token: string) => {
   try {
     const template = await loadMjmlTemplate('two-factor');
     const html = template({
-      title: `Two-Factor Authentication - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'}`,
+      ...getBaseEmailData(),
+      title: `Two-Factor Authentication - ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'}`,
+      previewText: 'Your two-factor authentication code',
       name: email.split('@')[0],
       token: token,
-      appName: process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher',
-      appUrl: process.env.NEXT_PUBLIC_APP_URL,
-      privacyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
-      termsUrl: `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
-      currentYear: new Date().getFullYear(),
     });
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
       to: email,
       subject: `[${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
+        process.env.NEXT_PUBLIC_APP_NAME || 'Minova'
       }] Action required: Confirm Two-Factor Authentication`,
       html: html,
     });
@@ -154,21 +185,18 @@ export const sendSubscriptionWelcomeEmail = async (
   try {
     const template = await loadMjmlTemplate('subscription-welcome');
     const html = template({
-      title: `Welcome to ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro!`,
+      ...getBaseEmailData(),
+      title: `Welcome to ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro!`,
+      previewText: `Welcome to your ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro subscription`,
       name: name || 'there',
       trialEndDate: trialEndDate.toLocaleDateString(),
-      appUrl: process.env.NEXT_PUBLIC_APP_URL,
-      currentYear: new Date().getFullYear(),
-      productName: 'Resume Matcher Pro',
-      appName: process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher',
-      privacyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
-      termsUrl: `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
+      productName: 'Minova Pro',
     });
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
       to: email,
-      subject: `Welcome to ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro!`,
+      subject: `Welcome to ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro!`,
       html: html,
     });
 
@@ -189,27 +217,20 @@ export const sendTrialEndingEmail = async (
   try {
     const template = await loadMjmlTemplate('trial-ending');
     const html = template({
-      title: `Your Trial is Ending Soon - ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      } Pro`,
+      ...getBaseEmailData(),
+      title: `Your Trial is Ending Soon - ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro`,
+      previewText: `Your ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro trial is ending soon`,
       name: name || 'there',
       trialEndDate: trialEndDate.toLocaleDateString(),
       firstBillingAmount: amount.toFixed(2),
       currency: currency.toUpperCase(),
       manageBillingUrl: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing`,
-      appUrl: process.env.NEXT_PUBLIC_APP_URL,
-      appName: process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher',
-      currentYear: new Date().getFullYear(),
-      privacyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
-      termsUrl: `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
     });
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
       to: email,
-      subject: `Your ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      } Pro Trial is Ending Soon`,
+      subject: `Your ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro Trial is Ending Soon`,
       html: html,
     });
 
@@ -232,7 +253,9 @@ export const sendPaymentFailedEmail = async (
   try {
     const template = await loadMjmlTemplate('payment-failed');
     const html = template({
-      title: `Payment Failed - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro`,
+      ...getBaseEmailData(),
+      title: `Payment Failed - ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro`,
+      previewText: `Action required: Your payment for ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro failed`,
       name: name || 'there',
       amount: amount.toFixed(2),
       currency: currency.toUpperCase(),
@@ -241,18 +264,13 @@ export const sendPaymentFailedEmail = async (
       nextAttemptDate: nextAttemptDate
         ? nextAttemptDate.toLocaleDateString()
         : 'No automatic retry scheduled',
-      appUrl: process.env.NEXT_PUBLIC_APP_URL,
-      appName: process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher',
-      currentYear: new Date().getFullYear(),
-      privacyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
-      termsUrl: `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
     });
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
       to: email,
       subject: `Action Required: Payment Failed for ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
+        process.env.NEXT_PUBLIC_APP_NAME || 'Minova'
       } Pro`,
       html: html,
     });
@@ -268,24 +286,19 @@ export const sendSubscriptionCanceledEmail = async (email: string, name: string,
   try {
     const template = await loadMjmlTemplate('subscription-ended');
     const html = template({
-      title: `Subscription Ended - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro`,
+      ...getBaseEmailData(),
+      title: `Subscription Ended - ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro`,
+      previewText: `Your ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro subscription has ended`,
       name: name || 'there',
       endDate: endDate.toLocaleDateString(),
       resubscribeUrl: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing`,
       feedbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/feedback`,
-      appUrl: process.env.NEXT_PUBLIC_APP_URL,
-      appName: process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher',
-      currentYear: new Date().getFullYear(),
-      privacyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
-      termsUrl: `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
     });
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
       to: email,
-      subject: `Your ${
-        process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'
-      } Pro Subscription Has Ended`,
+      subject: `Your ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro Subscription Has Ended`,
       html: html,
     });
 
@@ -300,21 +313,18 @@ export const sendWinBackEmail = async (email: string, name: string, userId: stri
   try {
     const template = await loadMjmlTemplate('win-back');
     const html = template({
-      title: `Special Offer - ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro`,
+      ...getBaseEmailData(),
+      title: `Special Offer - ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro`,
+      previewText: `Special offer just for you - come back to ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro`,
       name: name || 'there',
       specialOfferUrl: `${process.env.NEXT_PUBLIC_APP_URL}/special-offer?userId=${userId}`,
-      appUrl: process.env.NEXT_PUBLIC_APP_URL,
-      appName: process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher',
-      currentYear: new Date().getFullYear(),
       emailEncoded: encodeURIComponent(email),
-      privacyUrl: `${process.env.NEXT_PUBLIC_APP_URL}/privacy`,
-      termsUrl: `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
     });
 
     await resend.emails.send({
       from: process.env.EMAIL_FROM as string,
       to: email,
-      subject: `We Miss You at ${process.env.NEXT_PUBLIC_APP_NAME || 'Resume Matcher'} Pro`,
+      subject: `We Miss You at ${process.env.NEXT_PUBLIC_APP_NAME || 'Minova'} Pro`,
       html: html,
     });
 

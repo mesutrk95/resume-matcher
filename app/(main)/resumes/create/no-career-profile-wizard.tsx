@@ -134,7 +134,7 @@ export function NoCareerProfileWizard() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const careerProfile = await runAction(createCareerProfileFromResumePdf, formData);
+      const careerProfile = await runAction(createCareerProfileFromResumePdf, {}, formData);
       if (careerProfile.success) {
         toast.success('Your career profile imported!', {
           description: `Your career profile has been imported successfully.`,

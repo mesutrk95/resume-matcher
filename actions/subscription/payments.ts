@@ -76,10 +76,10 @@ export const getPaymentHistory = async (): Promise<{
       try {
         const price = await stripe.prices.retrieve(subscription.priceId);
         if (price.product && typeof price.product !== 'string') {
-          planName = (price.product as any).name || 'Resume Matcher Pro';
+          planName = (price.product as any).name || 'Minova Pro';
         } else if (typeof price.product === 'string') {
           const product = await stripe.products.retrieve(price.product);
-          planName = product.name || 'Resume Matcher Pro';
+          planName = product.name || 'Minova Pro';
         }
 
         if (price.recurring) {

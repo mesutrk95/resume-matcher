@@ -43,7 +43,7 @@ export class InvalidInputException extends HttpException {
   }
 
   serialize() {
-    return { message: this.message, data: this.errors }; // this.errors?.map((err) => JSON.stringify(err)).join(", ") || "";
+    return { message: this.message, data: this.errors };
   }
 }
 

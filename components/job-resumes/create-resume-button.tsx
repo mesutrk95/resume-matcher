@@ -6,7 +6,6 @@ import { LoadingButton } from '@/components/ui/loading-button';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useTransition } from 'react';
-import { toast } from 'sonner';
 
 export const CreateResumeButton = ({
   jobId,
@@ -19,18 +18,15 @@ export const CreateResumeButton = ({
   const router = useRouter();
   const handleCreateBlankResume = () => {
     startTransition(async () => {
-      try {
-        // Call the Server Action to create the ResumeJob
-        const result = await runAction(createJobResume(careerProfileId, jobId));
+      // Call the Server Action to create the ResumeJob
+      const result = await runAction(createJobResume(careerProfileId, jobId), {
+        successMessage: 'Resume created successfully!',
+        errorMessage: 'Failed to create resume',
+      });
 
-        if (result.success) {
-          // Redirect to the edit page
-          router.push(`/resumes/${result.data?.id}/builder`);
-        } else {
-          toast.error('Failed to create resume');
-        }
-      } catch (error) {
-        toast.error('Something went wrong');
+      if (result.success && result.data) {
+        // Redirect to the edit page
+        router.push(`/resumes/${result.data.id}/builder`);
       }
     });
   };

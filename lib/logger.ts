@@ -1,7 +1,7 @@
 import winston from 'winston';
 import 'winston-daily-rotate-file';
 import fs from 'fs';
-import { getCurrentRequestId, getRequestContext } from './request-context';
+import { getRequestContext } from './request-context';
 
 // Get configuration from environment variables
 const env = process.env.NODE_ENV || 'development';

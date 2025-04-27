@@ -8,8 +8,11 @@ import { CareerProfile } from '@prisma/client';
 export const ImportExportBar = ({ careerProfile }: { careerProfile: CareerProfile }) => {
   const exportJson = async () => {
     const rt = await getCareerProfile(careerProfile.id);
+    if (!rt?.data) {
+      return;
+    }
     const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-      JSON.stringify(rt?.content),
+      JSON.stringify(rt?.data.content),
     )}`;
     const link = document.createElement('a');
     link.href = jsonString;

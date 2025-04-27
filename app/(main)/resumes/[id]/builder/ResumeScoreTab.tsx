@@ -153,7 +153,11 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
         formData.append('file', file);
 
         const analyzeResults = await analyzeResumeScore(formData, jobResume.id);
-        setResumeAnalyzeResults(analyzeResults);
+        if (!analyzeResults.data) {
+          toast.error(analyzeResults.error?.message || 'Failed to analyze resume score.');
+          return;
+        }
+        setResumeAnalyzeResults(analyzeResults.data);
         // console.log(analyzeResults);
         toast.success('Successfully analyzed resume score!');
       } catch (error) {

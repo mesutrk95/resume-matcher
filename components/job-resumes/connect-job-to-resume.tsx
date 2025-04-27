@@ -14,7 +14,10 @@ export const ConnectJobToResume = ({ jobResumeId }: { jobResumeId: string }) => 
 
   const fetchData = useCallback(async (query?: string) => {
     const result = await getJobs({ search: query, pageSize: 5 });
-    return result.jobs;
+    if (!result.data) {
+      return [];
+    }
+    return result.data.jobs;
   }, []);
   const getOptionValue = useCallback((item: JobItem) => item.id, []);
   const handleConnectJob = () => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { profileSchema } from '@/schemas';
+import Image from 'next/image';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
@@ -119,11 +120,13 @@ export const ProfileForm = ({ user }: ProfileFormProps) => {
               <div className="rounded-md border border-green-200 bg-green-50 p-4">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <img
+                    <Image
                       src="/assets/email-verified.svg"
                       alt="Email Verified"
                       className="h-5 w-5 text-green-400"
                       aria-hidden="true"
+                      width={20}
+                      height={20}
                     />
                   </div>
                   <div className="ml-3">

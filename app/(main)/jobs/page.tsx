@@ -22,6 +22,14 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   const params = await searchParams;
   const statuses = params.status ? (params.status?.split(',') as JobStatus[]) : undefined;
   const result = await getJobs({ ...params, statuses });
+  if (!result.data) {
+    result.data = {
+      jobs: [],
+      total: 0,
+      page: 1,
+      pageSize: 10,
+    };
+  }
 
   return (
     <div className="">
@@ -32,10 +40,10 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         </div>
       </div>
       <JobsDataTable
-        data={result.jobs}
-        total={result.total}
-        currentPage={result.page}
-        pageSize={result.pageSize}
+        data={result.data.jobs}
+        total={result.data.total}
+        currentPage={result.data.page}
+        pageSize={result.data.pageSize}
         searchQuery={params.search}
         statusFilter={statuses}
       />

@@ -1,8 +1,5 @@
 'use server';
 
-import { currentUser } from '@/lib/auth';
-import { ForbiddenException } from '@/lib/exceptions';
-
 import { withErrorHandling } from '@/lib/with-error-handling';
 import axios from 'axios';
 
@@ -12,7 +9,7 @@ export const authorizeCode = withErrorHandling(async (code: string) => {
     grant_type: 'authorization_code',
     client_id: process.env.LINKEDIN_CLIENT_ID,
     client_secret: process.env.LINKEDIN_CLIENT_SECRET,
-    redirect_uri: 'http://localhost:8998/career-profiles/create',
+    redirect_uri: process.env.NEXT_PUBLIC_APP_URL + '/career-profiles/create',
   };
 
   const result = await axios.post('https://www.linkedin.com/oauth/v2/accessToken', data, {

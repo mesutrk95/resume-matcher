@@ -52,7 +52,7 @@ export const CreateCareerProfileOptions = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const result = await runAction(createCareerProfileFromResumePdf, formData);
+      const result = await runAction(createCareerProfileFromResumePdf, {}, formData);
 
       if (result.success) {
         toast.success('Resume Imported!', {

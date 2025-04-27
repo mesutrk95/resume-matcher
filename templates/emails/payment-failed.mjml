@@ -13,19 +13,17 @@
     <mj-text> Hello {{name}}, </mj-text>
 
     <mj-text>
-      We were unable to process your payment of {{currency}} {{amount}} for your
-      Resume Matcher Pro subscription.
+      We were unable to process your payment of {{currency}} {{amount}} for your Minova Pro
+      subscription.
     </mj-text>
 
     <mj-text> <strong>Payment attempt:</strong> {{attemptCount}} of 3 </mj-text>
 
-    <mj-text>
-      <strong>Next automatic retry:</strong> {{nextAttemptDate}}
-    </mj-text>
+    <mj-text> <strong>Next automatic retry:</strong> {{nextAttemptDate}} </mj-text>
 
     <mj-text>
-      To ensure uninterrupted access to Resume Matcher Pro, please update your
-      payment information by clicking the button below:
+      To ensure uninterrupted access to Minova Pro, please update your payment information by
+      clicking the button below:
     </mj-text>
 
     <mj-button
@@ -39,8 +37,8 @@
     </mj-button>
 
     <mj-text>
-      If you don't update your payment information, your subscription may be
-      canceled after our final retry attempt.
+      If you don't update your payment information, your subscription may be canceled after our
+      final retry attempt.
     </mj-text>
 
     <mj-text> Common reasons for payment failure include: </mj-text>
@@ -52,9 +50,7 @@
       • Outdated billing information
     </mj-text>
 
-    <mj-text>
-      If you need any assistance, please contact our support team.
-    </mj-text>
+    <mj-text> If you need any assistance, please contact our support team. </mj-text>
 
     <mj-text>
       Best regards,<br />

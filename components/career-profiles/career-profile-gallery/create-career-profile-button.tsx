@@ -3,7 +3,7 @@
 import { createCareerProfile } from '@/actions/career-profiles';
 import { LoadingButton } from '@/components/ui/loading-button';
 import { ResumeContent } from '@/types/resume';
-import { MousePointerClick, Pointer } from 'lucide-react';
+import { MousePointerClick } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useTransition } from 'react';
 import { toast } from 'sonner';
@@ -24,12 +24,11 @@ export const CreateCareerProfileButton = ({
       try {
         // Call the Server Action to create the ResumeJob
         const result = await createCareerProfile(resumeContent, resumeContent.titles?.[0]?.content);
-        if (result) {
-          // Redirect to the edit page
-          router.push(`/career-profiles/${result?.id}`);
-        } else {
-          toast.error('Failed to create career profile!');
+        if (!result.data) {
+          toast.error(result.error?.message || 'Failed to create career profile!');
+          return;
         }
+        router.push(`/career-profiles/${result?.data.id}`);
       } catch (error) {
         toast.error('Something went wrong!');
       }

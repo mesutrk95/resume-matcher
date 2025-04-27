@@ -127,10 +127,15 @@ export function ChatInterface({
         shareJD,
         messages.filter(m => m.id !== '1'),
       );
-      setMessages(newMessages.updatedHistory);
+      if (!newMessages.data) {
+        toast.error(newMessages.error?.message || 'Something went wrong');
+        setIsLoading(false);
+        return;
+      }
+      setMessages(newMessages.data.updatedHistory);
       localStorage.setItem(
         'ai-conversation-' + jobResume.id,
-        JSON.stringify(newMessages.updatedHistory),
+        JSON.stringify(newMessages.data.updatedHistory),
       );
     } catch (ex) {
       toast.error(ex?.toString() || 'Something went wrong');

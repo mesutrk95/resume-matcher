@@ -15,16 +15,28 @@ export const ResumeBuilderPage = ({
   jobResume: JobResume & { job: Job | null };
 }) => {
   const handleUpdate = async (resume: ResumeContent) => {
-    await runAction(updateJobResume, {
-      id: jobResume.id,
-      content: resume,
-    });
+    await runAction(
+      updateJobResume,
+      {
+        successMessage: 'Resume updated successfully',
+      },
+      {
+        id: jobResume.id,
+        content: resume,
+      },
+    );
   };
   const handleDesignUpdate = async (design: ResumeDesign) => {
-    await runAction(updateJobResume, {
-      id: jobResume.id,
-      design,
-    });
+    await runAction(
+      updateJobResume,
+      {
+        successMessage: 'Resume design updated successfully',
+      },
+      {
+        id: jobResume.id,
+        design,
+      },
+    );
   };
 
   return (

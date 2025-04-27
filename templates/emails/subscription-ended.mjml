@@ -13,18 +13,17 @@
     <mj-text> Hello {{name}}, </mj-text>
 
     <mj-text>
-      We're sorry to see you go. Your Resume Matcher Pro subscription has been
-      canceled and ended on <strong>{{endDate}}</strong>.
+      We're sorry to see you go. Your Minova Pro subscription has been canceled and ended on
+      <strong>{{endDate}}</strong>.
     </mj-text>
 
     <mj-text>
-      Your account has been downgraded to the free plan, which includes limited
-      features. You'll still have access to your existing data, but premium
-      features are no longer available.
+      Your account has been downgraded to the free plan, which includes limited features. You'll
+      still have access to your existing data, but premium features are no longer available.
     </mj-text>
 
     <mj-text>
-      <strong>What you'll miss with Resume Matcher Pro:</strong>
+      <strong>What you'll miss with Minova Pro:</strong>
     </mj-text>
 
     <mj-text padding-left="25px">
@@ -36,8 +35,7 @@
     </mj-text>
 
     <mj-text>
-      If you've changed your mind or canceled by mistake, you can resubscribe
-      anytime:
+      If you've changed your mind or canceled by mistake, you can resubscribe anytime:
     </mj-text>
 
     <mj-button
@@ -51,8 +49,8 @@
     </mj-button>
 
     <mj-text>
-      We'd love to hear your feedback on why you decided to cancel. Your
-      insights will help us improve our service:
+      We'd love to hear your feedback on why you decided to cancel. Your insights will help us
+      improve our service:
     </mj-text>
 
     <mj-button
@@ -67,8 +65,7 @@
     </mj-button>
 
     <mj-text>
-      Thank you for being a Resume Matcher Pro subscriber. We hope to welcome
-      you back soon.
+      Thank you for being a Minova Pro subscriber. We hope to welcome you back soon.
     </mj-text>
 
     <mj-text>

@@ -12,10 +12,17 @@ import React from 'react';
 
 export const CareerProfilePage = ({ careerProfile }: { careerProfile: CareerProfile }) => {
   const handleResumeUpdate = async (resumeContent: ResumeContent) => {
-    await runAction(updateCareerProfile, {
-      ...careerProfile,
-      content: resumeContent,
-    });
+    await runAction(
+      updateCareerProfile,
+      {
+        successMessage: 'Career Profile updated successfully',
+        errorMessage: 'Failed to update Career Profile',
+      },
+      {
+        ...careerProfile,
+        content: resumeContent,
+      },
+    );
   };
   return (
     <>

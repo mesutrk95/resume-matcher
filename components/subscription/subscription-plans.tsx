@@ -166,7 +166,7 @@ export function SubscriptionPlans({
         </div>
       )}
       <div className="mx-auto mb-10 max-w-md text-center">
-        <h2 className="text-3xl font-bold">{productInfo?.name || 'Resume Matcher Pro'}</h2>
+        <h2 className="text-3xl font-bold">{productInfo?.name || 'Minova Pro'}</h2>
         <p className="text-muted-foreground mt-2">
           {productInfo?.description || 'Boost your job search success with our premium tools'}
         </p>
@@ -194,7 +194,7 @@ export function SubscriptionPlans({
         <Card className="border-2 border-primary shadow-lg">
           <CardHeader className="bg-linear-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
             <CardTitle className="flex items-center justify-between">
-              <span>{productInfo?.name || 'Resume Matcher Pro'}</span>
+              <span>{productInfo?.name || 'Minova Pro'}</span>
               {calculateDiscount(interval) > 0 && (
                 <Badge variant="default" className="bg-green-500 hover:bg-green-600">
                   Save {calculateDiscount(interval)}%

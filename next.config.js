@@ -26,6 +26,9 @@ const nextConfig = {
     outputFileTracingIncludes: {
       '/**': ['./templates/**/*'],
     },
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
   },
 };
 
