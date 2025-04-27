@@ -7,12 +7,12 @@ import { Form } from '@/components/ui/form';
 import { z } from 'zod';
 import { useTransition } from 'react';
 import { FormInput } from '@/components/shared/form-input';
-import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { createJob, extractJobDescriptionFromUrl, updateJob } from '@/actions/job';
 import { jobSchema } from '@/schemas';
 import { LoadingButton } from '../ui/loading-button';
 import { JoeditInput } from '../shared/joedit-input';
+import { runAction } from '@/app/_utils/runAction';
 
 type JobFormValues = z.infer<typeof jobSchema>;
 
@@ -41,41 +41,37 @@ export const JobForm = ({ initialData }: JobFormProps) => {
   });
 
   const handleSubmit = form.handleSubmit(values => {
-    startTransition(() => {
+    startTransition(async () => {
       const action = isEditing
         ? updateJob({ ...values, id: initialData!.id! })
         : createJob({ ...values });
 
-      action
-        .then(data => {
-          if (!data) return;
-          if (data.error) {
-            return toast.error(data.error?.message || 'Something went wrong!');
-          }
+      const result = await runAction(action, {
+        successMessage: isEditing ? 'Job updated successfully!' : 'Job created successfully!',
+        errorMessage: 'Something went wrong!',
+      });
 
-          toast.success(isEditing ? 'Job updated successfully!' : 'Job created successfully!');
-          return router.push('/jobs');
-        })
-        .catch(error => toast.error('Something went wrong.'));
+      if (result.success) {
+        router.push('/jobs');
+      }
     });
   });
 
   const handleExtractJD = () => {
     startExtractingJDTransition(async () => {
-      try {
-        const res = await extractJobDescriptionFromUrl(form.getValues().url || '');
-        if (!res.data) {
-          toast.error(res.error?.message || 'Something went wrong!');
-          return;
-        }
-        const data = res.data;
+      const url = form.getValues().url || '';
+      const result = await runAction(extractJobDescriptionFromUrl(url), {
+        successMessage: 'Job details extracted successfully!',
+        errorMessage: 'Failed to extract job details',
+      });
+
+      if (result.success && result.data) {
+        const data = result.data;
         data?.description && form.setValue('description', data?.description);
         data?.companyName && form.setValue('companyName', data?.companyName);
         data?.location && form.setValue('location', data?.location);
         data?.title && form.setValue('title', data?.title);
         data?.postedDate && form.setValue('postedAt', data?.postedDate);
-      } catch (error: unknown) {
-        toast.error(error?.toString() || 'Something went wrong.');
       }
     });
   };

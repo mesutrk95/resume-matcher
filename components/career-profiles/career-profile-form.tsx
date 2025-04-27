@@ -27,7 +27,9 @@ export const CareerProfileForm = ({ careerProfile }: { careerProfile: CareerProf
 
   const handleSaveCareerProfile = async () => {
     startTransition(async () => {
-      const result = await runAction(updateCareerProfile(careerProfileForm));
+      const result = await runAction(updateCareerProfile(careerProfileForm), {
+        successMessage: 'Career profile updated successfully',
+      });
       if (result.success) setEditingCareerProfile(false);
     });
   };

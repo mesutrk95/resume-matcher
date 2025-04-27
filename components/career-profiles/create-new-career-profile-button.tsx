@@ -5,25 +5,23 @@ import { Plus } from 'lucide-react';
 import { createCareerProfile } from '@/actions/career-profiles';
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { runAction } from '@/app/_utils/runAction';
 
 export function CreateNewCareerProfileForm({ blank }: { blank?: boolean }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleCreate = async () => {
-    startTransition(() => {
-      createCareerProfile()
-        .then(data => {
-          if (!data.data) {
-            toast.error(data.error?.message || 'Failed to create career profile!');
-            return;
-          }
-          const templateId = data?.data.id;
-          router.push('/career-profiles/' + templateId);
-          toast.success('Career Profile successfully created!');
-        })
-        .catch(err => toast.error(err?.toString() || 'Something went wrong.'));
+    startTransition(async () => {
+      const result = await runAction(createCareerProfile(), {
+        successMessage: 'Career Profile successfully created!',
+        errorMessage: 'Failed to create career profile!',
+      });
+
+      if (result.success && result.data) {
+        const templateId = result.data.id;
+        router.push('/career-profiles/' + templateId);
+      }
     });
   };
 
