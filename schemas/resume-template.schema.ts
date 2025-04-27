@@ -91,6 +91,9 @@ export const baseResumeTemplateElementSchema = z.object({
   render: z.string().optional(),
   data: z.string().optional(),
   class: z.string().optional(),
+  break: z.boolean().optional(),
+  wrap: z.boolean().optional(),
+  hide: z.union([z.boolean(), z.string()]).optional(),
 });
 
 type ResumeTemplateElement = z.infer<typeof baseResumeTemplateElementSchema> & {
@@ -113,6 +116,6 @@ export const resumeTemplateSchema = z.object({
   classDefs: z.record(z.string(), resumeDesignStyleSchema).and(typographyClassesSchema),
   spacing: spacingSchema,
   dateFormat: dateFormatSchema.optional(),
-
+  enablePageNumbers: z.boolean().default(true),
   elements: resumeTemplateElementSchema.array(),
 });

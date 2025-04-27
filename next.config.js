@@ -30,6 +30,15 @@ const nextConfig = {
       bodySizeLimit: '10mb',
     },
   },
+  serverRuntimeConfig: {
+    api: {
+      bodyParser: {
+        sizeLimit: '10mb',
+      },
+      // Set timeout to 120 seconds (value is in milliseconds)
+      responseTimeout: 120 * 1000,
+    },
+  },
 };
 
 module.exports = nextConfig;
