@@ -15,26 +15,27 @@ import { toast } from 'sonner';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ResumeContent } from '@/types/resume';
 import { pdf } from '@react-pdf/renderer';
-import { Paintbrush, CheckCircle, AlertTriangle, CheckCheck, Check } from 'lucide-react';
-import React, { useEffect, useState, useCallback } from 'react';
+import { Paintbrush, AlertTriangle, Check } from 'lucide-react';
+import React, { useEffect, useState, useCallback, useTransition } from 'react';
 import { ResumeTemplate } from '@/types/resume-template';
 import { ResumeDocument } from './resume-renderer/resume-document';
+import { runAction } from '@/app/_utils/runAction';
+import { getAllResumeTemplates } from '@/actions/template';
 
 /**
  * Individual resume design item with skeleton loading
  */
 const ResumeDesignItem = ({
-  designUrl,
+  template,
   resume,
   isSelected = false,
   onSelect,
 }: {
   resume: ResumeContent;
-  designUrl: string;
+  template: ResumeTemplate;
   isSelected?: boolean;
   onSelect?: (design: ResumeTemplate) => void;
 }) => {
-  const [template, setTemplate] = useState<ResumeTemplate | null>(null);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -43,14 +44,8 @@ const ResumeDesignItem = ({
     const fetchDesign = async () => {
       try {
         setLoading(true);
-        const res = await fetch(designUrl);
-        if (!res.ok) throw new Error('Failed to fetch design');
-
-        const tesumeTemplate = (await res.json()) as ResumeTemplate;
-        setTemplate(tesumeTemplate);
-
         const blob = await pdf(
-          <ResumeDocument resumeTemplate={tesumeTemplate} resume={resume} />,
+          <ResumeDocument resumeTemplate={template} resume={resume} />,
         ).toBlob();
 
         setPdfBlob(blob);
@@ -59,11 +54,7 @@ const ResumeDesignItem = ({
         // console.error('Error loading resume design:', err);
         setError(true);
         toast.error('Error loading design', {
-          description: `Failed to load design: ${designUrl}`,
-          action: {
-            label: 'Try again',
-            onClick: () => fetchDesign(),
-          },
+          description: `Failed to load template: ${template.name}`,
         });
       } finally {
         setLoading(false);
@@ -71,7 +62,7 @@ const ResumeDesignItem = ({
     };
 
     fetchDesign();
-  }, [designUrl, resume]);
+  }, [template, resume]);
 
   const handleSelect = useCallback(() => {
     if (template && onSelect) {
@@ -130,27 +121,23 @@ const ResumeDesignList = ({
   resume: ResumeContent;
   onSelectTemplate?: (t: ResumeTemplate) => void;
 }) => {
-  const [items, setItems] = useState<string[] | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedDesignUrl, setSelectedDesignUrl] = useState<string | null>(null);
+  const [items, setItems] = useState<ResumeTemplate[] | null>(null);
+  const [isFetchingTemplates, startFetchResumeTemplatesTransition] = useTransition();
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
   // Using Sonner toast
 
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
-        setLoading(true);
-        const res = await fetch('/templates/all.json');
-        if (!res.ok) throw new Error('Failed to fetch resume template list');
-
-        const designUrls = await res.json();
-        setItems(designUrls);
+        startFetchResumeTemplatesTransition(async () => {
+          const result = await runAction(getAllResumeTemplates);
+          if (result.success) {
+            result.data && setItems(result.data);
+          }
+        });
       } catch (err) {
         console.error('Error loading design list:', err);
-        toast.error('Failed to load templates', {
-          description: 'There was an error fetching the resume templates.',
-        });
       } finally {
-        setLoading(false);
       }
     };
 
@@ -158,8 +145,8 @@ const ResumeDesignList = ({
   }, []);
 
   const handleSelectDesign = useCallback(
-    (t: ResumeTemplate, designUrl: string) => {
-      setSelectedDesignUrl(designUrl);
+    (t: ResumeTemplate) => {
+      setSelectedTemplateId(t.id);
       if (onSelectTemplate) {
         onSelectTemplate(t);
       }
@@ -169,7 +156,7 @@ const ResumeDesignList = ({
 
   return (
     <ScrollArea className="h-[450px] pr-4">
-      {loading ? (
+      {isFetchingTemplates ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, index) => (
             <Card key={index} className="overflow-hidden">
@@ -182,13 +169,13 @@ const ResumeDesignList = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-2">
-          {items?.map(designUrl => (
+          {items?.map(template => (
             <ResumeDesignItem
-              key={designUrl}
-              designUrl={designUrl}
+              key={template.id}
+              template={template}
               resume={resume}
-              isSelected={designUrl === selectedDesignUrl}
-              onSelect={design => handleSelectDesign(design, designUrl)}
+              isSelected={template.id === selectedTemplateId}
+              onSelect={t => handleSelectDesign(t)}
             />
           ))}
         </div>

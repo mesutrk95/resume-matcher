@@ -109,6 +109,7 @@ const dateFormatSchema = z.enum(['YYYY/MM', 'YYYY MM', 'MM/YYYY', 'MMM YYYY']).d
 
 export const resumeTemplateSchema = z.object({
   name: z.string().default('Default'),
+  id: z.string(),
   version: z.number().default(1),
   pageSize: resumeTemplatePageSize,
   orientation: resumeTemplateOrientation,

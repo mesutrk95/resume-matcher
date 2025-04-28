@@ -1,7 +1,6 @@
 {
     "name": "Classic",
     "version": 1,
-    "id": "4ae617f6-aa77-457d-bd1f-b40a8a87ed8a",
     "pageSize": "A4",
     "orientation": "portrait",
     "enablePageNumbers": true,

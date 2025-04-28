@@ -78,14 +78,14 @@ export const updateJobResume = withErrorHandling(
 
     const updateJobSchema = z.object({
       content: resumeContentSchema.optional(),
-      template: resumeTemplateSchema.optional(),
+      template: z.object({ id: z.string(), override: resumeTemplateSchema.optional() }).optional(),
       name: z.string().optional(),
     });
 
     const validationResult = updateJobSchema.safeParse({
       ...resume,
       content,
-      template,
+      template: { id: template.id },
     });
 
     if (validationResult.error) {

@@ -214,8 +214,12 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                   <TabsContent className="p-0 m-0 h-full" value="score">
                     <ResumeScoreTab jobResume={jobResume} />
                   </TabsContent>
-                  <TabsContent className="  p-0 m-0" value="chat">
-                    <ChatInterface jobResume={jobResume} resume={resume} />
+                  <TabsContent className="p-0 m-0" value="chat">
+                    <ChatInterface
+                      jobResume={jobResume}
+                      resume={resume}
+                      resumeTemplate={resumeTemplate}
+                    />
                   </TabsContent>
                 </div>
               </Tabs>

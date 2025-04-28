@@ -8,12 +8,13 @@ import { Job, JobResume } from '@prisma/client';
 import { JobMatcher } from './JobMatcher';
 import { runAction } from '@/app/_utils/runAction';
 import { ResumeTemplate } from '@/types/resume-template';
-import { DEFAULT_RESUME_TEMPLATE } from '@/components/job-resumes/resume-renderer/default-resume-template';
 
 export const ResumeBuilderPage = ({
   jobResume,
+  resumeTemplate,
 }: {
   jobResume: JobResume & { job: Job | null };
+  resumeTemplate: ResumeTemplate | null;
 }) => {
   const handleUpdate = async (resume: ResumeContent) => {
     await runAction(
@@ -43,7 +44,7 @@ export const ResumeBuilderPage = ({
   return (
     <ResumeBuilderProvider
       initialResume={jobResume.content as ResumeContent}
-      initialResumeTemplate={(jobResume.template || DEFAULT_RESUME_TEMPLATE) as ResumeTemplate}
+      initialResumeTemplate={resumeTemplate}
       initialResumeAnalyzeResults={jobResume.analyzeResults as ResumeAnalyzeResults}
       onUpdated={handleUpdate}
       onResumeTemplateUpdated={handleResumeTemplateUpdated}
