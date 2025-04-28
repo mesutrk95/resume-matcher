@@ -10,6 +10,7 @@ interface ResumeWizardProps {
   className?: string;
   initialResumeData?: WizardResumeContent;
   onResumeWizardDone?: (resumeData: WizardResumeContent) => void;
+  onStepChanged?: (id: string, index: number) => void;
 }
 
 export function ResumeWizard({
@@ -17,10 +18,12 @@ export function ResumeWizard({
   className,
   initialResumeData,
   onResumeWizardDone,
+  onStepChanged,
 }: ResumeWizardProps) {
   return (
     <ResumeWizardProvider
       onResumeWizardDone={onResumeWizardDone}
+      onStepChanged={onStepChanged}
       initialResumeData={initialResumeData}
     >
       <div className={cn('', className)}>{children}</div>

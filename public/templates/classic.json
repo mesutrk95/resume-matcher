@@ -259,32 +259,39 @@
                             "elements": [
                                 {
                                     "type": "View",
-                                    "class": "company-info",
+                                    "break": false,
+                                    "wrap": false,
                                     "elements": [
                                         {
-                                            "type": "Text",
-                                            "path": "role",
-                                            "class": "h4"
+                                            "type": "View",
+                                            "class": "company-info",
+                                            "elements": [
+                                                {
+                                                    "type": "Text",
+                                                    "path": "role",
+                                                    "class": "h4"
+                                                },
+                                                {
+                                                    "type": "Text",
+                                                    "render": "renderDates([$item.startDate, $item.endDate])",
+                                                    "class": "date-range"
+                                                }
+                                            ]
                                         },
                                         {
-                                            "type": "Text",
-                                            "render": "renderDates([$item.startDate, $item.endDate])",
-                                            "class": "date-range"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "View",
-                                    "style": {
-                                        "display": "flex",
-                                        "flexDirection": "row",
-                                        "paddingBottom": 4
-                                    },
-                                    "elements": [
-                                        {
-                                            "type": "Text",
-                                            "render": "join([$item.companyName, $item.location, $item.type], ', ')",
-                                            "class": "p"
+                                            "type": "View",
+                                            "style": {
+                                                "display": "flex",
+                                                "flexDirection": "row",
+                                                "paddingBottom": 4
+                                            },
+                                            "elements": [
+                                                {
+                                                    "type": "Text",
+                                                    "render": "join([$item.companyName, $item.location, $item.type], ', ')",
+                                                    "class": "p"
+                                                }
+                                            ]
                                         }
                                     ]
                                 },

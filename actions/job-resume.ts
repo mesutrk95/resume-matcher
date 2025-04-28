@@ -453,7 +453,7 @@ export const analyzeResumeItemsScores = withErrorHandling(
         enabled: p.enabled,
         id: p.id,
         content: p.content,
-        hash: hashString(p.content, 8),
+        hash: hashString(p.content || '', 8),
       })),
     ];
 

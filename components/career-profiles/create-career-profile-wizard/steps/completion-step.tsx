@@ -25,11 +25,11 @@ export function CompletionStep({ resumeData }: CompletionStepProps) {
           has been automatically saved.
         </p>
       </div>
-      <div className="space-y-4 w-full max-w-md">
+      {/* <div className="space-y-4 w-full max-w-md">
         <Button onClick={handleNext} className="w-full">
           Finish!
         </Button>
-      </div>
+      </div> */}
       {/* <div className="space-y-4 w-full max-w-md">
         <Button onClick={handleDownload} className="w-full">
           Download Resume Data
