@@ -132,12 +132,11 @@ const ResumeDesignList = ({
         startFetchResumeTemplatesTransition(async () => {
           const result = await runAction(getAllResumeTemplates);
           if (result.success) {
-            result.data && setItems(result.data);
+            setItems(result.data || []);
           }
         });
       } catch (err) {
         console.error('Error loading design list:', err);
-      } finally {
       }
     };
 
