@@ -6,13 +6,13 @@ Your goal is to help users optimize their resumes for job applications.
 Always be precise, factual, and helpful.`,
   MAX_RETRIES: 2,
   DEFAULT_RATE_LIMITS: {
-    REQUESTS_PER_MINUTE: 5,
-    REQUESTS_PER_HOUR: 100,
-    REQUESTS_PER_DAY: 1000,
+    REQUESTS_PER_MINUTE: 10,
+    REQUESTS_PER_HOUR: 400,
+    REQUESTS_PER_DAY: 7000,
   },
   TOKEN_LIMITS: {
     FREE: 100_000,
-    BASIC: 3_000_000,
+    BASIC: 2_000_000,
     DEV: Number.MAX_SAFE_INTEGER,
   },
 };

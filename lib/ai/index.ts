@@ -28,7 +28,7 @@ export function createAIServiceManager(): AIServiceManager {
   // Create the default clients
   const geminiClient = new GeminiClient(
     process.env.GEMINI_API_KEY || '',
-    process.env.GEMINI_MODEL || 'gemini-1.5-pro',
+    process.env.GEMINI_MODEL || 'gemini-2.0-flash',
   );
 
   const promptProcessors = createStandardPromptProcessors(AI.SYSTEM_CONTEXT);
