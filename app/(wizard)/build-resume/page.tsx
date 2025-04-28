@@ -22,16 +22,5 @@ export default async function ResumeWizardPage({ searchParams }: CreateResumePag
   const resumeData = careerProfile?.content as ResumeContent;
 
   // const keys = ['experiences', 'skills', 'projects'];
-  return (
-    <div className="">
-      <div className="grid grid-cols-12">
-        <div className="col-span-9">
-          <CareerProfileResumeWizard resumeData={resumeData} careerProfileId={careerProfile?.id} />
-        </div>
-        <div className="col-span-3 bg-gray-50 h-screen overflow-hidden">
-          <div className="overflow-auto">{/* <ResumeHighlighter activeKey="experiences" /> */}</div>
-        </div>
-      </div>
-    </div>
-  );
+  return <CareerProfileResumeWizard resumeData={resumeData} careerProfileId={careerProfile?.id} />;
 }

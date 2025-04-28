@@ -10,12 +10,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Upload, FileText, Loader2 } from 'lucide-react';
+import { Upload, FileText, Loader2, ArrowRight } from 'lucide-react';
 import { runAction } from '@/app/_utils/runAction';
 import { createCareerProfileFromResumePdf } from '@/actions/career-profiles';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface FileUploadRegionProps {
   children?: ReactNode;
@@ -152,45 +153,52 @@ export function NoCareerProfileWizard() {
 
   return (
     <div className=" ">
-      <div className="grid grid-cols-1 md:grid-cols-8 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-8 gap-8 ">
         {/* Left Column - Build from scratch */}
-        <Card className="col-span-5 shadow-md hover:shadow-lg transition-shadow duration-300">
-          <CardHeader>
-            <CardTitle className="text-xl flex items-center gap-2">
-              {/* <Plus className="h-5 w-5" /> */}
-              Start Building Your Resume
-            </CardTitle>
-            <CardDescription>Create a professional resume step by step</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center justify-center space-y-4 py-6 text-center">
-              <FileText className="h-12 w-12 text-primary" />
-              <p className="text-muted-foreground max-w-md">
-                Our guided process helps you create a standout resume with customizable templates
-                and expert suggestions.
+        <Card className="col-span-5 shadow-md hover:shadow-lg transition-shadow duration-300 relative">
+          <CardContent className="grid grid-cols-4 justify-center pt-6 relative">
+            <div className="flex flex-col justify-center space-y-4 col-span-4 ">
+              <div>
+                <h4 className="text-xl flex items-center gap-2 font-bold">
+                  {/* <Plus className="h-5 w-5" /> */}
+                  Start Building Your Resume!
+                </h4>
+                <p className="text-muted-foreground">Create a professional resume step by step.</p>
+              </div>
+              <p className=" max-w-md text-xs">
+                <br /> Our guided process helps you create a standout resume with customizable
+                templates and expert suggestions.
               </p>
+              <div>
+                <Button size={'sm'} asChild className="text-xs">
+                  <Link href="/build-resume">
+                    Build Step by Step
+                    <ArrowRight size={16} />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </CardContent>
-          <CardFooter>
-            <Button asChild className="w-full">
-              <Link href="/build-resume">Build Step by Step!</Link>
-            </Button>
-          </CardFooter>
+          <div className="absolute w-[200px] h-full bottom-0 right-10">
+            <Image src="/assets/resume-builder-wizard.png" alt="" fill={true} objectFit="contain" />
+          </div>
         </Card>
 
         {/* Right Column - Import Resume */}
         <Card className="col-span-3 shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col ">
-          <CardHeader>
+          <CardHeader className="gap-0 space-y-0">
             <CardTitle className="text-xl flex items-center gap-2">
               {/* <Upload className="h-5 w-5" /> */}
               Import Your Resume
             </CardTitle>
-            <CardDescription>Upload an existing resume from your device</CardDescription>
+            <CardDescription className="">
+              Upload an existing resume from your device
+            </CardDescription>
           </CardHeader>
           <CardContent className="flex-grow">
             <FileUploadRegion onFileSelected={onFileSelected} isUploading={isImportingResumeFile}>
-              <Upload className="h-12 w-12 text-muted-foreground" />
-              <p className="text-muted-foreground">Click or Drag & drop your resume file here!</p>
+              <Upload className="h-10 w-10 text-muted-foreground" />
+              <p className="text-muted-foreground">Click or drag & drop your resume file here!</p>
               <p className="text-xs text-muted-foreground">Maximum size: 20MB</p>
             </FileUploadRegion>
           </CardContent>

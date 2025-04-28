@@ -84,7 +84,27 @@ export const finalStep = {
   icon: CheckCircle,
   optional: false,
 };
-
+export const getActiveSteps = (
+  currentStep: number,
+  includeOptionalSteps?: boolean,
+): WizardStep[] => {
+  // If user hasn't made a choice yet and we're still in core steps
+  if (includeOptionalSteps === undefined && currentStep <= coreSteps.length) {
+    return [
+      ...coreSteps,
+      { id: 'optional-prompt', label: 'More Details', icon: HelpCircle },
+      finalStep,
+    ];
+  }
+  // If user has chosen to include optional steps
+  else if (includeOptionalSteps === true) {
+    return [...coreSteps, ...optionalSteps, finalStep];
+  }
+  // If user has chosen to skip optional steps
+  else {
+    return [...coreSteps, finalStep];
+  }
+};
 // Initialize empty resume data
 export const emptyResumeData: WizardResumeContent = {
   experiences: [],
@@ -139,11 +159,13 @@ interface ResumeWizardProviderProps {
   children: ReactNode;
   initialResumeData?: WizardResumeContent;
   onResumeWizardDone?: (resumeData: WizardResumeContent) => void;
+  onStepChanged?: (step: string, index: number) => void;
 }
 
 export function ResumeWizardProvider({
   children,
   onResumeWizardDone,
+  onStepChanged,
   initialResumeData,
 }: ResumeWizardProviderProps) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -170,24 +192,7 @@ export function ResumeWizardProvider({
   });
 
   // Calculate the active steps based on the user's choice
-  const activeSteps = ((): WizardStep[] => {
-    // If user hasn't made a choice yet and we're still in core steps
-    if (resumeData.includeOptionalSteps === undefined && currentStep <= coreSteps.length) {
-      return [
-        ...coreSteps,
-        { id: 'optional-prompt', label: 'More Details', icon: HelpCircle },
-        finalStep,
-      ];
-    }
-    // If user has chosen to include optional steps
-    else if (resumeData.includeOptionalSteps === true) {
-      return [...coreSteps, ...optionalSteps, finalStep];
-    }
-    // If user has chosen to skip optional steps
-    else {
-      return [...coreSteps, finalStep];
-    }
-  })();
+  const activeSteps = getActiveSteps(currentStep, resumeData.includeOptionalSteps);
 
   const isLastStep = currentStep === activeSteps.length - 1;
   const isFirstStep = currentStep === 0;
@@ -223,18 +228,21 @@ export function ResumeWizardProvider({
         setShowOptionalPrompt(true);
       }
       setCurrentStep(currentStep + 1);
+      onStepChanged?.(activeSteps[currentStep + 1].id, currentStep + 1);
     }
   };
 
   const handleBack = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      onStepChanged?.(activeSteps[currentStep - 1].id, currentStep - 1);
     }
   };
 
   const handleSkip = () => {
     if (currentStep < activeSteps.length - 1) {
       setCurrentStep(currentStep + 1);
+      onStepChanged?.(activeSteps[currentStep + 1].id, currentStep + 1);
     }
   };
 
