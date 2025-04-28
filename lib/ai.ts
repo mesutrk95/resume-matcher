@@ -1,5 +1,4 @@
 import { Content, GoogleGenerativeAI, Part } from '@google/generative-ai';
-import OpenAI from 'openai';
 import { randomNDigits } from './utils';
 
 export interface ContentWithMeta extends Content {

@@ -7,12 +7,11 @@ import { revalidatePath } from 'next/cache';
 import { DEFAULT_RESUME_CONTENT } from './constants';
 import { ResumeContent } from '@/types/resume';
 import { withErrorHandling } from '@/lib/with-error-handling';
-import { getAIJsonResponse } from '@/lib/ai';
 import { resumeContentSchema } from '@/schemas/resume';
-import { zodSchemaToString } from '@/lib/zod';
 import { getMimeType } from '@/lib/utils';
 import { CareerProfile } from '@prisma/client';
 import { generateId } from '@/lib/resume-content';
+import { AIRequestModel, createAIServiceManager } from '@/lib/ai/index';
 
 export const deleteCareerProfile = withErrorHandling(async (id: string) => {
   const user = await currentUser();
@@ -106,63 +105,76 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
   if (!user?.emailVerified) {
     throw new ForbiddenException('Email not verified.');
   }
-  const file = formData.get('file') as File;
 
-  // throw new NotFoundException();
+  const file = formData.get('file') as File;
   const bytes = await file.arrayBuffer();
   const pdfBuffer = Buffer.from(bytes);
 
-  const systemInstructions = `Your task is importing user resume data from the provided pdf resume file and convert it to the following schema format: \n ${zodSchemaToString(
-    resumeContentSchema,
-  )} \n 
-  this was schema, you have to give me a valid object out of it, 
-  - All dates must be in this format: MM/YYYY
-  - ids convention is based on the path they have prefix then an underscore like the following:
-    Generate IDs with format prefix_xxxxx. Path determines prefix: experiences=exp_, experiences.items=expitem_, experiences.items.variations=var_, titles=title_, summaries=summary_, educations=edu_, skills/skills.skills=skill_, projects=project_, awards=award_, certifications=cert_, languages=lang_, interests=interest_, references=ref_. The xxxxx is a random 5-character alphabetic string. Example: skill_abcde for a skill.
-  - For each experience item in resume file, add one experience item and fill its description, live the variations with an empty array
-  
-  make sure your output is complete in json format without any extra character!`;
-  const prompt = 'Convert it!';
-  const { result } = await getAIJsonResponse(
+  // Create AI service manager directly
+  const serviceManager = createAIServiceManager();
+
+  const prompt = 'Convert this resume PDF to a structured format based on the schema';
+
+  // Create the request model with Zod schema for validation
+  const request: AIRequestModel<ResumeContent> = {
     prompt,
-    [{ data: pdfBuffer, mimeType: getMimeType(file.name) }],
-    systemInstructions,
-  );
+    responseFormat: 'json',
+    contents: [
+      {
+        type: 'pdf',
+        data: pdfBuffer,
+        mimeType: getMimeType(file.name),
+      },
+    ],
+    systemInstruction: `Extract all resume information from this PDF and structure it according to the schema. 
+    - All dates must be in MM/YYYY format
+    - ids convention is based on the path they have prefix then an underscore like the following:
+    - Generate IDs with format prefix_xxxxx. Path determines prefix: experiences=exp_, experiences.items=expitem_, experiences.items.variations=var_, titles=title_, summaries=summary_, educations=edu_, skills/skills.skills=skill_, projects=project_, awards=award_, certifications=cert_, languages=lang_, interests=interest_, references=ref_. The xxxxx is a random 5-character alphabetic string. Example: skill_abcde for a skill.
+    - For each experience item in resume file, add one experience item and fill its description, live the variations with an empty array
+    - Create structured experience items with variations
+    `,
+    zodSchema: resumeContentSchema,
+  };
 
-  const content = result as ResumeContent;
-  content.experiences = content.experiences.map(exp => ({
-    ...exp,
-    items: exp.items.map(item => ({
-      ...item,
-      variations: [
-        {
-          id: generateId('experiences.items.variations'),
-          content: item.description,
-          enabled: true,
-        },
-      ],
-      description: '',
+  // Execute the request
+  const content = await serviceManager.executeRequest<ResumeContent>(request);
+
+  // Post-process the results
+  const processedContent = {
+    ...content,
+    experiences: content.experiences.map(exp => ({
+      ...exp,
+      items: exp.items.map(item => ({
+        ...item,
+        variations: [
+          {
+            id: generateId('experiences.items.variations'),
+            content: item.description,
+            enabled: true,
+          },
+        ],
+        description: '',
+      })),
     })),
-  }));
-  content.skills = [
-    {
-      category: 'Default',
-      enabled: true,
-      skills: content.skills.map(set => set.skills).flat(),
-    },
-  ];
+    skills: [
+      {
+        category: 'Default',
+        enabled: true,
+        skills: content.skills.map(set => set.skills).flat(),
+      },
+    ],
+  };
 
-  // Update job in database
+  // Create career profile in database
   const careerProfile = await db.careerProfile.create({
     data: {
-      name: content.titles?.[0]?.content || 'No name career profile',
-      content: content,
+      name: processedContent.titles?.[0]?.content || 'No name career profile',
+      content: processedContent,
       userId: user?.id!,
     },
   });
 
   revalidatePath('/career-profiles');
-
   return careerProfile;
 });
 

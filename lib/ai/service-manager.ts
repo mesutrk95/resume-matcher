@@ -3,12 +3,18 @@ import { AIModelClient, AIRequestModel, ResponseFormat } from './types';
 import Logger from '@/lib/logger';
 import { getCurrentRequestId } from '@/lib/request-context';
 import { AIUsageService } from './usage-service';
-import { TokenLimitExceededError, AIServiceError, RateLimitExceededError } from './errors';
+import {
+  TokenLimitExceededError,
+  AIServiceError,
+  RateLimitExceededError,
+  ValidationError,
+} from './errors';
 import { AIRateLimitService } from './rate-limit-service';
 import { PromptProcessor } from './promptProcessors/base';
 import { ResponseProcessor } from './responseProcessors/base';
 import { createJsonSchemaValidator } from './validators';
 import { zodSchemaToString } from '@/lib/zod';
+import { currentUser } from '@/lib/auth';
 
 export interface AIServiceManagerConfig {
   maxRetries: number;
@@ -54,7 +60,7 @@ export class AIServiceManager {
       }
     }
     const requestId = request.context?.requestId || (await getCurrentRequestId());
-    const userId = request.context?.userId;
+    const userId = request.context?.userId || (await currentUser())?.id;
     let retryCount = 0;
     let lastError: Error | null = null;
 
@@ -140,7 +146,6 @@ export class AIServiceManager {
               Logger.warn(`Response validation failed on attempt ${retryCount + 1}`, {
                 requestId,
                 errors: validationResult.errors,
-                responseExcerpt: response.content.substring(0, 100),
               });
               retryCount++;
               continue;
@@ -149,9 +154,8 @@ export class AIServiceManager {
               Logger.error(`Response validation failed after ${retryCount + 1} attempts`, {
                 requestId,
                 errors: validationResult.errors,
-                responseExcerpt: response.content.substring(0, 100),
               });
-              return processedResponse;
+              throw new ValidationError('Response validation failed', validationResult.errors);
             }
           }
         }

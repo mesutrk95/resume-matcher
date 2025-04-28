@@ -1,13 +1,5 @@
 // lib/ai/index.ts
-import {
-  AIRequestModel,
-  ContentItem,
-  ResponseFormat,
-  AIRequestOptions,
-  ChatHistoryItem,
-  ContentWithMeta,
-  MessagePart,
-} from './types';
+import { AIRequestModel, ContentItem, ResponseFormat, AIRequestOptions } from './types';
 import { GeminiClient } from './clients/gemini-client';
 import { AIServiceManager } from './service-manager';
 import { AIUsageService } from './usage-service';
