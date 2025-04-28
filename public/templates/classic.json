@@ -172,7 +172,7 @@
                     "elements": [
                         {
                             "type": "Text",
-                            "render": "join([p('contactInfo.email'), p('contactInfo.phone'), p('contactInfo.linkedIn'), p('contactInfo.github'), p('contactInfo.website'), p('contactInfo.twitter'), p('contactInfo.address'), p('contactInfo.country')], ' • ')",
+                            "render": "join([$r.contactInfo.email, $r.contactInfo.phone, $r.contactInfo.linkedIn, $r.contactInfo.github, $r.contactInfo.website, $r.contactInfo.twitter, $r.contactInfo.address, $r.contactInfo.country], ' • ')",
                             "class": "contact-info"
                         }
                     ]

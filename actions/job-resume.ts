@@ -85,7 +85,7 @@ export const updateJobResume = withErrorHandling(
     const validationResult = updateJobSchema.safeParse({
       ...resume,
       content,
-      template: { id: template.id },
+      ...(template && { template: { id: template.id } }),
     });
 
     if (validationResult.error) {

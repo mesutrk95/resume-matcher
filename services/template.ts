@@ -13,6 +13,10 @@ const allTemplates = [
     id: '4da27353-99cd-4021-83dd-ef5fecc0f45d',
     path: '/templates/auroa-two-column.json',
   },
+  {
+    id: '20e19a32-7227-48bc-b569-06f911e2fd66',
+    path: '/templates/minimal-modern.json',
+  },
 ];
 
 export async function getRootDir() {
