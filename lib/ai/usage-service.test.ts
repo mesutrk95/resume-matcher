@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AIUsageService, TOKEN_LIMITS } from './usage-service';
+import { AIUsageService } from './usage-service';
 import { db } from '@/lib/db';
 import Logger from '@/lib/logger';
 import { SubscriptionStatus } from '@prisma/client';
+import { AI } from '@/lib/constants';
 
 // Mock the database and logger
 vi.mock('@/lib/db', () => ({
@@ -459,7 +460,7 @@ describe('AIUsageService', () => {
         endDate: now,
         timeframe: 'daily',
         isDevelopment: false,
-        tokenLimit: TOKEN_LIMITS.BASIC, // 500,000 for ACTIVE subscription
+        tokenLimit: AI.TOKEN_LIMITS.BASIC, // 500,000 for ACTIVE subscription
         tokenUsagePercent: 1, // (4500 / 500000) * 100 = 0.9% rounded to 1%
         remainingTokens: 495500, // 500000 - 4500
       });
@@ -541,7 +542,7 @@ describe('AIUsageService', () => {
         endDate: now,
         timeframe: 'monthly',
         isDevelopment: false,
-        tokenLimit: TOKEN_LIMITS.BASIC, // 500,000 for ACTIVE subscription
+        tokenLimit: AI.TOKEN_LIMITS.BASIC, // 500,000 for ACTIVE subscription
         tokenUsagePercent: 9, // (45000 / 500000) * 100 = 9%
         remainingTokens: 455000, // 500000 - 45000
       });
@@ -568,7 +569,7 @@ describe('AIUsageService', () => {
       const result = (service as any).getTokenLimitForUser();
 
       // Verify
-      expect(result).toBe(TOKEN_LIMITS.FREE);
+      expect(result).toBe(AI.TOKEN_LIMITS.FREE);
     });
 
     it('should return BASIC limit for ACTIVE subscription', () => {
@@ -576,7 +577,7 @@ describe('AIUsageService', () => {
       const result = (service as any).getTokenLimitForUser(SubscriptionStatus.ACTIVE);
 
       // Verify
-      expect(result).toBe(TOKEN_LIMITS.BASIC);
+      expect(result).toBe(AI.TOKEN_LIMITS.BASIC);
     });
 
     it('should return BASIC limit for TRIALING subscription', () => {
@@ -584,7 +585,7 @@ describe('AIUsageService', () => {
       const result = (service as any).getTokenLimitForUser(SubscriptionStatus.TRIALING);
 
       // Verify
-      expect(result).toBe(TOKEN_LIMITS.BASIC);
+      expect(result).toBe(AI.TOKEN_LIMITS.BASIC);
     });
 
     it('should return FREE limit for CANCELED subscription', () => {
@@ -592,7 +593,7 @@ describe('AIUsageService', () => {
       const result = (service as any).getTokenLimitForUser(SubscriptionStatus.CANCELED);
 
       // Verify
-      expect(result).toBe(TOKEN_LIMITS.FREE);
+      expect(result).toBe(AI.TOKEN_LIMITS.FREE);
     });
 
     it('should return FREE limit for other subscription statuses', () => {
@@ -603,10 +604,10 @@ describe('AIUsageService', () => {
       const result4 = (service as any).getTokenLimitForUser(SubscriptionStatus.UNPAID);
 
       // Verify
-      expect(result1).toBe(TOKEN_LIMITS.FREE);
-      expect(result2).toBe(TOKEN_LIMITS.FREE);
-      expect(result3).toBe(TOKEN_LIMITS.FREE);
-      expect(result4).toBe(TOKEN_LIMITS.FREE);
+      expect(result1).toBe(AI.TOKEN_LIMITS.FREE);
+      expect(result2).toBe(AI.TOKEN_LIMITS.FREE);
+      expect(result3).toBe(AI.TOKEN_LIMITS.FREE);
+      expect(result4).toBe(AI.TOKEN_LIMITS.FREE);
     });
   });
 });

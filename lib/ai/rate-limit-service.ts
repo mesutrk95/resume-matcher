@@ -1,15 +1,9 @@
 import { db } from '@/lib/db';
 import Logger from '@/lib/logger';
+import { AI } from '@/lib/constants';
 
 // Determine if we're in development mode
 const isDevelopment = process.env.NODE_ENV === 'development';
-
-// Default rate limits if not specified in the database
-const DEFAULT_RATE_LIMITS = {
-  REQUESTS_PER_MINUTE: 5,
-  REQUESTS_PER_HOUR: 100,
-  REQUESTS_PER_DAY: 1000,
-};
 
 /**
  * Service to handle rate limiting for AI requests
@@ -266,9 +260,9 @@ export class AIRateLimitService {
 
     // Otherwise, return default configuration
     return {
-      requestsPerMinute: DEFAULT_RATE_LIMITS.REQUESTS_PER_MINUTE,
-      requestsPerHour: DEFAULT_RATE_LIMITS.REQUESTS_PER_HOUR,
-      requestsPerDay: DEFAULT_RATE_LIMITS.REQUESTS_PER_DAY,
+      requestsPerMinute: AI.DEFAULT_RATE_LIMITS.REQUESTS_PER_MINUTE,
+      requestsPerHour: AI.DEFAULT_RATE_LIMITS.REQUESTS_PER_HOUR,
+      requestsPerDay: AI.DEFAULT_RATE_LIMITS.REQUESTS_PER_DAY,
     };
   }
 }

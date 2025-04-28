@@ -1,17 +1,9 @@
 import { db } from '@/lib/db';
 import Logger from '@/lib/logger';
 import { SubscriptionStatus } from '@prisma/client';
+import { AI } from '@/lib/constants';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
-
-/**
- * Constants for token limits based on subscription tier
- */
-export const TOKEN_LIMITS = {
-  FREE: 50_000,
-  BASIC: 500_000,
-  DEV: Number.MAX_SAFE_INTEGER,
-};
 
 /**
  * Timeframes for token quotas
@@ -251,7 +243,7 @@ export class AIUsageService {
         ? 0
         : Math.round((stats.totalTokens / tokenLimit) * 100);
       stats.remainingTokens = isDevelopment
-        ? TOKEN_LIMITS.DEV
+        ? AI.TOKEN_LIMITS.DEV
         : Math.max(0, tokenLimit - stats.totalTokens);
 
       return stats;
@@ -267,22 +259,17 @@ export class AIUsageService {
   private getTokenLimitForUser(subscriptionStatus?: SubscriptionStatus | null): number {
     // In development, always use unlimited tokens
     if (isDevelopment) {
-      return TOKEN_LIMITS.DEV;
+      return AI.TOKEN_LIMITS.DEV;
     }
 
-    if (!subscriptionStatus) return TOKEN_LIMITS.FREE;
+    if (!subscriptionStatus) return AI.TOKEN_LIMITS.FREE;
 
     switch (subscriptionStatus) {
       case SubscriptionStatus.ACTIVE:
       case SubscriptionStatus.TRIALING:
-        return TOKEN_LIMITS.BASIC;
-      case SubscriptionStatus.CANCELED:
-      case SubscriptionStatus.INCOMPLETE:
-      case SubscriptionStatus.INCOMPLETE_EXPIRED:
-      case SubscriptionStatus.PAST_DUE:
-      case SubscriptionStatus.UNPAID:
+        return AI.TOKEN_LIMITS.BASIC;
       default:
-        return TOKEN_LIMITS.FREE;
+        return AI.TOKEN_LIMITS.FREE;
     }
   }
 }
