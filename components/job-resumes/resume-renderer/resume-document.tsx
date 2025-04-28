@@ -45,6 +45,7 @@ Font.register({
     },
   ],
 });
+Font.registerHyphenationCallback(word => [word]);
 
 // Helper function to register additional custom fonts if needed
 const registerFonts = (design: ResumeTemplate) => {
