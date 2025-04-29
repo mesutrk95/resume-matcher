@@ -7,33 +7,27 @@
       align="center"
       padding-bottom="20px"
     >
-      Two-Factor Authentication
+      Two-Factor Authentication 🔒
     </mj-text>
 
-    <mj-text> Hello {{name}}, </mj-text>
+    <mj-text> Hey {{name}}! 👋 </mj-text>
 
     <mj-text>
-      You're receiving this email because you're attempting to log in to your Minova account with
-      two-factor authentication enabled.
+      Looks like you're trying to log in to your Minova account with two-factor authentication.
+      Extra security for the win!
     </mj-text>
 
     <mj-text font-size="20px" font-weight="bold" align="center" padding="20px 0">
-      Your authentication code is: <span style="color: #f7b801">{{token}}</span>
+      Here's your magic code: <span style="color: #f7b801">{{token}}</span> ✨
     </mj-text>
 
     <mj-text>
-      Enter this code on the login screen to complete your sign-in. This code will expire in 10
-      minutes.
+      Just pop this code into the login screen to finish signing in. It'll expire in 10 minutes, so
+      don't wait too long! ⏱️
     </mj-text>
 
     <mj-text>
-      If you didn't attempt to log in, please secure your account by changing your password
-      immediately.
-    </mj-text>
-
-    <mj-text>
-      Best regards,<br />
-      The {{appName}} Team
+      Didn't try to log in? Better change your password right away to keep your account safe.
     </mj-text>
   </mj-column>
 </mj-section>

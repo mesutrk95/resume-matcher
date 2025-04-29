@@ -7,24 +7,23 @@
       align="center"
       padding-bottom="20px"
     >
-      Welcome to Minova Pro!
+      Welcome to Minova Pro! 🎉
     </mj-text>
 
-    <mj-text> Hello {{name}}, </mj-text>
+    <mj-text> Hey {{name}}! 👋 </mj-text>
 
     <mj-text>
-      Thank you for subscribing to Minova Pro! We're excited to have you on board and can't wait for
-      you to experience all the premium features we offer.
-    </mj-text>
-
-    <mj-text>
-      <strong>Your trial period:</strong> You're currently on a free trial that will end on
-      {{trialEndDate}}. During this time, you'll have full access to all premium features at no
-      cost.
+      Awesome! You're now a Minova Pro subscriber! We're super excited to have you join us and can't
+      wait for you to check out all the cool premium features we've got for you.
     </mj-text>
 
     <mj-text>
-      <strong>What's included in {{productName}}:</strong>
+      <strong>Your trial period:</strong> You're all set with a free trial until {{trialEndDate}}.
+      Go ahead and explore all the premium goodies - it's on us! ✨
+    </mj-text>
+
+    <mj-text>
+      <strong>What you get with {{productName}}: 🌟</strong>
     </mj-text>
 
     <mj-text padding-left="25px">
@@ -42,17 +41,11 @@
       font-weight="bold"
       href="{{appUrl}}/dashboard"
     >
-      Go to Dashboard
+      Go to Dashboard 🚀
     </mj-button>
 
     <mj-text>
-      If you have any questions or need assistance, please don't hesitate to contact our support
-      team.
-    </mj-text>
-
-    <mj-text>
-      Best regards,<br />
-      The {{appName}} Team
+      Got questions? Need help? Just reach out to our support team - we're here for you!
     </mj-text>
   </mj-column>
 </mj-section>

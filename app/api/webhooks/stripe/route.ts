@@ -13,7 +13,6 @@ import {
   sendWinBackEmail,
 } from '@/services/mail';
 import logger from '@/lib/logger';
-import { b } from 'vitest/dist/chunks/suite.d.FvehnV49.js';
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -201,10 +200,6 @@ export async function POST(req: Request) {
               user.name || 'there',
               new Date(subscription.current_period_end * 1000),
             );
-
-            // Schedule a win-back email (send it after 7 days)
-            // Since we're not using a scheduler, we can't actually schedule this
-            // In a real application, you would use a CRON job or a task queue
           }
         }
         break;

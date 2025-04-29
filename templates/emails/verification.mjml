@@ -7,17 +7,17 @@
       align="center"
       padding-bottom="20px"
     >
-      Email Verification
+      Email Verification ✅
     </mj-text>
 
-    <mj-text> Hello {{name}}, </mj-text>
+    <mj-text> Hey {{name}}! 👋 </mj-text>
 
     <mj-text>
-      Thank you for registering! Please verify your email address to complete your registration and
-      access all features.
+      Thanks for joining us! Just one quick step to go - verify your email address to unlock all the
+      awesome features waiting for you.
     </mj-text>
 
-    <mj-text> Click the button below to verify your email address: </mj-text>
+    <mj-text> Just click this button to verify your email: </mj-text>
 
     <mj-button
       background-color="#F7B801"
@@ -26,22 +26,17 @@
       font-weight="bold"
       href="{{verificationLink}}"
     >
-      Verify Email Address
+      Verify Email Address 🔑
     </mj-button>
 
-    <mj-text font-size="14px"> Or copy and paste this URL into your browser: </mj-text>
+    <mj-text font-size="14px"> Or copy and paste this link if you prefer: </mj-text>
 
     <mj-text font-size="14px" color="#F7B801" word-break="break-all">
       {{verificationLink}}
     </mj-text>
 
-    <mj-text> This verification link will expire in 1 hour. </mj-text>
+    <mj-text> This link will expire in 1 hour, so don't wait too long! ⏱️ </mj-text>
 
     <mj-text> If you did not create an account, you can safely ignore this email. </mj-text>
-
-    <mj-text>
-      Best regards,<br />
-      The {{appName}} Team
-    </mj-text>
   </mj-column>
 </mj-section>

@@ -7,23 +7,23 @@
       align="center"
       padding-bottom="20px"
     >
-      Your Trial is Ending Soon
+      Your Trial is Ending Soon ⏰
     </mj-text>
 
-    <mj-text> Hello {{name}}, </mj-text>
+    <mj-text> Hey {{name}}! 👋 </mj-text>
 
     <mj-text>
-      This is a friendly reminder that your free trial of Minova Pro will end on
+      Just a heads up - your free trial of Minova Pro is wrapping up on
       <strong>{{trialEndDate}}</strong>.
     </mj-text>
 
     <mj-text>
-      After your trial ends, your account will be automatically billed {{currency}}
-      {{firstBillingAmount}} to continue your subscription without interruption.
+      When your trial ends, we'll automatically charge {{currency}} {{firstBillingAmount}} to keep
+      all your premium features running smoothly.
     </mj-text>
 
     <mj-text>
-      <strong>What you'll continue to enjoy with Minova Pro:</strong>
+      <strong>All the good stuff you'll keep enjoying with Minova Pro: 🌟</strong>
     </mj-text>
 
     <mj-text padding-left="25px">
@@ -41,22 +41,17 @@
       font-weight="bold"
       href="{{manageBillingUrl}}"
     >
-      Manage Billing
+      Manage Billing 💳
     </mj-button>
 
     <mj-text>
-      If you don't want to continue with your subscription, you can cancel anytime before
-      {{trialEndDate}} by visiting your billing settings.
+      Not ready to commit? No problem! You can cancel anytime before {{trialEndDate}} through your
+      billing settings.
     </mj-text>
 
     <mj-text>
-      Thank you for trying Minova Pro. We hope you've found it valuable for your job search and
-      career development.
-    </mj-text>
-
-    <mj-text>
-      Best regards,<br />
-      The {{appName}} Team
+      Thanks for giving Minova Pro a spin! Hope it's been a game-changer for your job search and
+      career journey.
     </mj-text>
   </mj-column>
 </mj-section>

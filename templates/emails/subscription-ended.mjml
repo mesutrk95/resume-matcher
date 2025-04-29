@@ -7,23 +7,23 @@
       align="center"
       padding-bottom="20px"
     >
-      Your Subscription Has Ended
+      Your Subscription Has Ended 👋
     </mj-text>
 
-    <mj-text> Hello {{name}}, </mj-text>
+    <mj-text> Hey {{name}}! </mj-text>
 
     <mj-text>
-      We're sorry to see you go. Your Minova Pro subscription has been canceled and ended on
+      We'll miss having you around! Your Minova Pro subscription has been canceled and ended on
       <strong>{{endDate}}</strong>.
     </mj-text>
 
     <mj-text>
-      Your account has been downgraded to the free plan, which includes limited features. You'll
-      still have access to your existing data, but premium features are no longer available.
+      Your account is now on the free plan, which has fewer bells and whistles. Don't worry - you
+      can still access all your existing data, but the premium goodies are no longer available.
     </mj-text>
 
     <mj-text>
-      <strong>What you'll miss with Minova Pro:</strong>
+      <strong>What you'll miss with Minova Pro: 🌟</strong>
     </mj-text>
 
     <mj-text padding-left="25px">
@@ -35,7 +35,8 @@
     </mj-text>
 
     <mj-text>
-      If you've changed your mind or canceled by mistake, you can resubscribe anytime:
+      Changed your mind? Or maybe it was just a slip of the finger? No problem - you can resubscribe
+      anytime:
     </mj-text>
 
     <mj-button
@@ -45,12 +46,12 @@
       font-weight="bold"
       href="{{resubscribeUrl}}"
     >
-      Resubscribe Now
+      Resubscribe Now ✨
     </mj-button>
 
     <mj-text>
-      We'd love to hear your feedback on why you decided to cancel. Your insights will help us
-      improve our service:
+      We'd love to know what made you decide to leave. Your thoughts will help us make things even
+      better:
     </mj-text>
 
     <mj-button
@@ -66,11 +67,6 @@
 
     <mj-text>
       Thank you for being a Minova Pro subscriber. We hope to welcome you back soon.
-    </mj-text>
-
-    <mj-text>
-      Best regards,<br />
-      The {{appName}} Team
     </mj-text>
   </mj-column>
 </mj-section>
