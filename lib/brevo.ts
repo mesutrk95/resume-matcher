@@ -1,5 +1,4 @@
-import { error } from 'console';
-import logger from './logger';
+import logger from '@/lib/logger';
 import brevo from '@getbrevo/brevo';
 
 // Minova marketing list name in Brevo
@@ -258,12 +257,17 @@ export const findListByName = async (name: string) => {
       }
     }
 
-    logger.debug('List not found by name', { name });
+    logger.info('List not found by name', { name });
     // Cache null for not found lists to avoid repeated API calls
     listIdCache[lowerCaseName] = null;
     return { success: false, error: new Error('List not found') };
   } catch (error) {
-    logger.error('Failed to find list by name', { error, name });
+    logger.error('Failed to find list by name', {
+      message: (error as any).toString(),
+      wholeShit: JSON.stringify(error),
+      otherShit: error,
+      name,
+    });
     // Do not cache on error
     return { success: false, error };
   }
@@ -286,7 +290,7 @@ export const addContactToMarketingList = async (email: string, name?: string) =>
 
     const listId = listResult.listId;
     if (!listId) {
-      logger.debug('Marketing list not found, nothing to add to', {
+      logger.error('Marketing list not found, nothing to add to', {
         listName: MARKETING_LIST_NAME,
       });
       return { success: false, error: 'Marketing list not found' };
@@ -314,7 +318,7 @@ export const addContactToMarketingList = async (email: string, name?: string) =>
       }
 
       await apiInstance.updateContact(email, updateContact);
-      logger.debug('Added existing contact to marketing list', {
+      logger.info('Added existing contact to marketing list', {
         email,
         listName: MARKETING_LIST_NAME,
       });
@@ -328,7 +332,7 @@ export const addContactToMarketingList = async (email: string, name?: string) =>
       }
 
       await apiInstance.createContact(createContact);
-      logger.debug('Created new contact and added to marketing list', {
+      logger.info('Created new contact and added to marketing list', {
         email,
         listName: MARKETING_LIST_NAME,
       });
