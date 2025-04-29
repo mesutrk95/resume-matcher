@@ -145,3 +145,28 @@ export const getMimeType = (filename: string) => {
 
   return 'application/pdf';
 };
+
+export const removeNullProperties = (data: any): any => {
+  if (data === null || data === undefined) {
+    return undefined;
+  }
+
+  if (Array.isArray(data)) {
+    return data.map(item => removeNullProperties(item)).filter(item => item !== undefined);
+  }
+
+  if (typeof data === 'object') {
+    const result: Record<string, any> = {};
+
+    for (const [key, value] of Object.entries(data)) {
+      const cleanValue = removeNullProperties(value);
+      if (cleanValue !== undefined) {
+        result[key] = cleanValue;
+      }
+    }
+
+    return result;
+  }
+
+  return data;
+};

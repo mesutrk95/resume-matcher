@@ -2,13 +2,13 @@ import { z } from 'zod';
 
 const variationSchema = z.object({
   id: z.string(),
-  content: z.string().nullish(),
+  content: z.string().optional(),
   enabled: z.boolean(),
 });
 
 const experienceItemSchema = z.object({
   id: z.string(),
-  description: z.string().nullish(),
+  description: z.string().optional(),
   enabled: z.boolean(),
   variations: z.array(variationSchema),
   skills: z.array(z.string()).optional(),
@@ -16,114 +16,113 @@ const experienceItemSchema = z.object({
 
 const experienceSchema = z.object({
   id: z.string(),
-  companyName: z.string().nullish(),
-  role: z.string().nullish(),
-  startDate: z.string().nullish(),
-  endDate: z.string().nullish(),
+  companyName: z.string().optional(),
+  role: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   enabled: z.boolean(),
   items: z.array(experienceItemSchema),
-  location: z.string().nullish(),
-  type: z.string().nullish(),
+  location: z.string().optional(),
+  type: z.string().optional(),
 });
 
 const resumeProfessionalSummarySchema = z.object({
   id: z.string(),
-  content: z.string().nullish(),
+  content: z.string(),
   enabled: z.boolean(),
 });
 
 const resumeSkillItemSchema = z.object({
   id: z.string(),
-  content: z.string().nullish(),
+  content: z.string(),
   enabled: z.boolean(),
 });
-
 const resumeSkillSetSchema = z.object({
-  category: z.string().nullish(),
+  category: z.string(),
   enabled: z.boolean(),
   skills: z.array(resumeSkillItemSchema),
 });
 
 const resumeProjectSchema = z.object({
   id: z.string(),
-  name: z.string().nullish(),
-  link: z.string().nullish(),
-  content: z.string().nullish(),
-  startDate: z.string().nullish(),
-  endDate: z.string().nullish(),
+  name: z.string(),
+  link: z.string(),
+  content: z.string(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   enabled: z.boolean(),
 });
 
 const resumeContactInfoSchema = z.object({
-  firstName: z.string().nullish(),
-  lastName: z.string().nullish(),
-  phone: z.string().nullish(),
-  email: z.string().nullish(),
-  linkedIn: z.string().nullish(),
-  github: z.string().nullish(),
-  website: z.string().nullish(),
-  twitter: z.string().nullish(),
-  address: z.string().nullish(),
-  country: z.string().nullish(),
-  pronouns: z.string().nullish(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+  linkedIn: z.string().optional(),
+  github: z.string().optional(),
+  website: z.string().optional(),
+  twitter: z.string().optional(),
+  address: z.string().optional(),
+  country: z.string().optional(),
+  pronouns: z.string().optional(),
 });
 
 const resumeTargetTitleSchema = z.object({
   id: z.string(),
-  content: z.string().nullish(),
+  content: z.string(),
   enabled: z.boolean(),
 });
 
 const resumeEducationSchema = z.object({
   id: z.string(),
-  content: z.string().nullish(),
+  content: z.string(),
   enabled: z.boolean(),
-  startDate: z.string().nullish(),
-  endDate: z.string().nullish(),
-  institution: z.string().nullish(),
-  location: z.string().nullish(),
-  degree: z.string().nullish(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+  institution: z.string(),
+  location: z.string().optional(),
+  degree: z.string(),
 });
 
 const resumeAwardSchema = z.object({
   id: z.string(),
-  description: z.string().nullish(),
-  issuer: z.string().nullish(),
-  date: z.string().nullish(),
+  description: z.string().optional(),
+  issuer: z.string().optional(),
+  date: z.string().optional(),
   enabled: z.boolean(),
 });
 
 const resumeCertificationSchema = z.object({
   id: z.string(),
-  description: z.string().nullish(),
-  name: z.string().nullish(),
-  issuer: z.string().nullish(),
-  date: z.string().nullish(),
+  description: z.string().optional(),
+  name: z.string(),
+  issuer: z.string(),
+  date: z.string(),
   enabled: z.boolean(),
 });
 
 const resumeLanguageSchema = z.object({
   id: z.string(),
-  name: z.string().nullish(),
-  level: z.string().nullish(),
+  name: z.string(),
+  level: z.string().default('basic'),
   enabled: z.boolean(),
 });
 
 const resumeInterestSchema = z.object({
   id: z.string(),
-  description: z.string().nullish(),
+  description: z.string().optional(),
   enabled: z.boolean(),
 });
 
 const resumeReferenceSchema = z.object({
   id: z.string(),
-  name: z.string().nullish(),
-  title: z.string().nullish(),
-  company: z.string().nullish(),
-  email: z.string().nullish(),
-  phone: z.string().nullish(),
-  relationship: z.string().nullish(),
-  description: z.string().nullish(),
+  name: z.string().optional(),
+  title: z.string().optional(),
+  company: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  relationship: z.string().optional(),
+  description: z.string().optional(),
   enabled: z.boolean(),
 });
 
@@ -148,17 +147,17 @@ const resumeItemScoreAnalyzeSchema = z.object({
   id: z.string(),
   score: z.number(),
   matched_keywords: z.array(z.string()),
-  hash: z.string().nullish(),
+  hash: z.string().optional(),
 });
 
 // Define the resumeAnalyzedImprovementNote schema
 const resumeAnalyzedImprovementNoteSchema = z.object({
-  title: z.string().nullish(),
-  explanation: z.string().nullish(),
-  text: z.string().nullish(),
+  title: z.string(),
+  explanation: z.string(),
+  text: z.string(),
   id: z.string(),
   action_type: z.enum(['update', 'delete', 'create']),
-  action_text: z.string().nullish(),
+  action_text: z.string(),
 });
 
 // Define the resumeAnalyzeResults schema
