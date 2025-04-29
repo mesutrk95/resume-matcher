@@ -51,7 +51,6 @@
       </mj-column>
       <mj-column width="60%" vertical-align="middle">
         <mj-text align="right" padding="10px 25px">
-          <a href="{{productUrl}}" class="header-link">Products</a>
           <a href="{{blogUrl}}" class="header-link">Blog</a>
           <a href="{{contactUrl}}" class="header-link">Contact</a>
         </mj-text>
