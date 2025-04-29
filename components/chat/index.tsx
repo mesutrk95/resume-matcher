@@ -19,7 +19,7 @@ import { toast } from 'sonner';
 import { randomNDigits } from '@/lib/utils';
 import { ContentWithMeta } from './types';
 import ErrorBoundary from '../shared/error-boundary';
-import { ResumeTemplate } from '@/types/resume-template';
+import { ResumeTemplateContent } from '@/types/resume-template';
 
 // Predefined questions
 const PREDEFINED_QUESTIONS = [
@@ -55,7 +55,7 @@ export function ChatInterface({
   resume,
 }: {
   jobResume: JobResume;
-  resumeTemplate: ResumeTemplate | null;
+  resumeTemplate: ResumeTemplateContent | null;
   resume: ResumeContent;
 }) {
   const [messages, setMessages] = useState<ContentWithMeta[]>([]);

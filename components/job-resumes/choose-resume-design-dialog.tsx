@@ -17,10 +17,11 @@ import { ResumeContent } from '@/types/resume';
 import { pdf } from '@react-pdf/renderer';
 import { Paintbrush, AlertTriangle, Check } from 'lucide-react';
 import React, { useEffect, useState, useCallback, useTransition } from 'react';
-import { ResumeTemplate } from '@/types/resume-template';
+import { ResumeTemplateContent } from '@/types/resume-template';
 import { ResumeDocument } from './resume-renderer/resume-document';
 import { runAction } from '@/app/_utils/runAction';
 import { getAllResumeTemplates } from '@/actions/template';
+import { ResumeTemplate } from '@prisma/client';
 
 /**
  * Individual resume design item with skeleton loading
@@ -45,7 +46,10 @@ const ResumeDesignItem = ({
       try {
         setLoading(true);
         const blob = await pdf(
-          <ResumeDocument resumeTemplate={template} resume={resume} />,
+          <ResumeDocument
+            resumeTemplate={template.content as ResumeTemplateContent}
+            resume={resume}
+          />,
         ).toBlob();
 
         setPdfBlob(blob);

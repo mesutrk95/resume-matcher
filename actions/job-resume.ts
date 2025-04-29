@@ -20,8 +20,6 @@ import {
 import { resumeContentSchema } from '@/schemas/resume';
 import z from 'zod';
 import { withErrorHandling } from '@/lib/with-error-handling';
-import { ResumeTemplate } from '@/types/resume-template';
-import { resumeTemplateSchema } from '@/schemas/resume-template.schema';
 
 export const findJobResume = withErrorHandling(async (id: string) => {
   const user = await currentUser();
@@ -74,18 +72,17 @@ export const updateJobResume = withErrorHandling(
       throw new ForbiddenException('Email not verified.');
     }
     const content = resume.content as ResumeContent;
-    const template = resume.template as ResumeTemplate;
 
     const updateJobSchema = z.object({
       content: resumeContentSchema.optional(),
-      template: z.object({ id: z.string(), override: resumeTemplateSchema.optional() }).optional(),
+      templateId: z.string().optional(),
       name: z.string().optional(),
     });
 
     const validationResult = updateJobSchema.safeParse({
       ...resume,
       content,
-      ...(template && { template: { id: template.id } }),
+      ...(resume.templateId && { templateId: resume.templateId }),
     });
 
     if (validationResult.error) {

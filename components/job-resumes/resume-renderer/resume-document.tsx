@@ -2,7 +2,7 @@ import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/rendere
 import { ResumeContent } from '@/types/resume';
 import React, { useCallback, useMemo } from 'react';
 import {
-  ResumeTemplate,
+  ResumeTemplateContent,
   ResumeTemplateClass,
   ResumeTemplateElement,
 } from '@/types/resume-template';
@@ -48,7 +48,7 @@ Font.register({
 Font.registerHyphenationCallback(word => [word]);
 
 // Helper function to register additional custom fonts if needed
-const registerFonts = (design: ResumeTemplate) => {
+const registerFonts = (design: ResumeTemplateContent) => {
   // If the design uses a different font than what we already registered, register it here
   // if (
   //   design.fonts.family !== 'Open Sans' &&
@@ -98,7 +98,7 @@ export const ResumeDocument = ({
   resume: ResumeContent;
   withIdentifiers?: boolean;
   skipFont?: boolean;
-  resumeTemplate?: ResumeTemplate | null;
+  resumeTemplate?: ResumeTemplateContent | null;
 }) => {
   // // Register any custom fonts needed by this design
   // if (!skipFont) {

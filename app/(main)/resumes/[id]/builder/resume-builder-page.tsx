@@ -4,10 +4,9 @@ import React from 'react';
 import { updateJobResume } from '@/actions/job-resume';
 import { ResumeBuilderProvider } from '@/components/job-resumes/resume-builder/context/ResumeBuilderProvider';
 import { ResumeAnalyzeResults, ResumeContent } from '@/types/resume';
-import { Job, JobResume } from '@prisma/client';
+import { Job, JobResume, ResumeTemplate } from '@prisma/client';
 import { JobMatcher } from './JobMatcher';
 import { runAction } from '@/app/_utils/runAction';
-import { ResumeTemplate } from '@/types/resume-template';
 
 export const ResumeBuilderPage = ({
   jobResume,
@@ -36,7 +35,7 @@ export const ResumeBuilderPage = ({
       },
       {
         id: jobResume.id,
-        template,
+        templateId: template.id,
       },
     );
   };

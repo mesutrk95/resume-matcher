@@ -3,8 +3,7 @@ import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
 import { Metadata } from 'next';
 import { ResumeBuilderPage } from './resume-builder-page';
-import { ResumeTemplate } from '@/types/resume-template';
-import { getDefaultResumeTemplate, getResumeTemplateById } from '@/services/template';
+import { getDefaultResumeTemplate } from '@/services/template';
 
 interface EditResumePageProps {
   params: Promise<{
@@ -29,6 +28,7 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
     },
     include: {
       job: true,
+      template: true,
     },
   });
 
@@ -36,16 +36,7 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
     notFound();
   }
 
-  let resumeTemplate: ResumeTemplate | null = null;
-  const resumeTemplateData = jobResume.template as {
-    id: string;
-    override?: Partial<ResumeTemplate>;
-  } | null;
-
-  if (resumeTemplateData?.id) {
-    resumeTemplate = await getResumeTemplateById(resumeTemplateData.id);
-  }
-  if (!resumeTemplate) resumeTemplate = await getDefaultResumeTemplate();
+  const resumeTemplate = jobResume.template || (await getDefaultResumeTemplate());
 
   return <ResumeBuilderPage jobResume={jobResume} resumeTemplate={resumeTemplate} />;
 }
