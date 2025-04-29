@@ -14,6 +14,7 @@ import { deepUpdateValues, getMimeType } from '@/lib/utils';
 import { CareerProfile } from '@prisma/client';
 import { generateId } from '@/lib/resume-content';
 import { AIRequestModel, createAIServiceManager } from '@/lib/ai/index';
+import { AI } from '@/lib/constants';
 
 export const deleteCareerProfile = withErrorHandling(async (id: string) => {
   const user = await currentUser();
@@ -132,6 +133,9 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
       },
     ],
     zodSchema: resumeContentSchema,
+    context: {
+      reason: AI.Reasons.CREATE_CAREER_PROFILE_FROM_PDF,
+    },
   };
 
   // Execute the request

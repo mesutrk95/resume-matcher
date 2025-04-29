@@ -15,6 +15,7 @@ import { ResponseProcessor } from './responseProcessors/base';
 import { createJsonSchemaValidator } from './validators';
 import { zodSchemaToString } from '@/lib/zod';
 import { currentUser } from '@/lib/auth';
+import { AI } from '../constants';
 
 export interface AIServiceManagerConfig {
   maxRetries: number;
@@ -133,6 +134,7 @@ export class AIServiceManager {
             response.tokenUsage.promptTokens,
             response.tokenUsage.completionTokens,
             responseTime,
+            request.context?.reason || AI.Reasons.GENERIC,
           );
 
           // Record request for rate limiting if rate limit service is provided

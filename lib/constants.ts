@@ -15,6 +15,11 @@ Always be precise, factual, and helpful.`,
     BASIC: 2_000_000,
     DEV: Number.MAX_SAFE_INTEGER,
   },
+
+  Reasons: {
+    GENERIC: 'Generic',
+    CREATE_CAREER_PROFILE_FROM_PDF: 'Create career profile from PDF',
+  },
 };
 
 export const EMAIL_CONSTANTS = {

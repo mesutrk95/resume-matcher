@@ -111,6 +111,7 @@ export interface AIRequestModel<TResponse = any> {
   context?: {
     userId?: string;
     requestId?: string;
+    reason?: string;
   };
 }
 

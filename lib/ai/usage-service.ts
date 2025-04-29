@@ -81,6 +81,7 @@ export class AIUsageService {
     promptTokens: number,
     completionTokens: number,
     responseTime: number,
+    reason?: string,
   ): Promise<void> {
     try {
       // Still record usage in development mode for analytics,
@@ -115,7 +116,8 @@ export class AIUsageService {
             requestCount: todaysRecord.requestCount + 1,
             responseTime: todaysRecord.responseTime + responseTime,
             clientId: clientId ?? todaysRecord.clientId,
-          },
+            ...(reason ? { reason } : {}),
+          } as any,
         });
       } else {
         // Create new record
@@ -129,7 +131,8 @@ export class AIUsageService {
             requestCount: 1,
             failedRequestCount: 0,
             responseTime,
-          },
+            ...(reason ? { reason } : {}),
+          } as any,
         });
       }
     } catch (error) {
