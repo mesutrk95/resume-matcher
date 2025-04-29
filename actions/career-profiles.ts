@@ -1,5 +1,7 @@
 'use server';
 
+import moment from 'moment';
+import * as chrono from 'chrono-node';
 import { ForbiddenException } from '@/lib/exceptions';
 import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
@@ -8,7 +10,7 @@ import { DEFAULT_RESUME_CONTENT } from './constants';
 import { ResumeContent } from '@/types/resume';
 import { withErrorHandling } from '@/lib/with-error-handling';
 import { resumeContentSchema } from '@/schemas/resume';
-import { getMimeType } from '@/lib/utils';
+import { deepUpdateValues, getMimeType } from '@/lib/utils';
 import { CareerProfile } from '@prisma/client';
 import { generateId } from '@/lib/resume-content';
 import { AIRequestModel, createAIServiceManager } from '@/lib/ai/index';
@@ -112,13 +114,11 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
 
   // Create AI service manager directly
   const serviceManager = createAIServiceManager();
-
   const prompt = `Convert this resume PDF to a structured format based on the schema
-      Extract all resume information from this PDF and structure it according to the schema. 
-    - All dates must be in MM/YYYY format
+      Extract all resume information from this PDF and structure it according to the schema.
     - ids convention is based on the path they have prefix then an underscore like the following:
     - Generate IDs with format prefix_xxxxx. Path determines prefix: experiences=exp_, experiences.items=expitem_, experiences.items.variations=var_, titles=title_, summaries=summary_, educations=edu_, skills/skills.skills=skill_, projects=project_, awards=award_, certifications=cert_, languages=lang_, interests=interest_, references=ref_. The xxxxx is a random 5-character alphabetic string. Example: skill_abcde for a skill.
-    - For each experience item in resume file, add one experience item and fill its description, live the variations with an empty array
+    - For each experience item in resume file, add one experience item and fill its description, leave the variations with an empty array
     - Create structured experience items with variations`;
 
   const request: AIRequestModel<ResumeContent> = {
@@ -138,7 +138,7 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
   const content = await serviceManager.executeRequest<ResumeContent>(request);
 
   // Post-process the results
-  const processedContent = {
+  let processedContent = {
     ...content,
     experiences: content.experiences.map(exp => ({
       ...exp,
@@ -162,6 +162,22 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
       },
     ],
   };
+
+  processedContent = deepUpdateValues(processedContent, (path, key, value) => {
+    try {
+      if (
+        key.toLowerCase().includes('date') &&
+        typeof value === 'string' &&
+        (value?.length || 0) > 0
+      ) {
+        const parsedDate = chrono.parseDate(value);
+        const formattedDate = moment(parsedDate).format('MM/YYYY');
+        return formattedDate;
+      }
+    } catch (error) {}
+
+    return value;
+  });
 
   // Create career profile in database
   const careerProfile = await db.careerProfile.create({
