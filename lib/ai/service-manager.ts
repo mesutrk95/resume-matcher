@@ -101,6 +101,7 @@ export class AIServiceManager {
     while (retryCount <= this.maxRetries) {
       try {
         let response;
+        const startTime = performance.now();
 
         if (isChatRequest) {
           // Handle chat request
@@ -121,12 +122,16 @@ export class AIServiceManager {
           );
         }
 
-        // Record actual token usage
+        const endTime = performance.now();
+        const responseTime = Math.round(endTime - startTime);
+
         if (userId) {
           await this.usageService.recordUsage(
             userId,
+            client.getClientId(),
             response.tokenUsage.promptTokens,
             response.tokenUsage.completionTokens,
+            responseTime,
           );
 
           // Record request for rate limiting if rate limit service is provided

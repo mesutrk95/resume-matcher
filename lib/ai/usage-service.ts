@@ -73,9 +73,15 @@ export class AIUsageService {
   }
 
   /**
-   * Record actual token usage after a successful request
+   * Record actual token usage and response time after a successful request
    */
-  async recordUsage(userId: string, promptTokens: number, completionTokens: number): Promise<void> {
+  async recordUsage(
+    userId: string,
+    clientId: string | undefined,
+    promptTokens: number,
+    completionTokens: number,
+    responseTime: number,
+  ): Promise<void> {
     try {
       // Still record usage in development mode for analytics,
       // but it won't count against limits
@@ -107,6 +113,8 @@ export class AIUsageService {
             completionTokens: todaysRecord.completionTokens + completionTokens,
             totalTokens: todaysRecord.totalTokens + totalTokens,
             requestCount: todaysRecord.requestCount + 1,
+            responseTime: todaysRecord.responseTime + responseTime,
+            clientId: clientId ?? todaysRecord.clientId,
           },
         });
       } else {
@@ -114,11 +122,13 @@ export class AIUsageService {
         await db.aIUsage.create({
           data: {
             userId,
+            clientId,
             promptTokens,
             completionTokens,
             totalTokens,
             requestCount: 1,
             failedRequestCount: 0,
+            responseTime,
           },
         });
       }

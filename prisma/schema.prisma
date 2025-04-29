@@ -181,6 +181,8 @@ model AIUsage {
   totalTokens        Int      @default(0)
   requestCount       Int      @default(0)
   failedRequestCount Int      @default(0)
+  clientId           String?
+  responseTime       Int      @default(0)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
