@@ -170,3 +170,40 @@ export const removeNullProperties = (data: any): any => {
 
   return data;
 };
+
+/**
+ * Deep updates values in an object using a callback function
+ * @param obj The object to traverse and update
+ * @param callback Function that receives key path and value, returns new value
+ * @returns A new object with updated values
+ */
+export function deepUpdateValues<T>(
+  obj: T,
+  callback: (keyPath: string, keyName: string, value: any) => any,
+): T {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+
+  // Create a deep clone to avoid mutating the original object
+  const result = Array.isArray(obj) ? ([...obj] as any) : { ...obj };
+
+  // Process each property in the object
+  const processObject = (currentObj: any, parentPath: string = ''): any => {
+    Object.entries(currentObj).forEach(([key, value]) => {
+      const currentPath = parentPath ? `${parentPath}.${key}` : key;
+
+      if (value !== null && typeof value === 'object') {
+        // Recursively process nested objects and arrays
+        currentObj[key] = processObject(value, currentPath);
+      } else {
+        // Call the callback for primitive values
+        currentObj[key] = callback(currentPath, key, value);
+      }
+    });
+
+    return currentObj;
+  };
+
+  return processObject(result) as T;
+}
