@@ -1,5 +1,5 @@
 import logger from '@/lib/logger';
-import brevo from '@getbrevo/brevo';
+import * as brevo from '@getbrevo/brevo';
 
 // Minova marketing list name in Brevo
 // This should be configured in environment variables in production
