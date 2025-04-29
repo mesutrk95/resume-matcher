@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ProficiencyLevel } from '../domains/enums/proficiency-level';
 
 const variationSchema = z.object({
   id: z.string(),
@@ -104,7 +105,7 @@ const resumeCertificationSchema = z.object({
 const resumeLanguageSchema = z.object({
   id: z.string(),
   name: z.string(),
-  level: z.string().default('basic'),
+  level: z.nativeEnum(ProficiencyLevel),
   enabled: z.boolean(),
 });
 

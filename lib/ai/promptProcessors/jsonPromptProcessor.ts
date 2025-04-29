@@ -35,7 +35,7 @@ export class JsonPromptProcessor extends BasePromptProcessor {
       !enhancedPrompt.toLowerCase().includes('valid json')
     ) {
       enhancedPrompt +=
-        '\nOmit any properties with null values from the response. Ensure the response is in a valid JSON format with no extra text or markdown formatting.';
+        '\nOmit any properties with null values from the response. Fill all required fields anyway. Ensure the response is in a valid JSON format with no extra text or markdown formatting.';
     }
 
     // Add system context if available

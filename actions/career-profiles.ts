@@ -54,7 +54,7 @@ export const updateCareerProfile = withErrorHandling(
 );
 
 export const updateCareerProfileContent = withErrorHandling(
-  async (careerProfileId: string, resmueContent: ResumeContent) => {
+  async (careerProfileId: string, resumeContent: ResumeContent) => {
     const user = await currentUser();
     if (!user?.emailVerified) {
       throw new ForbiddenException('Email not verified.');
@@ -66,7 +66,7 @@ export const updateCareerProfileContent = withErrorHandling(
         userId: user?.id,
       },
       data: {
-        content: resmueContent || DEFAULT_RESUME_CONTENT,
+        content: resumeContent || DEFAULT_RESUME_CONTENT,
       },
     });
 

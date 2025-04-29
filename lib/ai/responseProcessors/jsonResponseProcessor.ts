@@ -27,8 +27,7 @@ export class JsonResponseProcessor extends BaseResponseProcessor<any> {
 
     try {
       // Attempt to parse as JSON
-      var obj = JSON.parse(cleanJson);
-      return removeNullProperties(obj);
+      return removeNullProperties(JSON.parse(cleanJson));
     } catch (parseError) {
       throw new ResponseProcessingError('Failed to parse JSON response');
     }
