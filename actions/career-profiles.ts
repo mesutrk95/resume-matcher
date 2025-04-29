@@ -113,9 +113,14 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
   // Create AI service manager directly
   const serviceManager = createAIServiceManager();
 
-  const prompt = 'Convert this resume PDF to a structured format based on the schema';
+  const prompt = `Convert this resume PDF to a structured format based on the schema
+      Extract all resume information from this PDF and structure it according to the schema. 
+    - All dates must be in MM/YYYY format
+    - ids convention is based on the path they have prefix then an underscore like the following:
+    - Generate IDs with format prefix_xxxxx. Path determines prefix: experiences=exp_, experiences.items=expitem_, experiences.items.variations=var_, titles=title_, summaries=summary_, educations=edu_, skills/skills.skills=skill_, projects=project_, awards=award_, certifications=cert_, languages=lang_, interests=interest_, references=ref_. The xxxxx is a random 5-character alphabetic string. Example: skill_abcde for a skill.
+    - For each experience item in resume file, add one experience item and fill its description, live the variations with an empty array
+    - Create structured experience items with variations`;
 
-  // Create the request model with Zod schema for validation
   const request: AIRequestModel<ResumeContent> = {
     prompt,
     responseFormat: 'json',
@@ -126,13 +131,6 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
         mimeType: getMimeType(file.name),
       },
     ],
-    systemInstruction: `Extract all resume information from this PDF and structure it according to the schema. 
-    - All dates must be in MM/YYYY format
-    - ids convention is based on the path they have prefix then an underscore like the following:
-    - Generate IDs with format prefix_xxxxx. Path determines prefix: experiences=exp_, experiences.items=expitem_, experiences.items.variations=var_, titles=title_, summaries=summary_, educations=edu_, skills/skills.skills=skill_, projects=project_, awards=award_, certifications=cert_, languages=lang_, interests=interest_, references=ref_. The xxxxx is a random 5-character alphabetic string. Example: skill_abcde for a skill.
-    - For each experience item in resume file, add one experience item and fill its description, live the variations with an empty array
-    - Create structured experience items with variations
-    `,
     zodSchema: resumeContentSchema,
   };
 

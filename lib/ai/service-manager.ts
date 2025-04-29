@@ -101,6 +101,7 @@ export class AIServiceManager {
     while (retryCount <= this.maxRetries) {
       try {
         let response;
+        let validationErrors: string[] | undefined;
         const startTime = performance.now();
 
         if (isChatRequest) {
@@ -112,7 +113,7 @@ export class AIServiceManager {
           );
         } else {
           // Process the prompt for non-chat requests
-          const processedPrompt = await this.processPrompt(request);
+          const processedPrompt = await this.processPrompt(request, validationErrors);
 
           // Call the AI service with the processed prompt
           response = await client.generateContent(
@@ -153,6 +154,8 @@ export class AIServiceManager {
                 requestId,
                 errors: validationResult.errors,
               });
+              // Append validation errors to the prompt for the next attempt
+              validationErrors = validationResult.errors;
               retryCount++;
               continue;
             } else {
@@ -259,7 +262,10 @@ export class AIServiceManager {
   /**
    * Process the prompt using available prompt processors
    */
-  private async processPrompt(request: AIRequestModel<any>): Promise<string> {
+  private async processPrompt(
+    request: AIRequestModel<any>,
+    validationErrors: string[] | undefined,
+  ): Promise<string> {
     // Find the first matching processor
     for (const processor of this.promptProcessors) {
       if (processor.canProcess(request)) {
@@ -267,7 +273,10 @@ export class AIServiceManager {
       }
     }
 
-    // No processor found, return the original prompt
+    if (validationErrors) {
+      const errorMessages = validationErrors.join('\n');
+      request.prompt = `${request.prompt}\n\nValidation Errors, Make sure to fix these:\n${errorMessages}`;
+    }
     return request.prompt;
   }
 
