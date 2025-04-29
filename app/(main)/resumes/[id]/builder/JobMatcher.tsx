@@ -2,7 +2,7 @@
 
 import React, { useMemo, useTransition } from 'react';
 import { ResumeBuilder } from '@/components/job-resumes/resume-builder';
-import { Job, JobResume } from '@prisma/client';
+import { Job, JobResume, ResumeTemplate } from '@prisma/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useParams, useRouter } from 'next/navigation';
@@ -36,6 +36,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useSubscription } from '@/providers/SubscriptionProvider';
 import { ConnectJobToResume } from '@/components/job-resumes/connect-job-to-resume';
 import { ResumeHeader } from '../../../../../components/job-resumes/job-resume-builder-header';
+import { ResumeTemplateContent } from '@/types/resume-template';
 
 export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job | null }) => {
   const router = useRouter();
@@ -218,7 +219,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                     <ChatInterface
                       jobResume={jobResume}
                       resume={resume}
-                      resumeTemplate={resumeTemplate}
+                      resumeTemplate={resumeTemplate?.content as ResumeTemplateContent}
                     />
                   </TabsContent>
                 </div>
