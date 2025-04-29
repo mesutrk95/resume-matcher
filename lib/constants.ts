@@ -16,3 +16,14 @@ Always be precise, factual, and helpful.`,
     DEV: Number.MAX_SAFE_INTEGER,
   },
 };
+
+export const EMAIL_CONSTANTS = {
+  // Social media links
+  FACEBOOK_URL: 'https://facebook.com/minovaai',
+  TWITTER_URL: 'https://twitter.com/minovaai',
+  LINKEDIN_URL: 'https://linkedin.com/company/minovaai',
+  INSTAGRAM_URL: 'https://instagram.com/minovaai',
+
+  // Contact information
+  COMPANY_ADDRESS: 'Minova AI, Inc.',
+};

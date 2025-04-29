@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import mjml2html from 'mjml';
 const Handlebars = require('handlebars');
+import { EMAIL_CONSTANTS } from '../lib/constants';
 
 const TEMPLATE_DIR = path.join(process.cwd(), 'templates');
 const EMAIL_DIR = path.join(TEMPLATE_DIR, 'emails');
@@ -16,7 +17,7 @@ const templateCache: Record<string, (data: any) => string> = {};
 /**
  * Get base email data that should be included in all emails
  */
-function getBaseEmailData() {
+export function getBaseEmailData() {
   const appName = process.env.NEXT_PUBLIC_APP_NAME || 'Minova AI';
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://minova.ai';
 
@@ -29,18 +30,17 @@ function getBaseEmailData() {
 
     // URLs for navigation
     websiteUrl: appUrl,
-    productUrl: `${appUrl}/products`,
     blogUrl: `${appUrl}/blog`,
     contactUrl: `${appUrl}/contact`,
 
     // Social media links
-    facebookUrl: 'https://facebook.com/minovaai',
-    twitterUrl: 'https://twitter.com/minovaai',
-    linkedinUrl: 'https://linkedin.com/company/minovaai',
-    instagramUrl: 'https://instagram.com/minovaai',
+    facebookUrl: EMAIL_CONSTANTS.FACEBOOK_URL,
+    twitterUrl: EMAIL_CONSTANTS.TWITTER_URL,
+    linkedinUrl: EMAIL_CONSTANTS.LINKEDIN_URL,
+    instagramUrl: EMAIL_CONSTANTS.INSTAGRAM_URL,
 
     // Contact information
-    companyAddress: 'Minova AI, Inc.',
+    companyAddress: EMAIL_CONSTANTS.COMPANY_ADDRESS,
     contactEmail: process.env.EMAIL_FROM?.split('<')[1]?.split('>')[0] || 'contact@minova.ai',
 
     // Footer links
@@ -56,7 +56,7 @@ function getBaseEmailData() {
 /**
  * Load and compile an MJML template
  */
-async function loadMjmlTemplate(
+export async function loadMjmlTemplate(
   templateName: string,
   layoutName = 'default',
 ): Promise<(data: any) => string> {

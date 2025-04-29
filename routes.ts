@@ -1,4 +1,9 @@
-export const publicRoutes: string[] = ['/verify', '/api/webhooks/stripe', '/api/health'];
+export const publicRoutes: string[] = [
+  '/verify',
+  '/api/webhooks/stripe',
+  '/api/health',
+  '/api/email-preview',
+];
 
 export const authRoutes: string[] = [
   '/login',
