@@ -133,9 +133,6 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
       },
     ],
     zodSchema: resumeContentSchema,
-    context: {
-      reason: AI.Reasons.CREATE_CAREER_PROFILE_FROM_PDF,
-    },
   };
 
   // Execute the request

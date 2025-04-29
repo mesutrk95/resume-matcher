@@ -54,7 +54,6 @@ export async function getAITextResponse(
   prompt: string,
   contents?: (string | Buffer)[],
   systemInstructions?: string,
-  reason?: string,
 ): Promise<{
   result: string;
   error?: string;
@@ -69,7 +68,6 @@ export async function getAITextResponse(
       data: c,
     })),
     systemInstruction: systemInstructions,
-    reason: reason,
   });
 }
 
@@ -80,7 +78,6 @@ export async function getAIJsonResponse(
   prompt: string,
   contents?: (string | Buffer)[],
   systemInstructions?: string,
-  reason?: string,
 ): Promise<{
   result: any;
   error?: string;
@@ -95,7 +92,6 @@ export async function getAIJsonResponse(
       data: c,
     })),
     systemInstruction: systemInstructions,
-    reason,
   });
 }
 
@@ -106,7 +102,6 @@ export async function getAIHtmlResponse(
   prompt: string,
   contents?: (string | Buffer)[],
   systemInstructions?: string,
-  reason?: string,
 ): Promise<{
   result: string;
   error?: string;
@@ -121,7 +116,6 @@ export async function getAIHtmlResponse(
       data: c,
     })),
     systemInstruction: systemInstructions,
-    reason,
   });
 }
 
@@ -134,7 +128,6 @@ async function processAIRequest<T>(request: {
   contents?: ContentItem[];
   options?: AIRequestOptions;
   systemInstruction?: string;
-  reason?: string;
 }): Promise<{
   result: T;
   error?: string;
@@ -162,7 +155,6 @@ async function processAIRequest<T>(request: {
       context: {
         userId,
         requestId,
-        reason: request.reason,
       },
     };
 

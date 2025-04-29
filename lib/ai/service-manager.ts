@@ -134,7 +134,6 @@ export class AIServiceManager {
             response.tokenUsage.promptTokens,
             response.tokenUsage.completionTokens,
             responseTime,
-            request.context?.reason || AI.Reasons.GENERIC,
           );
 
           // Record request for rate limiting if rate limit service is provided
