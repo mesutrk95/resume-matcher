@@ -2,55 +2,62 @@
   <mj-head>
     <mj-title>{{title}}</mj-title>
     <mj-preview>{{previewText}}</mj-preview>
-    <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" />
+    <mj-font
+      name="Nunito"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+    />
     <mj-attributes>
-      <mj-all font-family="Roboto, Arial, sans-serif" padding="0" />
-      <mj-text font-size="16px" color="#333333" line-height="1.5" padding="10px 25px" />
-      <mj-section background-color="#ffffff" padding="20px" />
+      <mj-all font-family="Nunito, Arial, sans-serif" padding="0" />
+      <mj-text font-size="15px" color="#4a4a4a" line-height="1.4" padding="8px 20px" />
+      <mj-section background-color="#ffffff" padding="12px" />
       <mj-button
-        background-color="#4CAF50"
+        background-color="#F7B801"
         color="white"
-        border-radius="4px"
-        font-weight="bold"
-        padding="10px 25px"
+        border-radius="30px"
+        font-weight="700"
+        padding="8px 20px"
       />
-      <mj-divider border-color="#eeeeee" border-width="1px" padding="10px 0" />
-      <mj-image padding="10px 25px" />
+      <mj-divider border-color="#FFF1D0" border-width="2px" padding="8px 0" />
+      <mj-image padding="8px 20px" />
     </mj-attributes>
     <mj-style inline="inline">
-      .link-nostyle { color: inherit; text-decoration: none } .footer-link { color: #888888;
-      text-decoration: underline; padding: 0 5px; } .header-link { color: #333333; text-decoration:
-      none; padding: 0 15px; } .social-icon { padding: 0 5px; } .hero-text { padding: 20px; }
-      .primary-bg { background-color: #4CAF50; } .secondary-bg { background-color: #f5f5f5; } .card
-      { border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
+      .link-nostyle { color: inherit; text-decoration: none } .footer-link { color: #F7B801;
+      text-decoration: none; padding: 0 3px; } .header-link { color: #4a4a4a; text-decoration: none;
+      padding: 0 10px; font-weight: 600; } .header-link:hover { color: #F7B801; } .bubble-card {
+      border-radius: 24px; overflow: hidden; } .shadow-section { box-shadow: 0 4px 12px
+      rgba(0,0,0,0.05); }
     </mj-style>
     {{#if customStyles}}
     <mj-style inline="inline"> {{customStyles}} </mj-style>
     {{/if}}
     <mj-breakpoint width="480px" />
   </mj-head>
-  <mj-body background-color="#f4f4f4">
-    <!-- Pre-header (for better email client previews) -->
+  <mj-body background-color="#FFFAF0">
     <mj-section padding="0">
       <mj-column>
-        <mj-text color="#f4f4f4" font-size="1px" padding="0"> {{previewText}} </mj-text>
+        <mj-text color="#FFFAF0" font-size="1px" padding="0"> {{previewText}} </mj-text>
       </mj-column>
     </mj-section>
 
-    <!-- Header with Navigation -->
-    <mj-section padding="15px 0" background-color="#ffffff">
+    <!-- Header -->
+    <mj-section
+      padding="10px 0"
+      background-color="#FFFFFF"
+      border-radius="0 0 30px 30px"
+      css-class="shadow-section"
+    >
       <mj-column width="40%">
         <mj-image
-          width="150px"
+          width="120px"
           src="https://www.minova.ai/logos/png/512/text-logo-outlines.png"
           alt="Minova"
-          align="left"
-          padding="10px 25px"
+          align="center"
+          padding="8px 20px"
           href="{{websiteUrl}}"
         />
       </mj-column>
       <mj-column width="60%" vertical-align="middle">
-        <mj-text align="right" padding="10px 25px">
+        <mj-text align="center" padding="8px 20px" font-size="14px">
           <a href="{{blogUrl}}" class="header-link">Blog</a>
           <a href="{{contactUrl}}" class="header-link">Contact</a>
         </mj-text>
@@ -59,28 +66,24 @@
 
     <!-- Hero Section -->
     {{#if heroImage}}
-    <mj-section padding="0">
+    <mj-section padding="15px">
       <mj-column>
         <mj-hero
           mode="fluid-height"
           background-width="600px"
-          background-height="300px"
+          background-height="240px"
           background-url="{{heroImage}}"
-          background-color="#2a3448"
-          padding="30px 0px"
+          background-color="#F7B801"
+          padding="20px 0px"
+          border-radius="24px"
         >
-          <mj-text
-            css-class="hero-text"
-            padding="20px"
-            color="#ffffff"
-            align="center"
-            font-size="32px"
-            font-weight="bold"
-          >
+          <mj-text padding="16px" color="#ffffff" align="center" font-size="28px" font-weight="700">
             {{heroTitle}}
           </mj-text>
           {{#if heroButton}}
-          <mj-button href="{{heroButtonUrl}}"> {{heroButtonText}} </mj-button>
+          <mj-button href="{{heroButtonUrl}}" background-color="#FFFFFF" color="#F7B801">
+            {{heroButtonText}}
+          </mj-button>
           {{/if}}
         </mj-hero>
       </mj-column>
@@ -88,41 +91,63 @@
     {{/if}}
 
     <!-- Main content -->
-    <mj-wrapper padding="20px 0">
-      <mj-section border-radius="8px" css-class="card" background-color="#ffffff">
+    <mj-wrapper padding="5px 15px">
+      <mj-section
+        border-radius="24px"
+        background-color="#ffffff"
+        css-class="bubble-card shadow-section"
+      >
         <mj-column> {{> content}} </mj-column>
       </mj-section>
     </mj-wrapper>
 
-    <!-- Optional Features Section -->
+    <!-- Features Section -->
     {{#if featuresEnabled}}
-    <mj-wrapper padding="0 0 20px 0">
-      <mj-section background-color="#ffffff" css-class="card" padding-top="0">
+    <mj-wrapper padding="5px 15px">
+      <mj-section
+        background-color="#ffffff"
+        border-radius="24px"
+        padding="15px"
+        css-class="shadow-section"
+      >
         <mj-column>
-          <mj-text font-size="22px" font-weight="bold" align="center"> Our Features </mj-text>
+          <mj-text font-size="20px" font-weight="700" align="center" color="#F7B801">
+            Our Features
+          </mj-text>
           <mj-divider />
         </mj-column>
       </mj-section>
 
-      <mj-section background-color="#ffffff" css-class="card" padding-top="0">
+      <mj-section
+        background-color="#ffffff"
+        border-radius="24px"
+        padding="0 15px 15px 15px"
+        css-class="shadow-section"
+      >
         <mj-column width="33%">
-          <mj-image src="{{feature1Icon}}" width="60px" align="center" />
-          <mj-text align="center" font-weight="500"> {{feature1Title}} </mj-text>
-          <mj-text align="center" font-size="14px" color="#666666">
+          <mj-image src="{{feature1Icon}}" width="50px" align="center" />
+          <mj-text align="center" font-weight="600" font-size="14px" color="#F7B801">
+            {{feature1Title}}
+          </mj-text>
+          <mj-text align="center" font-size="13px" color="#666666">
             {{feature1Description}}
           </mj-text>
         </mj-column>
         <mj-column width="33%">
-          <mj-image src="{{feature2Icon}}" width="60px" align="center" />
-          <mj-text align="center" font-weight="500"> {{feature2Title}} </mj-text>
-          <mj-text align="center" font-size="14px" color="#666666">
+          <mj-image src="{{feature2Icon}}" width="50px" align="center" />
+          <mj-text align="center" font-weight="600" font-size="14px" color="#F7B801">
+            {{feature2Title}}
+          </mj-text>
+          <mj-text align="center" font-size="13px" color="#666666">
             {{feature2Description}}
           </mj-text>
         </mj-column>
         <mj-column width="33%">
-          <mj-image src="{{feature3Icon}}" width="60px" align="center" />
-          <mj-text align="center" font-weight="500"> {{feature3Title}} </mj-text>
-          <mj-text align="center" font-size="14px" color="#666666">
+          <mj-image src="{{feature3Icon}}" width="50px" align="center" />
+          <mj-text align="center" font-weight="600" font-size="14px" color="#F7B801">
+            {{feature3Title}}
+          </mj-text>
+          <mj-text align="center" font-size="13px" color="#666666">
             {{feature3Description}}
           </mj-text>
         </mj-column>
@@ -130,22 +155,30 @@
     </mj-wrapper>
     {{/if}}
 
-    <!-- Call to Action Section -->
+    <!-- CTA Section -->
     {{#if ctaEnabled}}
-    <mj-wrapper padding="0 0 20px 0">
-      <mj-section css-class="primary-bg card">
+    <mj-wrapper padding="5px 15px">
+      <mj-section background-color="#F7B801" border-radius="24px" css-class="shadow-section">
         <mj-column width="100%">
           <mj-text
             color="#ffffff"
             align="center"
             font-size="20px"
-            font-weight="bold"
-            padding="20px 25px"
+            font-weight="700"
+            padding="16px 20px"
           >
             {{ctaTitle}}
           </mj-text>
-          <mj-text color="#ffffff" align="center" padding="0 25px 20px 25px"> {{ctaText}} </mj-text>
-          <mj-button background-color="#ffffff" color="#4CAF50" href="{{ctaButtonUrl}}">
+          <mj-text color="#ffffff" align="center" padding="0 20px 16px 20px" font-size="14px">
+            {{ctaText}}
+          </mj-text>
+          <mj-button
+            background-color="#ffffff"
+            color="#F7B801"
+            href="{{ctaButtonUrl}}"
+            border-radius="30px"
+            font-weight="700"
+          >
             {{ctaButtonText}}
           </mj-button>
         </mj-column>
@@ -153,32 +186,68 @@
     </mj-wrapper>
     {{/if}}
 
-    <!-- Footer Combined -->
-    <mj-section background-color="#ffffff" padding="10px 0 5px">
+    <!-- Footer -->
+    <mj-section
+      background-color="#ffffff"
+      padding="15px"
+      border-radius="30px 30px 0 0"
+      margin-top="10px"
+      css-class="shadow-section"
+    >
       <mj-column>
-        <mj-text align="center" font-size="12px" color="#888888" padding="0 25px 2px">
-          Connect with us
+        <mj-text
+          align="center"
+          font-size="11px"
+          color="#F7B801"
+          font-weight="700"
+          padding="2px 20px"
+        >
+          Let's Connect!
         </mj-text>
-        <mj-social mode="horizontal" padding="2px 25px" icon-size="20px" icon-padding="4px">
-          <mj-social-element name="facebook" href="{{facebookUrl}}" background-color="#3b5998">
-          </mj-social-element>
-          <mj-social-element name="twitter" href="{{twitterUrl}}" background-color="#55acee">
-          </mj-social-element>
-          <mj-social-element name="linkedin" href="{{linkedinUrl}}" background-color="#0077b5">
-          </mj-social-element>
-          <mj-social-element name="instagram" href="{{instagramUrl}}" background-color="#3f729b">
-          </mj-social-element>
+        <mj-social
+          mode="horizontal"
+          padding="2px 20px"
+          icon-size="18px"
+          icon-padding="6px"
+          border-radius="50px"
+          icon-height="24px"
+          icon-width="24px"
+        >
+          <mj-social-element
+            name="facebook"
+            href="{{facebookUrl}}"
+            background-color="#F7C934"
+            padding="0 8px 0 0"
+          ></mj-social-element>
+          <mj-social-element
+            name="twitter"
+            href="{{twitterUrl}}"
+            background-color="#F7C934"
+            padding="0 8px 0 0"
+          ></mj-social-element>
+          <mj-social-element
+            name="linkedin"
+            href="{{linkedinUrl}}"
+            background-color="#F7C934"
+            padding="0 8px 0 0"
+          ></mj-social-element>
+          <mj-social-element
+            name="instagram"
+            href="{{instagramUrl}}"
+            background-color="#F7C934"
+            padding="0 0 0 0"
+          ></mj-social-element>
         </mj-social>
 
-        <mj-text font-size="11px" color="#888888" align="center" padding="2px 25px">
+        <mj-text font-size="10px" color="#888888" align="center" padding="5px 20px">
           {{companyAddress}} •
           <a href="mailto:{{contactEmail}}" class="footer-link">{{contactEmail}}</a>
         </mj-text>
 
-        <mj-text font-size="11px" color="#888888" align="center" padding="2px 25px">
-          © {{currentYear}} Minova. All rights reserved. •
-          <a href="{{privacyUrl}}" class="footer-link">Privacy Policy</a> •
-          <a href="{{termsUrl}}" class="footer-link">Terms of Service</a>
+        <mj-text font-size="10px" color="#888888" align="center" padding="2px 20px">
+          © {{currentYear}} Minova •
+          <a href="{{privacyUrl}}" class="footer-link">Privacy</a> •
+          <a href="{{termsUrl}}" class="footer-link">Terms</a>
           {{#if unsubscribeLink}} •
           <a href="{{unsubscribeLink}}" class="footer-link">Unsubscribe</a>
           {{/if}}

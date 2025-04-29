@@ -3,7 +3,7 @@
     <mj-text
       font-size="24px"
       font-weight="bold"
-      color="#333333"
+      color="#4a4a4a"
       align="center"
       padding-bottom="20px"
     >
@@ -39,7 +39,7 @@
     </mj-text>
 
     <mj-button
-      background-color="#4f46e5"
+      background-color="#F7B801"
       color="white"
       border-radius="4px"
       font-weight="bold"
@@ -55,8 +55,8 @@
 
     <mj-button
       background-color="#ffffff"
-      color="#4f46e5"
-      border="1px solid #4f46e5"
+      color="#F7B801"
+      border="1px solid #F7B801"
       border-radius="4px"
       font-weight="bold"
       href="{{feedbackUrl}}"

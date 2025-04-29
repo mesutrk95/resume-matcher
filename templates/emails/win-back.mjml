@@ -3,7 +3,7 @@
     <mj-text
       font-size="24px"
       font-weight="bold"
-      color="#333333"
+      color="#4a4a4a"
       align="center"
       padding-bottom="20px"
     >
@@ -17,7 +17,7 @@
       special offer just for you.
     </mj-text>
 
-    <mj-text font-size="20px" font-weight="bold" color="#4f46e5" align="center" padding="15px 0">
+    <mj-text font-size="20px" font-weight="bold" color="#F7B801" align="center" padding="15px 0">
       50% OFF for 3 months!
     </mj-text>
 
@@ -37,7 +37,7 @@
     </mj-text>
 
     <mj-button
-      background-color="#4f46e5"
+      background-color="#F7B801"
       color="white"
       border-radius="4px"
       font-weight="bold"

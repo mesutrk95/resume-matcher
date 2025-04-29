@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 import fs from 'fs/promises';
 import path from 'path';
 import mjml2html from 'mjml';
-const Handlebars = require('handlebars');
+import * as Handlebars from 'handlebars';
 import { EMAIL_CONSTANTS } from '../lib/constants';
 
 const TEMPLATE_DIR = path.join(process.cwd(), 'templates');

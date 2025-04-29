@@ -3,7 +3,7 @@
     <mj-text
       font-size="24px"
       font-weight="bold"
-      color="#333333"
+      color="#4a4a4a"
       align="center"
       padding-bottom="20px"
     >
@@ -18,7 +18,7 @@
     </mj-text>
 
     <mj-text font-size="20px" font-weight="bold" align="center" padding="20px 0">
-      Your authentication code is: <span style="color: #4f46e5">{{token}}</span>
+      Your authentication code is: <span style="color: #f7b801">{{token}}</span>
     </mj-text>
 
     <mj-text>

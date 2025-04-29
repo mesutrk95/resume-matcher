@@ -3,7 +3,7 @@
     <mj-text
       font-size="24px"
       font-weight="bold"
-      color="#333333"
+      color="#4a4a4a"
       align="center"
       padding-bottom="20px"
     >
@@ -13,14 +13,14 @@
     <mj-text> Hello {{name}}, </mj-text>
 
     <mj-text>
-      Thank you for registering! Please verify your email address to complete
-      your registration and access all features.
+      Thank you for registering! Please verify your email address to complete your registration and
+      access all features.
     </mj-text>
 
     <mj-text> Click the button below to verify your email address: </mj-text>
 
     <mj-button
-      background-color="#4f46e5"
+      background-color="#F7B801"
       color="white"
       border-radius="4px"
       font-weight="bold"
@@ -29,19 +29,15 @@
       Verify Email Address
     </mj-button>
 
-    <mj-text font-size="14px">
-      Or copy and paste this URL into your browser:
-    </mj-text>
+    <mj-text font-size="14px"> Or copy and paste this URL into your browser: </mj-text>
 
-    <mj-text font-size="14px" color="#4f46e5" word-break="break-all">
+    <mj-text font-size="14px" color="#F7B801" word-break="break-all">
       {{verificationLink}}
     </mj-text>
 
     <mj-text> This verification link will expire in 1 hour. </mj-text>
 
-    <mj-text>
-      If you did not create an account, you can safely ignore this email.
-    </mj-text>
+    <mj-text> If you did not create an account, you can safely ignore this email. </mj-text>
 
     <mj-text>
       Best regards,<br />
