@@ -9,6 +9,7 @@ import { createStandardResponseProcessors } from './responseProcessors';
 import { getCurrentRequestId } from '@/lib/request-context';
 import { currentUser } from '@/lib/auth';
 import Logger from '@/lib/logger';
+import { AI } from '@/lib/constants';
 
 // Singleton instance of the AI service manager
 let _serviceManager: AIServiceManager | null = null;
@@ -27,20 +28,15 @@ export function createAIServiceManager(): AIServiceManager {
   // Create the default clients
   const geminiClient = new GeminiClient(
     process.env.GEMINI_API_KEY || '',
-    process.env.GEMINI_MODEL || 'gemini-1.5-pro',
+    process.env.GEMINI_MODEL || 'gemini-2.0-flash',
   );
 
-  // Create the standard prompt and response processors
-  const systemContext = `You are a helpful assistant for a resume building application.
-Your goal is to help users optimize their resumes for job applications.
-Always be precise, factual, and helpful.`;
-
-  const promptProcessors = createStandardPromptProcessors(systemContext);
+  const promptProcessors = createStandardPromptProcessors(AI.SYSTEM_CONTEXT);
   const responseProcessors = createStandardResponseProcessors();
 
   // Create and configure the service manager
   _serviceManager = new AIServiceManager({
-    maxRetries: 3,
+    maxRetries: AI.MAX_RETRIES,
     defaultClient: geminiClient,
     promptProcessors,
     responseProcessors,
@@ -174,7 +170,6 @@ async function processAIRequest<T>(request: {
   } catch (error) {
     Logger.error('AI request failed', {
       error: error instanceof Error ? error.message : String(error),
-      prompt: request.prompt?.substring(0, 200) + '...',
     });
 
     // Return error information
