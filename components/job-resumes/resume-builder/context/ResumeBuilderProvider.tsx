@@ -1,7 +1,7 @@
 'use client';
 
 import { ResumeAnalyzeResults, ResumeContent } from '@/types/resume';
-import { ResumeTemplate } from '@/types/resume-template';
+import { ResumeTemplate } from '@prisma/client';
 // import { migrateResumeContent } from '@/utils/resume-migration';
 import React, { createContext, useState } from 'react';
 

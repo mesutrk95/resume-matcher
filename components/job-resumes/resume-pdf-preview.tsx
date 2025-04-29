@@ -9,6 +9,7 @@ import { useResumeBuilder } from './resume-builder/context/useResumeBuilder';
 import { ChooseResumeDesignDialog } from './choose-resume-design-dialog';
 import { ResumeDocument } from './resume-renderer/resume-document';
 import PDFViewer from './resume-renderer/pdf-viewer';
+import { ResumeTemplateContent } from '@/types/resume-template';
 
 // CV Preview Component with Download Button
 export const ResumePreview = ({
@@ -32,7 +33,7 @@ export const ResumePreview = ({
       const blob = await pdf(
         <ResumeDocument
           resume={resume}
-          resumeTemplate={resumeTemplate}
+          resumeTemplate={resumeTemplate?.content as ResumeTemplateContent}
           withIdentifiers={false}
           skipFont={false}
         />,

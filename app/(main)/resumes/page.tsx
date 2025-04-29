@@ -51,6 +51,7 @@ export default async function ResumesPage({ searchParams }: ResumesPageProps) {
           companyName: true,
         },
       },
+      template: false,
     },
     orderBy: {
       createdAt: 'desc',
