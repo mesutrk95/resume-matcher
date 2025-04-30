@@ -7,7 +7,7 @@ import { Form } from '@/components/ui/form';
 import { z } from 'zod';
 import { loginSchema } from '@/schemas';
 import { Button } from '@/components/ui/button';
-import { useTransition } from 'react';
+import { useEffect, useTransition } from 'react';
 import { login } from '@/actions/login';
 import { FormInput } from '@/components/shared/form-input';
 import { toast } from 'sonner';
@@ -26,6 +26,18 @@ export const LoginForm = ({ heroImage }: { heroImage?: string }) => {
       password: '',
     },
   });
+
+  // this fixes the nextjs middleware redirect issue (browser url doesn't change when redirected but the component is shown)
+  useEffect(() => {
+    const path = new URL(location.href).pathname;
+
+    if (path !== '/login') {
+      const url = new URL(`/login`, location.href);
+      if (path !== '/') url.searchParams.set('redirect', path + '?' + searchParams.toString());
+
+      return router.push(url.toString());
+    }
+  }, []);
 
   const handleSubmit = form.handleSubmit(values => {
     startTransition(() => {
