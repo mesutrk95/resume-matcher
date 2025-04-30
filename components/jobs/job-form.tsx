@@ -36,7 +36,7 @@ export const JobForm = ({ initialData }: JobFormProps) => {
       description: initialData?.description || '',
       location: initialData?.location || '',
       url: initialData?.url || '',
-      postedAt: initialData?.postedAt || null,
+      postedAt: initialData?.postedAt || '',
     },
   });
 

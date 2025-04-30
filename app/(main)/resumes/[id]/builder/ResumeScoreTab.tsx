@@ -206,8 +206,8 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
                 Score It!
               </LoadingButton>
             </div>
-            <div className=" flex justify-center">
-              <Image src="/assets/resume-score.svg" width={200} alt="" />
+            <div className=" flex justify-center min-w-[200px] h-[150px] relative">
+              <Image src="/assets/resume-score.svg" fill={true} alt="" />
 
               {/* <LottieAnimatedIcon icon="/iconly/AiProcessor.json" width={150} height={150}/> */}
             </div>
