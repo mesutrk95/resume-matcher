@@ -15,7 +15,6 @@ import { ResponseProcessor } from './responseProcessors/base';
 import { createJsonSchemaValidator } from './validators';
 import { zodSchemaToString } from '@/lib/zod';
 import { currentUser } from '@/lib/auth';
-import { AI } from '../constants';
 
 export interface AIServiceManagerConfig {
   maxRetries: number;
@@ -44,7 +43,7 @@ export class AIServiceManager {
     // Initialize default client but allow it to be overridden for testing
     this.defaultClient =
       config.defaultClient ||
-      new GeminiClient(process.env.GEMINI_API_KEY || '', 'gemini-2.0-flash');
+      new GeminiClient(process.env.GEMINI_API_KEY || '', 'gemini-1.5-flash');
   }
 
   /**
@@ -58,7 +57,7 @@ export class AIServiceManager {
       // Add schema information to the prompt if it's not a chat request
       if (!request.chatHistory || request.chatHistory.length === 0) {
         const schemaInfo = zodSchemaToString(request.zodSchema);
-        request.prompt = `${request.prompt}\n\nJson Response should match this Json schema: ${schemaInfo}`;
+        request.prompt = `${request.prompt}\nJson Response should match this Json schema: ${schemaInfo}`;
       }
     }
     const requestId = request.context?.requestId || (await getCurrentRequestId());

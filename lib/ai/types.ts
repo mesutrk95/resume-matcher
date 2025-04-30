@@ -1,4 +1,3 @@
-// lib/ai/types.ts
 import * as z from 'zod';
 
 export interface AIRequestOptions {
@@ -83,8 +82,8 @@ export interface MessagePart {
 export interface ChatHistoryItem {
   role: 'user' | 'model' | 'system';
   parts: MessagePart[];
-  id?: string;
-  timestamp?: Date;
+  id: string;
+  timestamp: Date;
 }
 
 export interface AIRequestModel<TResponse = any> {
@@ -111,8 +110,6 @@ export interface AIRequestModel<TResponse = any> {
   context?: {
     userId?: string;
     requestId?: string;
+    reason?: string;
   };
 }
-
-// Export a type for compatibility with existing code
-export type ContentWithMeta = ChatHistoryItem;

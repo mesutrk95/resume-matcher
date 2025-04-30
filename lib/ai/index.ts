@@ -10,6 +10,8 @@ import { getCurrentRequestId } from '@/lib/request-context';
 import { currentUser } from '@/lib/auth';
 import Logger from '@/lib/logger';
 import { AI } from '@/lib/constants';
+import { randomNDigits } from '@/lib/utils';
+import { MessagePart, ChatHistoryItem } from './types';
 
 // Singleton instance of the AI service manager
 let _serviceManager: AIServiceManager | null = null;
@@ -28,7 +30,7 @@ export function createAIServiceManager(): AIServiceManager {
   // Create the default clients
   const geminiClient = new GeminiClient(
     process.env.GEMINI_API_KEY || '',
-    process.env.GEMINI_MODEL || 'gemini-2.0-flash',
+    process.env.GEMINI_MODEL || 'gemini-1.5-flash',
   );
 
   const promptProcessors = createStandardPromptProcessors(AI.SYSTEM_CONTEXT);
@@ -46,31 +48,6 @@ export function createAIServiceManager(): AIServiceManager {
 
   return _serviceManager;
 }
-
-/**
- * Helper function to get text response from AI
- */
-export async function getAITextResponse(
-  prompt: string,
-  contents?: (string | Buffer)[],
-  systemInstructions?: string,
-): Promise<{
-  result: string;
-  error?: string;
-  prompt: string;
-  content?: (string | Buffer)[];
-}> {
-  return processAIRequest<string>({
-    prompt,
-    responseFormat: 'text',
-    contents: contents?.map(c => ({
-      type: typeof c === 'string' ? 'text' : 'pdf',
-      data: c,
-    })),
-    systemInstruction: systemInstructions,
-  });
-}
-
 /**
  * Helper function to get JSON response from AI
  */
@@ -87,30 +64,6 @@ export async function getAIJsonResponse(
   return processAIRequest<any>({
     prompt,
     responseFormat: 'json',
-    contents: contents?.map(c => ({
-      type: typeof c === 'string' ? 'text' : 'pdf',
-      data: c,
-    })),
-    systemInstruction: systemInstructions,
-  });
-}
-
-/**
- * Helper function to get HTML response from AI
- */
-export async function getAIHtmlResponse(
-  prompt: string,
-  contents?: (string | Buffer)[],
-  systemInstructions?: string,
-): Promise<{
-  result: string;
-  error?: string;
-  prompt: string;
-  content?: (string | Buffer)[];
-}> {
-  return processAIRequest<string>({
-    prompt,
-    responseFormat: 'html',
     contents: contents?.map(c => ({
       type: typeof c === 'string' ? 'text' : 'pdf',
       data: c,
@@ -179,6 +132,100 @@ async function processAIRequest<T>(request: {
       prompt: request.prompt,
       content: request.contents?.map(c => c.data),
     };
+  }
+}
+
+/**
+ * Helper function to get chat response from Gemini
+ * @param systemInstruction System instruction for the model
+ * @param messages Array of message parts to send
+ * @param instructionSuffix Optional instruction to append (not saved to history)
+ * @param history Optional chat history
+ * @returns Response text and updated history
+ */
+export async function getChatResponse(
+  systemInstruction: string,
+  messages: MessagePart[],
+  instructionSuffix: string | null,
+  history?: ChatHistoryItem[],
+): Promise<{
+  response: string;
+  updatedHistory: ChatHistoryItem[];
+}> {
+  try {
+    // Get the service manager
+    const serviceManager = createAIServiceManager();
+
+    // Prepare the history (without any instructions)
+    const geminiHistory =
+      history?.map(item => ({
+        role: item.role,
+        parts: item.parts,
+        id: item.id,
+        timestamp: item.timestamp,
+      })) || [];
+
+    // Get current user ID if available (for usage tracking)
+    const user = await currentUser().catch(() => null);
+    const userId = user?.id;
+
+    // Get request ID for tracking
+    const requestId = await getCurrentRequestId();
+
+    // Create a new user message for the current request
+    const currentUserMessage = {
+      role: 'user' as const,
+      parts: messages,
+    } as ChatHistoryItem;
+
+    // Add the current message to the history for the request
+    const updatedHistory = [...geminiHistory, currentUserMessage];
+
+    // Create the request model for chat
+    const requestModel: AIRequestModel<string> = {
+      prompt: instructionSuffix || '', // Use instruction suffix as prompt if provided
+      responseFormat: 'text',
+      chatHistory: updatedHistory,
+      systemInstruction,
+      options: {
+        temperature: 0.7, // Standard temperature for chat
+      },
+      context: {
+        userId,
+        requestId,
+      },
+    };
+
+    // Execute the request using the service manager
+    const responseText = await serviceManager.executeRequest<string>(requestModel);
+
+    // Create a proper ContentWithMeta for the user message (with ID and timestamp)
+    const newUserMessage: ChatHistoryItem = {
+      id: randomNDigits(),
+      timestamp: new Date(),
+      role: 'user',
+      parts: messages, // Original parts without instruction
+    };
+
+    // Create the model response message
+    const newModelMessage: ChatHistoryItem = {
+      id: randomNDigits(),
+      timestamp: new Date(),
+      role: 'model',
+      parts: [{ text: responseText }],
+    };
+
+    // Return the response and updated history
+    return {
+      response: responseText,
+      updatedHistory: [...(history || []), newUserMessage, newModelMessage],
+    };
+  } catch (error) {
+    Logger.error('Gemini chat request failed', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+
+    throw error;
   }
 }
 

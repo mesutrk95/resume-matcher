@@ -17,9 +17,9 @@ import { pdf } from '@react-pdf/renderer';
 import { ResumeDocument } from '../job-resumes/resume-renderer/resume-document';
 import { toast } from 'sonner';
 import { randomNDigits } from '@/lib/utils';
-import { ContentWithMeta } from './types';
 import ErrorBoundary from '../shared/error-boundary';
 import { ResumeTemplateContent } from '@/types/resume-template';
+import { ChatHistoryItem } from '@/lib/ai';
 
 // Predefined questions
 const PREDEFINED_QUESTIONS = [
@@ -37,7 +37,7 @@ const INITIAL_MESSAGE = {
   parts: [{ text: 'Hello! How can I assist you today?' }],
   role: 'model',
   timestamp: new Date(),
-} as ContentWithMeta;
+} as ChatHistoryItem;
 
 const blob2base64 = (pdfBlob: Blob) => {
   return new Promise<string>((resolve, reject) => {
@@ -58,7 +58,7 @@ export function ChatInterface({
   resumeTemplate: ResumeTemplateContent | null;
   resume: ResumeContent;
 }) {
-  const [messages, setMessages] = useState<ContentWithMeta[]>([]);
+  const [messages, setMessages] = useState<ChatHistoryItem[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [shareResume, setShareResume] = useState(true);
@@ -77,7 +77,7 @@ export function ChatInterface({
     scrollToBottom();
   }, [messages]);
 
-  const addMessage = (message: ContentWithMeta) => {
+  const addMessage = (message: ChatHistoryItem) => {
     setMessages(prev => {
       const msgs = [...prev, message];
       localStorage.setItem('ai-conversation-' + jobResume.id, JSON.stringify(msgs));
@@ -89,7 +89,7 @@ export function ChatInterface({
     const chatsStr = localStorage.getItem('ai-conversation-' + jobResume.id);
 
     if (chatsStr) {
-      const messages = JSON.parse(chatsStr) as ContentWithMeta[];
+      const messages = JSON.parse(chatsStr) as ChatHistoryItem[];
       setMessages(messages.slice(0, 30));
     } else {
       // addMessage(INITIAL_MESSAGE);
@@ -105,7 +105,7 @@ export function ChatInterface({
       if (!questionToSend.trim()) return;
 
       // Add user message
-      const userMessage: ContentWithMeta = {
+      const userMessage: ChatHistoryItem = {
         parts: [{ text: questionToSend }],
         id: randomNDigits(),
         timestamp: new Date(),

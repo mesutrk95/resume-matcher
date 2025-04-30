@@ -129,7 +129,6 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
       {
         type: 'pdf',
         data: pdfBuffer,
-        mimeType: getMimeType(file.name),
       },
     ],
     zodSchema: resumeContentSchema,

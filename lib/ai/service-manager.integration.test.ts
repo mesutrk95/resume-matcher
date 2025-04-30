@@ -25,7 +25,7 @@ describe('AI Service Manager Integration Tests', () => {
       throw new Error('GEMINI_API_KEY environment variable must be set for integration tests');
     }
 
-    const geminiClient = new GeminiClient(process.env.GEMINI_API_KEY, 'gemini-2.0-flash');
+    const geminiClient = new GeminiClient(process.env.GEMINI_API_KEY, 'gemini-1.5-flash');
 
     const usageService = new AIUsageService();
     const promptProcessors = createStandardPromptProcessors();
@@ -188,7 +188,7 @@ describe('AI Service Manager Additional Tests', () => {
       throw new Error('GEMINI_API_KEY environment variable must be set for integration tests');
     }
 
-    const geminiClient = new GeminiClient(process.env.GEMINI_API_KEY, 'gemini-2.0-flash');
+    const geminiClient = new GeminiClient(process.env.GEMINI_API_KEY, 'gemini-1.5-flash');
 
     const usageService = new AIUsageService();
     const promptProcessors = createStandardPromptProcessors();

@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { currentUser } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { Job, JobStatus, Prisma } from '@prisma/client';
-import { getAIHtmlResponse, getAIJsonResponse } from '@/lib/ai';
+import { AIRequestModel, createAIServiceManager, getAIJsonResponse } from '@/lib/ai';
 import { JobAnalyzeResult } from '@/types/job';
 import { downloadImageAsBase64 } from '@/lib/utils';
 import { PaginationParams } from '@/types/pagination-params';
@@ -211,7 +211,18 @@ Ensure the response is in a valid JSON format with no extra text, without any ad
 
 const analyzeJobSummary = async (job: Job) => {
   const prompt = `Analyze the following job description concise it, keep all important keywords as it is, you can use bullets for items and <b> <br /> tags, Ensure the response is in a valid HTML format with no extra text:`;
-  return getAIHtmlResponse(prompt, [job.description || '']);
+  const service = createAIServiceManager();
+  const requestModel: AIRequestModel<string> = {
+    prompt: prompt,
+    responseFormat: 'html',
+    contents: [
+      {
+        type: 'text',
+        data: job.description || '',
+      },
+    ],
+  };
+  return await service.executeRequest<string>(requestModel);
 };
 
 export const analyzeJobByAI = withErrorHandling(async (jobId: string) => {
@@ -242,11 +253,11 @@ export const analyzeJobByAI = withErrorHandling(async (jobId: string) => {
 
   const results = await Promise.all([analyzeJobKeywords(job), analyzeJobSummary(job)]);
 
-  if (results.some(r => r.error)) {
+  if (results[0].error) {
     throw new Error('Failed to analyze job');
   }
   const keywords = results[0].result;
-  const summary = results[1].result;
+  const summary = results[1];
   const analyzeResults = {
     keywords,
     summary,

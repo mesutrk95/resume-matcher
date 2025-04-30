@@ -6,7 +6,7 @@ import { JobResume } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { DEFAULT_RESUME_CONTENT } from './constants';
 import { ResumeAnalyzeResults, ResumeContent, ResumeItemScoreAnalyze } from '@/types/resume';
-import { ContentWithMeta, getAIJsonResponse, getGeminiChatResponse } from '@/lib/ai';
+import { ChatHistoryItem, getAIJsonResponse, getChatResponse } from '@/lib/ai';
 import { JobAnalyzeResult } from '@/types/job';
 import { chunkArray, hashString } from '@/lib/utils';
 import { analyzeJobByAI } from './job';
@@ -302,11 +302,7 @@ IMPORTANT:
       const prompt = `Job Description: \n${jobResume?.job!.title}\n${jobResume?.job!.description}
     Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
 
-      return getAIJsonResponse(
-        prompt,
-        [{ data: pdfBuffer, mimeType: 'application/pdf' }],
-        systemInstructions,
-      );
+      return getAIJsonResponse(prompt, [pdfBuffer], systemInstructions);
     };
 
     const getMatchedKeywords = async () => {
@@ -525,7 +521,7 @@ export const askCustomQuestionFromAI = withErrorHandling(
     question: string,
     pdfFile: string | null,
     shareJobDescription: boolean,
-    history: ContentWithMeta[] = [],
+    history: ChatHistoryItem[] = [],
   ) => {
     const user = await currentUser();
 
@@ -575,7 +571,7 @@ export const askCustomQuestionFromAI = withErrorHandling(
     const instructionSuffix =
       " Reminder: Respond in HTML format using <br>, <span class='font-bold'>, etc.";
 
-    const result = await getGeminiChatResponse(
+    const result = await getChatResponse(
       systemInstruction,
       messageParts,
       instructionSuffix,

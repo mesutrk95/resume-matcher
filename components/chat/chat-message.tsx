@@ -1,10 +1,10 @@
+import { ChatHistoryItem } from '@/lib/ai';
 import { cn } from '@/lib/utils';
 import { Fragment } from 'react';
 import Moment from 'react-moment';
-import { ContentWithMeta } from './types';
 
 interface ChatMessageProps {
-  message: ContentWithMeta;
+  message: ChatHistoryItem;
 }
 
 export function ChatMessage({ message }: ChatMessageProps) {
