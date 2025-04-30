@@ -39,7 +39,15 @@ export default async function middleware(req: NextRequest) {
     }
 
     if (!isLoggedIn && !isPublicRoutes) {
-      return Response.redirect(new URL('/login', nextUrl));
+      const targetUrl = new URL(req.url);
+      const url = new URL(`/login`, req.url);
+      if (targetUrl.pathname !== 'login')
+        url.searchParams.set(
+          'redirect',
+          targetUrl.pathname + '?' + targetUrl.searchParams.toString(),
+        );
+
+      return Response.redirect(url);
     }
 
     // Continue with the request but with the added requestId header
@@ -48,7 +56,6 @@ export default async function middleware(req: NextRequest) {
         headers: requestHeaders,
       },
     });
-
     // Also add requestId to response headers
     response.headers.set(REQUEST_ID_HEADER, requestId);
 

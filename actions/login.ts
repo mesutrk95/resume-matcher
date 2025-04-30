@@ -15,6 +15,7 @@ import {
   deleteTwoFactorConfirmationById,
 } from '@/services/two-factor-confirmation';
 import { isExpired, response, signJwt } from '@/lib/utils';
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 
 export const login = async (payload: z.infer<typeof loginSchema>) => {
   // Check if user input is not valid, then return an error.
@@ -94,9 +95,24 @@ export const signInCredentials = async (email: string, password: string) => {
     await signIn('credentials', {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      // redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirect: false,
+    });
+    return response({
+      success: true,
+      code: 200,
+      message: '',
     });
   } catch (error) {
+    // https://github.com/nextauthjs/next-auth/discussions/9389
+    if (isRedirectError(error)) {
+      return response({
+        success: true,
+        code: 200,
+        message: '',
+      });
+    }
+
     if (error instanceof AuthError) {
       switch ((error as any).type) {
         case 'CredentialsSignin':

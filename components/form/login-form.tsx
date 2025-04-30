@@ -12,10 +12,11 @@ import { login } from '@/actions/login';
 import { FormInput } from '@/components/shared/form-input';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export const LoginForm = ({ heroImage }: { heroImage?: string }) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -34,7 +35,12 @@ export const LoginForm = ({ heroImage }: { heroImage?: string }) => {
           if (!data.success) {
             return toast.error(data.error.message);
           }
-          return router.push('/two-factor');
+
+          const redirect = searchParams.get('redirect');
+          if (redirect) router.push(redirect);
+          else router.push('/');
+          // now we don't use two factor skip it
+          // return router.push('/two-factor');
         })
         .catch(() => toast.error('Something went wrong.'));
     });

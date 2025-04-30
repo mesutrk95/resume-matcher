@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Font, Link } from '@react-pdf/renderer';
 import { ResumeContent } from '@/types/resume';
 import React, { useCallback, useMemo } from 'react';
 import {
@@ -45,7 +45,10 @@ Font.register({
     },
   ],
 });
-Font.registerHyphenationCallback(word => [word]);
+Font.registerHyphenationCallback((...props) => {
+  console.log(props);
+  return [props[0]];
+});
 
 // Helper function to register additional custom fonts if needed
 const registerFonts = (design: ResumeTemplateContent) => {
@@ -223,7 +226,7 @@ export const ResumeDocument = ({
                 )}
             </View>
           );
-        } else if (element.type === 'Text') {
+        } else if (element.type === 'Text' || element.type === 'Link') {
           let textData;
 
           if (element.data) {
@@ -234,15 +237,20 @@ export const ResumeDocument = ({
           } else {
             textData = element.path && getData(itemData, element.path)[0];
           }
+
+          const ElementType = element.type === 'Text' ? Text : Link;
           return (
-            <Text
+            <ElementType
               key={index}
               style={{ ...element.style, ...getClassStyles(element.class) }}
               {...props}
+              hyphenationCallback={w => {
+                return w.split('/');
+                return [w];
+              }}
             >
-              {/* ({element.path})  */}
               {textData}
-            </Text>
+            </ElementType>
           );
         }
 
