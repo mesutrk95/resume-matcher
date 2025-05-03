@@ -13,6 +13,9 @@ import {
   sendWinBackEmail,
 } from '@/services/mail';
 import logger from '@/lib/logger';
+import { getActivityDispatcher } from '@/lib/activity-dispatcher/factory';
+import { get } from 'http';
+import { stat } from 'fs';
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -87,6 +90,19 @@ export async function POST(req: Request) {
           const userId = subscription.metadata.userId;
 
           if (userId) {
+            getActivityDispatcher().dispatchInfo(
+              `Payment succeeded for subscription: ${subscription.id}`,
+              {
+                customerId: invoice.customer,
+                invoiceId: invoice.id,
+                amount: invoice.amount_due / 100,
+                currency: invoice.currency,
+                attemptCount: invoice.attempt_count || 1,
+                userId,
+                subscriptionId,
+                eventId: event.id,
+              },
+            );
             await updateSubscriptionInDatabase(
               userId,
               subscription.id,
@@ -122,6 +138,21 @@ export async function POST(req: Request) {
               // Get invoice URL so user can update payment method
               const hostedInvoiceUrl = invoice.hosted_invoice_url || '';
 
+              getActivityDispatcher().dispatchWarning(
+                `Payment failed for subscription: ${subscription.id}`,
+                {
+                  customerId: invoice.customer,
+                  invoiceId: invoice.id,
+                  amount: invoice.amount_due / 100,
+                  currency: invoice.currency,
+                  attemptCount: invoice.attempt_count || 1,
+                  userId,
+                  subscriptionId,
+                  userEmail: user.email,
+                  eventId: event.id,
+                },
+              );
+
               // Send failed payment notification
               await sendPaymentFailedEmail(
                 user.email,
@@ -145,6 +176,14 @@ export async function POST(req: Request) {
         const userId = subscription.metadata.userId;
 
         if (userId) {
+          getActivityDispatcher().dispatchInfo(`Subscription created: ${subscription.id}`, {
+            customerId: subscription.customer,
+            subscriptionId: subscription.id,
+            userId,
+            status: mapStripeStatusToDBStatus(subscription.status),
+            eventId: event.id,
+          });
+
           await updateSubscriptionInDatabase(
             userId,
             subscription.id,
@@ -162,6 +201,14 @@ export async function POST(req: Request) {
         const userId = subscription.metadata.userId;
 
         if (userId) {
+          getActivityDispatcher().dispatchInfo(`Subscription updated: ${subscription.id}`, {
+            customerId: subscription.customer,
+            subscriptionId: subscription.id,
+            userId,
+            status: mapStripeStatusToDBStatus(subscription.status),
+            eventId: event.id,
+          });
+
           await updateSubscriptionInDatabase(
             userId,
             subscription.id,
@@ -230,10 +277,24 @@ export async function POST(req: Request) {
 
       case 'customer.created': {
         const customer = event.data.object as Stripe.Customer;
+        getActivityDispatcher().dispatchInfo(`Customer created: ${customer.id}`, {
+          customerId: customer.id,
+          email: customer.email,
+          name: customer.name,
+          metadata: customer.metadata,
+          eventId: event.id,
+        });
         break;
       }
       case 'customer.updated': {
         const customer = event.data.object as Stripe.Customer;
+        getActivityDispatcher().dispatchInfo(`Customer updated: ${customer.id}`, {
+          customerId: customer.id,
+          email: customer.email,
+          name: customer.name,
+          metadata: customer.metadata,
+          eventId: event.id,
+        });
         break;
       }
 

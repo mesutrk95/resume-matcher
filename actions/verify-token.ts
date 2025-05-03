@@ -1,5 +1,6 @@
 'use server';
 
+import { getActivityDispatcher } from '@/lib/activity-dispatcher/factory';
 import { isExpired, response } from '@/lib/utils';
 import { getUserByEmail, updateUserById } from '@/services/user';
 import { deleteVerificationTokenById, getVerificationToken } from '@/services/verification-token';
@@ -43,6 +44,12 @@ export const newVerification = async (token: string) => {
   });
 
   await deleteVerificationTokenById(existingToken.id);
+
+  getActivityDispatcher().dispatchInfo(`User verified email: ${existingToken.email}`, {
+    userId: existingUser.id,
+    email: existingToken.email,
+    name: existingUser.name,
+  });
 
   return response({
     success: true,

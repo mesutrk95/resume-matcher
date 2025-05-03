@@ -13,6 +13,7 @@ import {
   ForbiddenException,
 } from '@/lib/exceptions';
 import Logger from '@/lib/logger';
+import { getActivityDispatcher } from '@/lib/activity-dispatcher/factory';
 
 export const cancelUserSubscription = async () => {
   try {
@@ -70,6 +71,12 @@ export const cancelSubscription = async (userId: string) => {
   try {
     await stripe.subscriptions.update(subscription.subscriptionId, {
       cancel_at_period_end: true,
+    });
+
+    getActivityDispatcher().dispatchInfo(`Subscription canceled: ${subscription.subscriptionId}`, {
+      userId,
+      subscriptionId: subscription.subscriptionId,
+      newStatus: 'cancel_at_period_end',
     });
 
     return db.subscription.update({
@@ -145,6 +152,15 @@ export const reactivateSubscription = async (userId: string) => {
     await stripe.subscriptions.update(subscription.subscriptionId, {
       cancel_at_period_end: false,
     });
+
+    getActivityDispatcher().dispatchInfo(
+      `Subscription reactivate: ${subscription.subscriptionId}`,
+      {
+        userId,
+        subscriptionId: subscription.subscriptionId,
+        newStatus: 'reactivate',
+      },
+    );
 
     return db.subscription.update({
       where: { userId },

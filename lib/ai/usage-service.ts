@@ -2,6 +2,7 @@ import { db } from '@/lib/db';
 import Logger from '@/lib/logger';
 import { SubscriptionStatus } from '@prisma/client';
 import { AI } from '@/lib/constants';
+import { getActivityDispatcher } from '../activity-dispatcher/factory';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -55,6 +56,15 @@ export class AIUsageService {
       });
 
       const currentUsage = todaysUsage?.totalTokens || 0;
+
+      if (currentUsage > tokenLimit * 0.8) {
+        getActivityDispatcher().dispatchWarning(`High token usage detected: ${userId}`, {
+          userId,
+          currentUsage,
+          limit: tokenLimit,
+          usagePercent: Math.round((currentUsage / tokenLimit) * 100),
+        });
+      }
 
       // Check if the request would exceed the limit
       if (currentUsage + estimatedTokens > tokenLimit) {

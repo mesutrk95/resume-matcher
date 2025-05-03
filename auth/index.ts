@@ -6,6 +6,7 @@ import { getUserById, getUserByEmail, updateUserById } from '@/services/user';
 import { getTwoFactorConfirmationByUserId } from '@/services/two-factor-confirmation';
 import { isExpired } from '@/lib/utils';
 import { UserRole } from '@prisma/client';
+import { getActivityDispatcher } from '@/lib/activity-dispatcher/factory';
 
 export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
   adapter: PrismaAdapter(db),
@@ -24,6 +25,16 @@ export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
         emailVerified: new Date(),
         marketingEmails: true,
       });
+
+      try {
+        getActivityDispatcher().dispatchInfo(`New user registered via OAuth: ${user.email}`, {
+          userId: user.id,
+          email: user.email,
+          name: user.name,
+        });
+      } catch (error) {
+        console.error('Failed to dispatch activity for OAuth signup:', error);
+      }
     },
   },
   callbacks: {

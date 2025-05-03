@@ -3,7 +3,6 @@
 import { signIn } from '@/auth';
 import { loginSchema } from '@/schemas';
 import { z } from 'zod';
-import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 import { AuthError } from 'next-auth';
 import { getUserByEmail } from '@/services/user';
 import bcrypt from 'bcryptjs';

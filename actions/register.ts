@@ -9,6 +9,7 @@ import { hashPassword, response } from '@/lib/utils';
 import { updateContactMarketingPreferences } from '@/lib/brevo';
 import logger from '@/lib/logger';
 import { signInCredentials } from './login';
+import { getActivityDispatcher } from '@/lib/activity-dispatcher/factory';
 
 export const register = async (payload: z.infer<typeof registerSchema>) => {
   // Check if user input is not valid.
@@ -51,7 +52,24 @@ export const register = async (payload: z.infer<typeof registerSchema>) => {
   const hashedPassword = await hashPassword(password);
 
   // Create an user (without termsAccepted field as it's just for validation)
-  await createUser({ name, email, password: hashedPassword, marketingEmails });
+  const user = await createUser({ name, email, password: hashedPassword, marketingEmails });
+
+  if (!user) {
+    return response({
+      success: false,
+      error: {
+        code: 500,
+        message: 'Failed to create user. Please try again later.',
+      },
+    });
+  }
+
+  getActivityDispatcher().dispatchInfo(`New user registered: ${email}`, {
+    userId: user.id,
+    name,
+    marketingConsent: marketingEmails,
+    email: user.email,
+  });
 
   // Add user to Brevo contact list based on marketing preferences
   try {

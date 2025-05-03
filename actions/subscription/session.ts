@@ -15,6 +15,7 @@ import {
   NotFoundException,
 } from '@/lib/exceptions';
 import Logger from '@/lib/logger';
+import { getActivityDispatcher } from '@/lib/activity-dispatcher/factory';
 
 export const createSubscription = async (
   interval: SubscriptionInterval,
@@ -211,6 +212,13 @@ export const verifySubscriptionFromSession = async (sessionId: string) => {
     new Date(subscription.current_period_end * 1000),
     subscription.cancel_at_period_end,
   );
+
+  getActivityDispatcher().dispatchInfo(`Subscription created: ${subscriptionId}`, {
+    userId,
+    subscriptionId,
+    status: subscription.status,
+    priceId: subscription.items.data[0].price.id,
+  });
 
   return {
     success: true,
