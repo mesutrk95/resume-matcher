@@ -20,9 +20,11 @@ Always be precise, factual, and helpful.`,
 export const EMAIL_CONSTANTS = {
   // Social media links
   FACEBOOK_URL: 'https://facebook.com/minovaai',
-  TWITTER_URL: 'https://twitter.com/minovaai',
-  LINKEDIN_URL: 'https://linkedin.com/company/minovaai',
-  INSTAGRAM_URL: 'https://instagram.com/minovaai',
+  TWITTER_URL: 'https://x.com/MinovaAI',
+  LINKEDIN_URL: 'https://www.linkedin.com/company/minova-ai',
+  INSTAGRAM_URL: 'https://www.instagram.com/minovaai',
+  YOUTUBE_URL: 'https://www.youtube.com/@MinovaAI',
+  TIKTOK_URL: 'https://www.tiktok.com/@minovaai',
 
   // Contact information
   COMPANY_ADDRESS: 'Minova AI, Inc.',

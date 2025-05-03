@@ -214,27 +214,19 @@
           icon-width="24px"
         >
           <mj-social-element
-            name="facebook"
-            href="{{facebookUrl}}"
-            background-color="#F7C934"
-            padding="0 3px 0 0"
-          ></mj-social-element>
-          <mj-social-element
-            name="twitter"
-            href="{{twitterUrl}}"
-            background-color="#F7C934"
-            padding="0 3px 0 0"
-          ></mj-social-element>
-          <mj-social-element
             name="linkedin"
             href="{{linkedinUrl}}"
-            background-color="#F7C934"
+            padding="0 3px 0 0"
+          ></mj-social-element>
+          <mj-social-element name="x" href="{{twitterUrl}}" padding="0 3px 0 0"></mj-social-element>
+          <mj-social-element
+            name="youtube"
+            href="{{youtubeUrl}}"
             padding="0 3px 0 0"
           ></mj-social-element>
           <mj-social-element
             name="instagram"
             href="{{instagramUrl}}"
-            background-color="#F7C934"
             padding="0 0 0 0"
           ></mj-social-element>
         </mj-social>

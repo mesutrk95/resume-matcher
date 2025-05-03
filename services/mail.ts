@@ -38,6 +38,8 @@ export function getBaseEmailData() {
     twitterUrl: EMAIL_CONSTANTS.TWITTER_URL,
     linkedinUrl: EMAIL_CONSTANTS.LINKEDIN_URL,
     instagramUrl: EMAIL_CONSTANTS.INSTAGRAM_URL,
+    youtubeUrl: EMAIL_CONSTANTS.YOUTUBE_URL,
+    tiktokUrl: EMAIL_CONSTANTS.TIKTOK_URL,
 
     // Contact information
     companyAddress: EMAIL_CONSTANTS.COMPANY_ADDRESS,
