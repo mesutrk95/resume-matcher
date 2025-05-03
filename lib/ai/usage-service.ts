@@ -2,7 +2,6 @@ import { db } from '@/lib/db';
 import Logger from '@/lib/logger';
 import { SubscriptionStatus } from '@prisma/client';
 import { AI } from '@/lib/constants';
-import { getActivityDispatcher } from '../activity-dispatcher/factory';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -11,6 +10,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
  */
 export type UsageTimeframe = 'daily' | 'monthly';
 
+//TODO replace this with redis
 /**
  * Service to track and manage AI token usage per user
  */
@@ -19,14 +19,14 @@ export class AIUsageService {
    * Check if a user has enough tokens for their intended request
    * and record their intent to use tokens
    */
-  async checkAndRecordIntent(userId: string, estimatedTokens: number): Promise<boolean> {
+  async checkIntent(userId: string): Promise<boolean> {
     // In development, always allow requests
     if (isDevelopment) {
       return true;
     }
 
     try {
-      // Get user's subscription status
+      //TODO: it can be cached in memory for a while
       const subscription = await db.subscription.findUnique({
         where: { userId },
         select: { status: true },
@@ -57,28 +57,16 @@ export class AIUsageService {
 
       const currentUsage = todaysUsage?.totalTokens || 0;
 
-      if (currentUsage > tokenLimit * 0.8) {
-        getActivityDispatcher().dispatchWarning(`High token usage detected: ${userId}`, {
-          userId,
-          currentUsage,
-          limit: tokenLimit,
-          usagePercent: Math.round((currentUsage / tokenLimit) * 100),
-        });
-      }
-
       // Check if the request would exceed the limit
-      if (currentUsage + estimatedTokens > tokenLimit) {
-        Logger.warn(`User ${userId} exceeded token limit: ${currentUsage}/${tokenLimit}`, {
-          estimatedRequest: estimatedTokens,
-        });
+      if (currentUsage > tokenLimit) {
+        Logger.warn(`User ${userId} exceeded token limit: ${currentUsage}/${tokenLimit}`);
         return false;
       }
 
       return true;
     } catch (error) {
       Logger.error(`Error checking token usage for user ${userId}`, { error });
-      // Default to allowing the request if we can't check the limit
-      return true;
+      throw error;
     }
   }
 
@@ -91,7 +79,6 @@ export class AIUsageService {
     promptTokens: number,
     completionTokens: number,
     responseTime: number,
-    reason?: string,
   ): Promise<void> {
     try {
       // Still record usage in development mode for analytics,
@@ -126,7 +113,6 @@ export class AIUsageService {
             requestCount: todaysRecord.requestCount + 1,
             responseTime: todaysRecord.responseTime + responseTime,
             clientId: clientId ?? todaysRecord.clientId,
-            ...(reason ? { reason } : {}),
           } as any,
         });
       } else {
@@ -141,7 +127,6 @@ export class AIUsageService {
             requestCount: 1,
             failedRequestCount: 0,
             responseTime,
-            ...(reason ? { reason } : {}),
           } as any,
         });
       }

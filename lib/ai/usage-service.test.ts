@@ -74,7 +74,7 @@ describe('AIUsageService', () => {
       });
 
       // Execute - requesting 50k more tokens (total would be 150k, below 500k limit for ACTIVE)
-      const result = await service.checkAndRecordIntent('user123', 50000);
+      const result = await service.checkIntent('user123', 50000);
 
       // Verify
       expect(result).toBe(true);
@@ -113,7 +113,7 @@ describe('AIUsageService', () => {
       });
 
       // Execute - requesting 100k more tokens (total would be 550k, above 500k limit for ACTIVE)
-      const result = await service.checkAndRecordIntent('user123', 100000);
+      const result = await service.checkIntent('user123', 100000);
 
       // Verify
       expect(result).toBe(false);
@@ -139,7 +139,7 @@ describe('AIUsageService', () => {
       });
 
       // Execute - requesting 20k more tokens (total would be 60k, above 50k FREE limit)
-      const result = await service.checkAndRecordIntent('user123', 20000);
+      const result = await service.checkIntent('user123', 20000);
 
       // Verify
       expect(result).toBe(false);
@@ -167,7 +167,7 @@ describe('AIUsageService', () => {
       vi.mocked(db.aIUsage.findFirst).mockResolvedValue(null);
 
       // Execute - requesting 100k tokens (below 500k ACTIVE limit)
-      const result = await service.checkAndRecordIntent('user123', 100000);
+      const result = await service.checkIntent('user123', 100000);
 
       // Verify
       expect(result).toBe(true);
@@ -179,7 +179,7 @@ describe('AIUsageService', () => {
       vi.mocked(db.subscription.findUnique).mockRejectedValue(error);
 
       // Execute
-      const result = await service.checkAndRecordIntent('user123', 1000);
+      const result = await service.checkIntent('user123', 1000);
 
       // Verify
       expect(result).toBe(true);

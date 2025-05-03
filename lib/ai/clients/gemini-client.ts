@@ -57,15 +57,18 @@ export class GeminiClient implements AIModelClient {
       const text = response.text();
 
       // Calculate token usage
-      let totalPromptText = prompt;
-      contents?.forEach(item => {
-        if (item.type === 'text' && typeof item.data === 'string') {
-          totalPromptText += item.data;
-        }
-      });
-
-      const promptTokens = this.calculateTokens(totalPromptText);
-      const completionTokens = this.calculateTokens(text);
+      const promptTokens =
+        result.response.usageMetadata?.promptTokenCount ??
+        this.calculateTokens(
+          prompt +
+            (contents || [])
+              .map(item => (item.type === 'text' && typeof item.data === 'string' ? item.data : ''))
+              .join(''),
+        );
+      const completionTokens =
+        result.response.usageMetadata?.candidatesTokenCount ?? this.calculateTokens(text);
+      const totalTokens =
+        result.response.usageMetadata?.totalTokenCount ?? promptTokens + completionTokens;
 
       return {
         content: text,
@@ -73,7 +76,7 @@ export class GeminiClient implements AIModelClient {
         tokenUsage: {
           promptTokens,
           completionTokens,
-          totalTokens: promptTokens + completionTokens,
+          totalTokens,
         },
         finishReason: response.promptFeedback?.blockReason || 'stop',
       };
@@ -125,20 +128,20 @@ export class GeminiClient implements AIModelClient {
       const result = await chat.sendMessage(messageParts);
       const text = result.response.text();
 
-      // Calculate token usage (approximate)
-      const historyText = history
-        .map(msg =>
-          msg.parts
-            .map(part => {
-              if ('text' in part && part.text) return part.text;
-              return '';
-            })
+      // Calculate token usage
+      const promptTokens =
+        result.response.usageMetadata?.promptTokenCount ??
+        this.calculateTokens(
+          history
+            .map(msg =>
+              msg.parts.map(part => ('text' in part && part.text ? part.text : '')).join(' '),
+            )
             .join(' '),
-        )
-        .join(' ');
-
-      const promptTokens = this.calculateTokens(historyText);
-      const completionTokens = this.calculateTokens(text);
+        );
+      const completionTokens =
+        result.response.usageMetadata?.candidatesTokenCount ?? this.calculateTokens(text);
+      const totalTokens =
+        result.response.usageMetadata?.totalTokenCount ?? promptTokens + completionTokens;
 
       return {
         content: text,
@@ -146,7 +149,7 @@ export class GeminiClient implements AIModelClient {
         tokenUsage: {
           promptTokens,
           completionTokens,
-          totalTokens: promptTokens + completionTokens,
+          totalTokens,
         },
         finishReason: 'stop',
       };

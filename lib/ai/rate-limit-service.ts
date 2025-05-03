@@ -8,6 +8,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 /**
  * Service to handle rate limiting for AI requests
  */
+//TODO: replace this with redis
 export class AIRateLimitService {
   /**
    * Check if a user has exceeded their rate limit for a specific client
@@ -243,21 +244,22 @@ export class AIRateLimitService {
     requestsPerHour: number;
     requestsPerDay: number;
   }> {
-    // Try to get configuration from database
-    const config = await db.aIRateLimit.findUnique({
-      where: { clientId },
-      select: {
-        requestsPerMinute: true,
-        requestsPerHour: true,
-        requestsPerDay: true,
-      },
-    });
+    //TODO: we need ths with redis, and we dont have any config for now, so it is better to not request to db
+    // const config = await db.aIRateLimit.findUnique({
+    //   where: { clientId },
+    //   select: {
+    //     requestsPerMinute: true,
+    //     requestsPerHour: true,
+    //     requestsPerDay: true,
+    //   },
+    // });
 
-    // If configuration exists, return it
-    if (config) {
-      return config;
-    }
+    // // If configuration exists, return it
+    // if (config) {
+    //   return config;
+    // }
 
+    //TODO: this should be limit based on the plan of the user, so the best way is to have the user plan provided in the request so we don't need to get each time, maybe with cache also possible
     // Otherwise, return default configuration
     return {
       requestsPerMinute: AI.DEFAULT_RATE_LIMITS.REQUESTS_PER_MINUTE,

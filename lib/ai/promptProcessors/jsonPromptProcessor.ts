@@ -1,4 +1,5 @@
 // lib/ai/promptProcessors/jsonPromptProcessor.ts
+import { zodSchemaToString } from '@/lib/zod';
 import { AIRequestModel } from '../types';
 import { BasePromptProcessor } from './base';
 
@@ -28,6 +29,11 @@ export class JsonPromptProcessor extends BasePromptProcessor {
    */
   protected async processPrompt(request: AIRequestModel<any>): Promise<string> {
     let enhancedPrompt = request.prompt;
+
+    if ((!request.chatHistory || request.chatHistory.length === 0) && request.zodSchema) {
+      const schemaInfo = zodSchemaToString(request.zodSchema);
+      enhancedPrompt = `${enhancedPrompt}\nJson Response should match this Json schema: ${schemaInfo}`;
+    }
 
     // Add instructions for JSON formatting if not already present
     if (

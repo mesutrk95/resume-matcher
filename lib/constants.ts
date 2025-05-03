@@ -8,7 +8,7 @@ Always be precise, factual, and helpful.`,
   DEFAULT_RATE_LIMITS: {
     REQUESTS_PER_MINUTE: 10,
     REQUESTS_PER_HOUR: 400,
-    REQUESTS_PER_DAY: 7000,
+    REQUESTS_PER_DAY: 3000,
   },
   TOKEN_LIMITS: {
     FREE: 100_000,
