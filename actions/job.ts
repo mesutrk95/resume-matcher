@@ -15,7 +15,7 @@ import { load as cheerioLoad } from 'cheerio';
 import axios from 'axios';
 import moment from 'moment';
 import { ForbiddenException } from '@/lib/exceptions';
-import { AI } from '@/lib/constants';
+import { Reasons } from '@/domains/reasons';
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {
@@ -206,15 +206,20 @@ const analyzeJobKeywords = async (job: Job) => {
 Categorize each keyword as either "hard", "soft", or "none" based on whether it represents a hard skill, soft skill, or neither (e.g., industry terms like "SaaS"). 
 Additionally, assign a level of importance to each keyword on a scale from 0 to 1, where 1 is highly important and 0 is minimally important. 
 Provide the results in a structured JSON format as an array of objects, where each object contains the fields "keyword", "skill", and "level". 
-Ensure the response is in a valid JSON format with no extra text, without any additional formatting or explanations. catch whatever is important for ATSs, Here is the job:`;
-  return getAIJsonResponse(prompt, [job.description || '']);
+Ensure the response is in a valid JSON format with no extra text, without any additional formatting or explanations. catch whatever is important for ATSs, Here is the job: `;
+  return getAIJsonResponse(
+    prompt,
+    [job.description || ''],
+    undefined,
+    Reasons.ANALYZE_JOB_KEYWORDS,
+  );
 };
 
 const analyzeJobSummary = async (job: Job) => {
-  const prompt = `Analyze the following job description concise it, keep all important keywords as it is, you can use bullets for items and <b> <br /> tags, Ensure the response is in a valid HTML format with no extra text:`;
   const service = getAIServiceManager();
   const requestModel: AIRequestModel<string> = {
-    prompt: prompt,
+    prompt:
+      'Analyze the following job description concise it, keep all important keywords as it is, you can use bullets for items and <b> <br /> tags, Ensure the response is in a valid HTML format with no extra text:',
     responseFormat: 'html',
     contents: [
       {
@@ -223,7 +228,7 @@ const analyzeJobSummary = async (job: Job) => {
       },
     ],
     context: {
-      reason: AI.REASONS.JOB_SUMMARY,
+      reason: Reasons.JOB_SUMMARY,
     },
   };
   return await service.executeRequest<string>(requestModel);
@@ -300,6 +305,11 @@ export const extractJobDescriptionFromUrl = withErrorHandling(async (url: string
   try {
     if (logoImage) image = await downloadImageAsBase64(logoImage);
   } catch (ex) {}
-  const result = await getAIJsonResponse(prompt);
+  const result = await getAIJsonResponse(
+    prompt,
+    undefined,
+    undefined,
+    Reasons.EXTRACT_JOB_DESCRIPTION,
+  );
   return { ...result.result, image };
 });

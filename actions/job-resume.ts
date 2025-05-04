@@ -20,7 +20,7 @@ import {
 import { resumeContentSchema } from '@/schemas/resume';
 import z from 'zod';
 import { withErrorHandling } from '@/lib/with-error-handling';
-import { AI } from '@/lib/constants';
+import { Reasons } from '@/domains/reasons';
 
 export const findJobResume = withErrorHandling(async (id: string) => {
   const user = await currentUser();
@@ -219,7 +219,7 @@ Provide your suggestions in the exact JSON format specified.`;
         userPrompt,
         [],
         systemInstructions,
-        AI.REASONS.RESUME_ANALYZE_EXPERIENCES,
+        Reasons.RESUME_ANALYZE_EXPERIENCES,
       );
     };
 
@@ -253,12 +253,7 @@ ${jobResume?.job!.description}
 
 Provide your optimization suggestion in the required JSON format.`;
 
-      return getAIJsonResponse(
-        userPrompt,
-        [],
-        systemInstructions,
-        AI.REASONS.RESUME_ANALYZE_SKILLS,
-      );
+      return getAIJsonResponse(userPrompt, [], systemInstructions, Reasons.RESUME_ANALYZE_SKILLS);
     };
 
     const getScore = async () => {
@@ -313,7 +308,7 @@ IMPORTANT:
       const prompt = `Job Description: \n${jobResume?.job!.title}\n${jobResume?.job!.description}
     Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
 
-      return getAIJsonResponse(prompt, [pdfBuffer], systemInstructions, AI.REASONS.SCORE_RESUME);
+      return getAIJsonResponse(prompt, [pdfBuffer], systemInstructions, Reasons.SCORE_RESUME);
     };
 
     const getMatchedKeywords = async () => {
@@ -359,7 +354,7 @@ Your task is to identify which important keywords from the job description match
     ${convertResumeObjectToString(jobResume.content as ResumeContent)}
     Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
 
-      return getAIJsonResponse(prompt, [], systemInstructions, AI.REASONS.MATCH_KEYWORDS_RESUME);
+      return getAIJsonResponse(prompt, [], systemInstructions, Reasons.MATCH_KEYWORDS_RESUME);
     };
 
     const results = await Promise.all([
@@ -408,7 +403,7 @@ const analyzeResumeExperiencesScores = async (
     prompt,
     [],
     systemInstructions,
-    AI.REASONS.SCORE_RESUME_EXPERIENCES,
+    Reasons.SCORE_RESUME_EXPERIENCES,
   );
 
   return generatedContent;
@@ -424,7 +419,7 @@ const analyzeResumeProjectsScores = async (analyzeResults: JobAnalyzeResult, con
         '\n' +
         `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
     ],
-    AI.REASONS.SCORE_RESUME_PROJECTS,
+    Reasons.SCORE_RESUME_PROJECTS,
   );
 
   return generatedContent;
@@ -596,7 +591,7 @@ export const askCustomQuestionFromAI = withErrorHandling(
       messageParts,
       instructionSuffix,
       history,
-      AI.REASONS.CUSTOM_QUESTION,
+      Reasons.CUSTOM_QUESTION,
     );
     return result;
   },

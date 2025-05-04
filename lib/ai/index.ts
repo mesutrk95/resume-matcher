@@ -12,6 +12,7 @@ import Logger from '@/lib/logger';
 import { AI } from '@/lib/constants';
 import { randomNDigits } from '@/lib/utils';
 import { MessagePart, ChatHistoryItem } from './types';
+import { SYSTEM_CONTEXT } from '@/domains/reasons';
 
 // Singleton instance of the AI service manager
 let _serviceManager: AIServiceManager | null = null;
@@ -33,7 +34,7 @@ export function getAIServiceManager(): AIServiceManager {
     process.env.GEMINI_MODEL || 'gemini-1.5-flash',
   );
 
-  const promptProcessors = createStandardPromptProcessors(AI.SYSTEM_CONTEXT);
+  const promptProcessors = createStandardPromptProcessors(SYSTEM_CONTEXT);
   const responseProcessors = createStandardResponseProcessors();
 
   // Create and configure the service manager

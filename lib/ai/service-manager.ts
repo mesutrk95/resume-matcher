@@ -14,7 +14,7 @@ import { PromptProcessor } from './promptProcessors/base';
 import { ResponseProcessor } from './responseProcessors/base';
 import { createJsonSchemaValidator } from './validators';
 import { currentUser } from '@/lib/auth';
-import { AI } from '../constants';
+import { Reasons } from '@/domains/reasons';
 
 export interface AIServiceManagerConfig {
   maxRetries: number;
@@ -56,7 +56,7 @@ export class AIServiceManager {
     }
     const requestId = request.context?.requestId || (await getCurrentRequestId());
     const userId = request.context?.userId || (await currentUser())?.id;
-    const reason = request.context?.reason || AI.REASONS.GENERAL;
+    const reason = request.context?.reason || Reasons.GENERAL;
     let retryCount = 0;
     let lastError: Error | null = null;
 

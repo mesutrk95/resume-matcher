@@ -14,7 +14,7 @@ import { deepUpdateValues, getMimeType } from '@/lib/utils';
 import { CareerProfile } from '@prisma/client';
 import { generateId } from '@/lib/resume-content';
 import { AIRequestModel, getAIServiceManager } from '@/lib/ai/index';
-import { AI } from '@/lib/constants';
+import { Reasons } from '@/domains/reasons';
 
 export const deleteCareerProfile = withErrorHandling(async (id: string) => {
   const user = await currentUser();
@@ -115,12 +115,13 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
 
   // Create AI service manager directly
   const serviceManager = getAIServiceManager();
+
   const prompt = `Convert this resume PDF to a structured format based on the schema
-      Extract all resume information from this PDF and structure it according to the schema.
-    - ids convention is based on the path they have prefix then an underscore like the following:
-    - Generate IDs with format prefix_xxxxx. Path determines prefix: experiences=exp_, experiences.items=expitem_, experiences.items.variations=var_, titles=title_, summaries=summary_, educations=edu_, skills/skills.skills=skill_, projects=project_, awards=award_, certifications=cert_, languages=lang_, interests=interest_, references=ref_. The xxxxx is a random 5-character alphabetic string. Example: skill_abcde for a skill.
-    - For each experience item in resume file, add one experience item and fill its description, leave the variations with an empty array
-    - Create structured experience items with variations`;
+    Extract all resume information from this PDF and structure it according to the schema.
+  - ids convention is based on the path they have prefix then an underscore like the following:
+  - Generate IDs with format prefix_xxxxx. Path determines prefix: experiences=exp_, experiences.items=expitem_, experiences.items.variations=var_, titles=title_, summaries=summary_, educations=edu_, skills/skills.skills=skill_, projects=project_, awards=award_, certifications=cert_, languages=lang_, interests=interest_, references=ref_. The xxxxx is a random 5-character alphabetic string. Example: skill_abcde for a skill.
+  - For each experience item in resume file, add one experience item and fill its description, leave the variations with an empty array
+  - Create structured experience items with variations.`;
 
   const request: AIRequestModel<ResumeContent> = {
     prompt,
@@ -133,7 +134,7 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
     ],
     zodSchema: resumeContentSchema,
     context: {
-      reason: AI.REASONS.CAREER_PROFILE_FROM_PDF,
+      reason: Reasons.CAREER_PROFILE_FROM_PDF,
     },
   };
 
