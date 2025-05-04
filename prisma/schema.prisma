@@ -52,6 +52,7 @@ model User {
   jobResumes            JobResume[]
   subscription          Subscription?
   AIUsage               AIUsage[]
+  AIUsageByReason       AIUsageByReason[]
 }
 
 model VerificationToken {
@@ -225,4 +226,26 @@ model AIRateLimitUsage {
   @@unique([userId, clientId, timestamp])
   @@index([userId, clientId, timestamp])
   @@index([timestamp])
+}
+
+model AIUsageByReason {
+  id                 String   @id @default(cuid())
+  userId             String
+  reason             String
+  promptTokens       Int      @default(0)
+  completionTokens   Int      @default(0)
+  totalTokens        Int      @default(0)
+  requestCount       Int      @default(0)
+  failedRequestCount Int      @default(0)
+  clientId           String?
+  responseTime       Int      @default(0)
+  date               DateTime @default(now())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, reason, date])
+  @@index([userId, reason, date])
+  @@index([date])
 }

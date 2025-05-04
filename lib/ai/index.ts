@@ -19,7 +19,7 @@ let _serviceManager: AIServiceManager | null = null;
 /**
  * Factory function to create and configure the AI service manager
  */
-export function createAIServiceManager(): AIServiceManager {
+export function getAIServiceManager(): AIServiceManager {
   if (_serviceManager) {
     return _serviceManager;
   }
@@ -55,6 +55,7 @@ export async function getAIJsonResponse(
   prompt: string,
   contents?: (string | Buffer)[],
   systemInstructions?: string,
+  reason?: string,
 ): Promise<{
   result: any;
   error?: string;
@@ -69,6 +70,7 @@ export async function getAIJsonResponse(
       data: c,
     })),
     systemInstruction: systemInstructions,
+    reason,
   });
 }
 
@@ -81,6 +83,7 @@ async function processAIRequest<T>(request: {
   contents?: ContentItem[];
   options?: AIRequestOptions;
   systemInstruction?: string;
+  reason?: string;
 }): Promise<{
   result: T;
   error?: string;
@@ -89,7 +92,7 @@ async function processAIRequest<T>(request: {
 }> {
   try {
     // Get the service manager
-    const serviceManager = createAIServiceManager();
+    const serviceManager = getAIServiceManager();
 
     // Get current user ID if available (for usage tracking)
     const user = await currentUser().catch(() => null);
@@ -108,6 +111,7 @@ async function processAIRequest<T>(request: {
       context: {
         userId,
         requestId,
+        reason: request.reason,
       },
     };
 
@@ -148,13 +152,14 @@ export async function getChatResponse(
   messages: MessagePart[],
   instructionSuffix: string | null,
   history?: ChatHistoryItem[],
+  reason?: string,
 ): Promise<{
   response: string;
   updatedHistory: ChatHistoryItem[];
 }> {
   try {
     // Get the service manager
-    const serviceManager = createAIServiceManager();
+    const serviceManager = getAIServiceManager();
 
     // Prepare the history (without any instructions)
     const geminiHistory =
@@ -193,6 +198,7 @@ export async function getChatResponse(
       context: {
         userId,
         requestId,
+        reason: reason,
       },
     };
 

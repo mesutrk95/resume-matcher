@@ -13,7 +13,7 @@ import { resumeContentSchema } from '@/schemas/resume';
 import { deepUpdateValues, getMimeType } from '@/lib/utils';
 import { CareerProfile } from '@prisma/client';
 import { generateId } from '@/lib/resume-content';
-import { AIRequestModel, createAIServiceManager } from '@/lib/ai/index';
+import { AIRequestModel, getAIServiceManager } from '@/lib/ai/index';
 import { AI } from '@/lib/constants';
 
 export const deleteCareerProfile = withErrorHandling(async (id: string) => {
@@ -114,7 +114,7 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
   const pdfBuffer = Buffer.from(bytes);
 
   // Create AI service manager directly
-  const serviceManager = createAIServiceManager();
+  const serviceManager = getAIServiceManager();
   const prompt = `Convert this resume PDF to a structured format based on the schema
       Extract all resume information from this PDF and structure it according to the schema.
     - ids convention is based on the path they have prefix then an underscore like the following:
@@ -132,6 +132,9 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
       },
     ],
     zodSchema: resumeContentSchema,
+    context: {
+      reason: AI.REASONS.CAREER_PROFILE_FROM_PDF,
+    },
   };
 
   // Execute the request

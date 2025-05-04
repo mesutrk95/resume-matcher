@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { currentUser } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { Job, JobStatus, Prisma } from '@prisma/client';
-import { AIRequestModel, createAIServiceManager, getAIJsonResponse } from '@/lib/ai';
+import { AIRequestModel, getAIServiceManager, getAIJsonResponse } from '@/lib/ai';
 import { JobAnalyzeResult } from '@/types/job';
 import { downloadImageAsBase64 } from '@/lib/utils';
 import { PaginationParams } from '@/types/pagination-params';
@@ -15,6 +15,7 @@ import { load as cheerioLoad } from 'cheerio';
 import axios from 'axios';
 import moment from 'moment';
 import { ForbiddenException } from '@/lib/exceptions';
+import { AI } from '@/lib/constants';
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {
@@ -211,7 +212,7 @@ Ensure the response is in a valid JSON format with no extra text, without any ad
 
 const analyzeJobSummary = async (job: Job) => {
   const prompt = `Analyze the following job description concise it, keep all important keywords as it is, you can use bullets for items and <b> <br /> tags, Ensure the response is in a valid HTML format with no extra text:`;
-  const service = createAIServiceManager();
+  const service = getAIServiceManager();
   const requestModel: AIRequestModel<string> = {
     prompt: prompt,
     responseFormat: 'html',
@@ -221,6 +222,9 @@ const analyzeJobSummary = async (job: Job) => {
         data: job.description || '',
       },
     ],
+    context: {
+      reason: AI.REASONS.JOB_SUMMARY,
+    },
   };
   return await service.executeRequest<string>(requestModel);
 };

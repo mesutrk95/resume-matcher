@@ -280,4 +280,213 @@ export class AIUsageService {
         return AI.TOKEN_LIMITS.FREE;
     }
   }
+
+  // Add a new method to record usage by reason
+  async recordUsageByReason(
+    userId: string,
+    reason: string,
+    clientId: string | undefined,
+    promptTokens: number,
+    completionTokens: number,
+    responseTime: number,
+  ): Promise<void> {
+    try {
+      const totalTokens = promptTokens + completionTokens;
+
+      // Get today's date with time set to 00:00:00
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Try to find an existing record for this user, reason, and date
+      const existingRecord = await db.aIUsageByReason.findUnique({
+        where: {
+          userId_reason_date: {
+            userId,
+            reason,
+            date: today,
+          },
+        },
+      });
+
+      if (existingRecord) {
+        // Update existing record
+        await db.aIUsageByReason.update({
+          where: { id: existingRecord.id },
+          data: {
+            promptTokens: existingRecord.promptTokens + promptTokens,
+            completionTokens: existingRecord.completionTokens + completionTokens,
+            totalTokens: existingRecord.totalTokens + totalTokens,
+            requestCount: existingRecord.requestCount + 1,
+            responseTime: existingRecord.responseTime + responseTime,
+            clientId: clientId ?? existingRecord.clientId,
+            updatedAt: new Date(),
+          },
+        });
+      } else {
+        // Create new record
+        await db.aIUsageByReason.create({
+          data: {
+            userId,
+            reason,
+            clientId,
+            promptTokens,
+            completionTokens,
+            totalTokens,
+            requestCount: 1,
+            failedRequestCount: 0,
+            responseTime,
+            date: today,
+          },
+        });
+      }
+    } catch (error) {
+      Logger.error(`Error recording usage by reason for user ${userId}`, { error, reason });
+      // Continue execution even if recording fails
+    }
+  }
+
+  // Add a new method to record failed attempts by reason
+  async recordFailedAttemptByReason(userId: string, reason: string): Promise<void> {
+    try {
+      // Get today's date with time set to 00:00:00
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Try to find an existing record
+      const existingRecord = await db.aIUsageByReason.findUnique({
+        where: {
+          userId_reason_date: {
+            userId,
+            reason,
+            date: today,
+          },
+        },
+      });
+
+      if (existingRecord) {
+        // Update existing record
+        await db.aIUsageByReason.update({
+          where: { id: existingRecord.id },
+          data: {
+            failedRequestCount: existingRecord.failedRequestCount + 1,
+            updatedAt: new Date(),
+          },
+        });
+      } else {
+        // Create new record
+        await db.aIUsageByReason.create({
+          data: {
+            userId,
+            reason,
+            promptTokens: 0,
+            completionTokens: 0,
+            totalTokens: 0,
+            requestCount: 0,
+            failedRequestCount: 1,
+            date: today,
+          },
+        });
+      }
+    } catch (error) {
+      Logger.error(`Error recording failed attempt by reason for user ${userId}`, {
+        error,
+        reason,
+      });
+      // Continue execution even if recording fails
+    }
+  }
+
+  // Method to get usage statistics by reason
+  async getUserUsageStatsByReason(
+    userId: string,
+    reason?: string,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<any> {
+    try {
+      const now = new Date();
+      const queryStartDate = startDate || new Date(now.getFullYear(), now.getMonth(), 1); // Default to start of current month
+      const queryEndDate = endDate || now;
+
+      const whereClause: any = {
+        userId,
+        date: {
+          gte: queryStartDate,
+          lte: queryEndDate,
+        },
+      };
+
+      // Add reason filter if specified
+      if (reason) {
+        whereClause.reason = reason;
+      }
+
+      const usage = await db.aIUsageByReason.findMany({
+        where: whereClause,
+        orderBy: {
+          date: 'asc',
+        },
+      });
+
+      // Calculate totals and group by reason
+      const reasonStats: Record<string, any> = {};
+      let totalPromptTokens = 0;
+      let totalCompletionTokens = 0;
+      let totalTokens = 0;
+      let totalRequests = 0;
+      let totalFailedRequests = 0;
+      let totalResponseTime = 0;
+
+      for (const record of usage) {
+        // Initialize stats for this reason if not exists
+        if (!reasonStats[record.reason]) {
+          reasonStats[record.reason] = {
+            promptTokens: 0,
+            completionTokens: 0,
+            totalTokens: 0,
+            requestCount: 0,
+            failedRequestCount: 0,
+            responseTime: 0,
+          };
+        }
+
+        // Add to reason stats
+        reasonStats[record.reason].promptTokens += record.promptTokens;
+        reasonStats[record.reason].completionTokens += record.completionTokens;
+        reasonStats[record.reason].totalTokens += record.totalTokens;
+        reasonStats[record.reason].requestCount += record.requestCount;
+        reasonStats[record.reason].failedRequestCount += record.failedRequestCount;
+        reasonStats[record.reason].responseTime += record.responseTime;
+
+        // Add to overall totals
+        totalPromptTokens += record.promptTokens;
+        totalCompletionTokens += record.completionTokens;
+        totalTokens += record.totalTokens;
+        totalRequests += record.requestCount;
+        totalFailedRequests += record.failedRequestCount;
+        totalResponseTime += record.responseTime;
+      }
+
+      return {
+        byReason: reasonStats,
+        totals: {
+          promptTokens: totalPromptTokens,
+          completionTokens: totalCompletionTokens,
+          totalTokens,
+          requestCount: totalRequests,
+          failedRequestCount: totalFailedRequests,
+          responseTime: totalResponseTime,
+          averageResponseTime:
+            totalRequests > 0 ? Math.round(totalResponseTime / totalRequests) : 0,
+        },
+        timeframe: {
+          startDate: queryStartDate,
+          endDate: queryEndDate,
+        },
+      };
+    } catch (error) {
+      Logger.error(`Error getting usage stats by reason for user ${userId}`, { error });
+      throw error;
+    }
+  }
 }

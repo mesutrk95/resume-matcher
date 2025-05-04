@@ -20,6 +20,7 @@ import {
 import { resumeContentSchema } from '@/schemas/resume';
 import z from 'zod';
 import { withErrorHandling } from '@/lib/with-error-handling';
+import { AI } from '@/lib/constants';
 
 export const findJobResume = withErrorHandling(async (id: string) => {
   const user = await currentUser();
@@ -214,7 +215,12 @@ ${jobResume?.job!.description}
 
 Provide your suggestions in the exact JSON format specified.`;
 
-      return getAIJsonResponse(userPrompt, [], systemInstructions);
+      return getAIJsonResponse(
+        userPrompt,
+        [],
+        systemInstructions,
+        AI.REASONS.RESUME_ANALYZE_EXPERIENCES,
+      );
     };
 
     const getSkillsImprovementNotes = async () => {
@@ -247,7 +253,12 @@ ${jobResume?.job!.description}
 
 Provide your optimization suggestion in the required JSON format.`;
 
-      return getAIJsonResponse(userPrompt, [], systemInstructions);
+      return getAIJsonResponse(
+        userPrompt,
+        [],
+        systemInstructions,
+        AI.REASONS.RESUME_ANALYZE_SKILLS,
+      );
     };
 
     const getScore = async () => {
@@ -302,7 +313,7 @@ IMPORTANT:
       const prompt = `Job Description: \n${jobResume?.job!.title}\n${jobResume?.job!.description}
     Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
 
-      return getAIJsonResponse(prompt, [pdfBuffer], systemInstructions);
+      return getAIJsonResponse(prompt, [pdfBuffer], systemInstructions, AI.REASONS.SCORE_RESUME);
     };
 
     const getMatchedKeywords = async () => {
@@ -348,7 +359,7 @@ Your task is to identify which important keywords from the job description match
     ${convertResumeObjectToString(jobResume.content as ResumeContent)}
     Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
 
-      return getAIJsonResponse(prompt, [], systemInstructions);
+      return getAIJsonResponse(prompt, [], systemInstructions, AI.REASONS.MATCH_KEYWORDS_RESUME);
     };
 
     const results = await Promise.all([
@@ -393,7 +404,12 @@ const analyzeResumeExperiencesScores = async (
     content +
     '\n Ensure the response is in a valid JSON format with no extra text! Make sure all the variations have score.';
 
-  const generatedContent = await getAIJsonResponse(prompt, [], systemInstructions);
+  const generatedContent = await getAIJsonResponse(
+    prompt,
+    [],
+    systemInstructions,
+    AI.REASONS.SCORE_RESUME_EXPERIENCES,
+  );
 
   return generatedContent;
 };
@@ -401,11 +417,15 @@ const analyzeResumeExperiencesScores = async (
 const analyzeResumeProjectsScores = async (analyzeResults: JobAnalyzeResult, content: string) => {
   const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, you need to give a score (on a scale from 0 to 1) to each project item based on how well it matches the job description, give me the best matches in this format [{ "id" : "project_..", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
 
-  const generatedContent = await getAIJsonResponse(prompt, [
-    content +
-      '\n' +
-      `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
-  ]);
+  const generatedContent = await getAIJsonResponse(
+    prompt,
+    [
+      content +
+        '\n' +
+        `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
+    ],
+    AI.REASONS.SCORE_RESUME_PROJECTS,
+  );
 
   return generatedContent;
 };
@@ -576,6 +596,7 @@ export const askCustomQuestionFromAI = withErrorHandling(
       messageParts,
       instructionSuffix,
       history,
+      AI.REASONS.CUSTOM_QUESTION,
     );
     return result;
   },

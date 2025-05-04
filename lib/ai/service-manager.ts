@@ -14,6 +14,7 @@ import { PromptProcessor } from './promptProcessors/base';
 import { ResponseProcessor } from './responseProcessors/base';
 import { createJsonSchemaValidator } from './validators';
 import { currentUser } from '@/lib/auth';
+import { AI } from '../constants';
 
 export interface AIServiceManagerConfig {
   maxRetries: number;
@@ -55,6 +56,7 @@ export class AIServiceManager {
     }
     const requestId = request.context?.requestId || (await getCurrentRequestId());
     const userId = request.context?.userId || (await currentUser())?.id;
+    const reason = request.context?.reason || AI.REASONS.GENERAL;
     let retryCount = 0;
     let lastError: Error | null = null;
 
@@ -117,8 +119,9 @@ export class AIServiceManager {
         const responseTime = Math.round(endTime - startTime);
 
         if (userId) {
-          await this.usageService.recordUsage(
+          this.recordUsage(
             userId,
+            reason,
             client.getClientId(),
             response.tokenUsage.promptTokens,
             response.tokenUsage.completionTokens,
@@ -174,7 +177,7 @@ export class AIServiceManager {
         } else {
           // Record failed attempt in usage service
           if (userId) {
-            await this.usageService.recordFailedAttempt(userId);
+            this.recordFailedAttempt(userId, reason);
           }
           throw new AIServiceError(
             `AI request failed after ${retryCount + 1} attempts: ${lastError.message}`,
@@ -258,5 +261,56 @@ export class AIServiceManager {
       default:
         return response;
     }
+  }
+
+  // Add a private method to record usage by reason asynchronously (fire and forget)
+  private recordUsage(
+    userId: string,
+    reason: string,
+    clientId: string,
+    promptTokens: number,
+    completionTokens: number,
+    responseTime: number,
+  ): void {
+    // Execute without awaiting to make it fire and forget
+    this.usageService
+      .recordUsageByReason(userId, reason, clientId, promptTokens, completionTokens, responseTime)
+      .catch(error => {
+        Logger.error(`Failed to record usage by reason (fire and forget)`, {
+          error,
+          userId,
+          reason,
+        });
+      });
+
+    this.usageService
+      .recordUsage(userId, clientId, promptTokens, completionTokens, responseTime)
+      .catch(error => {
+        Logger.error(`Failed to record usage`, {
+          error,
+          userId,
+          clientId,
+          promptTokens,
+          completionTokens,
+        });
+      });
+  }
+
+  private recordFailedAttempt(userId: string, reason: string): void {
+    // Execute without awaiting to make it fire and forget
+    this.usageService.recordFailedAttemptByReason(userId, reason).catch(error => {
+      Logger.error(`Failed to record failed attempt by reason (fire and forget)`, {
+        error,
+        userId,
+        reason,
+      });
+    });
+
+    this.usageService.recordFailedAttempt(userId).catch(error => {
+      Logger.error(`Failed to record failed attempt`, {
+        error,
+        userId,
+      });
+    });
   }
 }
