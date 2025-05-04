@@ -90,9 +90,6 @@ export const register = async (payload: z.infer<typeof registerSchema>) => {
   const verificationToken = await generateVerificationToken(email);
   await sendVerificationEmail(verificationToken.email, verificationToken.token, name);
 
-  // Send verification email
-  await sendVerificationEmail(verificationToken.email, verificationToken.token, name);
-
   // Automatically sign in the user after registration
   return await signInCredentials(email, password);
 };
