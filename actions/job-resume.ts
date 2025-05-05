@@ -10,7 +10,6 @@ import {
   AIRequestModel,
   ChatHistoryItem,
   ContentItem,
-  getAIJsonResponse,
   getAIServiceManager,
   getChatResponse,
 } from '@/lib/ai';
@@ -353,7 +352,7 @@ IMPORTANT:
     Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
 
       const request: AIRequestModel<ResumeScore> = {
-        prompt: prompt,
+        prompt,
         responseFormat: 'json',
         zodSchema: ResumeScoreSchema,
         context: {
@@ -363,6 +362,10 @@ IMPORTANT:
           {
             data: systemInstructions,
             type: 'text',
+          },
+          {
+            data: pdfBuffer,
+            type: 'pdf',
           },
         ],
       };
@@ -467,7 +470,6 @@ IMPORTANT:
       notes: [results[2].result, ...(results[3].result || [])],
     } as ResumeAnalyzeResults;
 
-    console.log('New Analyze Results:', JSON.stringify(newAnalyzeResults, null, 2));
     await db.jobResume.update({
       where: { id: jobResumeId },
       data: {
