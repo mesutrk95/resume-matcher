@@ -218,6 +218,115 @@ const ExperienceImprovementsSchema = z
 export type ExperienceImprovement = z.infer<typeof ExperienceImprovementSchema>;
 export type ExperienceImprovements = z.infer<typeof ExperienceImprovementsSchema>;
 
+// Define schema for skill alignment suggestion
+const SkillAlignmentSchema = z.object({
+  title: z.literal('Correct Skill Alignment').describe('Title of the skill alignment suggestion'),
+
+  text: z
+    .string()
+    .min(1, 'Source text is required')
+    .describe('Original skill text from the resume'),
+
+  improvement: z
+    .string()
+    .min(1, 'Improvement suggestion is required')
+    .describe('Suggested improvement with optional Tailwind CSS formatting'),
+
+  id: z.literal('skills').describe('Identifier for the skills section'),
+
+  action_type: z.literal('update').describe('Type of action to be performed'),
+
+  action_text: z
+    .string()
+    .min(1, 'Action text is required')
+    .describe('Comma-separated list of suggested skills'),
+});
+
+// Type inference
+export type SkillAlignment = z.infer<typeof SkillAlignmentSchema>;
+
+// Define schema for resume score breakdown
+const ResumeScoreBreakdownSchema = z.object({
+  keyword_score: z
+    .number()
+    .int('Keyword score must be an integer')
+    .min(0, 'Keyword score must be at least 0')
+    .max(40, 'Keyword score must be at most 40')
+    .describe('Score based on keyword matching (0-40)'),
+
+  skills_score: z
+    .number()
+    .int('Skills score must be an integer')
+    .min(0, 'Skills score must be at least 0')
+    .max(30, 'Skills score must be at most 30')
+    .describe('Score based on skills matching (0-30)'),
+
+  experience_score: z
+    .number()
+    .int('Experience score must be an integer')
+    .min(0, 'Experience score must be at least 0')
+    .max(20, 'Experience score must be at most 20')
+    .describe('Score based on experience relevance (0-20)'),
+
+  education_score: z
+    .number()
+    .int('Education score must be an integer')
+    .min(0, 'Education score must be at least 0')
+    .max(10, 'Education score must be at most 10')
+    .describe('Score based on education relevance (0-10)'),
+});
+
+// Define schema for overall resume score
+const ResumeScoreSchema = z.object({
+  score: z
+    .number()
+    .int('Score must be an integer')
+    .min(0, 'Score must be at least 0')
+    .max(100, 'Score must be at most 100')
+    .describe('Overall resume score (0-100)'),
+
+  breakdown: ResumeScoreBreakdownSchema.describe('Detailed breakdown of score components'),
+});
+
+// Type inference
+export type ResumeScoreBreakdown = z.infer<typeof ResumeScoreBreakdownSchema>;
+export type ResumeScore = z.infer<typeof ResumeScoreSchema>;
+
+const KeywordMatchingResultSchema = z.object({
+  matched_keywords: z.array(z.string()).describe('Array of important keywords found in the resume'),
+
+  missed_keywords: z
+    .array(z.string())
+    .describe('Array of important keywords missing from the resume'),
+});
+
+// Type inference
+export type KeywordMatchingResult = z.infer<typeof KeywordMatchingResultSchema>;
+
+const ProjectVariationScoreSchema = z.object({
+  id: z
+    .string()
+    .min(1, 'Variation ID is required')
+    .describe('Unique identifier for the project variation'),
+
+  score: z
+    .number()
+    .min(0, 'Score must be at least 0')
+    .max(1, 'Score must be at most 1')
+    .describe('Match score from 0 to 1, where 1 is a perfect match'),
+
+  matched_keywords: z
+    .array(z.string())
+    .describe('Array of exact keywords that matched between the project and job description'),
+});
+
+const ProjectVariationScoresSchema = z
+  .array(ProjectVariationScoreSchema)
+  .nonempty('Result must contain at least one project variation score');
+
+export type ProjectVariationScore = z.infer<typeof ProjectVariationScoreSchema>;
+export type ProjectVariationScores = z.infer<typeof ProjectVariationScoresSchema>;
+
 export {
   variationSchema,
   experienceItemSchema,
@@ -242,4 +351,9 @@ export {
   ProjectMatchingResultSchema,
   ExperienceImprovementSchema,
   ExperienceImprovementsSchema,
+  SkillAlignmentSchema,
+  ResumeScoreSchema,
+  ResumeScoreBreakdownSchema,
+  KeywordMatchingResultSchema,
+  ProjectVariationScoresSchema,
 };

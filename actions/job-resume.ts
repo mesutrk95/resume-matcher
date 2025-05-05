@@ -27,9 +27,17 @@ import {
 import {
   ExperienceImprovements,
   ExperienceImprovementsSchema,
+  KeywordMatchingResult,
+  KeywordMatchingResultSchema,
   ProjectMatchingResult,
   ProjectMatchingResultSchema,
+  ProjectVariationScores,
+  ProjectVariationScoresSchema,
   resumeContentSchema,
+  ResumeScore,
+  ResumeScoreSchema,
+  SkillAlignment,
+  SkillAlignmentSchema,
 } from '@/schemas/resume';
 import z from 'zod';
 import { withErrorHandling } from '@/lib/with-error-handling';
@@ -235,19 +243,24 @@ Provide your suggestions in the exact JSON format specified.`;
         context: {
           reason: Reasons.RESUME_ANALYZE_EXPERIENCES,
         },
-        systemInstruction: systemInstructions,
+        contents: [
+          {
+            data: systemInstructions,
+            type: 'text',
+          },
+        ],
       };
 
       try {
         const result = await getAIServiceManager().executeRequest(request);
         return {
           result,
-          userPrompt,
+          prompt: userPrompt,
         };
       } catch (error) {
         return {
           error,
-          userPrompt,
+          prompt: userPrompt,
         };
       }
     };
@@ -255,17 +268,6 @@ Provide your suggestions in the exact JSON format specified.`;
     const getSkillsImprovementNotes = async () => {
       const systemInstructions = `
 You are an AI resume optimization assistant specialized in aligning candidate skills with job descriptions. Your task is to analyze the skills section of a resume and provide the best skill set that matches a specific job description.
-
-You must provide your response in the exact following JSON format:
-
-{
-    "title": "Correct Skill Alignment",
-    "text": "Source text in resume",
-    "improvement": "AI suggestion text, allowed to use Tailwind CSS classes to highlight texts by [bg|text]-[red|green|orange]-[100-500], font-bold, etc.",
-    "id": "skills",
-    "action_type": "update",
-    "action_text": "pure and complete suggested skills list separated by comma"
-}
 
 Instructions:
 1. Provide the best skill set that aligns perfectly with the job description
@@ -282,7 +284,33 @@ ${jobResume?.job!.description}
 
 Provide your optimization suggestion in the required JSON format.`;
 
-      return getAIJsonResponse(userPrompt, [], systemInstructions, Reasons.RESUME_ANALYZE_SKILLS);
+      const request: AIRequestModel<SkillAlignment> = {
+        prompt: userPrompt,
+        responseFormat: 'json',
+        zodSchema: SkillAlignmentSchema,
+        context: {
+          reason: Reasons.RESUME_ANALYZE_SKILLS,
+        },
+        contents: [
+          {
+            data: systemInstructions,
+            type: 'text',
+          },
+        ],
+      };
+
+      try {
+        const result = await getAIServiceManager().executeRequest(request);
+        return {
+          result,
+          prompt: userPrompt,
+        };
+      } catch (error) {
+        return {
+          error,
+          prompt: userPrompt,
+        };
+      }
     };
 
     const getScore = async () => {
@@ -316,20 +344,7 @@ SCORING METHODOLOGY:
 - Experience relevance: 20% of total score
 - Education & certifications: 10% of total score
 
-RESPONSE FORMAT:
-Provide ONLY a JSON object with the following structure:
-{
-  "score": [0-100 integer],
-  "breakdown": {
-    "keyword_score": [0-40 integer],
-    "skills_score": [0-30 integer],
-    "experience_score": [0-20 integer],
-    "education_score": [0-10 integer]
-  }
-}
-
 IMPORTANT:
-- Your entire response must be ONLY valid JSON with no additional text
 - Do not include any explanations, breakdown, improvement suggestions, or conclusions
 - You must be rigorous and realistic in your scoring - empty sections MUST result in low scores
 - Only focus on important/relevant keywords that would impact ATS scoring`;
@@ -337,7 +352,33 @@ IMPORTANT:
       const prompt = `Job Description: \n${jobResume?.job!.title}\n${jobResume?.job!.description}
     Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
 
-      return getAIJsonResponse(prompt, [pdfBuffer], systemInstructions, Reasons.SCORE_RESUME);
+      const request: AIRequestModel<ResumeScore> = {
+        prompt: prompt,
+        responseFormat: 'json',
+        zodSchema: ResumeScoreSchema,
+        context: {
+          reason: Reasons.SCORE_RESUME,
+        },
+        contents: [
+          {
+            data: systemInstructions,
+            type: 'text',
+          },
+        ],
+      };
+
+      try {
+        const result = await getAIServiceManager().executeRequest(request);
+        return {
+          result,
+          prompt,
+        };
+      } catch (error) {
+        return {
+          error,
+          prompt,
+        };
+      }
     };
 
     const getMatchedKeywords = async () => {
@@ -383,7 +424,33 @@ IMPORTANT:
     ${convertResumeObjectToString(jobResume.content as ResumeContent)}
     Remember to carefully validate all resume sections and ensure the response is in a valid JSON format with no extra text!`;
 
-      return getAIJsonResponse(prompt, [], systemInstructions, Reasons.MATCH_KEYWORDS_RESUME);
+      const request: AIRequestModel<KeywordMatchingResult> = {
+        prompt: prompt,
+        responseFormat: 'json',
+        zodSchema: KeywordMatchingResultSchema,
+        context: {
+          reason: Reasons.MATCH_KEYWORDS_RESUME,
+        },
+        contents: [
+          {
+            data: systemInstructions,
+            type: 'text',
+          },
+        ],
+      };
+
+      try {
+        const result = await getAIServiceManager().executeRequest(request);
+        return {
+          result,
+          prompt,
+        };
+      } catch (error) {
+        return {
+          error,
+          prompt,
+        };
+      }
     };
 
     const results = await Promise.all([
@@ -429,14 +496,33 @@ const analyzeResumeExperiencesScores = async (
     content +
     '\n Ensure the response is in a valid JSON format with no extra text! Make sure all the variations have score.';
 
-  const generatedContent = await getAIJsonResponse(
-    prompt,
-    [],
-    systemInstructions,
-    Reasons.SCORE_RESUME_EXPERIENCES,
-  );
+  const request: AIRequestModel<ProjectVariationScores> = {
+    prompt: prompt,
+    responseFormat: 'json',
+    zodSchema: ProjectVariationScoresSchema,
+    context: {
+      reason: Reasons.SCORE_RESUME_EXPERIENCES,
+    },
+    contents: [
+      {
+        data: systemInstructions,
+        type: 'text',
+      },
+    ],
+  };
 
-  return generatedContent;
+  try {
+    const result = await getAIServiceManager().executeRequest(request);
+    return {
+      result,
+      prompt,
+    };
+  } catch (error) {
+    return {
+      error,
+      prompt,
+    };
+  }
 };
 
 const analyzeResumeProjectsScores = async (analyzeResults: JobAnalyzeResult, content: string) => {
