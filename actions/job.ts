@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { currentUser } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { Job, JobStatus, Prisma } from '@prisma/client';
-import { AIRequestModel, getAIServiceManager, getAIJsonResponse } from '@/lib/ai';
+import { AIRequestModel, getAIServiceManager } from '@/lib/ai';
 import { JobAnalyzeResult } from '@/types/job';
 import { downloadImageAsBase64 } from '@/lib/utils';
 import { PaginationParams } from '@/types/pagination-params';
@@ -16,6 +16,12 @@ import axios from 'axios';
 import moment from 'moment';
 import { ForbiddenException } from '@/lib/exceptions';
 import { Reasons } from '@/domains/reasons';
+import {
+  JobAnalysis,
+  JobAnalysisSchema,
+  JobDescription,
+  JobDescriptionSchema,
+} from '@/schemas/job';
 
 export const createJob = withErrorHandling(
   async (values: z.infer<typeof jobSchema>): Promise<Job> => {
@@ -207,12 +213,28 @@ Categorize each keyword as either "hard", "soft", or "none" based on whether it 
 Additionally, assign a level of importance to each keyword on a scale from 0 to 1, where 1 is highly important and 0 is minimally important. 
 Provide the results in a structured JSON format as an array of objects, where each object contains the fields "keyword", "skill", and "level". 
 Ensure the response is in a valid JSON format with no extra text, without any additional formatting or explanations. catch whatever is important for ATSs, Here is the job: `;
-  return getAIJsonResponse(
+
+  // Create a request with zodSchema
+  const request: AIRequestModel<JobAnalysis> = {
     prompt,
-    [job.description || ''],
-    undefined,
-    Reasons.ANALYZE_JOB_KEYWORDS,
-  );
+    responseFormat: 'json',
+    zodSchema: JobAnalysisSchema,
+    context: {
+      reason: Reasons.ANALYZE_JOB_KEYWORDS,
+    },
+    contents: [
+      {
+        type: 'text',
+        data: job.description || '',
+      },
+      {
+        type: 'text',
+        data: job.title || '',
+      },
+    ],
+  };
+  const service = getAIServiceManager();
+  return await service.executeRequest<JobAnalysis>(request);
 };
 
 const analyzeJobSummary = async (job: Job) => {
@@ -259,28 +281,28 @@ export const analyzeJobByAI = withErrorHandling(async (jobId: string) => {
   //     },
   //   },
   // });
+  try {
+    const results = await Promise.all([analyzeJobKeywords(job), analyzeJobSummary(job)]);
 
-  const results = await Promise.all([analyzeJobKeywords(job), analyzeJobSummary(job)]);
+    const keywords = results[0];
+    const summary = results[1];
+    const analyzeResults = {
+      keywords,
+      summary,
+    } as JobAnalyzeResult;
+    await db.job.update({
+      where: { id: jobId },
+      data: {
+        analyzeResults,
+      },
+    });
 
-  if (results[0].error) {
-    throw new Error('Failed to analyze job');
+    revalidatePath(`/jobs/${jobId}`);
+
+    return { status: 'done', analyzeResults };
+  } catch (ex) {
+    return { status: 'error', error: ex };
   }
-  const keywords = results[0].result;
-  const summary = results[1];
-  const analyzeResults = {
-    keywords,
-    summary,
-  } as JobAnalyzeResult;
-  await db.job.update({
-    where: { id: jobId },
-    data: {
-      analyzeResults,
-    },
-  });
-
-  revalidatePath(`/jobs/${jobId}`);
-
-  return { status: 'done', analyzeResults };
 });
 
 export const extractJobDescriptionFromUrl = withErrorHandling(async (url: string) => {
@@ -297,19 +319,29 @@ export const extractJobDescriptionFromUrl = withErrorHandling(async (url: string
 
   const jd = `Banner: ${cardTop}, Description: ${description}`.replaceAll('\n', '');
 
-  const prompt = `Extract the following details from the given text, with this keys "description", "companyName", "location" , "title", "postedDate".keep the description in html format and make sure postedDate is in correct date format (YYYY/MM/DD HH:mm) (now: ${moment().format(
-    'YYYY/MM/DD HH:mm',
-  )}). Ensure the response is in a valid JSON format with no extra text:\n ${jd}`;
+  const prompt = `Extract the following details from the given text, the description in html format and make sure postedDate is in correct date format (YYYY/MM/DD HH:mm) (now: ${moment().format('YYYY/MM/DD HH:mm')})\n`;
+
+  // Create a request with zodSchema
+  const request: AIRequestModel<JobDescription> = {
+    prompt,
+    responseFormat: 'json',
+    zodSchema: JobDescriptionSchema,
+    context: {
+      reason: Reasons.EXTRACT_JOB_DESCRIPTION,
+    },
+    contents: [
+      {
+        type: 'text',
+        data: jd,
+      },
+    ],
+  };
 
   let image = null;
   try {
     if (logoImage) image = await downloadImageAsBase64(logoImage);
   } catch (ex) {}
-  const result = await getAIJsonResponse(
-    prompt,
-    undefined,
-    undefined,
-    Reasons.EXTRACT_JOB_DESCRIPTION,
-  );
-  return { ...result.result, image };
+
+  const aiResult = await getAIServiceManager().executeRequest(request);
+  return { ...aiResult, image };
 });

@@ -315,39 +315,39 @@ IMPORTANT:
       const systemInstructions = `
 You are an expert ATS (Applicant Tracking System) keyword analyzer.
 Your task is to identify which important keywords from the job description match or are missing in the resume.
-321 | You are an expert ATS (Applicant Tracking System) keyword analyzer.
-322 | Your task is to identify which important keywords from the job description match or are missing in the resume.
-323 | 
-324 | INSTRUCTIONS:
-325 | - Extract only significant keywords from the job description that would impact ATS scoring
-326 | - Compare these keywords against the resume content
-327 | - Identify which important keywords are present (matched) in the resume
-328 | - Identify which important keywords are absent (missed) in the resume
-329 | - Only include meaningful technical skills, qualifications, and experience keywords
-330 | - Do NOT include generic words or phrases that wouldn't affect ATS scoring
-331 | 
-332 | KEYWORD SELECTION CRITERIA:
-333 | - Technical skills (programming languages, tools, platforms)
-334 | - Industry-specific terminology
-335 | - Required certifications or qualifications
-336 | - Specific methodologies or processes mentioned
-337 | - Job-specific responsibilities or functions
-338 | - Required years of experience with specific technologies
-339 | - Educational requirements (degrees, fields of study)
-340 | 
-341 | RESPONSE FORMAT:
-342 | Provide ONLY a JSON object with the following structure:
-343 | {
-344 |   "matched_keywords": [array of important matched keywords],
-345 |   "missed_keywords": [array of important missed keywords]
-346 | }
-347 | 
-348 | IMPORTANT:
-349 | - Your entire response must be ONLY valid JSON with no additional text
-350 | - Do not include any explanations, scoring, or conclusions outside the JSON
-351 | - Focus only on significant keywords that genuinely impact ATS evaluation
-352 | - Limit to maximum 20 most important keywords in each category
-353 | - Sort keywords by importance/relevance (most important first)`;
+You are an expert ATS (Applicant Tracking System) keyword analyzer.
+Your task is to identify which important keywords from the job description match or are missing in the resume.
+ 
+INSTRUCTIONS:
+- Extract only significant keywords from the job description that would impact ATS scoring
+- Compare these keywords against the resume content
+- Identify which important keywords are present (matched) in the resume
+- Identify which important keywords are absent (missed) in the resume
+- Only include meaningful technical skills, qualifications, and experience keywords
+- Do NOT include generic words or phrases that wouldn't affect ATS scoring
+
+KEYWORD SELECTION CRITERIA:
+- Technical skills (programming languages, tools, platforms)
+- Industry-specific terminology
+- Required certifications or qualifications
+- Specific methodologies or processes mentioned
+- Job-specific responsibilities or functions
+- Required years of experience with specific technologies
+- Educational requirements (degrees, fields of study)
+
+RESPONSE FORMAT:
+Provide ONLY a JSON object with the following structure:
+{
+  "matched_keywords": [array of important matched keywords],
+  "missed_keywords": [array of important missed keywords]
+}
+
+IMPORTANT:
+- Your entire response must be ONLY valid JSON with no additional text
+- Do not include any explanations, scoring, or conclusions outside the JSON
+- Focus only on significant keywords that genuinely impact ATS evaluation
+- Limit to maximum 20 most important keywords in each category
+- Sort keywords by importance/relevance (most important first)`;
       const prompt = `Job Keywords: ${jobAnalyzeResult.keywords.map(k => k.keyword).join(',')}
 
     Resume:
