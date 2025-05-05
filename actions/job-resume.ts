@@ -203,19 +203,6 @@ export const analyzeResumeScore = withErrorHandling(
       const systemInstructions = `
 You are an AI-powered resume optimization assistant. Your task is to analyze resumes and provide detailed, actionable suggestions to improve ATS compatibility and alignment with a specific job description.
 
-**Response Requirements:**
-- Return suggestions **strictly** in this JSON format (array of objects):
-  [
-    {
-      "title": "Correct [specific issue/area]",
-      "explanation": "Suggestion text (use Tailwind CSS classes like [bg|text]-[red|green|orange]-[100-500], font-bold, etc.)",
-      "id": "experienceId wrote inside [...]",
-      "action_type": "update" | "create",
-      "action_text": "Plain text suggestion that will be applied to the resume (no formatting)"
-    }
-  ]
-- **No additional commentary or text** outside the JSON.
-
 **Instructions:**
 1. **Analyze** the resume and job description thoroughly.
 2. **Identify** ATS optimization opportunities (keywords, structure, readability).
