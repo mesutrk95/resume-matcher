@@ -6,7 +6,14 @@ import { JobResume } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { DEFAULT_RESUME_CONTENT } from './constants';
 import { ResumeAnalyzeResults, ResumeContent, ResumeItemScoreAnalyze } from '@/types/resume';
-import { ChatHistoryItem, getAIJsonResponse, getChatResponse } from '@/lib/ai';
+import {
+  AIRequestModel,
+  ChatHistoryItem,
+  ContentItem,
+  getAIJsonResponse,
+  getAIServiceManager,
+  getChatResponse,
+} from '@/lib/ai';
 import { JobAnalyzeResult } from '@/types/job';
 import { chunkArray, hashString } from '@/lib/utils';
 import { analyzeJobByAI } from './job';
@@ -17,7 +24,13 @@ import {
   InvalidInputException,
   NotFoundException,
 } from '@/lib/exceptions';
-import { resumeContentSchema } from '@/schemas/resume';
+import {
+  ExperienceImprovements,
+  ExperienceImprovementsSchema,
+  ProjectMatchingResult,
+  ProjectMatchingResultSchema,
+  resumeContentSchema,
+} from '@/schemas/resume';
 import z from 'zod';
 import { withErrorHandling } from '@/lib/with-error-handling';
 import { Reasons } from '@/domains/reasons';
@@ -93,7 +106,7 @@ export const updateJobResume = withErrorHandling(
       );
     }
 
-    const updatedJob = await db.jobResume.update({
+    await db.jobResume.update({
       where: {
         id: resume.id,
         userId: user?.id,
@@ -215,12 +228,28 @@ ${jobResume?.job!.description}
 
 Provide your suggestions in the exact JSON format specified.`;
 
-      return getAIJsonResponse(
-        userPrompt,
-        [],
-        systemInstructions,
-        Reasons.RESUME_ANALYZE_EXPERIENCES,
-      );
+      const request: AIRequestModel<ExperienceImprovements> = {
+        prompt: userPrompt,
+        responseFormat: 'json',
+        zodSchema: ExperienceImprovementsSchema,
+        context: {
+          reason: Reasons.RESUME_ANALYZE_EXPERIENCES,
+        },
+        systemInstruction: systemInstructions,
+      };
+
+      try {
+        const result = await getAIServiceManager().executeRequest(request);
+        return {
+          result,
+          userPrompt,
+        };
+      } catch (error) {
+        return {
+          error,
+          userPrompt,
+        };
+      }
     };
 
     const getSkillsImprovementNotes = async () => {
@@ -368,9 +397,10 @@ IMPORTANT:
       ...((jobResume?.analyzeResults as ResumeAnalyzeResults) || {}),
       ...results[0].result,
       ...results[1].result,
-      notes: [results[2].result, ...results[3].result],
+      notes: [results[2].result, ...(results[3].result || [])],
     } as ResumeAnalyzeResults;
 
+    console.log('New Analyze Results:', JSON.stringify(newAnalyzeResults, null, 2));
     await db.jobResume.update({
       where: { id: jobResumeId },
       data: {
@@ -411,18 +441,38 @@ const analyzeResumeExperiencesScores = async (
 
 const analyzeResumeProjectsScores = async (analyzeResults: JobAnalyzeResult, content: string) => {
   const prompt = `I'm trying to find best matches of my experiences based on the job description that can pass ATS easily, you need to give a score (on a scale from 0 to 1) to each project item based on how well it matches the job description, give me the best matches in this format [{ "id" : "project_..", "score": 0.55, "matched_keywords": [...] },...], Ensure the response is in a valid JSON format with no extra text!`;
-
-  const generatedContent = await getAIJsonResponse(
+  const contents: ContentItem[] = [
+    {
+      type: 'text',
+      data: `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
+    },
+  ];
+  // Create a request with zodSchema
+  const request: AIRequestModel<ProjectMatchingResult> = {
     prompt,
-    [
-      content +
-        '\n' +
-        `Job description summary: ${analyzeResults.summary} \n Make sure all the variations have score.`,
-    ],
-    Reasons.SCORE_RESUME_PROJECTS,
-  );
+    responseFormat: 'json',
+    zodSchema: ProjectMatchingResultSchema,
+    context: {
+      reason: Reasons.SCORE_RESUME_PROJECTS,
+    },
+    contents,
+  };
+  const service = getAIServiceManager();
 
-  return generatedContent;
+  try {
+    const result = await service.executeRequest(request);
+    return {
+      result,
+      prompt,
+      contents,
+    };
+  } catch (error) {
+    return {
+      error,
+      prompt,
+      contents,
+    };
+  }
 };
 
 export const analyzeResumeItemsScores = withErrorHandling(

@@ -161,6 +161,8 @@ const resumeAnalyzedImprovementNoteSchema = z.object({
   action_text: z.string(),
 });
 
+const MatchedKeywordSchema = z.string().min(1);
+
 // Define the resumeAnalyzeResults schema
 const resumeAnalyzeResultsSchema = z.object({
   itemsScore: z.record(resumeItemScoreAnalyzeSchema).optional(),
@@ -169,6 +171,52 @@ const resumeAnalyzeResultsSchema = z.object({
   notes: z.array(resumeAnalyzedImprovementNoteSchema),
   score: z.number(),
 });
+
+const ProjectMatchSchema = z.object({
+  id: z
+    .string()
+    .min(1, 'Project ID is required')
+    .regex(/^project_/, "Project ID must start with 'project_'"),
+  score: z
+    .number()
+    .min(0, 'Match score must be at least 0')
+    .max(1, 'Match score must be at most 1')
+    .describe('Match score from 0 to 1, where 1 is a perfect match'),
+  matched_keywords: z
+    .array(MatchedKeywordSchema)
+    .describe('Keywords from the job description that match this project'),
+});
+
+// Define the schema for the entire matching result
+const ProjectMatchingResultSchema = z
+  .array(ProjectMatchSchema)
+  .nonempty('Result must contain at least one project match');
+
+// Type inference
+export type ProjectMatch = z.infer<typeof ProjectMatchSchema>;
+export type ProjectMatchingResult = z.infer<typeof ProjectMatchingResultSchema>;
+
+// Define schema for individual experience improvement suggestion
+const ExperienceImprovementSchema = z.object({
+  title: z
+    .string()
+    .min(1, 'Title is required')
+    .startsWith('Correct', "Title must start with 'Correct'"),
+  explanation: z.string().min(1, 'Explanation is required'),
+  id: z.string().min(1, 'Experience ID is required'),
+  action_type: z.enum(['update', 'create'], {
+    description: "Action type must be either 'update' or 'create'",
+  }),
+  action_text: z.string().min(1, 'Action text is required'),
+});
+
+const ExperienceImprovementsSchema = z
+  .array(ExperienceImprovementSchema)
+  .nonempty('Response must contain at least one improvement suggestion');
+
+// Type inference
+export type ExperienceImprovement = z.infer<typeof ExperienceImprovementSchema>;
+export type ExperienceImprovements = z.infer<typeof ExperienceImprovementsSchema>;
 
 export {
   variationSchema,
@@ -190,4 +238,8 @@ export {
   resumeItemScoreAnalyzeSchema,
   resumeAnalyzedImprovementNoteSchema,
   resumeAnalyzeResultsSchema,
+  ProjectMatchSchema,
+  ProjectMatchingResultSchema,
+  ExperienceImprovementSchema,
+  ExperienceImprovementsSchema,
 };
