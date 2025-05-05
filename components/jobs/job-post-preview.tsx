@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '../ui/card';
 import { JobStatusUpdateForm } from './job-status-update-form';
 import Link from 'next/link';
+import { runAction } from '@/app/_utils/runAction';
 
 const KeywordBadge = ({ keyword }: { keyword: JobKeyword }) => {
   return (
@@ -74,8 +75,8 @@ export const JobPostPreview = ({
   const handleAnalyzeJob = async () => {
     startJobAnalyzeTransition(async () => {
       try {
-        const result = await analyzeJobByAI(job.id);
-        if (!result.data) {
+        const result = await runAction(analyzeJobByAI(job.id));
+        if (!result.success || !result.data?.analyzeResults) {
           toast.error(result.error?.message || 'Failed to analyze job.');
           return;
         }
