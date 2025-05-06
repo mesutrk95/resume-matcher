@@ -1,4 +1,3 @@
-// lib/ai/responseProcessors/jsonResponseProcessor.ts
 import { removeNullProperties } from '@/lib/utils';
 import { ResponseProcessingError } from '../errors';
 import { AIRequestModel } from '../types';
@@ -29,7 +28,7 @@ export class JsonResponseProcessor extends BaseResponseProcessor<any> {
       // Attempt to parse as JSON
       return removeNullProperties(JSON.parse(cleanJson));
     } catch (parseError) {
-      throw new ResponseProcessingError('Failed to parse JSON response');
+      throw new ResponseProcessingError('Failed to parse JSON response' + parseError, cleanJson);
     }
   }
 }

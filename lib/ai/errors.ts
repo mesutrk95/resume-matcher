@@ -47,8 +47,10 @@ export class AIRequestError extends AIServiceError {
  * Error thrown when response processing fails
  */
 export class ResponseProcessingError extends AIServiceError {
-  constructor(message: string, options?: ErrorOptions) {
+  public readonly content: string;
+  constructor(message: string, content: string, options?: ErrorOptions) {
     super(message, options);
+    this.content = content;
     this.name = 'ResponseProcessingError';
   }
 }

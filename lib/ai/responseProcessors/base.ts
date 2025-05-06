@@ -32,6 +32,7 @@ export abstract class BaseResponseProcessor<T = any> implements ResponseProcesso
         `Error in ${this.constructor.name}: ${
           error instanceof Error ? error.message : String(error)
         }`,
+        response,
       );
     }
   }
