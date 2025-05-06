@@ -241,10 +241,6 @@ export const ResumeDocument = ({
               key={index}
               style={{ ...element.style, ...getClassStyles(element.class) }}
               {...props}
-              hyphenationCallback={w => {
-                return w.split('/');
-                return [w];
-              }}
             >
               {textData}
             </ElementType>
@@ -275,11 +271,12 @@ export const ResumeDocument = ({
     // const spacing = (units: number) => units * design.spacing.unit;
 
     if (!resumeTemplate) return null;
+    const { pagePadding } = resumeTemplate.spacing;
     const styles = StyleSheet.create({
       page: {
         // flexDirection: "column",
         // backgroundColor: design.colors.background,
-        padding: `${resumeTemplate.spacing.pagePadding.top}pt ${resumeTemplate.spacing.pagePadding.right}pt ${resumeTemplate.spacing.pagePadding.bottom}pt ${resumeTemplate.spacing.pagePadding.left}pt`,
+        padding: `${pagePadding.top}pt ${pagePadding.right}pt ${pagePadding.bottom}pt ${pagePadding.left}pt`,
         margin: 0,
         fontFamily: skipFont ? undefined : resumeTemplate.fonts.family,
         fontSize: resumeTemplate.fonts.baseSize,

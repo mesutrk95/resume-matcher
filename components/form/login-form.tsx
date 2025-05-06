@@ -50,7 +50,7 @@ export const LoginForm = ({ heroImage }: { heroImage?: string }) => {
 
           const redirect = searchParams.get('redirect');
           if (redirect) router.push(redirect);
-          else router.push('/');
+          else router.push('/home');
           // now we don't use two factor skip it
           // return router.push('/two-factor');
         })

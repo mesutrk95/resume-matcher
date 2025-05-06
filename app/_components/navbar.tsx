@@ -134,6 +134,7 @@ export default function Navbar() {
               title="Resume Templates"
               link="/templates"
             /> */}
+            <NavItem icon="/iconly/Home5.json" title="Home" link="/home" />
             <NavItem icon="/iconly/emaildocument1.json" title="Resumes" link="/resumes" />
             <NavItem icon="/iconly/Shoppingbag.json" title="Jobs" link="/jobs" />
           </div>
