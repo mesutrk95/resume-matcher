@@ -15,7 +15,7 @@ import { ResponseProcessor } from './responseProcessors/base';
 import { createJsonSchemaValidator } from './validators';
 import { currentUser } from '@/lib/auth';
 import { Reasons } from '@/domains/reasons';
-import { savePrompt } from '../prompt-log-service';
+import { saveStuff } from '../prompt-log-service';
 
 export interface AIServiceManagerConfig {
   maxRetries: number;
@@ -150,12 +150,13 @@ export class AIServiceManager {
               });
               // Append validation errors to the prompt for the next attempt
               validationErrors = validationResult.errors;
-              savePrompt({
+              saveStuff('FailedValidationPrompts', {
                 prompt: request.prompt,
                 processedResponse,
                 response: response,
                 validationResult,
                 reason,
+                requestId,
               }).catch(() => {});
               retryCount++;
               continue;
@@ -169,6 +170,13 @@ export class AIServiceManager {
             }
           }
         }
+
+        saveStuff('FinishedPrompts', {
+          request,
+          requestId,
+          response,
+          processedResponse,
+        }).catch(() => {});
         return processedResponse;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
@@ -177,11 +185,12 @@ export class AIServiceManager {
           error: lastError.message,
           retryCount,
         });
-        savePrompt({
+        saveStuff('FailedPrompts', {
           prompt: request.prompt,
           lastError,
           error,
           reason,
+          requestId,
         }).catch(() => {});
 
         if (retryCount < this.maxRetries) {
