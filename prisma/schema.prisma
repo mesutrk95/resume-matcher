@@ -53,6 +53,9 @@ model User {
   subscription          Subscription?
   AIUsage               AIUsage[]
   AIUsageByReason       AIUsageByReason[]
+  AIPrompt              AIPrompt[]
+  AIPromptVariation     AIPromptVariation[]
+  AIRequest             AIRequest[]
 }
 
 model VerificationToken {
@@ -248,4 +251,95 @@ model AIUsageByReason {
   @@unique([userId, reason, date])
   @@index([userId, reason, date])
   @@index([date])
+}
+
+enum AIPromptStatus {
+  DRAFT
+  ACTIVE
+  DELETED
+}
+
+enum AIPromptVariationStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+enum AIRequestStatus {
+  COMPLETED
+  FAILED
+  RATE_LIMITED
+  PROCESSING
+}
+
+model AIPrompt {
+  key         String         @id
+  name        String
+  description String?
+  jsonSchema  String?        @db.Text // Schema for validating prompt inputs
+  status      AIPromptStatus @default(DRAFT)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  createdBy   String? // User ID who created this prompt
+  category    String? // Categorization of prompts
+
+  variations AIPromptVariation[]
+
+  user User? @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@index([createdBy])
+  @@index([category])
+  @@index([status])
+}
+
+model AIPromptVariation {
+  id                String                  @id @default(cuid())
+  userPrompt        String                  @db.Text
+  systemPrompt      String?                 @db.Text
+  promptId          String
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  createdBy         String? // User ID who created this variation
+  status            AIPromptVariationStatus @default(DRAFT)
+  requestCount      Int                     @default(0)
+  failureCount      Int                     @default(0)
+  totalTokens       Int                     @default(0)
+  promptTokens      Int                     @default(0)
+  completionTokens  Int                     @default(0)
+  totalResponseTime Int                     @default(0) // in milliseconds
+
+  prompt   AIPrompt    @relation(fields: [promptId], references: [key], onDelete: Cascade)
+  requests AIRequest[]
+
+  user User? @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@index([promptId])
+  @@index([createdBy])
+  @@index([status])
+}
+
+model AIRequest {
+  id               String          @id @default(cuid())
+  variationId      String
+  userId           String?
+  contentId        String // ID of item in bucket
+  clientId         String
+  promptTokens     Int             @default(0)
+  completionTokens Int             @default(0)
+  totalTokens      Int             @default(0)
+  responseTime     Int             @default(0)
+  status           AIRequestStatus @default(COMPLETED)
+  errorMessage     String?
+  metadata         Json? // Additional metadata about the request
+  createdAt        DateTime        @default(now())
+
+  variation AIPromptVariation @relation(fields: [variationId], references: [id], onDelete: Cascade)
+  user      User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([variationId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([clientId])
+  @@index([contentId])
 }

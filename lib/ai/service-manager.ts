@@ -187,8 +187,8 @@ export class AIServiceManager {
         });
         saveStuff('FailedPrompts', {
           prompt: request.prompt,
-          lastError,
           error,
+          message: error instanceof Error ? error.toString() || error.message : undefined,
           reason,
           requestId,
         }).catch(() => {});
