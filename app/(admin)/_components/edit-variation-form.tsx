@@ -8,6 +8,7 @@ import { updateAIPromptVariation } from '@/actions/admin/prompt/variations/updat
 import { deleteAIPromptVariation } from '@/actions/admin/prompt/variations/delete';
 import { runAction } from '@/app/_utils/runAction';
 import { AIPromptVariationStatus, AIPromptStatus } from '@prisma/client';
+import { DeleteConfirmationModal } from './delete-confirmation-modal';
 
 interface VariationDetails {
   id: string;
@@ -39,6 +40,7 @@ export function EditVariationForm({ variation, promptId }: EditVariationFormProp
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
@@ -71,19 +73,14 @@ export function EditVariationForm({ variation, promptId }: EditVariationFormProp
     }
   };
 
-  const handleDelete = async () => {
-    // Confirm deletion
-    if (!confirm('Are you sure you want to delete this variation? This action cannot be undone.')) {
-      return;
-    }
-
+  const handleDelete = async (permanent: boolean) => {
     setIsDeleting(true);
     setFormError(null);
 
     const result = await runAction(
       deleteAIPromptVariation({
         id: variation.id,
-        permanent: false,
+        permanent,
       }),
       {
         successMessage: 'Variation deleted successfully',
@@ -98,86 +95,102 @@ export function EditVariationForm({ variation, promptId }: EditVariationFormProp
       // Display error message
       setFormError(result.error?.message || 'An unexpected error occurred');
       setIsDeleting(false);
+      setIsDeleteModalOpen(false);
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      {formError && <div className="mb-4 p-3 bg-red-100 text-red-800 rounded">{formError}</div>}
-      <form action={handleSubmit}>
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="systemPrompt" className="block text-sm font-medium text-gray-700">
-              System Prompt
-            </label>
-            <textarea
-              id="systemPrompt"
-              name="systemPrompt"
-              rows={5}
-              defaultValue={variation.systemPrompt || ''}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="userPrompt" className="block text-sm font-medium text-gray-700">
-              User Prompt
-            </label>
-            <textarea
-              id="userPrompt"
-              name="userPrompt"
-              rows={5}
-              defaultValue={variation.userPrompt || ''}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          <div>
-            <label htmlFor="status" className="block text-sm font-medium text-gray-700">
-              Status
-            </label>
-            <select
-              id="status"
-              name="status"
-              defaultValue={variation.status}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            >
-              <option value="DRAFT">Draft</option>
-              <option value="ACTIVE">Active</option>
-              <option value="DELETED">Deleted</option>
-            </select>
-          </div>
-
-          <div className="flex justify-between pt-4">
-            <div className="flex space-x-2">
-              <button
-                type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Saving...' : 'Save Changes'}
-              </button>
-              <Link
-                href={`/admin/prompts/${promptId}/variations`}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition"
-              >
-                Cancel
-              </Link>
+    <>
+      <div className="bg-white rounded-lg shadow p-6">
+        {formError && <div className="mb-4 p-3 bg-red-100 text-red-800 rounded">{formError}</div>}
+        <form action={handleSubmit}>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="systemPrompt" className="block text-sm font-medium text-gray-700">
+                System Prompt
+              </label>
+              <textarea
+                id="systemPrompt"
+                name="systemPrompt"
+                rows={5}
+                defaultValue={variation.systemPrompt || ''}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
             </div>
 
-            <button
-              type="button"
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition flex items-center justify-center"
-              onClick={handleDelete}
-              disabled={isDeleting}
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
+            <div>
+              <label htmlFor="userPrompt" className="block text-sm font-medium text-gray-700">
+                User Prompt
+              </label>
+              <textarea
+                id="userPrompt"
+                name="userPrompt"
+                rows={5}
+                defaultValue={variation.userPrompt || ''}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+                Status
+              </label>
+              <select
+                id="status"
+                name="status"
+                defaultValue={variation.status}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="DRAFT">Draft</option>
+                <option value="ACTIVE">Active</option>
+                <option value="DELETED">Deleted</option>
+              </select>
+            </div>
+
+            <div className="flex justify-between pt-4">
+              <div className="flex space-x-2">
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Saving...' : 'Save Changes'}
+                </button>
+                <Link
+                  href={`/admin/prompts/${promptId}/variations`}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition"
+                >
+                  Cancel
+                </Link>
+              </div>
+
+              <button
+                type="button"
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition flex items-center justify-center"
+                onClick={() => setIsDeleteModalOpen(true)}
+                disabled={isDeleting}
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDelete}
+        title="Delete Variation"
+        description={`Are you sure you want to delete this variation? ${
+          variation.status === AIPromptVariationStatus.DRAFT
+            ? 'Since this variation is in DRAFT status, you can choose to delete it permanently.'
+            : 'This will mark the variation as deleted but not remove it from the database.'
+        }`}
+        isDraft={variation.status === AIPromptVariationStatus.DRAFT}
+      />
+    </>
   );
 }
