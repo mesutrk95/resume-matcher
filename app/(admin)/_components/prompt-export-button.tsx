@@ -18,12 +18,12 @@ export const PromptExportButton = ({ promptKey }: PromptExportButtonProps) => {
       setIsLoading(true);
       const response = await exportAIPrompt({ key: promptKey });
 
-      if (typeof response !== 'string') {
-        throw new Error('Unexpected response format');
+      if (!response.success || !response.data) {
+        throw new Error(response.error?.message || 'Failed to export prompt');
       }
 
       // Create a blob from the JSON data
-      const blob = new Blob([response], { type: 'application/json' });
+      const blob = new Blob([response.data], { type: 'application/json' });
 
       // Create a URL for the blob
       const url = URL.createObjectURL(blob);
