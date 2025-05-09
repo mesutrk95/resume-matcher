@@ -17,12 +17,14 @@ function CreatePromptForm() {
     const name = formData.get('name') as string;
     const description = formData.get('description') as string;
     const category = formData.get('category') as string;
+    const jsonSchema = formData.get('jsonSchema') as string;
 
     await createAIPrompt({
       key,
       name,
       description,
       category,
+      jsonSchema,
     });
 
     // Redirect back to the prompts list
@@ -88,6 +90,22 @@ function CreatePromptForm() {
               placeholder="e.g., resume, job, profile"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
+          </div>
+
+          <div>
+            <label htmlFor="jsonSchema" className="block text-sm font-medium text-gray-700">
+              JSON Schema (Optional)
+            </label>
+            <textarea
+              id="jsonSchema"
+              name="jsonSchema"
+              rows={5}
+              placeholder="Enter JSON schema for prompt inputs"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              If this prompt requires structured JSON input, define the schema here.
+            </p>
           </div>
 
           <div className="flex justify-between pt-4">

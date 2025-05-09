@@ -2,7 +2,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getAIPrompt } from '@/actions/admin/prompt/get';
+import { updateAIPrompt } from '@/actions/admin/prompt/update';
 import { PromptDeleteButton } from '@/app/(admin)/_components/prompt-delete-button';
+import { AIPromptStatus } from '@prisma/client';
 
 export const metadata: Metadata = {
   title: 'Admin - Edit Prompt',
@@ -39,6 +41,30 @@ export default async function AdminEditPromptPage({
     return redirect('/admin/prompts');
   }
 
+  async function updatePromptAction(formData: FormData) {
+    'use server';
+
+    const key = formData.get('key') as string;
+    const name = formData.get('name') as string;
+    const description = formData.get('description') as string;
+    const category = formData.get('category') as string;
+    const status = formData.get('status') as AIPromptStatus;
+    const jsonSchema = formData.get('jsonSchema') as string;
+
+    await updateAIPrompt({
+      key,
+      name,
+      description,
+      category,
+      status,
+      jsonSchema,
+    });
+
+    // Redirect back to the prompts list or refresh the page
+    // For simplicity, redirecting to the main prompts page
+    redirect('/admin/prompts');
+  }
+
   return (
     <div>
       <div className="mb-6">
@@ -50,7 +76,7 @@ export default async function AdminEditPromptPage({
 
       <div className="grid grid-cols-1 gap-6">
         <div className="bg-white rounded-lg shadow p-6">
-          <form action="/api/admin/prompts/update" method="POST">
+          <form action={updatePromptAction}>
             <input type="hidden" name="key" value={promptId} />
 
             <div className="space-y-4">
@@ -108,6 +134,23 @@ export default async function AdminEditPromptPage({
                   <option value="ACTIVE">Active</option>
                   <option value="DELETED">Deleted</option>
                 </select>
+              </div>
+
+              <div>
+                <label htmlFor="jsonSchema" className="block text-sm font-medium text-gray-700">
+                  JSON Schema (Optional)
+                </label>
+                <textarea
+                  id="jsonSchema"
+                  name="jsonSchema"
+                  rows={5}
+                  defaultValue={promptDetails.jsonSchema || ''}
+                  placeholder="Enter JSON schema for prompt inputs"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  If this prompt requires structured JSON input, define the schema here.
+                </p>
               </div>
 
               <div className="flex justify-between pt-4">
