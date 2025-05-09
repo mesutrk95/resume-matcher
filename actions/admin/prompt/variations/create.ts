@@ -26,7 +26,10 @@ export const createAIPromptVariation = withErrorHandling(
     // Validate input
     const validationResult = createAIPromptVariationSchema.safeParse(data);
     if (!validationResult.success) {
-      throw new InvalidInputException('Invalid input data', validationResult.error.errors);
+      throw new InvalidInputException(
+        validationResult.error.errors.map(x => x.message).join('\n'),
+        validationResult.error.errors,
+      );
     }
 
     const { promptId, userPrompt, systemPrompt } = validationResult.data;

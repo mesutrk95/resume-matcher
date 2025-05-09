@@ -6,7 +6,7 @@ import { Trash2 } from 'lucide-react';
 import { DeleteConfirmationModal } from './delete-confirmation-modal';
 import { deleteAIPrompt } from '@/actions/admin/prompt/delete';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { runAction } from '@/app/_utils/runAction';
 import { AIPromptStatus } from '@prisma/client';
 
 interface PromptDeleteButtonProps {
@@ -24,23 +24,28 @@ export function PromptDeleteButton({ promptKey, promptName, status }: PromptDele
   const handleDelete = async (permanent: boolean) => {
     try {
       setIsDeleting(true);
-      const result = await deleteAIPrompt({
-        key: promptKey,
-        permanent,
-      });
 
-      if (result.success && result.data) {
-        toast.success(result.data.message);
+      const result = await runAction(
+        deleteAIPrompt({
+          key: promptKey,
+          permanent,
+        }),
+        {
+          successMessage: permanent
+            ? `Prompt "${promptName}" permanently deleted`
+            : `Prompt "${promptName}" marked as deleted`,
+          errorMessage: 'Failed to delete prompt',
+        },
+      );
+
+      if (result.success) {
         router.refresh();
-      } else {
-        toast.error(result.error?.message || 'Failed to delete prompt');
+        setIsModalOpen(false);
       }
     } catch (error) {
       console.error('Error deleting prompt:', error);
-      toast.error('An error occurred while deleting the prompt');
     } finally {
       setIsDeleting(false);
-      setIsModalOpen(false);
     }
   };
 
