@@ -52,6 +52,7 @@ export function PromptDeleteButton({ promptKey, promptName, status }: PromptDele
         onClick={() => setIsModalOpen(true)}
         disabled={isDeleting}
         className="text-red-600 hover:text-red-800 hover:bg-red-100"
+        type="button"
       >
         <Trash2 className="h-4 w-4 mr-1" />
         Delete

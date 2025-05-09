@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getAIPrompt } from '@/actions/admin/prompt/get';
+import { PromptDeleteButton } from '@/app/(admin)/_components/prompt-delete-button';
 
 export const metadata: Metadata = {
   title: 'Admin - Edit Prompt',
@@ -15,29 +16,36 @@ export default async function AdminEditPromptPage({
   const { promptId } = await params;
 
   // Fetch prompt details
-  let prompt;
+  let promptDetails;
   try {
     const promptResponse = await getAIPrompt(promptId);
 
-    // Cast the prompt to any to avoid TypeScript errors
-    // This is necessary because the withErrorHandling wrapper makes the type complex
-    prompt = promptResponse as any;
-
-    // If prompt not found, redirect to prompts list
-    if (!prompt) {
+    // The withErrorHandling wrapper returns an object with success, data, and error properties
+    if (promptResponse.success && promptResponse.data) {
+      promptDetails = promptResponse.data;
+    } else {
+      // If prompt not found or there was an error, redirect to prompts list
+      console.error('Error fetching prompt:', promptResponse.error?.message || 'Prompt not found');
       return redirect('/admin/prompts');
     }
   } catch (error) {
-    console.error('Error fetching prompt:', error);
+    // Catch any unexpected errors during the fetch operation
+    console.error('Exception fetching prompt:', error);
     return redirect('/admin/prompts');
   }
+
+  // Double-check if promptDetails is available (should be caught by the logic above)
+  if (!promptDetails) {
+    return redirect('/admin/prompts');
+  }
+
   return (
     <div>
       <div className="mb-6">
         <Link href="/admin/prompts" className="text-blue-600 hover:text-blue-800">
           ← Back to Prompts
         </Link>
-        <h1 className="text-2xl font-bold mt-2">Edit Prompt: {prompt.name}</h1>
+        <h1 className="text-2xl font-bold mt-2">Edit Prompt: {promptDetails.name}</h1>
       </div>
 
       <div className="grid grid-cols-1 gap-6">
@@ -54,7 +62,7 @@ export default async function AdminEditPromptPage({
                   type="text"
                   id="name"
                   name="name"
-                  defaultValue={prompt.name}
+                  defaultValue={promptDetails.name}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   required
                 />
@@ -68,7 +76,7 @@ export default async function AdminEditPromptPage({
                   id="description"
                   name="description"
                   rows={3}
-                  defaultValue={prompt.description || ''}
+                  defaultValue={promptDetails.description || ''}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
@@ -81,7 +89,7 @@ export default async function AdminEditPromptPage({
                   type="text"
                   id="category"
                   name="category"
-                  defaultValue={prompt.category || ''}
+                  defaultValue={promptDetails.category || ''}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
               </div>
@@ -93,7 +101,7 @@ export default async function AdminEditPromptPage({
                 <select
                   id="status"
                   name="status"
-                  defaultValue={prompt.status}
+                  defaultValue={promptDetails.status}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 >
                   <option value="DRAFT">Draft</option>
@@ -118,21 +126,11 @@ export default async function AdminEditPromptPage({
                   </Link>
                 </div>
 
-                <button
-                  type="button"
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                  onClick={() => {
-                    if (
-                      confirm(
-                        'Are you sure you want to delete this prompt? This action cannot be undone.',
-                      )
-                    ) {
-                      window.location.href = `/api/admin/prompts/delete?key=${promptId}`;
-                    }
-                  }}
-                >
-                  Delete Prompt
-                </button>
+                <PromptDeleteButton
+                  promptKey={promptId}
+                  promptName={promptDetails.name}
+                  status={promptDetails.status}
+                />
               </div>
             </div>
           </form>
@@ -151,7 +149,7 @@ export default async function AdminEditPromptPage({
 
           <div className="text-sm text-gray-500">
             {/* Display variation count if available */}
-            {prompt._count?.variations || prompt.variations?.length || 0} variation(s) available
+            {promptDetails.variations?.length || 0} variation(s) available
           </div>
         </div>
       </div>

@@ -66,10 +66,10 @@ export function DeleteConfirmationModal({
           )}
         </div>
         <DialogFooter className="flex space-x-2 justify-end">
-          <Button variant="outline" onClick={handleClose}>
+          <Button variant="outline" onClick={handleClose} type="button">
             Cancel
           </Button>
-          <Button variant="destructive" onClick={handleConfirm}>
+          <Button variant="destructive" onClick={handleConfirm} type="button">
             Delete
           </Button>
         </DialogFooter>
