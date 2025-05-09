@@ -5,7 +5,8 @@ import { getAIPromptCategories } from '@/actions/admin/prompt/getCategories';
 import { AIPromptStatus } from '@prisma/client';
 import { PromptDeleteButton } from '@/app/(admin)/_components/prompt-delete-button';
 import { PromptExportButton } from '@/app/(admin)/_components/prompt-export-button';
-import { Pencil, Layers, Upload, Download } from 'lucide-react';
+import { PromptImportButton } from '@/app/(admin)/_components/prompt-import-button';
+import { Pencil, Layers } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const metadata: Metadata = {
@@ -66,13 +67,7 @@ export default async function AdminPromptsPage({
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">AI Prompts</h1>
           <div className="flex gap-2">
-            <Link
-              href="/admin/prompts/import"
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition flex items-center"
-            >
-              <Upload className="h-4 w-4 mr-2" />
-              Import Prompt
-            </Link>
+            <PromptImportButton />
             <Link
               href="/admin/prompts/new"
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
