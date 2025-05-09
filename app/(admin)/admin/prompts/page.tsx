@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { getAllAIPrompts } from '@/actions/admin/prompt/getAll';
+import { getAIPromptCategories } from '@/actions/admin/prompt/getCategories';
 import { AIPromptStatus } from '@prisma/client';
 import { PromptDeleteButton } from '@/app/(admin)/_components/prompt-delete-button';
 import { Pencil, Layers } from 'lucide-react';
@@ -14,20 +15,31 @@ export const metadata: Metadata = {
 export default async function AdminPromptsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; limit?: string; status?: AIPromptStatus }>;
+  searchParams: Promise<{
+    page?: string;
+    limit?: string;
+    status?: AIPromptStatus;
+    category?: string;
+  }>;
 }) {
   // Parse pagination parameters
   const sp = await searchParams;
   const page = sp.page ? parseInt(sp.page) : 1;
   const limit = sp.limit ? parseInt(sp.limit) : 10;
   const status = sp.status;
+  const category = sp.category;
 
   // Fetch prompts
   const { data: result } = (await getAllAIPrompts({
     page,
     limit,
     status,
+    category,
   })) || { data: undefined };
+
+  // Fetch categories
+  const { data: categoryData } = (await getAIPromptCategories()) || { data: undefined };
+  const categories = categoryData ? categoryData.map(cat => cat.name) : [];
 
   // If no result, show empty state
   if (!result) {
@@ -38,6 +50,14 @@ export default async function AdminPromptsPage({
       </div>
     );
   }
+
+  const buildQueryString = (params: Record<string, string | number | undefined>) => {
+    const q = new URLSearchParams();
+    if (params.page) q.set('page', String(params.page));
+    if (params.status) q.set('status', String(params.status));
+    if (params.category) q.set('category', String(params.category));
+    return q.toString() ? `?${q.toString()}` : '';
+  };
 
   return (
     <TooltipProvider>
@@ -52,38 +72,65 @@ export default async function AdminPromptsPage({
           </Link>
         </div>
 
-        {/* Status filter */}
-        <div className="mb-6 flex gap-2">
-          <Link
-            href="/admin/prompts"
-            className={`px-3 py-1 rounded ${!status ? 'bg-blue-100 text-blue-800' : 'bg-gray-100'}`}
-          >
-            All
-          </Link>
-          <Link
-            href="/admin/prompts?status=ACTIVE"
-            className={`px-3 py-1 rounded ${
-              status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-gray-100'
-            }`}
-          >
-            Active
-          </Link>
-          <Link
-            href="/admin/prompts?status=DRAFT"
-            className={`px-3 py-1 rounded ${
-              status === 'DRAFT' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100'
-            }`}
-          >
-            Draft
-          </Link>
-          <Link
-            href="/admin/prompts?status=DELETED"
-            className={`px-3 py-1 rounded ${
-              status === 'DELETED' ? 'bg-red-100 text-red-800' : 'bg-gray-100'
-            }`}
-          >
-            Deleted
-          </Link>
+        {/* Filters */}
+        <div className="mb-4">
+          <div className="font-medium mb-1">Filter by Status:</div>
+          <div className="flex gap-2 mb-4">
+            <Link
+              href={`/admin/prompts${buildQueryString({ category })}`}
+              className={`px-3 py-1 rounded ${
+                !status ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 hover:bg-gray-200'
+              }`}
+            >
+              All
+            </Link>
+            {Object.values(AIPromptStatus).map(s => (
+              <Link
+                key={s}
+                href={`/admin/prompts${buildQueryString({ status: s, category })}`}
+                className={`px-3 py-1 rounded ${
+                  status === s
+                    ? s === AIPromptStatus.ACTIVE
+                      ? 'bg-green-100 text-green-800'
+                      : s === AIPromptStatus.DRAFT
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-red-100 text-red-800'
+                    : 'bg-gray-100 hover:bg-gray-200'
+                }`}
+              >
+                {s.charAt(0) + s.slice(1).toLowerCase()}
+              </Link>
+            ))}
+          </div>
+
+          {categories && categories.length > 0 && (
+            <>
+              <div className="font-medium mb-1">Filter by Category:</div>
+              <div className="flex gap-2 flex-wrap">
+                <Link
+                  href={`/admin/prompts${buildQueryString({ status })}`}
+                  className={`px-3 py-1 rounded ${
+                    !category ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 hover:bg-gray-200'
+                  }`}
+                >
+                  All Categories
+                </Link>
+                {categories.map((c: string) => (
+                  <Link
+                    key={c}
+                    href={`/admin/prompts${buildQueryString({ category: c, status })}`}
+                    className={`px-3 py-1 rounded ${
+                      category === c
+                        ? 'bg-purple-100 text-purple-800'
+                        : 'bg-gray-100 hover:bg-gray-200'
+                    }`}
+                  >
+                    {c}
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Prompts table */}
@@ -96,6 +143,9 @@ export default async function AdminPromptsPage({
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Key
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Category
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
@@ -111,7 +161,7 @@ export default async function AdminPromptsPage({
             <tbody className="bg-white divide-y divide-gray-200">
               {result.prompts.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
                     No prompts found
                   </td>
                 </tr>
@@ -125,11 +175,14 @@ export default async function AdminPromptsPage({
                       <div className="text-sm text-gray-500">{prompt.key}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{prompt.category || '-'}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          prompt.status === 'ACTIVE'
+                          prompt.status === AIPromptStatus.ACTIVE
                             ? 'bg-green-100 text-green-800'
-                            : prompt.status === 'DRAFT'
+                            : prompt.status === AIPromptStatus.DRAFT
                               ? 'bg-yellow-100 text-yellow-800'
                               : 'bg-red-100 text-red-800'
                         }`}
@@ -205,9 +258,11 @@ export default async function AdminPromptsPage({
             <div className="flex space-x-2">
               {result.pagination.hasPreviousPage && (
                 <Link
-                  href={`/admin/prompts?page=${result.pagination.page - 1}${
-                    status ? `&status=${status}` : ''
-                  }`}
+                  href={`/admin/prompts${buildQueryString({
+                    page: result.pagination.page - 1,
+                    status,
+                    category,
+                  })}`}
                   className="px-3 py-1 border rounded text-sm"
                 >
                   Previous
@@ -215,9 +270,11 @@ export default async function AdminPromptsPage({
               )}
               {result.pagination.hasNextPage && (
                 <Link
-                  href={`/admin/prompts?page=${result.pagination.page + 1}${
-                    status ? `&status=${status}` : ''
-                  }`}
+                  href={`/admin/prompts${buildQueryString({
+                    page: result.pagination.page + 1,
+                    status,
+                    category,
+                  })}`}
                   className="px-3 py-1 border rounded text-sm"
                 >
                   Next

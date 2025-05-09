@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { createAIPrompt } from '@/actions/admin/prompt/create';
+import { getAIPromptCategories } from '@/actions/admin/prompt/getCategories';
 
 export const metadata: Metadata = {
   title: 'Admin - Create Prompt',
@@ -9,7 +10,10 @@ export const metadata: Metadata = {
 };
 
 // Form component for creating a prompt
-function CreatePromptForm() {
+async function CreatePromptForm() {
+  const { data: categoryData } = (await getAIPromptCategories()) || { data: undefined };
+  const categories = categoryData ? categoryData.map(cat => cat.name) : [];
+
   async function createPromptAction(formData: FormData) {
     'use server';
 
@@ -87,9 +91,17 @@ function CreatePromptForm() {
               type="text"
               id="category"
               name="category"
-              placeholder="e.g., resume, job, profile"
+              list="category-suggestions"
+              placeholder="e.g., resume, job, profile (or type new)"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             />
+            {categories.length > 0 && (
+              <datalist id="category-suggestions">
+                {categories.map((cat: string) => (
+                  <option key={cat} value={cat} />
+                ))}
+              </datalist>
+            )}
           </div>
 
           <div>

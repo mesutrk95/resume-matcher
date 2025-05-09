@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getAIPrompt } from '@/actions/admin/prompt/get';
 import { updateAIPrompt } from '@/actions/admin/prompt/update';
+import { getAIPromptCategories } from '@/actions/admin/prompt/getCategories';
 import { PromptDeleteButton } from '@/app/(admin)/_components/prompt-delete-button';
 import { AIPromptStatus } from '@prisma/client';
 
@@ -40,6 +41,10 @@ export default async function AdminEditPromptPage({
   if (!promptDetails) {
     return redirect('/admin/prompts');
   }
+
+  // Fetch categories
+  const { data: categoryData } = (await getAIPromptCategories()) || { data: undefined };
+  const categories = categoryData ? categoryData.map(cat => cat.name) : [];
 
   async function updatePromptAction(formData: FormData) {
     'use server';
@@ -115,9 +120,18 @@ export default async function AdminEditPromptPage({
                   type="text"
                   id="category"
                   name="category"
+                  list="category-suggestions"
                   defaultValue={promptDetails.category || ''}
+                  placeholder="e.g., resume, job, profile (or type new)"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
+                {categories.length > 0 && (
+                  <datalist id="category-suggestions">
+                    {categories.map((cat: string) => (
+                      <option key={cat} value={cat} />
+                    ))}
+                  </datalist>
+                )}
               </div>
 
               <div>
