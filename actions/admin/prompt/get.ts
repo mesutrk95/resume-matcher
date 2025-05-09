@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 import { getAIPromptParamsSchema } from '@/models/aiPrompt';
 import { BadRequestException, InvalidInputException, NotFoundException } from '@/lib/exceptions';
 import { withErrorHandling } from '@/lib/with-error-handling';
-import { currentUser } from '@/lib/auth';
+import { currentAdmin } from '@/lib/auth';
 
 /**
  * Gets a single AI prompt by key
@@ -13,7 +13,7 @@ import { currentUser } from '@/lib/auth';
  */
 export const getAIPrompt = withErrorHandling(async (key: string) => {
   // Get current user
-  const user = await currentUser();
+  const user = await currentAdmin();
   if (!user?.id) {
     throw new BadRequestException('You must be logged in to view AI prompts');
   }

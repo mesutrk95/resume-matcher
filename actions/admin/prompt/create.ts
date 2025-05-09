@@ -5,7 +5,7 @@ import { createAIPromptSchema, CreateAIPromptInput } from '@/models/aiPrompt';
 import { AIPromptStatus } from '@prisma/client';
 import { InvalidInputException, BadRequestException, ConflictException } from '@/lib/exceptions';
 import { withErrorHandling } from '@/lib/with-error-handling';
-import { currentUser } from '@/lib/auth';
+import { currentAdmin } from '@/lib/auth';
 import { PROMPT_KEY_VALIDATION_REGEX } from '@/utils/prompt-key-validator';
 
 /**
@@ -15,7 +15,7 @@ import { PROMPT_KEY_VALIDATION_REGEX } from '@/utils/prompt-key-validator';
  */
 export const createAIPrompt = withErrorHandling(async (data: CreateAIPromptInput) => {
   // Get current user
-  const user = await currentUser();
+  const user = await currentAdmin();
   if (!user?.id) {
     throw new BadRequestException('You must be logged in to create an AI prompt');
   }

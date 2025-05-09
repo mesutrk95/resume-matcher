@@ -9,8 +9,7 @@ import {
   ForbiddenException,
 } from '@/lib/exceptions';
 import { withErrorHandling } from '@/lib/with-error-handling';
-import { currentUser } from '@/lib/auth';
-import { z } from 'zod';
+import { currentAdmin } from '@/lib/auth';
 import { DeletePromptInput, deletePromptSchema } from '@/models/aiPrompt';
 
 /**
@@ -20,7 +19,7 @@ import { DeletePromptInput, deletePromptSchema } from '@/models/aiPrompt';
  */
 export const deleteAIPrompt = withErrorHandling(async (data: DeletePromptInput) => {
   // Get current user
-  const user = await currentUser();
+  const user = await currentAdmin();
   if (!user?.id) {
     throw new BadRequestException('You must be logged in to delete an AI prompt');
   }

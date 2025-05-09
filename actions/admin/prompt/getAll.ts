@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 import { getAllAIPromptsParamsSchema, GetAllAIPromptsParams } from '@/models/aiPrompt';
 import { BadRequestException, InvalidInputException } from '@/lib/exceptions';
 import { withErrorHandling } from '@/lib/with-error-handling';
-import { currentUser } from '@/lib/auth';
+import { currentAdmin } from '@/lib/auth';
 import { AIPromptStatus } from '@prisma/client';
 
 /**
@@ -14,7 +14,7 @@ import { AIPromptStatus } from '@prisma/client';
  */
 export const getAllAIPrompts = withErrorHandling(async (params: GetAllAIPromptsParams) => {
   // Get current user
-  const user = await currentUser();
+  const user = await currentAdmin();
   if (!user?.id) {
     throw new BadRequestException('You must be logged in to view AI prompts');
   }

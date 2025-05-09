@@ -9,7 +9,7 @@ import {
   ForbiddenException,
 } from '@/lib/exceptions';
 import { withErrorHandling } from '@/lib/with-error-handling';
-import { currentUser } from '@/lib/auth';
+import { currentAdmin } from '@/lib/auth';
 import { z } from 'zod';
 import { UpdatePromptInput, updatePromptSchema } from '@/models/aiPrompt';
 
@@ -20,7 +20,7 @@ import { UpdatePromptInput, updatePromptSchema } from '@/models/aiPrompt';
  */
 export const updateAIPrompt = withErrorHandling(async (data: UpdatePromptInput) => {
   // Get current user
-  const user = await currentUser();
+  const user = await currentAdmin();
   if (!user?.id) {
     throw new BadRequestException('You must be logged in to update an AI prompt');
   }

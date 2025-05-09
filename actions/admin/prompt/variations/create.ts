@@ -8,7 +8,7 @@ import {
 import { AIPromptStatus, AIPromptVariationStatus } from '@prisma/client';
 import { BadRequestException, InvalidInputException, NotFoundException } from '@/lib/exceptions';
 import { withErrorHandling } from '@/lib/with-error-handling';
-import { currentUser } from '@/lib/auth';
+import { currentAdmin } from '@/lib/auth';
 
 /**
  * Creates a new AIPromptVariation
@@ -18,7 +18,7 @@ import { currentUser } from '@/lib/auth';
 export const createAIPromptVariation = withErrorHandling(
   async (data: CreateAIPromptVariationInput) => {
     // Get current user
-    const user = await currentUser();
+    const user = await currentAdmin();
     if (!user?.id) {
       throw new BadRequestException('You must be logged in to create a prompt variation');
     }

@@ -13,7 +13,7 @@ import {
   ForbiddenException,
 } from '@/lib/exceptions';
 import { withErrorHandling } from '@/lib/with-error-handling';
-import { currentUser } from '@/lib/auth';
+import { currentAdmin } from '@/lib/auth';
 
 /**
  * Updates an existing AIPromptVariation
@@ -23,7 +23,7 @@ import { currentUser } from '@/lib/auth';
 export const updateAIPromptVariation = withErrorHandling(
   async (data: UpdateAIPromptVariationInput) => {
     // Get current user
-    const user = await currentUser();
+    const user = await currentAdmin();
     if (!user?.id) {
       throw new BadRequestException('You must be logged in to update a prompt variation');
     }
