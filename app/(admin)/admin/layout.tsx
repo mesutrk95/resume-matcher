@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { currentAdmin } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { LogoutButton } from '../_components/logout-button';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
@@ -27,10 +28,13 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
           <Link href="/admin/prompts" className="block p-2 rounded hover:bg-slate-800 transition">
             Prompts
           </Link>
-          {/* Add more admin navigation links here */}
+          <Link href="/home" className="block p-2 rounded hover:bg-slate-800 transition">
+            Resume Application
+          </Link>
         </nav>
         <div className="mt-auto pt-4 border-t border-slate-700 text-sm">
-          Logged in as: {admin.email}
+          <div className="mb-2">Logged in as: {admin.email}</div>
+          <LogoutButton />
         </div>
       </div>
 

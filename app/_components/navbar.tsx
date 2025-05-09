@@ -10,15 +10,26 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CreditCard, FileUser, LogOut, Settings2, User2, UserRound } from 'lucide-react';
+import { CreditCard, FileUser, LogOut, Settings2, Settings, User2, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { SubscriptionStatusIndicator } from '@/components/subscription/subscription-status-indicator';
 import { LottieAnimatedIcon } from './lottie-animated-icon';
 import { useUser } from '@/providers/UserProvider';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { UserRole } from '@prisma/client';
+import { ExtendedUser } from '@/types/next-auth';
 
 function AuthNav() {
   const { user } = useUser();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const extendedUser = user as ExtendedUser | undefined;
+    if (extendedUser?.role === UserRole.Admin) {
+      setIsAdmin(true);
+    }
+  }, [user]);
 
   return (
     <DropdownMenu>
@@ -82,6 +93,14 @@ function AuthNav() {
               {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
             </Link>
           </DropdownMenuItem>
+          {isAdmin && (
+            <DropdownMenuItem asChild className="text-orange-500">
+              <Link href="/admin">
+                <Settings className="me-1" />
+                Admin Dashboard
+              </Link>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <form
