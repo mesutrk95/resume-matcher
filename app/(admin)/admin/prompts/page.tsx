@@ -14,12 +14,13 @@ export const metadata: Metadata = {
 export default async function AdminPromptsPage({
   searchParams,
 }: {
-  searchParams: { page?: string; limit?: string; status?: AIPromptStatus };
+  searchParams: Promise<{ page?: string; limit?: string; status?: AIPromptStatus }>;
 }) {
   // Parse pagination parameters
-  const page = searchParams.page ? parseInt(searchParams.page) : 1;
-  const limit = searchParams.limit ? parseInt(searchParams.limit) : 10;
-  const status = searchParams.status;
+  const sp = await searchParams;
+  const page = sp.page ? parseInt(sp.page) : 1;
+  const limit = sp.limit ? parseInt(sp.limit) : 10;
+  const status = sp.status;
 
   // Fetch prompts
   const { data: result } = (await getAllAIPrompts({

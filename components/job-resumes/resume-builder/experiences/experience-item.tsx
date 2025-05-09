@@ -44,7 +44,7 @@ type ExperienceItemProps = {
 };
 
 export function ExperienceItem({ experience, onUpdate, onDelete }: ExperienceItemProps) {
-  const [isOpen, setIsOpen] = useState<string | undefined>();
+  const [isOpen, setIsOpen] = useState<string | undefined>(experience.id);
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: experience.id,
   });
@@ -178,10 +178,10 @@ export function ExperienceItem({ experience, onUpdate, onDelete }: ExperienceIte
         value={isOpen}
         onValueChange={setIsOpen}
       >
-        <AccordionItem value={experience.id} className="border rounded-lg">
+        <AccordionItem value={experience.id} className="border rounded-lg ">
           <div
             className={clsx(
-              'flex items-center mx-[2px] px-4 py-0 sticky top-0 bg-white',
+              'flex items-center mx-[2px] px-4 py-0 sticky top-0 bg-white hover:bg-slate-50',
               isOpen ? 'border-b rounded-t-xl mb-2' : 'rounded-xl',
             )}
           >
@@ -251,7 +251,7 @@ export function ExperienceItem({ experience, onUpdate, onDelete }: ExperienceIte
             )}
 
             <AccordionTrigger className="flex-1 hover:no-underline py-3">
-              <div className="flex flex-col items-start text-left">
+              <div className="flex flex-col items-start text-left cursor-pointer">
                 {!isEditing && (
                   <>
                     <div className={`${!experience.enabled ? 'text-muted-foreground' : ''}`}>

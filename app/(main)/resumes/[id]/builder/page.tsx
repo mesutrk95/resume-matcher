@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { currentUser } from '@/lib/auth';
 import { Metadata } from 'next';
 import { ResumeBuilderPage } from './resume-builder-page';
-import { getDefaultResumeTemplate } from '@/services/template';
+import { getDefaultResumeTemplate } from '@/services/resume-template';
 
 interface EditResumePageProps {
   params: Promise<{

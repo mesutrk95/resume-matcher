@@ -142,9 +142,9 @@ function VariationForm({
 export default async function AdminEditVariationPage({
   params,
 }: {
-  params: { promptId: string; variationId: string };
+  params: Promise<{ promptId: string; variationId: string }>;
 }) {
-  const { promptId, variationId } = params;
+  const { promptId, variationId } = await params;
 
   // Fetch variation details
   let variation;

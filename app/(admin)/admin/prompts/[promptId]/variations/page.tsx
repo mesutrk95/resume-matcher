@@ -15,14 +15,15 @@ export default async function AdminPromptVariationsPage({
   params,
   searchParams,
 }: {
-  params: { promptId: string };
-  searchParams: { page?: string; limit?: string; status?: AIPromptVariationStatus };
+  params: Promise<{ promptId: string }>;
+  searchParams: Promise<{ page?: string; limit?: string; status?: AIPromptVariationStatus }>;
 }) {
   // Parse pagination parameters
-  const page = searchParams.page ? parseInt(searchParams.page) : 1;
-  const limit = searchParams.limit ? parseInt(searchParams.limit) : 10;
-  const status = searchParams.status;
-  const { promptId } = params;
+  const sp = await searchParams;
+  const page = sp.page ? parseInt(sp.page) : 1;
+  const limit = sp.limit ? parseInt(sp.limit) : 10;
+  const status = sp.status;
+  const { promptId } = await params;
 
   // Fetch variations
   const { data: result } = (await getAllAIPromptVariations({

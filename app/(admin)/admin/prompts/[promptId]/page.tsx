@@ -7,8 +7,12 @@ export const metadata: Metadata = {
   title: 'Admin - Edit Prompt',
   description: 'Edit AI prompt',
 };
-export default async function AdminEditPromptPage({ params }: { params: { promptId: string } }) {
-  const { promptId } = params;
+export default async function AdminEditPromptPage({
+  params,
+}: {
+  params: Promise<{ promptId: string }>;
+}) {
+  const { promptId } = await params;
 
   // Fetch prompt details
   let prompt;

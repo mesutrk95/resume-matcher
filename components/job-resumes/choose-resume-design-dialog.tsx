@@ -1,4 +1,4 @@
-import PDFViewer from '@/components/job-resumes/resume-renderer/pdf-viewer';
+import PDFViewer from '@/components/job-resumes/resume-renderer/pdf-renderer';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -18,9 +18,9 @@ import { pdf } from '@react-pdf/renderer';
 import { Paintbrush, AlertTriangle, Check } from 'lucide-react';
 import React, { useEffect, useState, useCallback, useTransition } from 'react';
 import { ResumeTemplateContent } from '@/types/resume-template';
-import { ResumeDocument } from './resume-renderer/resume-document';
+import { ResumePdfDocument } from './resume-renderer/resume-pdf-document';
 import { runAction } from '@/app/_utils/runAction';
-import { getAllResumeTemplates } from '@/actions/template';
+import { getAllResumeTemplates } from '@/actions/resume-templates';
 import { ResumeTemplate } from '@prisma/client';
 
 /**
@@ -46,7 +46,7 @@ const ResumeDesignItem = ({
       try {
         setLoading(true);
         const blob = await pdf(
-          <ResumeDocument
+          <ResumePdfDocument
             resumeTemplate={template.content as ResumeTemplateContent}
             resume={resume}
           />,

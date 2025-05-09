@@ -164,8 +164,8 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
   if (item.variations.length === 1) {
     return (
       <div ref={setNodeRef} style={style} className=" ">
-        <div className="flex-1 border rounded-md p-2 pb-">
-          <div className="flex items-center justify-between">
+        <div className="flex-1 border rounded-md p-2 pb- group ">
+          <div className="flex items-center justify-between relative">
             <div className="flex-1">
               <div className="flex justify-between items-start flex-wrap">
                 {isEditing ? (
@@ -212,7 +212,7 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
               </div>
             </div>
 
-            <div className="flex self-start gap-2 ml-4">
+            <div className="bg-white/80 self-start gap-2 ps-2 pb-2 group-hover:flex hidden absolute top-0 right-0">
               {isEditing ? (
                 <>
                   <Button variant="outline" size="sm" onClick={handleCancel}>

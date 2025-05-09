@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useParams, useRouter } from 'next/navigation';
 import { analyzeResumeItemsScores, deleteJobResume } from '@/actions/job-resume';
-import { ResumePreview } from '@/components/job-resumes/resume-pdf-preview';
+import { ResumePdfPreview } from '@/components/job-resumes/resume-renderer/resume-pdf-preview';
 import { updateCareerProfileContent } from '@/actions/career-profiles';
 import {
   BotMessageSquare,
@@ -37,6 +37,7 @@ import { useSubscription } from '@/providers/SubscriptionProvider';
 import { ConnectJobToResume } from '@/components/job-resumes/connect-job-to-resume';
 import { ResumeHeader } from '../../../../../components/job-resumes/job-resume-builder-header';
 import { ResumeTemplateContent } from '@/types/resume-template';
+import { ResumeDomPreview } from '@/components/job-resumes/resume-renderer/resume-dom-preview';
 
 export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job | null }) => {
   const router = useRouter();
@@ -254,7 +255,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                         className="shrink-0 pt-0 relative w-full h-full p-0 m-0"
                         value="preview"
                       >
-                        <ResumePreview resume={resume} jobResume={jobResume} />
+                        <ResumePdfPreview resume={resume} jobResume={jobResume} pdfMode={false} />
                       </TabsContent>
 
                       <TabsContent className="flex-auto h-0 p-0 m-0" value="jd">
