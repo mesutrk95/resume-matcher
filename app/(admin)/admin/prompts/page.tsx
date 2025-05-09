@@ -106,10 +106,10 @@ export default async function AdminPromptsPage({
           {categories && categories.length > 0 && (
             <>
               <div className="font-medium mb-1">Filter by Category:</div>
-              <div className="flex gap-2 flex-wrap">
+              <div className="flex gap-2 flex-nowrap overflow-x-auto pb-2">
                 <Link
                   href={`/admin/prompts${buildQueryString({ status })}`}
-                  className={`px-3 py-1 rounded ${
+                  className={`px-2 py-1 text-xs rounded ${
                     !category ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 hover:bg-gray-200'
                   }`}
                 >
@@ -119,7 +119,7 @@ export default async function AdminPromptsPage({
                   <Link
                     key={c}
                     href={`/admin/prompts${buildQueryString({ category: c, status })}`}
-                    className={`px-3 py-1 rounded ${
+                    className={`px-2 py-1 text-xs rounded ${
                       category === c
                         ? 'bg-purple-100 text-purple-800'
                         : 'bg-gray-100 hover:bg-gray-200'
