@@ -4,7 +4,8 @@ import { getAllAIPrompts } from '@/actions/admin/prompt/getAll';
 import { getAIPromptCategories } from '@/actions/admin/prompt/getCategories';
 import { AIPromptStatus } from '@prisma/client';
 import { PromptDeleteButton } from '@/app/(admin)/_components/prompt-delete-button';
-import { Pencil, Layers } from 'lucide-react';
+import { PromptExportButton } from '@/app/(admin)/_components/prompt-export-button';
+import { Pencil, Layers, Upload, Download } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const metadata: Metadata = {
@@ -64,12 +65,21 @@ export default async function AdminPromptsPage({
       <div>
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">AI Prompts</h1>
-          <Link
-            href="/admin/prompts/new"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Create New Prompt
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              href="/admin/prompts/import"
+              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition flex items-center"
+            >
+              <Upload className="h-4 w-4 mr-2" />
+              Import Prompt
+            </Link>
+            <Link
+              href="/admin/prompts/new"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              Create New Prompt
+            </Link>
+          </div>
         </div>
 
         {/* Filters */}
@@ -216,6 +226,14 @@ export default async function AdminPromptsPage({
                             </Link>
                           </TooltipTrigger>
                           <TooltipContent>View Variations</TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div>
+                              <PromptExportButton promptKey={prompt.key} />
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>Export Prompt</TooltipContent>
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger asChild>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Trash2 } from 'lucide-react';
 import { updateAIPromptVariation } from '@/actions/admin/prompt/variations/update';
 import { deleteAIPromptVariation } from '@/actions/admin/prompt/variations/delete';
 import { runAction } from '@/app/_utils/runAction';
@@ -168,11 +169,11 @@ export function EditVariationForm({ variation, promptId }: EditVariationFormProp
 
             <button
               type="button"
-              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition flex items-center justify-center"
               onClick={handleDelete}
               disabled={isDeleting}
             >
-              {isDeleting ? 'Deleting...' : 'Delete Variation'}
+              <Trash2 className="h-4 w-4" />
             </button>
           </div>
         </div>
