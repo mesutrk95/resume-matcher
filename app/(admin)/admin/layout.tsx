@@ -27,6 +27,12 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
           <Link href="/admin/prompts" className="block p-2 rounded hover:bg-slate-800 transition">
             Prompts
           </Link>
+          <Link
+            href="/admin/resume-templates"
+            className="block p-2 rounded hover:bg-slate-800 transition"
+          >
+            Resume Templates
+          </Link>
           {/* Add more admin navigation links here */}
         </nav>
         <div className="mt-auto pt-4 border-t border-slate-700 text-sm">

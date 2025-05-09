@@ -1,37 +1,31 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getAllAIPrompts } from '@/actions/admin/prompt/getAll';
-import { AIPromptStatus } from '@prisma/client';
+import { getResumeTemplates } from '@/services/resume-template';
+import Moment from 'react-moment';
 
 export const metadata: Metadata = {
-  title: 'Admin - Prompts',
-  description: 'Manage AI prompts',
+  title: 'Admin - Resume Templates',
+  description: 'Manage Resume Templates',
 };
 
-export default async function AdminPromptsPage({
+export default async function AdminResumeTemplatesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; limit?: string; status?: AIPromptStatus }>;
+  searchParams: Promise<{ page?: string; limit?: string }>;
 }) {
   // Parse pagination parameters
-  const sp = await searchParams;
-  const page = sp.page ? parseInt(sp.page) : 1;
-  const limit = sp.limit ? parseInt(sp.limit) : 10;
-  const status = sp.status;
+  //   const page = searchParams.page ? parseInt(searchParams.page) : 1;
+  //   const limit = searchParams.limit ? parseInt(searchParams.limit) : 10;
 
   // Fetch prompts
-  const { data: result } = (await getAllAIPrompts({
-    page,
-    limit,
-    status,
-  })) || { data: undefined };
+  const resumeTemplates = await getResumeTemplates();
 
   // If no result, show empty state
-  if (!result) {
+  if (!resumeTemplates) {
     return (
       <div className="text-center py-10">
-        <h1 className="text-2xl font-bold mb-4">AI Prompts</h1>
-        <p className="text-gray-500">Failed to load prompts</p>
+        <h1 className="text-2xl font-bold mb-4">Resume Templates</h1>
+        <p className="text-gray-500">Failed to load resume templates</p>
       </div>
     );
   }
@@ -39,65 +33,26 @@ export default async function AdminPromptsPage({
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">AI Prompts</h1>
+        <h1 className="text-2xl font-bold">Resume Templates</h1>
         <Link
-          href="/admin/prompts/new"
+          href="/admin/resume-templates/new"
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
-          Create New Prompt
+          Create New Resume Template
         </Link>
       </div>
-
-      {/* Status filter */}
-      <div className="mb-6 flex gap-2">
-        <Link
-          href="/admin/prompts"
-          className={`px-3 py-1 rounded ${!status ? 'bg-blue-100 text-blue-800' : 'bg-gray-100'}`}
-        >
-          All
-        </Link>
-        <Link
-          href="/admin/prompts?status=ACTIVE"
-          className={`px-3 py-1 rounded ${
-            status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-gray-100'
-          }`}
-        >
-          Active
-        </Link>
-        <Link
-          href="/admin/prompts?status=DRAFT"
-          className={`px-3 py-1 rounded ${
-            status === 'DRAFT' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100'
-          }`}
-        >
-          Draft
-        </Link>
-        <Link
-          href="/admin/prompts?status=DELETED"
-          className={`px-3 py-1 rounded ${
-            status === 'DELETED' ? 'bg-red-100 text-red-800' : 'bg-gray-100'
-          }`}
-        >
-          Deleted
-        </Link>
-      </div>
-
-      {/* Prompts table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Id
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Name
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Key
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Variations
+                Updated At
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
@@ -105,50 +60,36 @@ export default async function AdminPromptsPage({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {result.prompts.length === 0 ? (
+            {resumeTemplates.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                  No prompts found
+                  No resume templates found
                 </td>
               </tr>
             ) : (
-              result.prompts.map(prompt => (
-                <tr key={prompt.key}>
+              resumeTemplates.map(rt => (
+                <tr key={rt.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{prompt.name}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{prompt.key}</div>
+                    <div className="text-sm font-medium text-gray-900">{rt.id}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        prompt.status === 'ACTIVE'
-                          ? 'bg-green-100 text-green-800'
-                          : prompt.status === 'DRAFT'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      {prompt.status}
-                    </span>
+                    <div className="text-sm font-medium text-gray-900">{rt.name}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {prompt._count.variations}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">
+                      {/* <Moment format="MMM YYYY HH:mm">
+                        {rt.updatedAt || rt.createdAt || new Date()}
+                      </Moment> */}
+                    </div>
                   </td>
+
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
                       <Link
-                        href={`/admin/prompts/${prompt.key}`}
+                        href={`/admin/resume-templates/${rt.id}`}
                         className="text-blue-600 hover:text-blue-900"
                       >
                         Edit
-                      </Link>
-                      <Link
-                        href={`/admin/prompts/${prompt.key}/variations`}
-                        className="text-green-600 hover:text-green-900"
-                      >
-                        Variations
                       </Link>
                     </div>
                   </td>
@@ -160,7 +101,7 @@ export default async function AdminPromptsPage({
       </div>
 
       {/* Pagination */}
-      {result.pagination.totalPages > 1 && (
+      {/* {result.pagination.totalPages > 1 && (
         <div className="flex justify-between items-center mt-6">
           <div className="text-sm text-gray-700">
             Showing{' '}
@@ -199,7 +140,7 @@ export default async function AdminPromptsPage({
             )}
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

@@ -15,7 +15,7 @@ import { ConnectJobToResume } from '../../../../../components/job-resumes/connec
 import dynamic from 'next/dynamic';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
-import { ResumeDocument } from '@/components/job-resumes/resume-renderer/resume-document';
+import { ResumePdfDocument } from '@/components/job-resumes/resume-renderer/resume-pdf-document';
 const GaugeComponent = dynamic(() => import('react-gauge-component'), {
   ssr: false,
 });
@@ -141,7 +141,7 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
     startRatingResumeTransition(async () => {
       try {
         const blobData = await pdf(
-          <ResumeDocument resume={resume} withIdentifiers skipFont={true} />,
+          <ResumePdfDocument resume={resume} withIdentifiers skipFont={true} />,
         ).toBlob();
         const file = new File([blobData], 'resume.pdf', {
           type: 'application/pdf',

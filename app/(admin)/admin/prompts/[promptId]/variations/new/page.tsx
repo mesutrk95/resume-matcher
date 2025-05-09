@@ -90,9 +90,9 @@ function CreateVariationForm({ promptId, promptName }: { promptId: string; promp
 export default async function AdminCreateVariationPage({
   params,
 }: {
-  params: { promptId: string };
+  params: Promise<{ promptId: string }>;
 }) {
-  const { promptId } = params;
+  const { promptId } = await params;
 
   // Fetch prompt details
   let prompt;

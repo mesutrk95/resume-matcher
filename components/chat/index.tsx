@@ -14,7 +14,7 @@ import { askCustomQuestionFromAI } from '@/actions/job-resume';
 import type { JobResume } from '@prisma/client';
 import type { ResumeContent } from '@/types/resume';
 import { pdf } from '@react-pdf/renderer';
-import { ResumeDocument } from '../job-resumes/resume-renderer/resume-document';
+import { ResumePdfDocument } from '../job-resumes/resume-renderer/resume-pdf-document';
 import { toast } from 'sonner';
 import { randomNDigits } from '@/lib/utils';
 import ErrorBoundary from '../shared/error-boundary';
@@ -119,7 +119,7 @@ export function ChatInterface({
       let file = null;
       if (shareResume) {
         const pdfBlob = await pdf(
-          <ResumeDocument resume={resume} resumeTemplate={resumeTemplate} skipFont={true} />,
+          <ResumePdfDocument resume={resume} resumeTemplate={resumeTemplate} skipFont={true} />,
         ).toBlob();
         file = await blob2base64(pdfBlob!);
       }

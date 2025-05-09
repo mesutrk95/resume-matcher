@@ -22,7 +22,7 @@ type PDFViewerProps = {
   className?: string;
 };
 
-function PDFViewerContainer({ className, ...props }: PDFViewerProps) {
+export default function PDFViewerContainer({ className, ...props }: PDFViewerProps) {
   // const ref = useRef<HTMLDivElement>(null);
   // const { width = 0, height = 0 } = useWindowSize({
   //   ref,
@@ -106,5 +106,3 @@ function PDFViewer({ pdfBlob, maxPages, width }: PDFViewerProps & { width: numbe
     </Document>
   );
 }
-
-export default PDFViewerContainer;

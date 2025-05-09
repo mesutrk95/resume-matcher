@@ -2,22 +2,25 @@ import { ResumeContent } from '@/types/resume';
 import { JobResume } from '@prisma/client';
 import { useEffect, useState } from 'react';
 import { pdf } from '@react-pdf/renderer';
-import { Button } from '../ui/button';
-import { ScrollArea } from '../ui/scroll-area';
+import { Button } from '../../ui/button';
+import { ScrollArea } from '../../ui/scroll-area';
 import { Download } from 'lucide-react';
-import { useResumeBuilder } from './resume-builder/context/useResumeBuilder';
-import { ChooseResumeDesignDialog } from './choose-resume-design-dialog';
-import { ResumeDocument } from './resume-renderer/resume-document';
-import PDFViewer from './resume-renderer/pdf-viewer';
+import { useResumeBuilder } from '../resume-builder/context/useResumeBuilder';
+import { ChooseResumeDesignDialog } from '../choose-resume-design-dialog';
+import { ResumePdfDocument } from './resume-pdf-document';
+import PDFRenderer from './pdf-renderer';
 import { ResumeTemplateContent } from '@/types/resume-template';
+import { ResumeDomPreview } from './resume-dom-preview';
 
 // CV Preview Component with Download Button
-export const ResumePreview = ({
+export const ResumePdfPreview = ({
   resume,
   jobResume,
+  pdfMode,
 }: {
   resume: ResumeContent;
   jobResume: JobResume;
+  pdfMode?: boolean;
 }) => {
   // For client-side rendering only
   const [isClient, setIsClient] = useState(false);
@@ -31,7 +34,7 @@ export const ResumePreview = ({
   useEffect(() => {
     async function load() {
       const blob = await pdf(
-        <ResumeDocument
+        <ResumePdfDocument
           resume={resume}
           resumeTemplate={resumeTemplate?.content as ResumeTemplateContent}
           withIdentifiers={false}
@@ -40,18 +43,15 @@ export const ResumePreview = ({
       ).toBlob();
       setPdfBlob(blob);
     }
-    load();
+    if (pdfMode) load();
   }, [resume, resumeTemplate]);
 
-  if (!isClient || !pdfBlob) {
+  if (!isClient || (pdfMode && !pdfBlob)) {
     return <div className="flex justify-center items-center h-96">Loading CV preview...</div>;
   }
 
   return (
     <div className=" h-full w-full pe-2 pt-2">
-      {/* <PDFViewer showToolbar={false} className="w-full h-full">
-         <ResumeDocument resume={data} withIdentifiers={false} /> 
-      </PDFViewer> */}
       <div className="flex gap-2 justify-center absolute right-8 top-4">
         <ChooseResumeDesignDialog
           resume={resume}
@@ -82,7 +82,14 @@ export const ResumePreview = ({
         </Button>
       </div>
       <ScrollArea className=" h-full w-full " viewportClassName="" type="always">
-        <PDFViewer pdfBlob={pdfBlob} className="ps-2 pb-2 pe-4" />
+        {pdfMode ? (
+          <PDFRenderer pdfBlob={pdfBlob!} className="ps-2 pb-2 pe-4" />
+        ) : (
+          <ResumeDomPreview
+            resume={resume}
+            resumeTemplate={resumeTemplate?.content as ResumeTemplateContent}
+          />
+        )}
       </ScrollArea>
     </div>
   );

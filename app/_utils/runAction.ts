@@ -45,13 +45,13 @@ export async function runAction<T, Args extends any[]>(
       const result = await action;
 
       if (!result.success) {
-        if (showToast) {
+        if (showToast && errorMessage) {
           toast.error(errorMessage || result.error?.message || 'An unexpected error occurred');
         }
         console.error('Unexpected error when executing action:', result);
       } else {
         // Show success toast when action completes successfully
-        if (showToast) {
+        if (showToast && successMessage) {
           toast.success(successMessage);
         }
       }
