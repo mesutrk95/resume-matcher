@@ -62,7 +62,20 @@ export const getAllAIPromptVariations = withErrorHandling(
         },
         skip,
         take: limit,
-        include: {
+        select: {
+          id: true,
+          status: true,
+          promptId: true,
+          createdAt: true,
+          updatedAt: true,
+          createdBy: true,
+          requestCount: true,
+          failureCount: true,
+          totalTokens: true,
+          totalResponseTime: true,
+          userPrompt: true,
+          systemPrompt: true,
+          // Include relations
           _count: {
             select: {
               requests: true,

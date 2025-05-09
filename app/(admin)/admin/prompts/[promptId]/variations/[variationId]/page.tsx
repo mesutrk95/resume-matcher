@@ -58,17 +58,143 @@ export default async function AdminEditVariationPage({
 
       <EditVariationForm variation={variationDetails} promptId={promptId} />
 
-      {/* Usage Statistics */}
+      {/* Variation Properties and Statistics */}
       <div className="mt-6 bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-semibold mb-4">Usage Statistics</h2>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
+        <h2 className="text-lg font-semibold mb-4">Variation Properties and Statistics</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-blue-50 p-4 rounded">
             <div className="text-sm text-gray-500">Total Requests</div>
             <div className="text-xl font-semibold">{variationDetails._count?.requests || 0}</div>
           </div>
+          <div className="bg-green-50 p-4 rounded">
+            <div className="text-sm text-gray-500">Success Rate</div>
+            <div className="text-xl font-semibold">
+              {variationDetails._count?.requests > 0
+                ? `${Math.round(
+                    ((variationDetails._count.requests - variationDetails.failureCount) /
+                      variationDetails._count.requests) *
+                      100,
+                  )}%`
+                : '0%'}
+            </div>
+          </div>
+          <div className="bg-purple-50 p-4 rounded">
+            <div className="text-sm text-gray-500">Total Tokens</div>
+            <div className="text-xl font-semibold">
+              {variationDetails.totalTokens?.toLocaleString() || 0}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <div className="text-sm text-gray-500">Created By</div>
-            <div>{variationDetails.createdBy || 'Unknown'}</div>
+            <h3 className="text-md font-medium mb-3">General Information</h3>
+            <table className="min-w-full">
+              <tbody className="divide-y divide-gray-200">
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">ID</td>
+                  <td className="py-2 text-sm text-gray-900">{variationDetails.id}</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">Status</td>
+                  <td className="py-2 text-sm text-gray-900">
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        variationDetails.status === 'ACTIVE'
+                          ? 'bg-green-100 text-green-800'
+                          : variationDetails.status === 'DRAFT'
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : variationDetails.status === 'INACTIVE'
+                              ? 'bg-orange-100 text-orange-800'
+                              : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {variationDetails.status}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">Created By</td>
+                  <td className="py-2 text-sm text-gray-900">
+                    {variationDetails.user?.name ||
+                      variationDetails.user?.email ||
+                      variationDetails.createdBy ||
+                      'Unknown'}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">Created At</td>
+                  <td className="py-2 text-sm text-gray-900">
+                    {new Date(variationDetails.createdAt).toLocaleString()}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">Updated At</td>
+                  <td className="py-2 text-sm text-gray-900">
+                    {new Date(variationDetails.updatedAt).toLocaleString()}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <h3 className="text-md font-medium mb-3">Performance Metrics</h3>
+            <table className="min-w-full">
+              <tbody className="divide-y divide-gray-200">
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">Request Count</td>
+                  <td className="py-2 text-sm text-gray-900">
+                    {variationDetails._count?.requests || 0}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">Failure Count</td>
+                  <td className="py-2 text-sm text-gray-900">
+                    {variationDetails.failureCount || 0}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">Success Rate</td>
+                  <td className="py-2 text-sm text-gray-900">
+                    {variationDetails._count?.requests > 0
+                      ? `${Math.round(
+                          ((variationDetails._count.requests - variationDetails.failureCount) /
+                            variationDetails._count.requests) *
+                            100,
+                        )}%`
+                      : '0%'}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">Total Tokens</td>
+                  <td className="py-2 text-sm text-gray-900">
+                    {variationDetails.totalTokens?.toLocaleString() || 0}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">Prompt Tokens</td>
+                  <td className="py-2 text-sm text-gray-900">
+                    {variationDetails.promptTokens?.toLocaleString() || 0}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">Completion Tokens</td>
+                  <td className="py-2 text-sm text-gray-900">
+                    {variationDetails.completionTokens?.toLocaleString() || 0}
+                  </td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-sm font-medium text-gray-500">Avg Response Time</td>
+                  <td className="py-2 text-sm text-gray-900">
+                    {variationDetails.totalResponseTime > 0 && variationDetails._count?.requests > 0
+                      ? `${Math.round(variationDetails.totalResponseTime / variationDetails._count.requests)} ms`
+                      : '0 ms'}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

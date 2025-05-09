@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: 'Edit AI prompt',
 };
 
+import { getAllAIPromptVariations } from '@/actions/admin/prompt/variations/getAll';
+
 export default async function AdminEditPromptPage({
   params,
 }: {
@@ -45,6 +47,13 @@ export default async function AdminEditPromptPage({
   const { data: categoryData } = (await getAIPromptCategories()) || { data: undefined };
   const categories = categoryData ? categoryData.map(cat => cat.name) : [];
 
+  // Fetch variations summary
+  const { data: variationsData } = (await getAllAIPromptVariations({
+    promptId,
+    page: 1, // First page
+    limit: 5, // Just get a few for the summary
+  })) || { data: undefined };
+
   return (
     <div>
       <div className="mb-6">
@@ -68,10 +77,103 @@ export default async function AdminEditPromptPage({
             </Link>
           </div>
 
-          <div className="text-sm text-gray-500">
-            {/* Display variation count if available */}
+          <div className="text-sm text-gray-500 mb-4">
             {promptDetails.variations?.length || 0} variation(s) available
           </div>
+
+          {variationsData && variationsData.variations.length > 0 ? (
+            <div className="mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-gray-50 p-4 rounded">
+                  <div className="text-sm text-gray-500">Total Requests</div>
+                  <div className="text-xl font-semibold">
+                    {variationsData.variations.reduce(
+                      (sum, v) => sum + (v._count?.requests || 0),
+                      0,
+                    )}
+                  </div>
+                </div>
+                <div className="bg-gray-50 p-4 rounded">
+                  <div className="text-sm text-gray-500">Total Tokens</div>
+                  <div className="text-xl font-semibold">
+                    {variationsData.variations
+                      .reduce((sum, v) => sum + (v.totalTokens || 0), 0)
+                      .toLocaleString()}
+                  </div>
+                </div>
+                <div className="bg-gray-50 p-4 rounded">
+                  <div className="text-sm text-gray-500">Avg Success Rate</div>
+                  <div className="text-xl font-semibold">
+                    {(() => {
+                      const totalRequests = variationsData.variations.reduce(
+                        (sum, v) => sum + (v._count?.requests || 0),
+                        0,
+                      );
+                      const totalFailures = variationsData.variations.reduce(
+                        (sum, v) => sum + (v.failureCount || 0),
+                        0,
+                      );
+                      return totalRequests > 0
+                        ? `${Math.round(((totalRequests - totalFailures) / totalRequests) * 100)}%`
+                        : '0%';
+                    })()}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <h3 className="text-md font-medium mb-2">Recent Variations</h3>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Requests
+                        </th>
+                        <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Success Rate
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {variationsData.variations.slice(0, 3).map(variation => (
+                        <tr key={variation.id}>
+                          <td className="px-3 py-2 whitespace-nowrap">
+                            <span
+                              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                variation.status === 'ACTIVE'
+                                  ? 'bg-green-100 text-green-800'
+                                  : variation.status === 'DRAFT'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : variation.status === 'INACTIVE'
+                                      ? 'bg-orange-100 text-orange-800'
+                                      : 'bg-red-100 text-red-800'
+                              }`}
+                            >
+                              {variation.status}
+                            </span>
+                          </td>
+                          <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                            {variation._count.requests}
+                          </td>
+                          <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                            {variation._count.requests > 0
+                              ? `${Math.round(((variation._count.requests - variation.failureCount) / variation._count.requests) * 100)}%`
+                              : '0%'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm text-gray-500">No variations data available</div>
+          )}
         </div>
       </div>
     </div>

@@ -79,6 +79,14 @@ export default async function AdminPromptVariationsPage({
             Active
           </Link>
           <Link
+            href={`/admin/prompts/${promptId}/variations?status=INACTIVE`}
+            className={`px-3 py-1 rounded ${
+              status === 'INACTIVE' ? 'bg-orange-100 text-orange-800' : 'bg-gray-100'
+            }`}
+          >
+            Inactive
+          </Link>
+          <Link
             href={`/admin/prompts/${promptId}/variations?status=DRAFT`}
             className={`px-3 py-1 rounded ${
               status === 'DRAFT' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100'
@@ -111,6 +119,15 @@ export default async function AdminPromptVariationsPage({
                   Usage Count
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Response Time (ms)
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total Tokens
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Success Rate
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Created By
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -121,7 +138,7 @@ export default async function AdminPromptVariationsPage({
             <tbody className="bg-white divide-y divide-gray-200">
               {result.variations.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
+                  <td colSpan={8} className="px-6 py-4 text-center text-gray-500">
                     No variations found
                   </td>
                 </tr>
@@ -138,7 +155,9 @@ export default async function AdminPromptVariationsPage({
                             ? 'bg-green-100 text-green-800'
                             : variation.status === 'DRAFT'
                               ? 'bg-yellow-100 text-yellow-800'
-                              : 'bg-red-100 text-red-800'
+                              : variation.status === 'INACTIVE'
+                                ? 'bg-orange-100 text-orange-800'
+                                : 'bg-red-100 text-red-800'
                         }`}
                       >
                         {variation.status}
@@ -146,6 +165,19 @@ export default async function AdminPromptVariationsPage({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {variation._count.requests}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {variation.totalResponseTime > 0 && variation._count.requests > 0
+                        ? Math.round(variation.totalResponseTime / variation._count.requests)
+                        : 0}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {variation.totalTokens.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {variation._count.requests > 0
+                        ? `${Math.round(((variation._count.requests - variation.failureCount) / variation._count.requests) * 100)}%`
+                        : '0%'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {variation.user?.name || variation.user?.email || 'Unknown'}
@@ -156,17 +188,6 @@ export default async function AdminPromptVariationsPage({
                           <TooltipTrigger asChild>
                             <Link
                               href={`/admin/prompts/${promptId}/variations/${variation.id}`}
-                              className="text-blue-600 hover:text-blue-800"
-                            >
-                              <Eye size={18} />
-                            </Link>
-                          </TooltipTrigger>
-                          <TooltipContent>View Variation</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Link
-                              href={`/admin/prompts/${promptId}/variations/${variation.id}/edit`}
                               className="text-green-600 hover:text-green-800"
                             >
                               <Pencil size={18} />
