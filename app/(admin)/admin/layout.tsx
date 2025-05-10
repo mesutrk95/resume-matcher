@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { currentAdmin } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { LogoutButton } from '../_components/logout-button';
+import { FileUser } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
@@ -34,13 +35,23 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
           >
             Resume Templates
           </Link>
-          {/* Add more admin navigation links here */}
-          <Link href="/home" className="block p-2 rounded hover:bg-slate-800 transition">
-            Resume Application
+          <Link
+            href="/admin/ai-requests"
+            className="block p-2 rounded hover:bg-slate-800 transition"
+          >
+            AI Requests
           </Link>
+          {/* Add more admin navigation links here */}
         </nav>
         <div className="mt-auto pt-4 border-t border-slate-700 text-sm">
           <div className="mb-2">Logged in as: {admin.email}</div>
+          <Link
+            href="/home"
+            className="flex items-center p-2 rounded hover:bg-slate-800 transition text-orange-500 mb-2"
+          >
+            <FileUser className="h-4 w-4 mr-2" />
+            Application
+          </Link>
           <LogoutButton />
         </div>
       </div>

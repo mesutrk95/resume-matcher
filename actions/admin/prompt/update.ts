@@ -10,7 +10,6 @@ import {
 } from '@/lib/exceptions';
 import { withErrorHandling } from '@/lib/with-error-handling';
 import { currentAdmin } from '@/lib/auth';
-import { z } from 'zod';
 import { UpdatePromptInput, updatePromptSchema } from '@/models/aiPrompt';
 
 /**
@@ -28,7 +27,10 @@ export const updateAIPrompt = withErrorHandling(async (data: UpdatePromptInput) 
   // Validate input
   const validationResult = updatePromptSchema.safeParse(data);
   if (!validationResult.success) {
-    throw new InvalidInputException('Invalid input data', validationResult.error.errors);
+    throw new InvalidInputException(
+      validationResult.error.errors.map(x => x.message).join('\n'),
+      validationResult.error.errors,
+    );
   }
 
   const { key, status, ...updateData } = validationResult.data;
@@ -41,7 +43,7 @@ export const updateAIPrompt = withErrorHandling(async (data: UpdatePromptInput) 
     throw new NotFoundException(`Prompt with key "${key}" not found`);
   }
 
-  if (status && status !== AIPromptStatus.ACTIVE) {
+  if (status && status != prompt.status && status !== AIPromptStatus.ACTIVE) {
     throw new BadRequestException('Invalid status provided, must be ACTIVE only for update');
   }
 

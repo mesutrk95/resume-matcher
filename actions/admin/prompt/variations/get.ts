@@ -24,7 +24,7 @@ export const getAIPromptVariation = withErrorHandling(async (id: string) => {
     throw new InvalidInputException('Invalid ID provided', validationResult.error.errors);
   }
 
-  // Get the variation with its prompt info
+  // Get the variation with its prompt info and all statistics
   const variation = await db.aIPromptVariation.findUnique({
     where: { id: validationResult.data.id },
     include: {
@@ -38,6 +38,12 @@ export const getAIPromptVariation = withErrorHandling(async (id: string) => {
       _count: {
         select: {
           requests: true,
+        },
+      },
+      user: {
+        select: {
+          name: true,
+          email: true,
         },
       },
     },

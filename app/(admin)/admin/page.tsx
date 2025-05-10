@@ -41,6 +41,17 @@ export default async function AdminDashboardPage() {
             Manage Resume Templates
           </Link>
         </div>
+
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-lg font-semibold mb-2">Ai Requests</h2>
+          <p className="text-gray-600 mb-4">Check All Ai Requests</p>
+          <Link
+            href="/admin/ai-requests"
+            className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            Check All Ai Requests
+          </Link>
+        </div>
         {/* Add more admin dashboard cards here */}
       </div>
     </div>

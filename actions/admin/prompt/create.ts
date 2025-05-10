@@ -22,7 +22,10 @@ export const createAIPrompt = withErrorHandling(async (data: CreateAIPromptInput
 
   const validationResult = createAIPromptSchema.safeParse(data);
   if (!validationResult.success) {
-    throw new InvalidInputException('Invalid input data', validationResult.error.errors);
+    throw new InvalidInputException(
+      validationResult.error.errors.map(x => x.message).join('\n'),
+      validationResult.error.errors,
+    );
   }
 
   const { key } = validationResult.data;

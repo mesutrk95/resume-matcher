@@ -2,11 +2,18 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getAIPrompt } from '@/actions/admin/prompt/get';
+import { getAIPromptCategories } from '@/actions/admin/prompt/getCategories';
+import { EditPromptForm } from '@/app/(admin)/_components/edit-prompt-form';
+import { PromptExportButton } from '@/app/(admin)/_components/prompt-export-button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const metadata: Metadata = {
   title: 'Admin - Edit Prompt',
   description: 'Edit AI prompt',
 };
+
+import { getAllAIPromptVariations } from '@/actions/admin/prompt/variations/getAll';
+
 export default async function AdminEditPromptPage({
   params,
 }: {
@@ -15,146 +22,176 @@ export default async function AdminEditPromptPage({
   const { promptId } = await params;
 
   // Fetch prompt details
-  let prompt;
+  let promptDetails;
   try {
     const promptResponse = await getAIPrompt(promptId);
 
-    // Cast the prompt to any to avoid TypeScript errors
-    // This is necessary because the withErrorHandling wrapper makes the type complex
-    prompt = promptResponse as any;
-
-    // If prompt not found, redirect to prompts list
-    if (!prompt) {
+    // The withErrorHandling wrapper returns an object with success, data, and error properties
+    if (promptResponse.success && promptResponse.data) {
+      promptDetails = promptResponse.data;
+    } else {
+      // If prompt not found or there was an error, redirect to prompts list
+      console.error('Error fetching prompt:', promptResponse.error?.message || 'Prompt not found');
       return redirect('/admin/prompts');
     }
   } catch (error) {
-    console.error('Error fetching prompt:', error);
+    // Catch any unexpected errors during the fetch operation
+    console.error('Exception fetching prompt:', error);
     return redirect('/admin/prompts');
   }
+
+  // Double-check if promptDetails is available (should be caught by the logic above)
+  if (!promptDetails) {
+    return redirect('/admin/prompts');
+  }
+
+  // Fetch categories
+  const { data: categoryData } = (await getAIPromptCategories()) || { data: undefined };
+  const categories = categoryData ? categoryData.map(cat => cat.name) : [];
+
+  // Fetch variations summary
+  const { data: variationsData } = (await getAllAIPromptVariations({
+    promptId,
+    page: 1, // First page
+    limit: 5, // Just get a few for the summary
+  })) || { data: undefined };
+
   return (
-    <div>
-      <div className="mb-6">
-        <Link href="/admin/prompts" className="text-blue-600 hover:text-blue-800">
-          ← Back to Prompts
-        </Link>
-        <h1 className="text-2xl font-bold mt-2">Edit Prompt: {prompt.name}</h1>
-      </div>
+    <TooltipProvider>
+      <div>
+        <div className="mb-6">
+          <div className="flex justify-between items-center">
+            <Link href="/admin/prompts" className="text-blue-600 hover:text-blue-800">
+              ← Back to Prompts
+            </Link>
+            <div className="flex gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <PromptExportButton promptKey={promptId} />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>Export Prompt</TooltipContent>
+              </Tooltip>
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold mt-2">Edit Prompt: {promptDetails.name}</h1>
+        </div>
 
-      <div className="grid grid-cols-1 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <form action="/api/admin/prompts/update" method="POST">
-            <input type="hidden" name="key" value={promptId} />
+        <div className="grid grid-cols-1 gap-6">
+          <EditPromptForm promptDetails={promptDetails} categories={categories} />
 
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  defaultValue={prompt.name}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  required
-                />
-              </div>
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Prompt Variations</h2>
+              <Link
+                href={`/admin/prompts/${promptId}/variations`}
+                className="text-blue-600 hover:text-blue-800"
+              >
+                View All Variations
+              </Link>
+            </div>
 
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  rows={3}
-                  defaultValue={prompt.description || ''}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
+            <div className="text-sm text-gray-500 mb-4">
+              {promptDetails.variations?.length || 0} variation(s) available
+            </div>
 
-              <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-                  Category
-                </label>
-                <input
-                  type="text"
-                  id="category"
-                  name="category"
-                  defaultValue={prompt.category || ''}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="status" className="block text-sm font-medium text-gray-700">
-                  Status
-                </label>
-                <select
-                  id="status"
-                  name="status"
-                  defaultValue={prompt.status}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                  <option value="DRAFT">Draft</option>
-                  <option value="ACTIVE">Active</option>
-                  <option value="DELETED">Deleted</option>
-                </select>
-              </div>
-
-              <div className="flex justify-between pt-4">
-                <div className="flex space-x-2">
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                  >
-                    Save Changes
-                  </button>
-                  <Link
-                    href="/admin/prompts"
-                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition"
-                  >
-                    Cancel
-                  </Link>
+            {variationsData && variationsData.variations.length > 0 ? (
+              <div className="mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-gray-50 p-4 rounded">
+                    <div className="text-sm text-gray-500">Total Requests</div>
+                    <div className="text-xl font-semibold">
+                      {variationsData.variations.reduce(
+                        (sum, v) => sum + (v._count?.requests || 0),
+                        0,
+                      )}
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded">
+                    <div className="text-sm text-gray-500">Total Tokens</div>
+                    <div className="text-xl font-semibold">
+                      {variationsData.variations
+                        .reduce((sum, v) => sum + (v.totalTokens || 0), 0)
+                        .toLocaleString()}
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded">
+                    <div className="text-sm text-gray-500">Avg Success Rate</div>
+                    <div className="text-xl font-semibold">
+                      {(() => {
+                        const totalRequests = variationsData.variations.reduce(
+                          (sum, v) => sum + (v._count?.requests || 0),
+                          0,
+                        );
+                        const totalFailures = variationsData.variations.reduce(
+                          (sum, v) => sum + (v.failureCount || 0),
+                          0,
+                        );
+                        return totalRequests > 0
+                          ? `${Math.round(((totalRequests - totalFailures) / totalRequests) * 100)}%`
+                          : '0%';
+                      })()}
+                    </div>
+                  </div>
                 </div>
 
-                <button
-                  type="button"
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                  onClick={() => {
-                    if (
-                      confirm(
-                        'Are you sure you want to delete this prompt? This action cannot be undone.',
-                      )
-                    ) {
-                      window.location.href = `/api/admin/prompts/delete?key=${promptId}`;
-                    }
-                  }}
-                >
-                  Delete Prompt
-                </button>
+                <div className="mt-4">
+                  <h3 className="text-md font-medium mb-2">Recent Variations</h3>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Status
+                          </th>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Requests
+                          </th>
+                          <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Success Rate
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {variationsData.variations.slice(0, 3).map(variation => (
+                          <tr key={variation.id}>
+                            <td className="px-3 py-2 whitespace-nowrap">
+                              <span
+                                className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                  variation.status === 'ACTIVE'
+                                    ? 'bg-green-100 text-green-800'
+                                    : variation.status === 'DRAFT'
+                                      ? 'bg-yellow-100 text-yellow-800'
+                                      : variation.status === 'INACTIVE'
+                                        ? 'bg-orange-100 text-orange-800'
+                                        : 'bg-red-100 text-red-800'
+                                }`}
+                              >
+                                {variation.status}
+                              </span>
+                            </td>
+                            <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                              {variation._count.requests}
+                            </td>
+                            <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                              {variation._count.requests > 0
+                                ? `${Math.round(((variation._count.requests - variation.failureCount) / variation._count.requests) * 100)}%`
+                                : '0%'}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
-            </div>
-          </form>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Prompt Variations</h2>
-            <Link
-              href={`/admin/prompts/${promptId}/variations`}
-              className="text-blue-600 hover:text-blue-800"
-            >
-              View All Variations
-            </Link>
-          </div>
-
-          <div className="text-sm text-gray-500">
-            {/* Display variation count if available */}
-            {prompt._count?.variations || prompt.variations?.length || 0} variation(s) available
+            ) : (
+              <div className="text-sm text-gray-500">No variations data available</div>
+            )}
           </div>
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }

@@ -1,0 +1,183 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { updateAIPrompt } from '@/actions/admin/prompt/update';
+import { runAction } from '@/app/_utils/runAction';
+import { AIPromptStatus } from '@prisma/client';
+import { PromptDeleteButton } from './prompt-delete-button';
+
+interface PromptDetails {
+  key: string;
+  name: string;
+  description: string | null;
+  category: string | null;
+  status: AIPromptStatus;
+  jsonSchema: string | null;
+  variations?: any[];
+}
+
+interface EditPromptFormProps {
+  promptDetails: PromptDetails;
+  categories: string[];
+}
+
+export function EditPromptForm({ promptDetails, categories }: EditPromptFormProps) {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const handleSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
+    setFormError(null);
+
+    const key = formData.get('key') as string;
+    const name = formData.get('name') as string;
+    const description = formData.get('description') as string;
+    const category = formData.get('category') as string;
+    const status = formData.get('status') as AIPromptStatus;
+    const jsonSchema = formData.get('jsonSchema') as string;
+
+    const result = await runAction(
+      updateAIPrompt({
+        key,
+        name,
+        description,
+        category,
+        status,
+        jsonSchema,
+      }),
+      {
+        successMessage: 'Prompt updated successfully',
+        errorMessage: 'Failed to update prompt',
+      },
+    );
+
+    if (result.success) {
+      // Navigate to the prompts list on success
+      router.push('/admin/prompts');
+    } else {
+      // Display error message
+      setFormError(result.error?.message || 'An unexpected error occurred');
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow p-6">
+      {formError && <div className="mb-4 p-3 bg-red-100 text-red-800 rounded">{formError}</div>}
+      <form action={handleSubmit}>
+        <input type="hidden" name="key" value={promptDetails.key} />
+
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              defaultValue={promptDetails.name}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+              Description
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              rows={3}
+              defaultValue={promptDetails.description || ''}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+              Category
+            </label>
+            <input
+              type="text"
+              id="category"
+              name="category"
+              list="category-suggestions"
+              defaultValue={promptDetails.category || ''}
+              placeholder="e.g., resume, job, profile (or type new)"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+            {categories.length > 0 && (
+              <datalist id="category-suggestions">
+                {categories.map((cat: string) => (
+                  <option key={cat} value={cat} />
+                ))}
+              </datalist>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+              Status
+            </label>
+            <select
+              id="status"
+              name="status"
+              defaultValue={promptDetails.status}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            >
+              <option value="DRAFT">Draft</option>
+              <option value="ACTIVE">Active</option>
+              <option value="DELETED">Deleted</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="jsonSchema" className="block text-sm font-medium text-gray-700">
+              JSON Schema (Optional)
+            </label>
+            <textarea
+              id="jsonSchema"
+              name="jsonSchema"
+              rows={5}
+              defaultValue={promptDetails.jsonSchema || ''}
+              placeholder="Enter JSON schema for prompt inputs"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              If this prompt requires structured JSON input, define the schema here.
+            </p>
+          </div>
+
+          <div className="flex justify-between pt-4">
+            <div className="flex space-x-2">
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Saving...' : 'Save Changes'}
+              </button>
+              <Link
+                href="/admin/prompts"
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition"
+              >
+                Cancel
+              </Link>
+            </div>
+
+            <PromptDeleteButton
+              promptKey={promptDetails.key}
+              promptName={promptDetails.name}
+              status={promptDetails.status}
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}

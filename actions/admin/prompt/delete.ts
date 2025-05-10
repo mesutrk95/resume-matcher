@@ -27,7 +27,10 @@ export const deleteAIPrompt = withErrorHandling(async (data: DeletePromptInput) 
   // Validate input
   const validationResult = deletePromptSchema.safeParse(data);
   if (!validationResult.success) {
-    throw new InvalidInputException('Invalid input data', validationResult.error.errors);
+    throw new InvalidInputException(
+      validationResult.error.errors.map(x => x.message).join('\n'),
+      validationResult.error.errors,
+    );
   }
 
   const { key, permanent } = validationResult.data;
