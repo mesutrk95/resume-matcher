@@ -161,7 +161,7 @@ export function NoCareerProfileWizard() {
               <div>
                 <h4 className="text-xl flex items-center gap-2 font-bold">
                   {/* <Plus className="h-5 w-5" /> */}
-                  Start Building Your Resume!
+                  Start Building Your Profile!
                 </h4>
                 <p className="text-muted-foreground">Create a professional resume step by step.</p>
               </div>

@@ -5,16 +5,14 @@ import { runAction } from '@/app/_utils/runAction';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LoadingButton } from '@/components/ui/loading-button';
-import { Textarea } from '@/components/ui/textarea';
 import { resumeTemplateSchema } from '@/schemas/resume-template.schema';
 import { ResumeTemplateContent } from '@/types/resume-template';
 import { ResumeTemplate } from '@prisma/client';
 import dynamic from 'next/dynamic';
-import Link from 'next/link';
 import { useState, useEffect, useTransition } from 'react';
 import { toast } from 'sonner';
 
-const JsonEditor = dynamic(() => import('json-edit-react').then(loaded => loaded.JsonEditor), {
+const JsonEditor = dynamic(() => import('@/components/shared/json-editor'), {
   loading: () => <p>Loading Json Editor...</p>,
   ssr: false,
 });
@@ -24,6 +22,7 @@ export const ResumeTemplateContentEditor = ({
 }: {
   resumeTemplate: ResumeTemplate;
 }) => {
+  const [editorMode, setEditorMode] = useState<'code' | 'text' | 'tree' | 'form'>('tree');
   const [saving, startSaveTransition] = useTransition();
   const [content, setContent] = useState<ResumeTemplateContent | null>(
     resumeTemplate.content as ResumeTemplateContent,
@@ -38,9 +37,9 @@ export const ResumeTemplateContentEditor = ({
     setTextContent(JSON.stringify(content || '', null, 4));
   }, [content]);
 
-  const handleJsonEditorUpdated = (data: { newData: unknown }) => {
+  const handleJsonEditorUpdated = (data: ResumeTemplateContent) => {
     console.log('JSON Editor updated:', data);
-    setContent(data.newData as ResumeTemplateContent);
+    setContent(data);
   };
 
   const handleTextEditorBlur = (value: string) => {
@@ -127,22 +126,58 @@ export const ResumeTemplateContentEditor = ({
           </div>
         </div>
 
-        <div className="col-span-2">
-          <label htmlFor="json-editor" className="block text-sm font-medium text-gray-700">
-            Json Content Editor
-          </label>
-          <div className="overflow-y-scroll h-[600px]">
+        <div className="col-span-4">
+          <div className="flex justify-between mb-2">
+            <label htmlFor="json-editor" className="block text-sm font-medium text-gray-700">
+              Json Content Editor
+            </label>
+            <div>
+              <Button
+                className="rounded-br-none rounded-tr-none"
+                size={'sm'}
+                onClick={() => setEditorMode('tree')}
+                disabled={editorMode === 'tree'}
+              >
+                Tree
+              </Button>
+              <Button
+                className="rounded-none"
+                size={'sm'}
+                onClick={() => setEditorMode('code')}
+                disabled={editorMode === 'code'}
+              >
+                Code
+              </Button>
+              <Button
+                className="rounded-none"
+                size={'sm'}
+                onClick={() => setEditorMode('form')}
+                disabled={editorMode === 'form'}
+              >
+                Form
+              </Button>
+              <Button
+                size={'sm'}
+                className="rounded-bl-none rounded-tl-none"
+                onClick={() => setEditorMode('text')}
+                disabled={editorMode === 'text'}
+              >
+                Text
+              </Button>
+            </div>
+          </div>
+
+          <div className=" ">
             <JsonEditor
-              data={content}
-              collapse={1}
-              indent={2}
-              collapseAnimationTime={100}
-              onUpdate={handleJsonEditorUpdated}
+              className="h-[700px]"
+              json={content}
+              mode={editorMode}
+              onChangeJSON={handleJsonEditorUpdated}
             />
           </div>
         </div>
 
-        <div className="col-span-2">
+        {/* <div className="col-span-2">
           <div className="flex flex-col h-full">
             <label htmlFor="text-content" className="block text-sm font-medium text-gray-700">
               Content
@@ -163,7 +198,7 @@ export const ResumeTemplateContentEditor = ({
               }`}
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

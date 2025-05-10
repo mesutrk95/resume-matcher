@@ -50,6 +50,8 @@ export const CareerProfileGalleryItem = ({ label, url, caption }: CareerProfileC
             <div className="h-full w-full overflow-hidden p-3">
               <Image
                 src={imageUrl}
+                width={200}
+                height={200}
                 alt={`${label} template preview`}
                 className="  w-full object-contain p-4 overflow-hidden hover:mb-2 border rounded-lg"
               />
