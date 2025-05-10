@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { AIRequestDataTable } from './data-table';
+import { AIRequestDataTable } from '@/app/(admin)/admin/ai-requests/data-table';
 import { getAllAIRequests } from '@/actions/admin/ai-requests/getAll';
 
 export const metadata: Metadata = {
