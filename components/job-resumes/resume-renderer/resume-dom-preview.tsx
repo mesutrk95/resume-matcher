@@ -131,10 +131,8 @@ export const ResumeDomPreview = ({
               className={element.tag && HOVER_CLASSES}
               {...(element.tag && {
                 'data-tag': element.tag,
-              })}
-              {...(itemData?.id && {
-                'data-id': itemData.id,
-                id: 'doc-' + itemData.id,
+                'data-id': itemData?.id,
+                id: 'doc-' + itemData?.id,
               })}
               {...props}
             >
@@ -166,10 +164,8 @@ export const ResumeDomPreview = ({
               className={element.tag && HOVER_CLASSES}
               {...(element.tag && {
                 'data-tag': element.tag,
-              })}
-              {...(itemData?.id && {
-                'data-id': itemData.id,
-                id: 'doc-' + itemData.id,
+                'data-id': itemData?.id,
+                id: 'doc-' + itemData?.id,
               })}
               {...props}
             >
@@ -223,7 +219,7 @@ export const ResumeDomPreview = ({
   };
 
   return (
-    <div className="h-full overflow-auto p-8" onClick={handleClick}>
+    <div className="h-full overflow-auto p-5" onClick={handleClick}>
       {resumeTemplate &&
         renderNode({ ...resumeTemplate, type: 'View' } as ResumeTemplateElement, resume, [])}
     </div>

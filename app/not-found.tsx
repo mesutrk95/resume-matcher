@@ -28,7 +28,7 @@ export default function NotFound() {
             Sorry about that! Please visit our homepage to get where you need to go.
           </p>
           <Button asChild>
-            <Link href="/" className="mt-10 px-7 py-3.5">
+            <Link href="/home" className="mt-10 px-7 py-3.5">
               Go back to Homepage
             </Link>
           </Button>
