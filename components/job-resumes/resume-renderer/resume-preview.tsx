@@ -66,9 +66,16 @@ export const ResumePreview = ({
           className="z-10 shadow-lg rounded-full"
           size={'icon'}
           variant="default-outline"
-          onClick={() => {
-            if (!pdfBlob) return;
-            const blobUrl = URL.createObjectURL(new Blob([pdfBlob], { type: 'application/pdf' }));
+          onClick={async () => {
+            const blob = await pdf(
+              <ResumePdfDocument
+                resume={resume}
+                resumeTemplate={resumeTemplate?.content as ResumeTemplateContent}
+                withIdentifiers={false}
+                skipFont={false}
+              />,
+            ).toBlob();
+            const blobUrl = URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
             const a = document.createElement('a');
             document.body.appendChild(a);
             a.style = 'display: none';

@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   description: 'View AI request details in the admin dashboard',
 };
 
-export default async function AIRequestDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function AIRequestDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
   try {
     const request = await getAIRequest({ id });

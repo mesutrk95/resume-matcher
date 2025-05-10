@@ -10,15 +10,16 @@ export const metadata: Metadata = {
 export default async function AIRequestsPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const page = searchParams.page ? Number(searchParams.page) : 1;
-  const pageSize = searchParams.pageSize ? Number(searchParams.pageSize) : 10;
-  const status = searchParams.status as string | undefined;
-  const userId = searchParams.userId as string | undefined;
-  const promptKey = searchParams.promptKey as string | undefined;
-  const sortBy = (searchParams.sortBy as 'createdAt') || 'createdAt';
-  const sortOrder = (searchParams.sortOrder as 'asc' | 'desc') || 'desc';
+  const sp = await searchParams;
+  const page = sp.page ? Number(sp.page) : 1;
+  const pageSize = sp.pageSize ? Number(sp.pageSize) : 10;
+  const status = sp.status as string | undefined;
+  const userId = sp.userId as string | undefined;
+  const promptKey = sp.promptKey as string | undefined;
+  const sortBy = (sp.sortBy as 'createdAt') || 'createdAt';
+  const sortOrder = (sp.sortOrder as 'asc' | 'desc') || 'desc';
 
   const result = await getAllAIRequests({
     page,
