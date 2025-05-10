@@ -6,11 +6,13 @@ import {
   getResumeTemplates,
   updateResumeTemplate as updateRT,
 } from '@/services/resume-template';
-import { ResumeTemplate } from '@prisma/client';
+import { ResumeTemplate, ResumeTemplateStatus } from '@prisma/client';
 
-export const getAllResumeTemplates = withErrorHandling(async (): Promise<ResumeTemplate[]> => {
-  return getResumeTemplates();
-});
+export const getAllResumeTemplates = withErrorHandling(
+  async (status?: ResumeTemplateStatus): Promise<ResumeTemplate[]> => {
+    return getResumeTemplates({ status });
+  },
+);
 
 export const getResumeTemplate = withErrorHandling(
   async (id: string): Promise<ResumeTemplate | null> => {

@@ -153,6 +153,12 @@ model JobResume {
   job      Job?            @relation(fields: [jobId], references: [id], onDelete: SetNull)
 }
 
+enum ResumeTemplateStatus {
+  DRAFT
+  ACTIVE
+  DELETED
+}
+
 model ResumeTemplate {
   id      String  @id @default(cuid())
   name    String?
@@ -162,6 +168,7 @@ model ResumeTemplate {
   updatedAt DateTime @default(now()) @updatedAt
 
   jobResumes JobResume[]
+  status     ResumeTemplateStatus @default(ACTIVE)
 }
 
 enum SubscriptionStatus {

@@ -1,15 +1,15 @@
 'use server';
 
 import { db } from '@/lib/db';
-import { ResumeTemplate } from '@prisma/client';
+import { ResumeTemplate, ResumeTemplateStatus } from '@prisma/client';
 
 export async function getRootDir() {
   const rootDir = process.cwd();
   return rootDir;
 }
 
-export const getResumeTemplates = async () => {
-  return db.resumeTemplate.findMany();
+export const getResumeTemplates = async (filter?: { status?: ResumeTemplateStatus }) => {
+  return db.resumeTemplate.findMany({ where: filter });
 };
 
 export const getResumeTemplateById = async (id?: string) => {

@@ -21,7 +21,7 @@ import { ResumeTemplateContent } from '@/types/resume-template';
 import { ResumePdfDocument } from './resume-renderer/resume-pdf-document';
 import { runAction } from '@/app/_utils/runAction';
 import { getAllResumeTemplates } from '@/actions/resume-templates';
-import { ResumeTemplate } from '@prisma/client';
+import { ResumeTemplate, ResumeTemplateStatus } from '@prisma/client';
 
 /**
  * Individual resume design item with skeleton loading
@@ -134,7 +134,7 @@ const ResumeDesignList = ({
     const fetchTemplates = async () => {
       try {
         startFetchResumeTemplatesTransition(async () => {
-          const result = await runAction(getAllResumeTemplates);
+          const result = await runAction(getAllResumeTemplates(ResumeTemplateStatus.ACTIVE));
           if (result.success) {
             setItems(result.data || []);
           }
