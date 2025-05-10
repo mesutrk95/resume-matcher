@@ -70,7 +70,12 @@ export default async function AdminResumeTemplatesPage({
               resumeTemplates.map(rt => (
                 <tr key={rt.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{rt.id}</div>
+                    <Link
+                      href={`/admin/resume-templates/${rt.id}`}
+                      className="text-sm font-medium text-gray-900"
+                    >
+                      {rt.id}
+                    </Link>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{rt.name}</div>

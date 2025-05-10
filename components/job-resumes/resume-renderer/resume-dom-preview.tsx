@@ -9,12 +9,16 @@ import { JSONPath } from 'jsonpath-plus';
 import moment from 'moment';
 import React, { useCallback, useMemo } from 'react';
 
+const HOVER_CLASSES = 'hover:bg-slate-100 hover:rounded cursor-pointer';
+
 export const ResumeDomPreview = ({
   resume,
   resumeTemplate,
+  onClickItem,
 }: {
   resume: ResumeContent;
   resumeTemplate: ResumeTemplateContent;
+  onClickItem?: (tag?: string, id?: string) => void;
 }) => {
   const getClassStyles = useCallback(
     (name?: ResumeTemplateClass) => {
@@ -124,6 +128,12 @@ export const ResumeDomPreview = ({
             <div
               key={index}
               style={{ ...element.style, ...getClassStyles(element.class) }}
+              className={element.tag && HOVER_CLASSES}
+              {...(element.tag && {
+                'data-tag': element.tag,
+                'data-id': itemData?.id,
+                id: 'doc-' + itemData?.id,
+              })}
               {...props}
             >
               {element.elements &&
@@ -151,6 +161,12 @@ export const ResumeDomPreview = ({
             <ElementType
               key={index}
               style={{ ...element.style, ...getClassStyles(element.class) }}
+              className={element.tag && HOVER_CLASSES}
+              {...(element.tag && {
+                'data-tag': element.tag,
+                'data-id': itemData?.id,
+                id: 'doc-' + itemData?.id,
+              })}
               {...props}
             >
               {textData}
@@ -177,8 +193,33 @@ export const ResumeDomPreview = ({
     }
   };
 
+  const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    let currentElement = e.target as HTMLElement;
+
+    // Traverse up the DOM tree until we find an element with data-tag
+    // or until we reach the top of the tree
+    while (currentElement && !currentElement.dataset.tag) {
+      currentElement = currentElement.parentElement as HTMLElement;
+      if (!currentElement) break; // Stop if we reach the top
+    }
+
+    // If we found an element with data-tag
+    if (currentElement) {
+      const dataId = currentElement.dataset.id;
+      const dataTag = currentElement.dataset.tag;
+
+      console.log('Found element with data-tag:', currentElement);
+      console.log('data-id:', dataId);
+      console.log('data-tag:', dataTag);
+
+      onClickItem?.(dataTag, dataId);
+    } else {
+      console.log('No element with data-tag found in the parent hierarchy');
+    }
+  };
+
   return (
-    <div className="h-full overflow-auto p-5">
+    <div className="h-full overflow-auto p-5" onClick={handleClick}>
       {resumeTemplate &&
         renderNode({ ...resumeTemplate, type: 'View' } as ResumeTemplateElement, resume, [])}
     </div>

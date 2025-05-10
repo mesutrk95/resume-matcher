@@ -94,6 +94,7 @@ export const baseResumeTemplateElementSchema = z.object({
   break: z.boolean().optional(),
   wrap: z.boolean().optional(),
   hide: z.union([z.boolean(), z.string()]).optional(),
+  tag: z.string().optional(),
 });
 
 type ResumeTemplateElement = z.infer<typeof baseResumeTemplateElementSchema> & {

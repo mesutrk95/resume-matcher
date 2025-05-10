@@ -43,9 +43,7 @@ export const ResumeTemplateContentEditor = ({
     setContent(data.newData as ResumeTemplateContent);
   };
 
-  const handleTextEditorUpdated = (value: string) => {
-    setTextContent(value);
-
+  const handleTextEditorBlur = (value: string) => {
     // Try to parse the JSON and update the content state if valid
     try {
       const parsedJson = JSON.parse(value);
@@ -56,6 +54,10 @@ export const ResumeTemplateContentEditor = ({
       console.error('JSON parse error:', error);
       setTextError('Invalid JSON format');
     }
+  };
+
+  const handleTextEditorUpdated = (value: string) => {
+    setTextContent(value);
   };
 
   const handleSave = () => {
@@ -155,6 +157,7 @@ export const ResumeTemplateContentEditor = ({
               name="text-content"
               value={textContent}
               onChange={e => handleTextEditorUpdated(e.target.value)}
+              onBlur={e => handleTextEditorBlur(e.target.value)}
               className={`mt-1 block w-full flex-grow rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
                 textError ? 'border-red-500' : 'border-gray-300'
               }`}

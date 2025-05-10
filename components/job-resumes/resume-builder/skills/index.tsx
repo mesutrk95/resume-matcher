@@ -29,6 +29,7 @@ import { randomNDigits } from '@/lib/utils';
 import { ResumeBuilderCard } from '../resume-builder-card';
 import { useResumeBuilder } from '../context/useResumeBuilder';
 import { SkillCategoryItem } from './skill-category-item';
+import { HighlightElement } from '@/components/highlight-element';
 
 // Drag types
 type DragData = {
@@ -375,61 +376,64 @@ export function SkillsSection() {
         </div>
       }
     >
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="space-y-6">
-          <SortableContext
-            items={skillSets.map(set => set.category)}
-            strategy={verticalListSortingStrategy}
-          >
-            {skillSets.map(skillSet => (
-              <SkillCategoryItem
-                key={skillSet.category}
-                skillSet={skillSet}
-                onUpdateCategory={handleUpdateCategory}
-                onDeleteCategory={handleDeleteCategory}
-                onUpdateSkill={handleUpdateSkill}
-                onDeleteSkill={handleDeleteSkill}
-              />
-            ))}
-          </SortableContext>
-        </div>
+      <HighlightElement id="builder-skills">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <div className="space-y-6">
+            <SortableContext
+              items={skillSets.map(set => set.category)}
+              strategy={verticalListSortingStrategy}
+            >
+              {skillSets.map(skillSet => (
+                <SkillCategoryItem
+                  key={skillSet.category}
+                  skillSet={skillSet}
+                  onUpdateCategory={handleUpdateCategory}
+                  onDeleteCategory={handleDeleteCategory}
+                  onUpdateSkill={handleUpdateSkill}
+                  onDeleteSkill={handleDeleteSkill}
+                />
+              ))}
+            </SortableContext>
+          </div>
 
-        {/* Drag Overlay */}
-        <DragOverlay>
-          {activeItem && activeItem.type === 'skill' && activeItem.skill && (
-            <div className="opacity-80">
-              <SkillItem
-                skill={activeItem.skill as ResumeSkillItem}
-                categoryId={activeItem.category.category || ''}
-                onUpdate={updatedSkill => {
-                  const skillId = activeItem.skill!.id;
-                  const categoryId = activeItem.category.category || '';
-                  handleUpdateSkill(skillId, categoryId, updatedSkill);
-                }}
-                onDelete={() => {
-                  const skillId = activeItem.skill!.id;
-                  const categoryId = activeItem.category.category || '';
-                  handleDeleteSkill(skillId, categoryId);
-                }}
-                isDragging
-              />
-            </div>
-          )}
-          {activeItem && activeItem.type === 'category' && activeItem.category && (
-            <div className="opacity-80 border rounded-lg p-3 bg-background">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-medium">{(activeItem.category as ResumeSkillSet).category}</h3>
+          {/* Drag Overlay */}
+          <DragOverlay>
+            {activeItem && activeItem.type === 'skill' && activeItem.skill && (
+              <div className="opacity-80">
+                <SkillItem
+                  skill={activeItem.skill as ResumeSkillItem}
+                  categoryId={activeItem.category.category || ''}
+                  onUpdate={updatedSkill => {
+                    const skillId = activeItem.skill!.id;
+                    const categoryId = activeItem.category.category || '';
+                    handleUpdateSkill(skillId, categoryId, updatedSkill);
+                  }}
+                  onDelete={() => {
+                    const skillId = activeItem.skill!.id;
+                    const categoryId = activeItem.category.category || '';
+                    handleDeleteSkill(skillId, categoryId);
+                  }}
+                  isDragging
+                />
               </div>
-            </div>
-          )}
-        </DragOverlay>
-      </DndContext>
-
+            )}
+            {activeItem && activeItem.type === 'category' && activeItem.category && (
+              <div className="opacity-80 border rounded-lg p-3 bg-background">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-medium">
+                    {(activeItem.category as ResumeSkillSet).category}
+                  </h3>
+                </div>
+              </div>
+            )}
+          </DragOverlay>
+        </DndContext>
+      </HighlightElement>
       <AddSkillsDialog
         open={addingSkills}
         onOpenChange={setAddingSkills}

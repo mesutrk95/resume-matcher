@@ -11,9 +11,10 @@ import { ResumePdfDocument } from './resume-pdf-document';
 import PDFRenderer from './pdf-renderer';
 import { ResumeTemplateContent } from '@/types/resume-template';
 import { ResumeDomPreview } from './resume-dom-preview';
+import { useHighlight } from '@/components/highlight-element/context';
 
 // CV Preview Component with Download Button
-export const ResumePdfPreview = ({
+export const ResumePreview = ({
   resume,
   jobResume,
   pdfMode,
@@ -45,6 +46,8 @@ export const ResumePdfPreview = ({
     }
     if (pdfMode) load();
   }, [resume, resumeTemplate]);
+
+  const { highlightElement } = useHighlight();
 
   if (!isClient || (pdfMode && !pdfBlob)) {
     return <div className="flex justify-center items-center h-96">Loading CV preview...</div>;
@@ -88,6 +91,12 @@ export const ResumePdfPreview = ({
           <ResumeDomPreview
             resume={resume}
             resumeTemplate={resumeTemplate?.content as ResumeTemplateContent}
+            onClickItem={(tag, id) => {
+              const targetId = id || 'builder-' + tag;
+              if (targetId) {
+                highlightElement(targetId);
+              }
+            }}
           />
         )}
       </ScrollArea>

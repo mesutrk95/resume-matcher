@@ -33,6 +33,9 @@ export default async function middleware(req: NextRequest) {
 
     if (isAuthRoutes) {
       if (isLoggedIn) {
+        const url = new URL(req.url);
+        const redirect = url.searchParams.get('redirect');
+        if (redirect) return Response.redirect(new URL(redirect, req.url));
         return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, req.url));
       }
       return;

@@ -2,8 +2,6 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getResumeTemplateById } from '@/services/resume-template';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { ResumeTemplateContentEditor } from './resume-template-content-editor';
 import { Card } from '@/components/ui/card';
 
