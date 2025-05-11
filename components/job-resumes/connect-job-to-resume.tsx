@@ -3,12 +3,23 @@ import { connectJobResumeToJob } from '@/actions/job-resume';
 import { AsyncSelect } from '@/components/ui/async-select';
 import { LoadingButton } from '@/components/ui/loading-button';
 import { Job } from '@prisma/client';
+import clsx from 'clsx';
 import React, { useCallback, useState, useTransition } from 'react';
 import { toast } from 'sonner';
 
 type JobItem = Pick<Job, 'companyName' | 'id' | 'title' | 'location' | 'postedAt'>;
 
-export const ConnectJobToResume = ({ jobResumeId }: { jobResumeId: string }) => {
+export const ConnectJobToResume = ({
+  jobResumeId,
+  className,
+  onJobConnected,
+  connectButtonVariant = 'default',
+}: {
+  jobResumeId: string;
+  className?: string;
+  onJobConnected?: () => void;
+  connectButtonVariant?: 'default' | 'outline';
+}) => {
   const [isConnectingJob, startConnectingJob] = useTransition();
   const [jobId, setJobId] = useState<string>('');
 
@@ -25,13 +36,14 @@ export const ConnectJobToResume = ({ jobResumeId }: { jobResumeId: string }) => 
       connectJobResumeToJob(jobResumeId, jobId)
         .then(() => {
           toast.success('Job connected successfully!');
+          onJobConnected?.();
         })
         .catch(() => toast.error('Something went wrong.'));
     });
   };
 
   return (
-    <div className="min-w-[250px] flex gap-2 justify-center">
+    <div className={clsx('min-w-[250px] flex gap-2 justify-center', className)}>
       <AsyncSelect<JobItem>
         fetcher={fetchData}
         renderOption={item => (
@@ -51,13 +63,13 @@ export const ConnectJobToResume = ({ jobResumeId }: { jobResumeId: string }) => 
         value={jobId}
         onChange={setJobId}
         preload={false}
-        width={'300px'}
+        triggerClassName="flex-grow"
       />
       <LoadingButton
         disabled={!jobId}
         loading={isConnectingJob}
-        variant={'outline'}
-        loadingText="Connecting to job ..."
+        variant={connectButtonVariant}
+        loadingText="Connecting ..."
         onClick={handleConnectJob}
       >
         Connect!

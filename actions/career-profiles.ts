@@ -94,6 +94,7 @@ export const createCareerProfile = withErrorHandling(
         description: description,
         content: resumeContent || DEFAULT_RESUME_CONTENT,
         userId: user?.id!,
+        draft: false,
       },
     });
 

@@ -37,6 +37,8 @@ import { useSubscription } from '@/providers/SubscriptionProvider';
 import { ConnectJobToResume } from '@/components/job-resumes/connect-job-to-resume';
 import { ResumeHeader } from '../../../../../components/job-resumes/job-resume-builder-header';
 import { ResumeTemplateContent } from '@/types/resume-template';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { ConnectJobDialog } from './ConnectJobDialog';
 
 export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job | null }) => {
   const router = useRouter();
@@ -109,8 +111,9 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
   };
 
   const navbarHeight = useMemo(() => 57, []);
-  console.log('Current Resume', resume);
+  if (typeof window != 'undefined') console.log('Current Resume', resume);
 
+  // const [rightPanelActiveTab, setRightPanelActiveTab] = useState<'jd' | 'preview'>('preview');
   return (
     <div>
       <div defaultValue="builder" className="flex flex-col   justify-stretch">
@@ -184,6 +187,27 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
           </div>
         </div>
         <div className=" container">
+          <div className="grid grid-cols-1">
+            {!jobResume.jobId && (
+              <Alert
+                variant="default"
+                className="bg-indigo-100 flex justify-between items-center border-0"
+              >
+                <div className="flex gap-2">
+                  <BriefcaseBusiness className="text-indigo-600" size={16} />
+                  <div>
+                    <AlertTitle className="flex gap-2 font-bold text-indigo-600">
+                      Connect a job!
+                    </AlertTitle>
+                    <AlertDescription className="flex justify-between">
+                      <p>Connect a job to easily customize your resume for that specific role!</p>
+                    </AlertDescription>
+                  </div>
+                </div>
+                <ConnectJobDialog jobResumeId={jobResume.id} />
+              </Alert>
+            )}
+          </div>
           <div className="grid grid-cols-12 gap-2 h-full relative">
             <div className="col-span-7 h-full">
               <Tabs
@@ -237,12 +261,18 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
               >
                 <Tabs
                   defaultValue="preview"
+                  // value={rightPanelActiveTab}
+                  // onValueChange={v =>
+                  //   startRightPanelTabTransition(() =>
+                  //     setRightPanelActiveTab(v as 'jd' | 'preview'),
+                  //   )
+                  // }
                   className="flex flex-col justify-stretch h-full w-full"
                 >
                   <TabsList
                     className="w-full border-b bg-white shrink-0"
                     variant={'outline'}
-                    id="left-tabs"
+                    id="right-tabs"
                   >
                     <TabsTrigger value="preview" variant={'outline'} className="px-5">
                       <ScanEye className="me-2" size={18} />

@@ -75,7 +75,7 @@ export function AsyncSelect<T>({
   value,
   onChange,
   disabled = false,
-  width = '200px',
+  // width = '200px',
   className,
   triggerClassName,
   noResultsMessage,
@@ -261,18 +261,20 @@ export function AsyncSelect<T>({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            'justify-between',
+            'justify-between gap-10',
             disabled && 'opacity-50 cursor-not-allowed',
             triggerClassName,
           )}
-          style={{ width: width }}
+          // style={{ width: width }}
           disabled={disabled}
         >
-          {selectedOption ? getDisplayValue(selectedOption) : placeholder}
+          <span className="text-start w-56 overflow-ellipsis">
+            {selectedOption ? getDisplayValue(selectedOption) : placeholder}
+          </span>
           <ChevronsUpDown className="opacity-50" size={10} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent style={{ width: width }} className={cn('p-0', className)}>
+      <PopoverContent className={cn('p-0 w-[--radix-popover-trigger-width]', className)}>
         <Command shouldFilter={false}>
           <div className="relative border-b w-full">
             <CommandInput

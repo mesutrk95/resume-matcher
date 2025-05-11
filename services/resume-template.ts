@@ -27,5 +27,8 @@ export const updateResumeTemplate = async (resumeTemplate: ResumeTemplate) => {
 };
 
 export const getDefaultResumeTemplate = async () => {
-  return db.resumeTemplate.findFirst();
+  return (
+    (await db.resumeTemplate.findFirst({ where: { name: 'Classic' } })) ||
+    (await db.resumeTemplate.findFirst({ where: { status: ResumeTemplateStatus.ACTIVE } }))
+  );
 };
