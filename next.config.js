@@ -17,6 +17,10 @@ const nextConfig = {
     if (isServer) {
       config.externals.push('mjml');
     }
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      html2canvas: 'html2canvas-pro',
+    };
 
     return config;
   },

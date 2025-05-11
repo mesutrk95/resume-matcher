@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 import { getResumeTemplateById } from '@/services/resume-template';
 import { ResumeTemplateContentEditor } from './resume-template-content-editor';
 import { Card } from '@/components/ui/card';
+import { ResumeContent } from '@/types/resume';
+import sampleResume from './sample-resume.json';
 
 export const metadata: Metadata = {
   title: 'Admin - Edit Resume Template',
@@ -29,7 +31,10 @@ export default async function AdminEdiResumeTemplatePage({
       </div>
 
       <Card className="p-5">
-        <ResumeTemplateContentEditor resumeTemplate={resumeTemplate} />
+        <ResumeTemplateContentEditor
+          resumeTemplate={resumeTemplate}
+          sampleResume={sampleResume as ResumeContent}
+        />
       </Card>
     </div>
   );

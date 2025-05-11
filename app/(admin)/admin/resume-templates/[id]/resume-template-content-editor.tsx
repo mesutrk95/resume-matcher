@@ -2,15 +2,34 @@
 
 import { updateResumeTemplate } from '@/actions/resume-templates';
 import { runAction } from '@/app/_utils/runAction';
+import { ResumeDomPreview } from '@/components/job-resumes/resume-renderer/resume-dom-preview';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LoadingButton } from '@/components/ui/loading-button';
 import { resumeTemplateSchema } from '@/schemas/resume-template.schema';
+import { ResumeContent } from '@/types/resume';
 import { ResumeTemplateContent } from '@/types/resume-template';
 import { ResumeTemplate } from '@prisma/client';
 import dynamic from 'next/dynamic';
 import { useState, useEffect, useTransition } from 'react';
 import { toast } from 'sonner';
+
+// import { jsPDF } from 'jspdf';
+
+// const generatePDF = async () => {
+//   const element = document.getElementById('aaaaa');
+//   const doc = new jsPDF('p', 'mm', 'a4');
+//   if (!element) return;
+//   await doc.html(element, {
+//     callback: function (doc) {
+//       doc.save('document.pdf');
+//     },
+//     x: 10,
+//     y: 10,
+//     width: 180, // Target width in the PDF document
+//     windowWidth: element.offsetWidth, // Window width in CSS pixels
+//   });
+// };
 
 const JsonEditor = dynamic(() => import('@/components/shared/json-editor'), {
   loading: () => <p>Loading Json Editor...</p>,
@@ -19,44 +38,20 @@ const JsonEditor = dynamic(() => import('@/components/shared/json-editor'), {
 
 export const ResumeTemplateContentEditor = ({
   resumeTemplate,
+  sampleResume,
 }: {
   resumeTemplate: ResumeTemplate;
+  sampleResume?: ResumeContent;
 }) => {
   const [editorMode, setEditorMode] = useState<'code' | 'text' | 'tree' | 'form'>('tree');
   const [saving, startSaveTransition] = useTransition();
   const [content, setContent] = useState<ResumeTemplateContent | null>(
     resumeTemplate.content as ResumeTemplateContent,
   );
-  const [textContent, setTextContent] = useState<string>(
-    JSON.stringify(resumeTemplate.content || '', null, 4),
-  );
-  const [textError, setTextError] = useState<string | null>(null);
-
-  // Update textContent when JSON editor changes content
-  useEffect(() => {
-    setTextContent(JSON.stringify(content || '', null, 4));
-  }, [content]);
 
   const handleJsonEditorUpdated = (data: ResumeTemplateContent) => {
     console.log('JSON Editor updated:', data);
     setContent(data);
-  };
-
-  const handleTextEditorBlur = (value: string) => {
-    // Try to parse the JSON and update the content state if valid
-    try {
-      const parsedJson = JSON.parse(value);
-      setContent(parsedJson as ResumeTemplateContent);
-      setTextError(null);
-    } catch (error) {
-      // If there's a parse error, keep the text value but don't update the JSON editor
-      console.error('JSON parse error:', error);
-      setTextError('Invalid JSON format');
-    }
-  };
-
-  const handleTextEditorUpdated = (value: string) => {
-    setTextContent(value);
   };
 
   const handleSave = () => {
@@ -126,7 +121,7 @@ export const ResumeTemplateContentEditor = ({
           </div>
         </div>
 
-        <div className="col-span-4">
+        <div className="col-span-2">
           <div className="flex justify-between mb-2">
             <label htmlFor="json-editor" className="block text-sm font-medium text-gray-700">
               Json Content Editor
@@ -175,6 +170,22 @@ export const ResumeTemplateContentEditor = ({
               onChangeJSON={handleJsonEditorUpdated}
             />
           </div>
+        </div>
+        <div className="col-span-2">
+          {content && sampleResume && (
+            <div className="h-[700px] overflow-y-auto ">
+              {/* <Button
+                onClick={async () => {
+                  generatePDF();
+                }}
+              >
+                Dowload
+              </Button> */}
+              <div className="border rounded">
+                <ResumeDomPreview resumeTemplate={content} resume={sampleResume} />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* <div className="col-span-2">
