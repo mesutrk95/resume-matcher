@@ -1,8 +1,8 @@
 import { getJobResumeStatusFlags } from '@/actions/job-resume';
 import { LottieAnimatedIcon } from '@/app/_components/lottie-animated-icon';
-import { runAction } from '@/app/_utils/runAction';
 import { useRepeat } from '@/app/hooks/use-repeat';
 import { Button } from '@/components/ui/button';
+import { trpc } from '@/providers/trpc';
 import { JobResumeStatusFlags, JobResumeStatusFlagState } from '@/types/job-resume';
 import { JobResume } from '@prisma/client';
 import clsx from 'clsx';
@@ -56,7 +56,7 @@ export const ResumeBuilderAssistant = forwardRef<
 >(({ onVisibilityChange, initialStatusFlags, jobResume }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isNoticed, setIsNoticied] = useState(false);
-  const [statusFlags, setStatusFlags] = useState(initialStatusFlags);
+  // const [statusFlags, setStatusFlags] = useState(initialStatusFlags);
 
   // Expose methods to parent through ref
   useImperativeHandle(ref, () => ({
@@ -136,6 +136,16 @@ export const ResumeBuilderAssistant = forwardRef<
     },
   };
 
+  const {
+    data: { data: statusFlags },
+    isFetched,
+    refetch,
+  } = trpc.getJobResumeStatusFlags.useQuery(jobResume.id, {
+    initialData: { data: initialStatusFlags, success: true },
+    enabled: false,
+  });
+
+  // const statusFlags = initialStatusFlags;
   const analying =
     statusFlags?.analyzingEducations === 'pending' ||
     statusFlags?.analyzingExperiences === 'pending' ||
@@ -150,12 +160,9 @@ export const ResumeBuilderAssistant = forwardRef<
   }, [analying]);
 
   // long pulling...
-  // useRepeat(async () => {
-  //   const newStatusFlags = await runAction(getJobResumeStatusFlags(jobResume.id));
-  //   if (newStatusFlags.success) {
-  //     setStatusFlags(newStatusFlags.data);
-  //   }
-  // }, 1000);
+  useRepeat(async () => {
+    refetch();
+  }, 20000);
 
   return (
     <div className="sticky bottom-0 left-0 w-full ">
