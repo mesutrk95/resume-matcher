@@ -14,7 +14,7 @@ import {
   getChatResponse,
 } from '@/lib/ai';
 import { JobAnalyzeResult } from '@/types/job';
-import { chunkArray, hashString } from '@/lib/utils';
+import { chunkArray, hashString, wait } from '@/lib/utils';
 import { analyzeJobByAI } from './job';
 import { convertResumeObjectToString, resumeExperiencesToString } from '@/lib/resume-content';
 import {
@@ -44,16 +44,18 @@ import { Reasons } from '@/domains/reasons';
 import { updateJobResumeStatusFlags } from '@/services/job-resume';
 import { JobResumeStatusFlags } from '@/types/job-resume';
 
-export const getJobResumeStatusFlags = withErrorHandling(async (id: string) => {
-  const user = await currentUser();
-  const jobResume = await db.jobResume.findUnique({
-    where: { id, userId: user?.id },
-    select: {
-      statusFlags: true,
-    },
-  });
-  return jobResume?.statusFlags as JobResumeStatusFlags;
-});
+export const getJobResumeStatusFlags = withErrorHandling(
+  async (id: string): Promise<JobResumeStatusFlags> => {
+    const user = await currentUser();
+    const jobResume = await db.jobResume.findUnique({
+      where: { id, userId: user?.id },
+      select: {
+        statusFlags: true,
+      },
+    });
+    return jobResume?.statusFlags as JobResumeStatusFlags;
+  },
+);
 
 export const createJobResume = withErrorHandling(
   async (careerProfileId?: string, jobId?: string, forceRevalidate?: boolean) => {
@@ -574,98 +576,112 @@ export const analyzeResumeContent = withErrorHandling(
     }
     if (!jobResume.job) throw new BadRequestException('The resume has not been attached to a job!');
 
-    const resumeAnalyzeResults = jobResume.analyzeResults as ResumeAnalyzeResults;
-    const oldItemsScore = resumeAnalyzeResults.itemsScore;
+    try {
+      await updateJobResumeStatusFlags(jobResume, {
+        analyzingExperiences: 'pending',
+        analyzingProjects: 'pending',
+      });
 
-    const resume = jobResume?.content as ResumeContent;
-    let variations = resume.experiences
-      .map(experience => experience.items.map(i => i.variations).flat())
-      .flat()
-      .filter(v => !!v.content)
-      .map(v => ({ ...v, hash: hashString(v.content!, 8) }));
+      const resumeAnalyzeResults = jobResume.analyzeResults as ResumeAnalyzeResults;
+      const oldItemsScore = resumeAnalyzeResults.itemsScore;
 
-    // concat with project items
-    variations = [
-      ...variations,
-      ...resume.projects.map(p => ({
-        enabled: p.enabled,
-        id: p.id,
-        content: p.content,
-        hash: hashString(p.content || '', 8),
-      })),
-    ];
+      const resume = jobResume?.content as ResumeContent;
+      let variations = resume.experiences
+        .map(experience => experience.items.map(i => i.variations).flat())
+        .flat()
+        .filter(v => !!v.content)
+        .map(v => ({ ...v, hash: hashString(v.content!, 8) }));
 
-    variations = forceCheckAll
-      ? variations
-      : variations.filter(v => oldItemsScore?.[v.id]?.hash !== v.hash);
+      // concat with project items
+      variations = [
+        ...variations,
+        ...resume.projects.map(p => ({
+          enabled: p.enabled,
+          id: p.id,
+          content: p.content,
+          hash: hashString(p.content || '', 8),
+        })),
+      ];
 
-    if (variations.length === 0) return resumeAnalyzeResults;
+      variations = forceCheckAll
+        ? variations
+        : variations.filter(v => oldItemsScore?.[v.id]?.hash !== v.hash);
 
-    let jobAnalyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
-    if (!jobAnalyzeResults?.summary) {
-      const jobAnalyzeResult = await analyzeJobByAI(jobResume.job.id);
-      if (!jobAnalyzeResult.data) {
-        throw new Error(jobAnalyzeResult.error?.message || 'Failed to analyze job');
+      if (variations.length === 0) return resumeAnalyzeResults;
+
+      let jobAnalyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
+      if (!jobAnalyzeResults?.summary) {
+        const jobAnalyzeResult = await analyzeJobByAI(jobResume.job.id);
+        if (!jobAnalyzeResult.data) {
+          throw new Error(jobAnalyzeResult.error?.message || 'Failed to analyze job');
+        }
+        jobAnalyzeResults = jobAnalyzeResult.data.analyzeResults!;
       }
-      jobAnalyzeResults = jobAnalyzeResult.data.analyzeResults!;
-    }
 
-    await updateJobResumeStatusFlags(jobResume, {
-      analyzingExperiences: 'pending',
-      analyzingProjects: 'pending',
-    });
+      // const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
 
-    // const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
+      const chunks = chunkArray(variations, 10);
 
-    const chunks = chunkArray(variations, 10);
-
-    const results = await Promise.all(
-      chunks.map(items =>
-        analyzeResumeExperiencesScores(
-          jobAnalyzeResults,
-          items.map(v => `${v.id} - ${v.content}`).join('\n'),
+      const results = await Promise.all(
+        chunks.map(items =>
+          analyzeResumeExperiencesScores(
+            jobAnalyzeResults,
+            items.map(v => `${v.id} - ${v.content}`).join('\n'),
+          ),
         ),
-      ),
-    );
-    const scores = results.map(res => res.result as ResumeItemScoreAnalyze[]).flat();
+      );
+      const scores = results.map(res => res.result as ResumeItemScoreAnalyze[]).flat();
 
-    // const resp = await analyzeResumeExperiencesScores(
-    //   jobAnalyzeResults,
-    //   variations.map((v) => `${v.id} - ${v.content}`).join("\n")
-    // )
+      // const resp = await analyzeResumeExperiencesScores(
+      //   jobAnalyzeResults,
+      //   variations.map((v) => `${v.id} - ${v.content}`).join("\n")
+      // )
 
-    // const scores = allItems ;
-    const scoresMap = scores.reduce(
-      (acc, curr) => ({
-        ...acc,
-        [curr.id]: {
-          ...curr,
-          hash: hashString(variations.find(v => curr.id === v.id)?.content || '', 8),
+      // const scores = allItems ;
+      const scoresMap = scores.reduce(
+        (acc, curr) => ({
+          ...acc,
+          [curr.id]: {
+            ...curr,
+            hash: hashString(variations.find(v => curr.id === v.id)?.content || '', 8),
+          },
+        }),
+        {},
+      );
+
+      const newAnalyzeResults = {
+        ...resumeAnalyzeResults,
+        itemsScore: {
+          ...resumeAnalyzeResults.itemsScore,
+          ...scoresMap,
         },
-      }),
-      {},
-    );
+      };
 
-    const newAnalyzeResults = {
-      ...resumeAnalyzeResults,
-      itemsScore: {
-        ...resumeAnalyzeResults.itemsScore,
-        ...scoresMap,
-      },
-    };
+      await db.jobResume.update({
+        where: { id: jobResumeId },
+        data: {
+          analyzeResults: newAnalyzeResults,
+        },
+      });
+      await updateJobResumeStatusFlags(jobResume, {
+        analyzingExperiences: 'done',
+        analyzingProjects: 'done',
+      });
+      return newAnalyzeResults;
 
-    await db.jobResume.update({
-      where: { id: jobResumeId },
-      data: {
-        analyzeResults: newAnalyzeResults,
-      },
-    });
-    await updateJobResumeStatusFlags(jobResume, {
-      analyzingExperiences: 'done',
-      analyzingProjects: 'done',
-    });
-
-    return newAnalyzeResults;
+      // await wait(10000);
+      // await updateJobResumeStatusFlags(jobResume, {
+      //   analyzingExperiences: 'done',
+      //   analyzingProjects: 'done',
+      // });
+      // return {} as ResumeAnalyzeResults;
+    } catch (ex) {
+      await updateJobResumeStatusFlags(jobResume, {
+        analyzingExperiences: 'error',
+        analyzingProjects: 'error',
+      });
+      throw ex;
+    }
   },
 );
 

@@ -8,7 +8,7 @@ import { JobResume } from '@prisma/client';
 export const updateJobResumeStatusFlags = async (
   jobResume: string | JobResume,
   statusFlags: Partial<JobResumeStatusFlags>,
-) => {
+): Promise<JobResumeStatusFlags> => {
   let jb =
     typeof jobResume === 'string'
       ? await db.jobResume.findUnique({ where: { id: jobResume } })
@@ -16,8 +16,11 @@ export const updateJobResumeStatusFlags = async (
 
   if (!jb) throw new NotFoundException('Job Resume not found');
 
-  return await db.jobResume.update({
+  const newFlags = { ...(jb.statusFlags as JobResumeStatusFlags), ...statusFlags };
+  await db.jobResume.update({
     where: { id: jb.id },
-    data: { statusFlags: { ...(jb.statusFlags as JobResumeStatusFlags), ...statusFlags } },
+    data: { statusFlags: newFlags },
   });
+
+  return newFlags;
 };

@@ -207,3 +207,5 @@ export function deepUpdateValues<T>(
 
   return processObject(result) as T;
 }
+
+export const wait = (delay?: number) => new Promise(resolve => setTimeout(resolve, delay));

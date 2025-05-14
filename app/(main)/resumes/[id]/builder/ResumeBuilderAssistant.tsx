@@ -1,6 +1,10 @@
+import { getJobResumeStatusFlags } from '@/actions/job-resume';
 import { LottieAnimatedIcon } from '@/app/_components/lottie-animated-icon';
+import { runAction } from '@/app/_utils/runAction';
+import { useRepeat } from '@/app/hooks/use-repeat';
 import { Button } from '@/components/ui/button';
 import { JobResumeStatusFlags, JobResumeStatusFlagState } from '@/types/job-resume';
+import { JobResume } from '@prisma/client';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronsDown, LucideCheckCircle, LucideLoaderCircle } from 'lucide-react';
@@ -19,11 +23,12 @@ export interface ResumeBuilderAssistantRef {
 // Define the props interface
 interface ResumeBuilderAssistantProps {
   // Add any props you might need
-  statusFlags?: JobResumeStatusFlags;
+  jobResume: JobResume;
+  initialStatusFlags?: JobResumeStatusFlags;
   onVisibilityChange?: (isVisible: boolean) => void;
 }
 
-const AnalyzingItem = ({
+function AnalyzingItem({
   state,
   text,
   loadingText,
@@ -31,7 +36,7 @@ const AnalyzingItem = ({
   state?: JobResumeStatusFlagState;
   text: string;
   loadingText: string;
-}) => {
+}) {
   const loading = state === 'pending';
   return (
     <div className={clsx('flex space-x-1 items-center', loading ? '' : 'text-green-600')}>
@@ -43,14 +48,15 @@ const AnalyzingItem = ({
       <span>{loading ? loadingText : text}</span>
     </div>
   );
-};
+}
 
 export const ResumeBuilderAssistant = forwardRef<
   ResumeBuilderAssistantRef,
   ResumeBuilderAssistantProps
->(({ onVisibilityChange, statusFlags }, ref) => {
+>(({ onVisibilityChange, initialStatusFlags, jobResume }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isNoticed, setIsNoticied] = useState(false);
+  const [statusFlags, setStatusFlags] = useState(initialStatusFlags);
 
   // Expose methods to parent through ref
   useImperativeHandle(ref, () => ({
@@ -142,6 +148,14 @@ export const ResumeBuilderAssistant = forwardRef<
       setIsNoticied(true);
     }
   }, [analying]);
+
+  // long pulling...
+  // useRepeat(async () => {
+  //   const newStatusFlags = await runAction(getJobResumeStatusFlags(jobResume.id));
+  //   if (newStatusFlags.success) {
+  //     setStatusFlags(newStatusFlags.data);
+  //   }
+  // }, 1000);
 
   return (
     <div className="sticky bottom-0 left-0 w-full ">

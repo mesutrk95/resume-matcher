@@ -252,7 +252,8 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                   </TabsContent>
                   <ResumeBuilderAssistant
                     ref={assistantRef}
-                    statusFlags={jobResume.statusFlags as JobResumeStatusFlags}
+                    jobResume={jobResume}
+                    initialStatusFlags={jobResume.statusFlags as JobResumeStatusFlags}
                   />
                 </div>
               </Tabs>
