@@ -140,7 +140,7 @@ export const ResumeBuilderAssistant = forwardRef<
     data: { data: statusFlags },
     isFetched,
     refetch,
-  } = trpc.getJobResumeStatusFlags.useQuery(jobResume.id, {
+  } = trpc.jobResume.getStatusFlags.useQuery(jobResume.id, {
     initialData: { data: initialStatusFlags, success: true },
     enabled: false,
   });
@@ -274,3 +274,5 @@ export const ResumeBuilderAssistant = forwardRef<
     </div>
   );
 });
+
+ResumeBuilderAssistant.displayName = 'ResumeBuilderAssistant';
