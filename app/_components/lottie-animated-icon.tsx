@@ -8,9 +8,15 @@ interface LottieAnimatedIconProps {
   icon?: string;
   width?: number;
   height?: number;
+  autoPlay?: boolean;
 }
 
-export const LottieAnimatedIcon = ({ icon, width = 20, height = 20 }: LottieAnimatedIconProps) => {
+export const LottieAnimatedIcon = ({
+  icon,
+  width = 20,
+  height = 20,
+  autoPlay,
+}: LottieAnimatedIconProps) => {
   const [animationData, setAnimationData] = useState<unknown | undefined>();
   const container = useRef<HTMLDivElement>(null);
   const parentRef = useRef<HTMLElement | null>(null);
@@ -27,7 +33,7 @@ export const LottieAnimatedIcon = ({ icon, width = 20, height = 20 }: LottieAnim
 
   // Setup animation
   useEffect(() => {
-    if (!container?.current) return;
+    if (!container?.current || autoPlay) return;
 
     // Find parent element
     if (container.current.parentElement) {
@@ -52,7 +58,12 @@ export const LottieAnimatedIcon = ({ icon, width = 20, height = 20 }: LottieAnim
   return (
     <div ref={container} style={{ width, height }}>
       {typeof animationData !== 'undefined' && (
-        <Lottie animationData={animationData} loop={isParentHovering} style={{ width, height }} />
+        <Lottie
+          className="!stroke-amber-500"
+          animationData={animationData}
+          loop={autoPlay || isParentHovering}
+          style={{ width, height }}
+        />
       )}
     </div>
   );

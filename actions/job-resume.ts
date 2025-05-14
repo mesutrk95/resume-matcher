@@ -41,13 +41,18 @@ import {
 import z from 'zod';
 import { withErrorHandling } from '@/lib/with-error-handling';
 import { Reasons } from '@/domains/reasons';
+import { updateJobResumeStatusFlags } from '@/services/job-resume';
+import { JobResumeStatusFlags } from '@/types/job-resume';
 
-export const findJobResume = withErrorHandling(async (id: string) => {
+export const getJobResumeStatusFlags = withErrorHandling(async (id: string) => {
   const user = await currentUser();
   const jobResume = await db.jobResume.findUnique({
     where: { id, userId: user?.id },
+    select: {
+      statusFlags: true,
+    },
   });
-  return jobResume;
+  return jobResume?.statusFlags as JobResumeStatusFlags;
 });
 
 export const createJobResume = withErrorHandling(
@@ -550,7 +555,7 @@ const analyzeResumeProjectsScores = async (analyzeResults: JobAnalyzeResult, con
   }
 };
 
-export const analyzeResumeItemsScores = withErrorHandling(
+export const analyzeResumeContent = withErrorHandling(
   async (jobResumeId: string, forceCheckAll?: boolean) => {
     const user = await currentUser();
 
@@ -605,6 +610,11 @@ export const analyzeResumeItemsScores = withErrorHandling(
       jobAnalyzeResults = jobAnalyzeResult.data.analyzeResults!;
     }
 
+    await updateJobResumeStatusFlags(jobResume, {
+      analyzingExperiences: 'pending',
+      analyzingProjects: 'pending',
+    });
+
     // const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
 
     const chunks = chunkArray(variations, 10);
@@ -649,6 +659,10 @@ export const analyzeResumeItemsScores = withErrorHandling(
       data: {
         analyzeResults: newAnalyzeResults,
       },
+    });
+    await updateJobResumeStatusFlags(jobResume, {
+      analyzingExperiences: 'done',
+      analyzingProjects: 'done',
     });
 
     return newAnalyzeResults;

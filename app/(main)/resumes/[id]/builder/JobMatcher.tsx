@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useMemo, useTransition } from 'react';
+import React, { useMemo, useRef, useTransition } from 'react';
 import { ResumeBuilder } from '@/components/job-resumes/resume-builder';
 import { Job, JobResume } from '@prisma/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useParams, useRouter } from 'next/navigation';
-import { analyzeResumeItemsScores, deleteJobResume } from '@/actions/job-resume';
+import { analyzeResumeContent, deleteJobResume } from '@/actions/job-resume';
 import { ResumePreview } from '@/components/job-resumes/resume-renderer/resume-preview';
 import { updateCareerProfileContent } from '@/actions/career-profiles';
 import {
@@ -39,9 +39,12 @@ import { ResumeHeader } from '../../../../../components/job-resumes/job-resume-b
 import { ResumeTemplateContent } from '@/types/resume-template';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ConnectJobDialog } from './ConnectJobDialog';
+import { ResumeBuilderAssistant, ResumeBuilderAssistantRef } from './ResumeBuilderAssistant';
+import { JobResumeStatusFlags } from '@/types/job-resume';
 
 export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job | null }) => {
   const router = useRouter();
+  const assistantRef = useRef<ResumeBuilderAssistantRef | null>(null);
   const { isTrialingBannerEnable } = useSubscription();
   const { id: jobResumeId } = useParams();
   const { resume, resumeTemplate, setResumeAnalyzeResults } = useResumeBuilder();
@@ -49,11 +52,11 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
   const [isDeleting, startDeletingTransition] = useTransition();
   const [isSyncingToCareerProfile, startSyncToCareerProfileTransition] = useTransition();
   const [isAnalyzingScores, startAnalyzeScoresTransition] = useTransition();
-  const handleAnalyzeScores = async (forceRefresh: boolean) => {
+  const handleAnalyzeResume = async (forceRefresh: boolean) => {
     startAnalyzeScoresTransition(async () => {
       toast.info('Analyzing resume rates is in progress!');
       try {
-        const results = await analyzeResumeItemsScores(jobResumeId as string, forceRefresh);
+        const results = await analyzeResumeContent(jobResumeId as string, forceRefresh);
         if (!results.data) {
           toast.error(results.error?.message || 'Failed to analyze scores.');
           return;
@@ -111,7 +114,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
   };
 
   const navbarHeight = useMemo(() => 57, []);
-  if (typeof window != 'undefined') console.log('Current Resume', resume);
+  if (typeof window != 'undefined') console.log('Current', { resume, jobResume });
 
   // const [rightPanelActiveTab, setRightPanelActiveTab] = useState<'jd' | 'preview'>('preview');
   return (
@@ -133,14 +136,14 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuItem
                       disabled={isAnalyzingScores}
-                      onClick={() => handleAnalyzeScores(false)}
+                      onClick={() => handleAnalyzeResume(false)}
                     >
                       <Briefcase size={14} />
                       Analyze Scores
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       disabled={isAnalyzingScores}
-                      onClick={() => handleAnalyzeScores(true)}
+                      onClick={() => handleAnalyzeResume(true)}
                     >
                       <Briefcase size={14} />
                       Clean & Analyze Scores
@@ -247,6 +250,10 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                       resumeTemplate={resumeTemplate?.content as ResumeTemplateContent}
                     />
                   </TabsContent>
+                  <ResumeBuilderAssistant
+                    ref={assistantRef}
+                    statusFlags={jobResume.statusFlags as JobResumeStatusFlags}
+                  />
                 </div>
               </Tabs>
             </div>
