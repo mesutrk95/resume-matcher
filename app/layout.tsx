@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
 import { Toaster } from '@/components/ui/sonner';
+import { TRPCProvider } from '@/providers/trpc/TRPCProvider';
 import NextTopLoader from 'nextjs-toploader';
 import Head from 'next/head';
 import { Montserrat } from 'next/font/google';
@@ -25,9 +26,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <body className={clsx(montserrat.className, 'bg-slate-100')}>
-        <NextTopLoader />
-        <Toaster position="bottom-left" richColors theme="light" />
-        {children}
+        <TRPCProvider>
+          <NextTopLoader />
+          <Toaster position="bottom-left" richColors theme="light" />
+          {children}
+        </TRPCProvider>
       </body>
     </html>
   );

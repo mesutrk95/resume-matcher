@@ -69,10 +69,9 @@ export default async function middleware(req: NextRequest) {
 // Optionally, don't invoke Middleware on some paths
 export const config = {
   matcher: [
-    '/((?!api/webhooks|.+\\.[\\w]+$|_next).*)',
+    '/((?!api/webhooks|api/trpc|.+\\.[\\w]+$|_next).*)',
     '/',
-    '/(api(?!/webhooks).*)',
-    '/(trpc)(.*)',
+    '/(api(?!/webhooks)(?!/trpc).*)',
   ],
 };
 

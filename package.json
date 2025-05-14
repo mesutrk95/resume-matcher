@@ -58,7 +58,11 @@
     "@radix-ui/react-tooltip": "^1.2.6",
     "@react-pdf/renderer": "=4.3.0",
     "@stripe/stripe-js": "^7.2.0",
-    "@tanstack/react-query": "^5.74.4",
+    "@tanstack/react-query": "^5.76.1",
+    "@trpc/client": "^11.1.2",
+    "@trpc/react": "^9.27.4",
+    "@trpc/react-query": "^11.1.2",
+    "@trpc/server": "^11.1.2",
     "ajv": "^8.17.1",
     "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
@@ -108,7 +112,7 @@
     "uuid": "^11.1.0",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0",
-    "zod": "^3.24.3",
+    "zod": "^3.24.4",
     "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
