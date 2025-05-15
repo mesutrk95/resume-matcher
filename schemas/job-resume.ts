@@ -7,4 +7,6 @@ export const jobResumeStatusFlags = z.object({
   analyzingProjects: jobResumeStatusFlagState.optional(),
   analyzingSummaries: jobResumeStatusFlagState.optional(),
   analyzingEducations: jobResumeStatusFlagState.optional(),
+
+  updatedAt: z.string().optional(),
 });

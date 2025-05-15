@@ -55,20 +55,21 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
   const analyzeResumeContent = trpc.jobResume.analyzeResumeContent.useMutation();
 
   const handleAnalyzeResume = async (forceRefresh: boolean) => {
-    toast.info('Analyzing resume rates is in progress!');
+    // toast.info('Analyzing resume rates is in progress!');
 
-    analyzeResumeContent
-      .mutateAsync({
-        jobResumeId: jobResume.id,
-        forceCheckAll: forceRefresh,
-      })
-      .then(result => {
-        setResumeAnalyzeResults(result);
-        toast.success('Analyze resume rates and scores are successfully done!');
-      });
+    const stream = await analyzeResumeContent.mutateAsync({
+      jobResumeId: jobResume.id,
+      forceCheckAll: forceRefresh,
+    });
 
-    await wait(1000);
-    assistantRef.current?.checkNow();
+    for await (const update of stream) {
+      assistantRef.current?.setStatusFlags(update.statusFlags);
+      if (update.analyzeResults) {
+        setResumeAnalyzeResults(update.analyzeResults);
+      }
+    }
+    // await wait(1000);
+    // assistantRef.current?.checkNow();
   };
   const handleSyncToCareerProfile = async () => {
     const careerProfileId = jobResume.baseCareerProfileId;

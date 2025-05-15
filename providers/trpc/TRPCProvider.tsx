@@ -38,7 +38,7 @@ export function TRPCProvider({ children }: { children: ReactNode }) {
             return observable(observer => {
               const unsubscribe = next(op).subscribe({
                 next(result) {
-                  console.log('here', observer);
+                  // console.log('here', observer);
 
                   // Handle successful response
                   observer.next(result);
@@ -69,9 +69,9 @@ export function TRPCProvider({ children }: { children: ReactNode }) {
             });
           };
         },
-        httpBatchLink({
-          url: `${getBaseUrl()}/api/trpc`,
-        }),
+        // httpBatchLink({
+        //   url: `${getBaseUrl()}/api/trpc`,
+        // }),
         httpBatchStreamLink({
           url: `${getBaseUrl()}/api/trpc`,
         }),

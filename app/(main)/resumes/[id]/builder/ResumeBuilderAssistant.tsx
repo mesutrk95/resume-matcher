@@ -20,6 +20,7 @@ export interface ResumeBuilderAssistantRef {
   close: () => void;
   toggle: () => void;
   checkNow: () => void;
+  setStatusFlags: (sf: JobResumeStatusFlags) => void;
 }
 
 interface ResumeBuilderAssistantProps {
@@ -71,6 +72,19 @@ function isAnalyzing(statusFlags?: JobResumeStatusFlags) {
   );
 }
 
+function getLastStatusFlags(
+  remoteStatusFlags?: JobResumeStatusFlags,
+  localStatusFlags?: JobResumeStatusFlags,
+) {
+  if (!localStatusFlags) {
+    return remoteStatusFlags;
+  }
+
+  return new Date(remoteStatusFlags?.updatedAt || 0) > new Date(localStatusFlags.updatedAt || 0)
+    ? remoteStatusFlags
+    : localStatusFlags;
+}
+
 export const ResumeBuilderAssistant = forwardRef<
   ResumeBuilderAssistantRef,
   ResumeBuilderAssistantProps
@@ -78,6 +92,7 @@ export const ResumeBuilderAssistant = forwardRef<
   const [isVisible, setIsVisible] = useState(false);
   const [isNoticed, setIsNoticied] = useState(true);
   // const [statusFlags, setStatusFlags] = useState(initialStatusFlags);
+  const [localStatusFlags, setLocalStatusFlags] = useState<JobResumeStatusFlags | undefined>();
 
   // Function to toggle visibility
   const toggleVisibility = () => {
@@ -151,18 +166,19 @@ export const ResumeBuilderAssistant = forwardRef<
   };
 
   const {
-    data: { data: statusFlags },
+    data: remoteStatusFlags,
     isFetched,
     refetch,
   } = trpc.jobResume.getStatusFlags.useQuery(jobResume.id, {
-    initialData: { data: initialStatusFlags, success: true },
+    initialData: initialStatusFlags,
     enabled: true,
     refetchInterval: query => {
-      const currentStatusFlags = query.state.data?.data;
+      const currentStatusFlags = query.state.data;
       return isAnalyzing(currentStatusFlags) ? 2000 : 20000;
     },
   });
 
+  const statusFlags = getLastStatusFlags(remoteStatusFlags, localStatusFlags);
   const analying = isAnalyzing(statusFlags);
 
   useEffect(() => {
@@ -178,6 +194,7 @@ export const ResumeBuilderAssistant = forwardRef<
     close: () => setIsVisible(false),
     toggle: () => setIsVisible(prev => !prev),
     checkNow: () => refetch(),
+    setStatusFlags: (sf: JobResumeStatusFlags) => setLocalStatusFlags(sf),
   }));
 
   return (

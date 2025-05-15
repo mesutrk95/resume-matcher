@@ -41,7 +41,6 @@ import {
 import z from 'zod';
 import { withErrorHandling } from '@/lib/with-error-handling';
 import { Reasons } from '@/domains/reasons';
-import { updateJobResumeStatusFlags } from '@/services/job-resume';
 import { JobResumeStatusFlags } from '@/types/job-resume';
 
 export const getJobResumeStatusFlags = withErrorHandling(

@@ -3,7 +3,6 @@ import { Reasons } from '@/domains/reasons';
 import { AIRequestModel, ContentItem, getAIServiceManager } from '@/lib/ai';
 import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
-import { BadRequestException, NotFoundException } from '@/lib/exceptions';
 import { chunkArray, hashString } from '@/lib/utils';
 import {
   ProjectMatchingResult,
@@ -14,7 +13,9 @@ import {
 import { protectedProcedure } from '@/server/trpc';
 import { updateJobResumeStatusFlags } from '@/services/job-resume';
 import { JobAnalyzeResult } from '@/types/job';
+import { JobResumeStatusFlags } from '@/types/job-resume';
 import { ResumeAnalyzeResults, ResumeContent, ResumeItemScoreAnalyze } from '@/types/resume';
+import { JobResume } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -100,9 +101,21 @@ const analyzeResumeProjectsScores = async (analyzeResults: JobAnalyzeResult, con
   }
 };
 
+async function updateJobResumeStatusAndStreamEvent(
+  jobResume: JobResume,
+  statusFlags: Partial<JobResumeStatusFlags>,
+  analyzeResults?: ResumeAnalyzeResults,
+) {
+  const result = await updateJobResumeStatusFlags(jobResume, statusFlags);
+  return {
+    statusFlags: result,
+    ...(analyzeResults && { analyzeResults }),
+  };
+}
+
 export default protectedProcedure
   .input(z.object({ jobResumeId: z.string(), forceCheckAll: z.boolean().optional() }))
-  .mutation(async function ({ input, ctx }) {
+  .mutation(async function* ({ input, ctx }) {
     const { jobResumeId, forceCheckAll } = input;
     const user = await currentUser();
 
@@ -129,7 +142,7 @@ export default protectedProcedure
       });
 
     try {
-      await updateJobResumeStatusFlags(jobResume, {
+      yield await updateJobResumeStatusAndStreamEvent(jobResume, {
         analyzingExperiences: 'pending',
         analyzingProjects: 'pending',
         analyzingSummaries: 'pending',
@@ -161,11 +174,16 @@ export default protectedProcedure
         : variations.filter(v => oldItemsScore?.[v.id]?.hash !== v.hash);
 
       if (variations.length === 0) {
-        await updateJobResumeStatusFlags(jobResume, {
-          analyzingExperiences: 'done',
-          analyzingProjects: 'done',
-          analyzingSummaries: 'done',
-        });
+        yield await updateJobResumeStatusAndStreamEvent(
+          jobResume,
+          {
+            analyzingExperiences: 'done',
+            analyzingProjects: 'done',
+            analyzingSummaries: 'done',
+          },
+          jobResume.analyzeResults as ResumeAnalyzeResults,
+        );
+
         return resumeAnalyzeResults;
       }
 
@@ -178,26 +196,24 @@ export default protectedProcedure
         jobAnalyzeResults = jobAnalyzeResult.data.analyzeResults!;
       }
 
-      // const content = variations.map((v) => `${v.id} - ${v.content}`).join("\n");
-
       const chunks = chunkArray(variations, 10);
 
-      const results = await Promise.all(
-        chunks.map(items =>
-          analyzeResumeExperiencesScores(
-            jobAnalyzeResults,
-            items.map(v => `${v.id} - ${v.content}`).join('\n'),
-          ),
-        ),
-      );
+      let processedChunks = 0;
+      const results = [];
+
+      // Process chunks sequentially to show progress
+      for (const chunk of chunks) {
+        const chunkResult = await analyzeResumeExperiencesScores(
+          jobAnalyzeResults,
+          chunk.map(v => `${v.id} - ${v.content}`).join('\n'),
+        );
+
+        results.push(chunkResult);
+        processedChunks++;
+      }
+
       const scores = results.map(res => res.result as ResumeItemScoreAnalyze[]).flat();
 
-      // const resp = await analyzeResumeExperiencesScores(
-      //   jobAnalyzeResults,
-      //   variations.map((v) => `${v.id} - ${v.content}`).join("\n")
-      // )
-
-      // const scores = allItems ;
       const scoresMap = scores.reduce(
         (acc, curr) => ({
           ...acc,
@@ -223,17 +239,24 @@ export default protectedProcedure
           analyzeResults: newAnalyzeResults,
         },
       });
-      await updateJobResumeStatusFlags(jobResume, {
-        analyzingExperiences: 'done',
-        analyzingProjects: 'done',
-      });
-      return newAnalyzeResults;
+
+      yield await updateJobResumeStatusAndStreamEvent(
+        jobResume,
+        {
+          analyzingExperiences: 'done',
+          analyzingProjects: 'done',
+        },
+        newAnalyzeResults as ResumeAnalyzeResults,
+      );
+
+      // return newAnalyzeResults;
     } catch (ex) {
       await updateJobResumeStatusFlags(jobResume, {
         analyzingExperiences: 'error',
         analyzingProjects: 'error',
         analyzingSummaries: 'error',
       });
+
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Something went wrong.',
