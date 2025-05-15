@@ -10,7 +10,7 @@ export type TrpcContextOptions = {
 };
 
 export async function createContext() {
-  const session = await auth();
+  const session = (await auth()) || {};
 
   return {
     session,

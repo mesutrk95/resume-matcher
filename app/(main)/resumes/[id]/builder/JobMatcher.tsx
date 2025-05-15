@@ -5,8 +5,8 @@ import { ResumeBuilder } from '@/components/job-resumes/resume-builder';
 import { Job, JobResume } from '@prisma/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { useParams, useRouter } from 'next/navigation';
-import { analyzeResumeContent, deleteJobResume } from '@/actions/job-resume';
+import { useRouter } from 'next/navigation';
+import { deleteJobResume } from '@/actions/job-resume';
 import { ResumePreview } from '@/components/job-resumes/resume-renderer/resume-preview';
 import { updateCareerProfileContent } from '@/actions/career-profiles';
 import {
@@ -41,33 +41,34 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ConnectJobDialog } from './ConnectJobDialog';
 import { ResumeBuilderAssistant, ResumeBuilderAssistantRef } from './ResumeBuilderAssistant';
 import { JobResumeStatusFlags } from '@/types/job-resume';
+import { trpc } from '@/providers/trpc';
+import { wait } from '@/lib/utils';
 
 export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job | null }) => {
   const router = useRouter();
   const assistantRef = useRef<ResumeBuilderAssistantRef | null>(null);
   const { isTrialingBannerEnable } = useSubscription();
-  const { id: jobResumeId } = useParams();
   const { resume, resumeTemplate, setResumeAnalyzeResults } = useResumeBuilder();
 
   const [isDeleting, startDeletingTransition] = useTransition();
   const [isSyncingToCareerProfile, startSyncToCareerProfileTransition] = useTransition();
-  const [isAnalyzingScores, startAnalyzeScoresTransition] = useTransition();
+  const analyzeResumeContent = trpc.jobResume.analyzeResumeContent.useMutation();
+
   const handleAnalyzeResume = async (forceRefresh: boolean) => {
-    startAnalyzeScoresTransition(async () => {
-      toast.info('Analyzing resume rates is in progress!');
-      try {
-        const results = await analyzeResumeContent(jobResumeId as string, forceRefresh);
-        if (!results.data) {
-          toast.error(results.error?.message || 'Failed to analyze scores.');
-          return;
-        }
-        setResumeAnalyzeResults(results.data);
-        // console.log(results);
+    toast.info('Analyzing resume rates is in progress!');
+
+    analyzeResumeContent
+      .mutateAsync({
+        jobResumeId: jobResume.id,
+        forceCheckAll: forceRefresh,
+      })
+      .then(result => {
+        setResumeAnalyzeResults(result);
         toast.success('Analyze resume rates and scores are successfully done!');
-      } catch (error) {
-        toast.error('Failed to analyze scores.');
-      }
-    });
+      });
+
+    await wait(1000);
+    assistantRef.current?.checkNow();
   };
   const handleSyncToCareerProfile = async () => {
     const careerProfileId = jobResume.baseCareerProfileId;
@@ -135,14 +136,14 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
                     <DropdownMenuItem
-                      disabled={isAnalyzingScores}
+                      disabled={analyzeResumeContent.isPending}
                       onClick={() => handleAnalyzeResume(false)}
                     >
                       <Briefcase size={14} />
                       Analyze Scores
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      disabled={isAnalyzingScores}
+                      disabled={analyzeResumeContent.isPending}
                       onClick={() => handleAnalyzeResume(true)}
                     >
                       <Briefcase size={14} />

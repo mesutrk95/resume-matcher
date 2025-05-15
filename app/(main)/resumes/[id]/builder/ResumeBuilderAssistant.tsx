@@ -7,20 +7,21 @@ import { JobResumeStatusFlags, JobResumeStatusFlagState } from '@/types/job-resu
 import { JobResume } from '@prisma/client';
 import clsx from 'clsx';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronsDown, LucideCheckCircle, LucideLoaderCircle } from 'lucide-react';
+import {
+  ChevronsDown,
+  LucideCheckCircle,
+  LucideCircleSlash,
+  LucideLoaderCircle,
+} from 'lucide-react';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
-// import { LottieAnimatedIcon } from '@/app/_components/lottie-animated-icon';
-// import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-
-// Define the ref interface
 export interface ResumeBuilderAssistantRef {
   open: () => void;
   close: () => void;
   toggle: () => void;
+  checkNow: () => void;
 }
 
-// Define the props interface
 interface ResumeBuilderAssistantProps {
   // Add any props you might need
   jobResume: JobResume;
@@ -32,12 +33,22 @@ function AnalyzingItem({
   state,
   text,
   loadingText,
+  noneText,
 }: {
   state?: JobResumeStatusFlagState;
   text: string;
   loadingText: string;
+  noneText: string;
 }) {
   const loading = state === 'pending';
+  if (!state || state === 'none') {
+    return (
+      <div className={clsx('flex space-x-1 items-center', loading ? '' : 'text-slate-600')}>
+        <LucideCircleSlash className="" size={14} />
+        <span>{noneText}</span>
+      </div>
+    );
+  }
   return (
     <div className={clsx('flex space-x-1 items-center', loading ? '' : 'text-green-600')}>
       {loading ? (
@@ -50,20 +61,23 @@ function AnalyzingItem({
   );
 }
 
+function isAnalyzing(statusFlags?: JobResumeStatusFlags) {
+  if (!statusFlags) return false;
+  return (
+    statusFlags.analyzingEducations === 'pending' ||
+    statusFlags.analyzingExperiences === 'pending' ||
+    statusFlags.analyzingProjects === 'pending' ||
+    statusFlags.analyzingSummaries === 'pending'
+  );
+}
+
 export const ResumeBuilderAssistant = forwardRef<
   ResumeBuilderAssistantRef,
   ResumeBuilderAssistantProps
 >(({ onVisibilityChange, initialStatusFlags, jobResume }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isNoticed, setIsNoticied] = useState(false);
+  const [isNoticed, setIsNoticied] = useState(true);
   // const [statusFlags, setStatusFlags] = useState(initialStatusFlags);
-
-  // Expose methods to parent through ref
-  useImperativeHandle(ref, () => ({
-    open: () => setIsVisible(true),
-    close: () => setIsVisible(false),
-    toggle: () => setIsVisible(prev => !prev),
-  }));
 
   // Function to toggle visibility
   const toggleVisibility = () => {
@@ -142,15 +156,14 @@ export const ResumeBuilderAssistant = forwardRef<
     refetch,
   } = trpc.jobResume.getStatusFlags.useQuery(jobResume.id, {
     initialData: { data: initialStatusFlags, success: true },
-    enabled: false,
+    enabled: true,
+    refetchInterval: query => {
+      const currentStatusFlags = query.state.data?.data;
+      return isAnalyzing(currentStatusFlags) ? 2000 : 20000;
+    },
   });
 
-  // const statusFlags = initialStatusFlags;
-  const analying =
-    statusFlags?.analyzingEducations === 'pending' ||
-    statusFlags?.analyzingExperiences === 'pending' ||
-    statusFlags?.analyzingProjects === 'pending' ||
-    statusFlags?.analyzingSummaries === 'pending';
+  const analying = isAnalyzing(statusFlags);
 
   useEffect(() => {
     if (analying) {
@@ -159,10 +172,13 @@ export const ResumeBuilderAssistant = forwardRef<
     }
   }, [analying]);
 
-  // long pulling...
-  useRepeat(async () => {
-    refetch();
-  }, 20000);
+  // Expose methods to parent through ref
+  useImperativeHandle(ref, () => ({
+    open: () => setIsVisible(true),
+    close: () => setIsVisible(false),
+    toggle: () => setIsVisible(prev => !prev),
+    checkNow: () => refetch(),
+  }));
 
   return (
     <div className="sticky bottom-0 left-0 w-full ">
@@ -246,16 +262,19 @@ export const ResumeBuilderAssistant = forwardRef<
                           state={statusFlags?.analyzingExperiences}
                           loadingText="Analyzing Experiences ..."
                           text="Experiences Analyzed."
+                          noneText="Experiences are not analyzed yet."
                         />
                         <AnalyzingItem
                           state={statusFlags?.analyzingProjects}
                           loadingText="Analyzing Projects ..."
                           text="Projects Analyzed."
+                          noneText="Projects are not analyzed yet."
                         />
                         <AnalyzingItem
                           state={statusFlags?.analyzingSummaries}
                           loadingText="Analyzing Summaries ..."
                           text="Summaries Analyzed."
+                          noneText="Summaries are not analyzed yet."
                         />
                       </div>
                       {/* <div className=" ">
