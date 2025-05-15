@@ -51,7 +51,9 @@ export default async function ResumesPage({ searchParams }: ResumesPageProps) {
           companyName: true,
         },
       },
+      statusFlags: true,
       template: false,
+      content: false,
     },
     orderBy: {
       createdAt: 'desc',
