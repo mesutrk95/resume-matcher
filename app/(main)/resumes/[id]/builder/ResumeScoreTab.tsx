@@ -16,6 +16,7 @@ import dynamic from 'next/dynamic';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { ResumePdfDocument } from '@/components/job-resumes/resume-renderer/resume-pdf-document';
+import { useRouter } from 'next/navigation';
 const GaugeComponent = dynamic(() => import('react-gauge-component'), {
   ssr: false,
 });
@@ -137,6 +138,7 @@ const ImprovementNote = ({
 export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
   const { resume, resumeAnalyzeResults, setResumeAnalyzeResults } = useResumeBuilder();
   const [isRatingResume, startRatingResumeTransition] = useTransition();
+  const router = useRouter();
   const handleResumeScore = () => {
     startRatingResumeTransition(async () => {
       try {
@@ -175,7 +177,12 @@ export const ResumeScoreTab = ({ jobResume }: { jobResume: JobResume }) => {
               <p className="text-muted-foreground text-xs mb-4">
                 Select the job you’re targeting so we can personalize this resume for you!
               </p>
-              <ConnectJobToResume jobResumeId={jobResume.id} />
+              <ConnectJobToResume
+                jobResumeId={jobResume.id}
+                onJobConnected={() => {
+                  router.refresh();
+                }}
+              />
             </div>
           </div>
         </CardContent>

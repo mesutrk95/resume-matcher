@@ -1,5 +1,4 @@
 import { db } from '@/lib/db';
-import { resumeContentSchema } from '@/schemas/resume';
 import { protectedProcedure } from '@/server/trpc';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
@@ -8,9 +7,7 @@ export default protectedProcedure
   .input(
     z.object({
       jobResumeId: z.string(),
-      content: resumeContentSchema.optional(),
-      templateId: z.string().optional(),
-      name: z.string().optional(),
+      jobId: z.string(),
     }),
   )
   .mutation(async ({ input, ctx }) => {
@@ -21,16 +18,30 @@ export default protectedProcedure
         message: 'Email not verified.',
       });
     }
-    const { jobResumeId, ...otherProps } = input;
+    const { jobId, jobResumeId } = input;
 
-    await db.jobResume.update({
+    const job = await db.job.findUnique({
+      where: { id: jobId, userId: user?.id },
+      select: { id: true },
+    });
+
+    if (!job) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Job not found.',
+      });
+    }
+    // Update job in database
+    const updatedJob = await db.jobResume.update({
       where: {
         id: jobResumeId,
-        userId: user?.id,
+        userId: user.id,
       },
       data: {
-        ...otherProps,
+        jobId: job.id,
         updatedAt: new Date(),
       },
     });
+
+    return updatedJob;
   });

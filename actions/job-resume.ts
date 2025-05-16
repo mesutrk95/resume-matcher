@@ -21,40 +21,6 @@ import {
 import { withErrorHandling } from '@/lib/with-error-handling';
 import { Reasons } from '@/domains/reasons';
 
-export const connectJobResumeToJob = withErrorHandling(
-  async (jobResumeId: string, jobId: string) => {
-    const user = await currentUser();
-    if (!user?.emailVerified) {
-      throw new ForbiddenException('Email not verified.');
-    }
-
-    const job = await db.job.findUnique({
-      where: { id: jobId, userId: user?.id },
-      select: { id: true },
-    });
-
-    if (!job) {
-      throw new NotFoundException('Job not found!');
-    }
-    // Update job in database
-    const updatedJob = await db.jobResume.update({
-      where: {
-        id: jobResumeId,
-        userId: user?.id,
-      },
-      data: {
-        jobId: job.id,
-        updatedAt: new Date(),
-      },
-    });
-
-    // revalidatePath("/resumes");
-    revalidatePath(`/resumes/${jobResumeId}/builder`);
-
-    return updatedJob;
-  },
-);
-
 export const analyzeResumeScore = withErrorHandling(
   async (formData: FormData, jobResumeId: string) => {
     const file = formData.get('file') as File;

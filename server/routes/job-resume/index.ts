@@ -4,6 +4,7 @@ import analyzeResumeContent from './analyzeResumeContent';
 import updateJobResume from './updateJobResume';
 import createJobResume from './createJobResume';
 import deleteJobResume from './deleteJobResume';
+import connectJobResumeToJob from './connectJobResumeToJob';
 
 export const jobResumesRouter = router({
   getStatusFlags,
@@ -11,4 +12,5 @@ export const jobResumesRouter = router({
   createJobResume,
   updateJobResume,
   deleteJobResume,
+  connectJobResumeToJob,
 });

@@ -1,6 +1,3 @@
-import { DEFAULT_RESUME_CONTENT } from '@/actions/constants';
-import { currentUser } from '@/lib/auth';
-import { db } from '@/lib/db';
 import { protectedProcedure } from '@/server/trpc';
 import { createJobResume } from '@/services/job-resume';
 import { TRPCError } from '@trpc/server';
@@ -14,7 +11,7 @@ export default protectedProcedure
     }),
   )
   .mutation(async ({ input, ctx }) => {
-    const user = await currentUser();
+    const { user } = ctx.session;
     if (!user?.emailVerified) {
       throw new TRPCError({
         code: 'FORBIDDEN',

@@ -1,7 +1,6 @@
 'use client';
 
 import { updateCareerProfile } from '@/actions/career-profiles';
-import { createJobResume } from '@/actions/job-resume';
 import { runAction } from '@/app/_utils/runAction';
 import {
   ResumeWizard,
@@ -18,6 +17,7 @@ import VerticalWizardSteps, {
   Step,
 } from '@/components/career-profiles/create-career-profile-wizard/vertical-wizard-steps';
 import { Button } from '@/components/ui/button';
+import { trpc } from '@/providers/trpc';
 import { ResumeContent } from '@/types/resume';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -36,6 +36,7 @@ export const CareerProfileResumeWizard = ({
 }) => {
   const router = useRouter();
   const [isFinalizingResume, setFinalizingResume] = useTransition();
+  const createJobResume = trpc.jobResume.createJobResume.useMutation();
 
   if (resumeData) {
     (resumeData as WizardResumeContent).includeOptionalSteps = true;
@@ -64,22 +65,13 @@ export const CareerProfileResumeWizard = ({
         toast.info('Please wait ...', {
           description: `Profile successfully created, making a sample resume of it!`,
         });
-        // const lastToast = toast.getToasts().find(t => t.id === toastId);
-
-        const jobResumeResult = await runAction(createJobResume(careerProfileId));
-
-        if (!jobResumeResult.success) {
-          toast.error('Failure in making resume!', {
-            description: `Something went wrong, Please try again!`,
-          });
-          return;
-        }
+        const jobResumeResult = await createJobResume.mutateAsync({ careerProfileId });
 
         toast.success('Resume created!', {
           description: `Everything is set up to make resumes!`,
         });
 
-        router.push('/resumes/' + jobResumeResult.data?.id + '/builder');
+        router.push('/resumes/' + jobResumeResult.id + '/builder');
       }
     });
   };

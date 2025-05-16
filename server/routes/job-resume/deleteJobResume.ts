@@ -1,11 +1,10 @@
-import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { protectedProcedure } from '@/server/trpc';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 export default protectedProcedure.input(z.string()).mutation(async ({ input, ctx }) => {
-  const user = await currentUser();
+  const { user } = ctx.session;
   if (!user?.emailVerified) {
     throw new TRPCError({
       code: 'FORBIDDEN',

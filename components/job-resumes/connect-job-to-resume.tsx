@@ -1,10 +1,10 @@
 import { getJobs } from '@/actions/job';
-import { connectJobResumeToJob } from '@/actions/job-resume';
 import { AsyncSelect } from '@/components/ui/async-select';
 import { LoadingButton } from '@/components/ui/loading-button';
+import { trpc } from '@/providers/trpc';
 import { Job } from '@prisma/client';
 import clsx from 'clsx';
-import React, { useCallback, useState, useTransition } from 'react';
+import React, { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
 type JobItem = Pick<Job, 'companyName' | 'id' | 'title' | 'location' | 'postedAt'>;
@@ -20,7 +20,7 @@ export const ConnectJobToResume = ({
   onJobConnected?: () => void;
   connectButtonVariant?: 'default' | 'outline';
 }) => {
-  const [isConnectingJob, startConnectingJob] = useTransition();
+  const connectJobResumeToJob = trpc.jobResume.connectJobResumeToJob.useMutation();
   const [jobId, setJobId] = useState<string>('');
 
   const fetchData = useCallback(async (query?: string) => {
@@ -32,13 +32,9 @@ export const ConnectJobToResume = ({
   }, []);
   const getOptionValue = useCallback((item: JobItem) => item.id, []);
   const handleConnectJob = () => {
-    startConnectingJob(async () => {
-      connectJobResumeToJob(jobResumeId, jobId)
-        .then(() => {
-          toast.success('Job connected successfully!');
-          onJobConnected?.();
-        })
-        .catch(() => toast.error('Something went wrong.'));
+    connectJobResumeToJob.mutateAsync({ jobResumeId, jobId }).then(() => {
+      toast.success('Job connected successfully!');
+      onJobConnected?.();
     });
   };
 
@@ -67,7 +63,7 @@ export const ConnectJobToResume = ({
       />
       <LoadingButton
         disabled={!jobId}
-        loading={isConnectingJob}
+        loading={connectJobResumeToJob.isPending}
         variant={connectButtonVariant}
         loadingText="Connecting ..."
         onClick={handleConnectJob}

@@ -1,7 +1,6 @@
 import { analyzeJobByAI } from '@/actions/job';
 import { Reasons } from '@/domains/reasons';
 import { AIRequestModel, ContentItem, getAIServiceManager } from '@/lib/ai';
-import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { chunkArray, hashString, wait } from '@/lib/utils';
 import {
@@ -148,7 +147,7 @@ export default protectedProcedure
   .input(z.object({ jobResumeId: z.string(), forceCheckAll: z.boolean().optional() }))
   .mutation(async function* ({ input, ctx }) {
     const { jobResumeId, forceCheckAll } = input;
-    const user = await currentUser();
+    const { user } = ctx.session;
 
     const jobResume = await db.jobResume.findUnique({
       where: {

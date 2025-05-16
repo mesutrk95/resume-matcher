@@ -7,8 +7,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { wait } from '@/lib/utils';
 import { LinkIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 type ConnectJobDialogProps = {
@@ -19,6 +21,7 @@ type ConnectJobDialogProps = {
 };
 export const ConnectJobDialog = ({ jobResumeId }: ConnectJobDialogProps) => {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -38,8 +41,10 @@ export const ConnectJobDialog = ({ jobResumeId }: ConnectJobDialogProps) => {
           <ConnectJobToResume
             jobResumeId={jobResumeId}
             className="justify-start w-full"
-            onJobConnected={() => {
+            onJobConnected={async () => {
               setOpen(false);
+              await wait(800);
+              router.refresh();
             }}
             connectButtonVariant={'default'}
           />

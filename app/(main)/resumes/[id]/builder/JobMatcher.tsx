@@ -318,7 +318,12 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                                   Select the job you’re targeting so we can personalize this resume
                                   for you!
                                 </p>
-                                <ConnectJobToResume jobResumeId={jobResume.id} />
+                                <ConnectJobToResume
+                                  jobResumeId={jobResume.id}
+                                  onJobConnected={() => {
+                                    router.refresh();
+                                  }}
+                                />
                               </div>
                             </div>
                           )}
