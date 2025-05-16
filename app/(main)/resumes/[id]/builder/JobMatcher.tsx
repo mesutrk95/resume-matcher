@@ -6,7 +6,6 @@ import { Job, JobResume } from '@prisma/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { deleteJobResume } from '@/actions/job-resume';
 import { ResumePreview } from '@/components/job-resumes/resume-renderer/resume-preview';
 import { updateCareerProfileContent } from '@/actions/career-profiles';
 import {
@@ -50,7 +49,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
   const { isTrialingBannerEnable } = useSubscription();
   const { resume, resumeTemplate, setResumeAnalyzeResults } = useResumeBuilder();
 
-  const [isDeleting, startDeletingTransition] = useTransition();
+  const deleteJobResume = trpc.jobResume.deleteJobResume.useMutation();
   const [isSyncingToCareerProfile, startSyncToCareerProfileTransition] = useTransition();
   const analyzeResumeContent = trpc.jobResume.analyzeResumeContent.useMutation();
 
@@ -104,15 +103,13 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
     )
       return;
 
-    startDeletingTransition(async () => {
-      try {
-        await deleteJobResume(jobResume.id);
-        toast.success('Job resume deleted successfully');
-        router.push('/resumes');
-      } catch (error) {
-        toast.error(error?.toString() || 'Something went wrong');
-      }
-    });
+    try {
+      await deleteJobResume.mutateAsync(jobResume.id);
+      toast.success('Job resume deleted successfully');
+      router.push('/resumes');
+    } catch (error) {
+      toast.error(error?.toString() || 'Something went wrong');
+    }
   };
 
   const navbarHeight = useMemo(() => 57, []);
@@ -181,7 +178,10 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                         Sync to Career Profile
                       </DropdownMenuItem>
                     )}
-                    <DropdownMenuItem disabled={isDeleting} onClick={handleDeleteJobResume}>
+                    <DropdownMenuItem
+                      disabled={deleteJobResume.isPending}
+                      onClick={handleDeleteJobResume}
+                    >
                       <Trash size={14} />
                       Delete Resume
                     </DropdownMenuItem>

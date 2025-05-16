@@ -1,17 +1,16 @@
+import { DEFAULT_RESUME_CONTENT } from '@/actions/constants';
 import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
-import { resumeContentSchema } from '@/schemas/resume';
 import { protectedProcedure } from '@/server/trpc';
+import { createJobResume } from '@/services/job-resume';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 export default protectedProcedure
   .input(
     z.object({
-      jobResumeId: z.string(),
-      content: resumeContentSchema.optional(),
-      templateId: z.string().optional(),
-      name: z.string().optional(),
+      careerProfileId: z.string().optional(),
+      jobId: z.string().optional(),
     }),
   )
   .mutation(async ({ input, ctx }) => {
@@ -22,16 +21,8 @@ export default protectedProcedure
         message: 'Email not verified.',
       });
     }
-    const { jobResumeId, ...otherProps } = input;
 
-    await db.jobResume.update({
-      where: {
-        id: jobResumeId,
-        userId: user?.id,
-      },
-      data: {
-        ...otherProps,
-        updatedAt: new Date(),
-      },
-    });
+    const { careerProfileId, jobId } = input;
+
+    return createJobResume(user.id!, careerProfileId, jobId);
   });

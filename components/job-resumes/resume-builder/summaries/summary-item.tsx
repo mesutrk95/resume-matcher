@@ -9,6 +9,8 @@ import { Edit, GripVertical, Save, Trash2, X } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { HighlightElement } from '@/components/highlight-element';
+import { useResumeBuilder } from '../context/useResumeBuilder';
+import { MatchPercentageIndicator } from '../match-percentage-indicator';
 
 type SummaryItemProps = {
   summary: ResumeProfessionalSummary;
@@ -56,6 +58,8 @@ export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
       enabled: checked,
     });
   };
+  const { resumeAnalyzeResults } = useResumeBuilder();
+  const score = resumeAnalyzeResults?.itemsScore?.[summary.id];
 
   return (
     <HighlightElement id={summary.id}>
@@ -86,12 +90,34 @@ export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
                 rows={3}
               />
             ) : (
-              <p className={`text-sm ${!summary.enabled ? 'text-muted-foreground' : ''}`}>
-                {summary.content}
-              </p>
+              <>
+                <p className={`text-sm ${!summary.enabled ? 'text-muted-foreground' : ''}`}>
+                  {summary.content}
+                </p>
+
+                {score && (
+                  <>
+                    {/* <div className="ml-2 inline-flex">
+                          <PercentageIndicator
+                            value={(score?.score || 0) * 100}
+                          />
+                        </div> */}
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      <MatchPercentageIndicator value={(score?.score || 0) * 100} />
+                      {score?.matched_keywords?.map(k => (
+                        <span
+                          key={k}
+                          className="rounded-full px-2 py-1 bg-slate-200 font-bold text-xs"
+                        >
+                          {k}
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </>
             )}
           </div>
-
           <div className="flex gap-2 ml-4">
             {isEditing ? (
               <>

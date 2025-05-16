@@ -14,7 +14,7 @@ import { AlertCircle, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { createJobResume } from '@/actions/job-resume';
+import { createJobResume } from '@/services/job-resume';
 
 interface CreateResumePageProps {
   params: Promise<{
@@ -39,15 +39,12 @@ export default async function CreateResumePage({ params }: CreateResumePageProps
 
   // don't wait directly create resume of the career profile!
   if (careerProfiles.length === 1) {
-    const jobResumeResult = await createJobResume(careerProfiles[0].id);
-
-    // handle creating job resume failed from server side
-    if (!jobResumeResult.success) {
-      return <>{jobResumeResult.error?.message || 'Ops! Something went wrong!'} </>;
+    try {
+      const jobResumeResult = await createJobResume(user?.id!, careerProfiles[0].id);
+      return redirect('/resumes/' + jobResumeResult?.id + '/builder');
+    } catch (error: any) {
+      return <>{error?.message || 'Ops! Something went wrong!'} </>;
     }
-
-    const id = jobResumeResult.data?.id;
-    return redirect('/resumes/' + id + '/builder');
   }
 
   return (

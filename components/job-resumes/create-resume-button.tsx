@@ -1,11 +1,10 @@
 'use client';
 
-import { createJobResume } from '@/actions/job-resume';
-import { runAction } from '@/app/_utils/runAction';
 import { LoadingButton } from '@/components/ui/loading-button';
+import { trpc } from '@/providers/trpc';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useTransition } from 'react';
+import { toast } from 'sonner';
 
 export const CreateResumeButton = ({
   jobId,
@@ -14,28 +13,24 @@ export const CreateResumeButton = ({
   jobId?: string;
   careerProfileId?: string;
 }) => {
-  const [isPending, startTransition] = useTransition();
+  const createJobResume = trpc.jobResume.createJobResume.useMutation();
   const router = useRouter();
-  const handleCreateBlankResume = () => {
-    startTransition(async () => {
-      // Call the Server Action to create the ResumeJob
-      const result = await runAction(createJobResume(careerProfileId, jobId), {
-        successMessage: 'Resume created successfully!',
-        errorMessage: 'Failed to create resume',
-      });
+  const handleCreateBlankResume = async () => {
+    // don't wait directly create resume of the career profile!
 
-      if (result.success && result.data) {
-        // Redirect to the edit page
-        router.push(`/resumes/${result.data.id}/builder`);
-      }
+    const jobResumeResult = await createJobResume.mutateAsync({
+      careerProfileId,
+      jobId,
     });
+    router.push(`/resumes/${jobResumeResult.id}/builder`);
+    toast.success('Resume created successfully!');
   };
 
   return (
     <LoadingButton
       className="flex gap-2 items-center"
       onClick={handleCreateBlankResume}
-      loading={isPending}
+      loading={createJobResume.isPending}
       loadingText="Creating Resume ..."
     >
       {!careerProfileId ? (

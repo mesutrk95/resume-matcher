@@ -1,4 +1,3 @@
-import { getJobResumeStatusFlags } from '@/actions/job-resume';
 import { LottieAnimatedIcon } from '@/app/_components/lottie-animated-icon';
 import { useRepeat } from '@/app/hooks/use-repeat';
 import { Button } from '@/components/ui/button';

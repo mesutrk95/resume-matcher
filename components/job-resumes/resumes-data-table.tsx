@@ -14,12 +14,12 @@ import { Input } from '@/components/ui/input';
 import { ChevronLeft, ChevronRight, Edit, Plus, Search, Trash } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { Job, JobResume } from '@prisma/client';
-import { deleteJobResume } from '@/actions/job-resume'; // Assuming you have an action to delete a job resume
+import { Job, JobResume } from '@prisma/client'; // Assuming you have an action to delete a job resume
 import { toast } from 'sonner';
 import Moment from 'react-moment';
 import { confirmDialog } from '../shared/confirm-dialog';
 import { LinkableTableCell } from '../ui/linkable-table-cell';
+import { trpc } from '@/providers/trpc';
 
 type JobResumeItem = Omit<
   JobResume & { job: Pick<Job, 'companyName'> | null },
@@ -45,7 +45,7 @@ export function JobResumesDataTable({
   const router = useRouter();
   const pathname = usePathname();
   const [search, setSearch] = useState(searchQuery);
-  const [isDeleting, startDeletingTransition] = useTransition();
+  const deleteJobResume = trpc.jobResume.deleteJobResume.useMutation();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,15 +75,9 @@ export function JobResumesDataTable({
     )
       return;
 
-    startDeletingTransition(async () => {
-      try {
-        await deleteJobResume(jobResume.id);
-        toast.success('Job resume deleted successfully');
-        router.refresh();
-      } catch (error) {
-        toast.error(error?.toString() || 'Something went wrong');
-      }
-    });
+    await deleteJobResume.mutateAsync(jobResume.id);
+    toast.success('Job resume deleted successfully');
+    router.refresh();
   };
 
   return (
@@ -151,12 +145,12 @@ export function JobResumesDataTable({
                   <TableCell className="flex gap-2">
                     <Button
                       variant={'outline-destructive'}
-                      disabled={isDeleting}
+                      disabled={deleteJobResume.isPending}
                       onClick={() => handleDeleteJobResume(jobResume)}
                     >
                       <Trash className="h-4 w-4" />
                     </Button>
-                    <Button asChild variant={'outline'} disabled={isDeleting}>
+                    <Button asChild variant={'outline'} disabled={deleteJobResume.isPending}>
                       <Link href={`/resumes/${jobResume.id}/builder`}>
                         <Edit className="h-4 w-4" />
                       </Link>

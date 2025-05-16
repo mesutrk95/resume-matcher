@@ -2,140 +2,24 @@
 
 import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
-import { JobResume } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-import { DEFAULT_RESUME_CONTENT } from './constants';
 import { ResumeAnalyzeResults, ResumeContent, ResumeItemScoreAnalyze } from '@/types/resume';
-import {
-  AIRequestModel,
-  ChatHistoryItem,
-  ContentItem,
-  getAIServiceManager,
-  getChatResponse,
-} from '@/lib/ai';
+import { AIRequestModel, ChatHistoryItem, getAIServiceManager, getChatResponse } from '@/lib/ai';
 import { JobAnalyzeResult } from '@/types/job';
-import { chunkArray, hashString, wait } from '@/lib/utils';
-import { analyzeJobByAI } from './job';
 import { convertResumeObjectToString, resumeExperiencesToString } from '@/lib/resume-content';
-import {
-  BadRequestException,
-  ForbiddenException,
-  InvalidInputException,
-  NotFoundException,
-} from '@/lib/exceptions';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@/lib/exceptions';
 import {
   ExperienceImprovements,
   ExperienceImprovementsSchema,
   KeywordMatchingResult,
   KeywordMatchingResultSchema,
-  ProjectMatchingResult,
-  ProjectMatchingResultSchema,
-  ProjectVariationScores,
-  ProjectVariationScoresSchema,
-  resumeContentSchema,
   ResumeScore,
   ResumeScoreSchema,
   SkillAlignment,
   SkillAlignmentSchema,
 } from '@/schemas/resume';
-import z from 'zod';
 import { withErrorHandling } from '@/lib/with-error-handling';
 import { Reasons } from '@/domains/reasons';
-import { JobResumeStatusFlags } from '@/types/job-resume';
-
-export const getJobResumeStatusFlags = withErrorHandling(
-  async (id: string): Promise<JobResumeStatusFlags> => {
-    const user = await currentUser();
-    const jobResume = await db.jobResume.findUnique({
-      where: { id, userId: user?.id },
-      select: {
-        statusFlags: true,
-      },
-    });
-    return jobResume?.statusFlags as JobResumeStatusFlags;
-  },
-);
-
-export const createJobResume = withErrorHandling(
-  async (careerProfileId?: string, jobId?: string, forceRevalidate?: boolean) => {
-    const user = await currentUser();
-    if (!user?.emailVerified) {
-      throw new ForbiddenException('Email not verified.');
-    }
-    const careerProfile = careerProfileId
-      ? await db.careerProfile.findUnique({
-          where: { id: careerProfileId, userId: user?.id },
-        })
-      : null;
-    const job =
-      jobId &&
-      (await db.job.findUnique({
-        where: { id: jobId, userId: user?.id },
-      }));
-
-    let name = job ? `${job?.title} at ${job?.companyName}` : null;
-    if (!name) name = careerProfile ? careerProfile.name : null;
-
-    const resumeJob = await db.jobResume.create({
-      data: {
-        jobId: jobId,
-        baseCareerProfileId: careerProfileId,
-        content: (careerProfile?.content as ResumeContent) || DEFAULT_RESUME_CONTENT,
-        name: name || 'Blank',
-        userId: user?.id!,
-      },
-    });
-
-    forceRevalidate && revalidatePath('/resumes');
-
-    return resumeJob;
-  },
-);
-
-export const updateJobResume = withErrorHandling(
-  async (resume: Partial<JobResume>, forceRevalidate = false) => {
-    const user = await currentUser();
-    if (!user?.emailVerified) {
-      throw new ForbiddenException('Email not verified.');
-    }
-    const content = resume.content as ResumeContent;
-
-    const updateJobSchema = z.object({
-      content: resumeContentSchema.optional(),
-      templateId: z.string().optional(),
-      name: z.string().optional(),
-    });
-
-    const validationResult = updateJobSchema.safeParse({
-      ...resume,
-      content,
-      ...(resume.templateId && { templateId: resume.templateId }),
-    });
-
-    if (validationResult.error) {
-      throw new InvalidInputException(
-        'Error in validating the resume data.',
-        validationResult.error.errors,
-      );
-    }
-
-    await db.jobResume.update({
-      where: {
-        id: resume.id,
-        userId: user?.id,
-      },
-      data: {
-        ...validationResult.data,
-        updatedAt: new Date(),
-      },
-    });
-
-    // revalidatePath("/resumes");
-    forceRevalidate && revalidatePath(`/resumes/${resume.id}/builder`);
-
-    // return updatedJob;
-  },
-);
 
 export const connectJobResumeToJob = withErrorHandling(
   async (jobResumeId: string, jobId: string) => {
@@ -170,20 +54,6 @@ export const connectJobResumeToJob = withErrorHandling(
     return updatedJob;
   },
 );
-
-export const deleteJobResume = withErrorHandling(async (id: string) => {
-  const user = await currentUser();
-  if (!user?.emailVerified) {
-    throw new ForbiddenException('Email not verified.');
-  }
-  await db.jobResume.delete({
-    where: { id },
-  });
-
-  revalidatePath('/resumes');
-  revalidatePath(`/resumes/${id}/builder`);
-  return true;
-});
 
 export const analyzeResumeScore = withErrorHandling(
   async (formData: FormData, jobResumeId: string) => {

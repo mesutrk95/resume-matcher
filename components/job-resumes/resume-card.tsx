@@ -5,12 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Edit, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { useTransition } from 'react';
-import { deleteJobResume } from '@/actions/job-resume';
 import { Card, CardContent } from '../ui/card';
 import { confirmDialog } from '../shared/confirm-dialog';
 import Moment from 'react-moment';
 import Link from 'next/link';
+import { trpc } from '@/providers/trpc';
 
 interface JobResumeCardProps {
   jobResume: JobResume;
@@ -18,7 +17,7 @@ interface JobResumeCardProps {
 
 export function JobResumeCard({ jobResume }: JobResumeCardProps) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const deleteJobResume = trpc.jobResume.deleteJobResume.useMutation();
 
   const handleDelete = async () => {
     if (
@@ -29,15 +28,10 @@ export function JobResumeCard({ jobResume }: JobResumeCardProps) {
       }))
     )
       return;
-    startTransition(async () => {
-      try {
-        await deleteJobResume(jobResume.id);
-        toast.success('Resume deleted successfully');
-        router.refresh();
-      } catch (error) {
-        toast.error('Something went wrong');
-      }
-    });
+
+    await deleteJobResume.mutateAsync(jobResume.id);
+    toast.success('Resume deleted successfully');
+    router.refresh();
   };
 
   return (
@@ -61,7 +55,7 @@ export function JobResumeCard({ jobResume }: JobResumeCardProps) {
           <Button
             variant="outline-destructive"
             size="sm"
-            disabled={isPending}
+            disabled={deleteJobResume.isPending}
             onClick={handleDelete}
           >
             <Trash className="mr-2 h-4 w-4" />

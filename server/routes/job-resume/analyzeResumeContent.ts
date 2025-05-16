@@ -3,7 +3,7 @@ import { Reasons } from '@/domains/reasons';
 import { AIRequestModel, ContentItem, getAIServiceManager } from '@/lib/ai';
 import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
-import { chunkArray, hashString } from '@/lib/utils';
+import { chunkArray, hashString, wait } from '@/lib/utils';
 import {
   ProjectMatchingResult,
   ProjectMatchingResultSchema,
@@ -19,11 +19,11 @@ import { JobResume } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-const analyzeResumeExperiencesScores = async (
+const analyzeResumeItemScoreAndKeywords = async (
   analyzeResults: JobAnalyzeResult,
   content: string,
 ) => {
-  const systemInstructions = `I'm trying to find the best matches of my experiences based on the job description to ensure they pass ATS easily. For each variation or project item, you need to:
+  const systemInstructions = `I'm trying to find the best matches of my experiences based on the job description to ensure they pass ATS easily. For each variation, project item or summary, you need to:
   
   1. Assign a score (on a scale from 0 to 1) that it reflects the relevance of the item to the JD.
   2. Provide a list of exact words or phrases (matched_keywords) that appear in both the item and the job description. Only include words or phrases that are an exact match.
@@ -113,6 +113,37 @@ async function updateJobResumeStatusAndStreamEvent(
   };
 }
 
+function getAllResumeItems(jobResume: JobResume, outdated?: boolean) {
+  const resumeAnalyzeResults = jobResume.analyzeResults as ResumeAnalyzeResults;
+  const oldItemsScore = resumeAnalyzeResults.itemsScore;
+
+  const resume = jobResume?.content as ResumeContent;
+  let variations = resume.experiences
+    .map(experience => experience.items.map(i => i.variations).flat())
+    .flat()
+    .filter(v => !!v.content)
+    .map(v => ({ ...v, hash: hashString(v.content!, 8) }));
+
+  // concat with project items
+  variations = [
+    ...variations,
+    ...resume.projects.map(p => ({
+      enabled: p.enabled,
+      id: p.id,
+      content: p.content,
+      hash: hashString(p.content || '', 8),
+    })),
+    ...resume.summaries.map(p => ({
+      enabled: p.enabled,
+      id: p.id,
+      content: p.content,
+      hash: hashString(p.content || '', 8),
+    })),
+  ];
+
+  return outdated ? variations.filter(v => oldItemsScore?.[v.id]?.hash !== v.hash) : variations;
+}
+
 export default protectedProcedure
   .input(z.object({ jobResumeId: z.string(), forceCheckAll: z.boolean().optional() }))
   .mutation(async function* ({ input, ctx }) {
@@ -141,53 +172,9 @@ export default protectedProcedure
         message: 'The resume has not been attached to a job!',
       });
 
+    // check if job is not analyzed
+    let jobAnalyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
     try {
-      yield await updateJobResumeStatusAndStreamEvent(jobResume, {
-        analyzingExperiences: 'pending',
-        analyzingProjects: 'pending',
-        analyzingSummaries: 'pending',
-      });
-
-      const resumeAnalyzeResults = jobResume.analyzeResults as ResumeAnalyzeResults;
-      const oldItemsScore = resumeAnalyzeResults.itemsScore;
-
-      const resume = jobResume?.content as ResumeContent;
-      let variations = resume.experiences
-        .map(experience => experience.items.map(i => i.variations).flat())
-        .flat()
-        .filter(v => !!v.content)
-        .map(v => ({ ...v, hash: hashString(v.content!, 8) }));
-
-      // concat with project items
-      variations = [
-        ...variations,
-        ...resume.projects.map(p => ({
-          enabled: p.enabled,
-          id: p.id,
-          content: p.content,
-          hash: hashString(p.content || '', 8),
-        })),
-      ];
-
-      variations = forceCheckAll
-        ? variations
-        : variations.filter(v => oldItemsScore?.[v.id]?.hash !== v.hash);
-
-      if (variations.length === 0) {
-        yield await updateJobResumeStatusAndStreamEvent(
-          jobResume,
-          {
-            analyzingExperiences: 'done',
-            analyzingProjects: 'done',
-            analyzingSummaries: 'done',
-          },
-          jobResume.analyzeResults as ResumeAnalyzeResults,
-        );
-
-        return resumeAnalyzeResults;
-      }
-
-      let jobAnalyzeResults = jobResume.job.analyzeResults as JobAnalyzeResult;
       if (!jobAnalyzeResults?.summary) {
         const jobAnalyzeResult = await analyzeJobByAI(jobResume.job.id);
         if (!jobAnalyzeResult.data) {
@@ -195,17 +182,48 @@ export default protectedProcedure
         }
         jobAnalyzeResults = jobAnalyzeResult.data.analyzeResults!;
       }
+    } catch (ex) {
+      await updateJobResumeStatusFlags(jobResume, {
+        analyzingExperiences: 'error',
+        analyzingProjects: 'error',
+        analyzingSummaries: 'error',
+      });
+      return;
+    }
 
-      const chunks = chunkArray(variations, 10);
+    try {
+      yield await updateJobResumeStatusAndStreamEvent(jobResume, {
+        analyzingExperiences: 'pending',
+        analyzingProjects: 'pending',
+        analyzingSummaries: 'pending',
+      });
+
+      const allVariations = getAllResumeItems(jobResume, !forceCheckAll);
+
+      if (allVariations.length === 0) {
+        // await wait(20000);
+        yield await updateJobResumeStatusAndStreamEvent(
+          jobResume,
+          {
+            analyzingExperiences: 'done',
+            analyzingProjects: 'done',
+            analyzingSummaries: 'error',
+          },
+          jobResume.analyzeResults as ResumeAnalyzeResults,
+        );
+        return;
+      }
+
+      const chunks = chunkArray(allVariations, 10);
 
       let processedChunks = 0;
       const results = [];
 
       // Process chunks sequentially to show progress
       for (const chunk of chunks) {
-        const chunkResult = await analyzeResumeExperiencesScores(
+        const chunkResult = await analyzeResumeItemScoreAndKeywords(
           jobAnalyzeResults,
-          chunk.map(v => `${v.id} - ${v.content}`).join('\n'),
+          chunk.map(v => `${v.id} - ${v.content}`).join('\n\n'),
         );
 
         results.push(chunkResult);
@@ -219,12 +237,13 @@ export default protectedProcedure
           ...acc,
           [curr.id]: {
             ...curr,
-            hash: hashString(variations.find(v => curr.id === v.id)?.content || '', 8),
+            hash: hashString(allVariations.find(v => curr.id === v.id)?.content || '', 8),
           },
         }),
         {},
       );
 
+      const resumeAnalyzeResults = jobResume.analyzeResults as ResumeAnalyzeResults;
       const newAnalyzeResults = {
         ...resumeAnalyzeResults,
         itemsScore: {
@@ -245,6 +264,7 @@ export default protectedProcedure
         {
           analyzingExperiences: 'done',
           analyzingProjects: 'done',
+          analyzingSummaries: 'done',
         },
         newAnalyzeResults as ResumeAnalyzeResults,
       );

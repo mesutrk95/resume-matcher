@@ -1,5 +1,6 @@
 'use server';
 
+import { DEFAULT_RESUME_CONTENT } from '@/actions/constants';
 import { db } from '@/lib/db';
 import { NotFoundException } from '@/lib/exceptions';
 import { JobResumeStatusFlags } from '@/types/job-resume';
@@ -36,4 +37,33 @@ export const updateJobResumeStatusFlags = async (
   });
 
   return newFlags;
+};
+
+export const createJobResume = async (userId: string, careerProfileId?: string, jobId?: string) => {
+  const careerProfile = careerProfileId
+    ? await db.careerProfile.findUnique({
+        where: { id: careerProfileId, userId },
+      })
+    : null;
+
+  const job =
+    jobId &&
+    (await db.job.findUnique({
+      where: { id: jobId, userId },
+    }));
+
+  let name = job ? `${job?.title} at ${job?.companyName}` : null;
+  if (!name) name = careerProfile ? careerProfile.name : null;
+
+  const resumeJob = await db.jobResume.create({
+    data: {
+      jobId: jobId,
+      baseCareerProfileId: careerProfileId,
+      content: careerProfile?.content || DEFAULT_RESUME_CONTENT,
+      name: name || 'Blank',
+      userId,
+    },
+  });
+
+  return resumeJob;
 };
