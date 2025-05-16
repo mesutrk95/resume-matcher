@@ -45,15 +45,20 @@ export function TRPCProvider({ children }: { children: ReactNode }) {
                 },
                 error(err) {
                   // Handle errors here (like an interceptor)
-                  console.error('tRPC error intercepted:', err);
+                  console.error('tRPC error intercepted:', err.data?.code, err);
 
                   // // You can transform the error
                   // if (err.data?.code === 'NOT_FOUND') {
                   //   console.log('Resource not found error handled');
                   //   // Maybe navigate to a 404 page or show a specific notification
                   // }
-
-                  err?.message && toast.error(err?.message);
+                  if (err.data?.code === 'BAD_REQUEST' && err.data?.zodError) {
+                    // This is a Zod validation error
+                    console.log('Input validation error:', err.data.zodError);
+                    toast.error('Data is invalid.');
+                  } else {
+                    err?.message && toast.error(err?.message);
+                  }
                   // You can also modify the error before passing it to the caller
                   // or even swallow it completely if you don't call observer.error
 

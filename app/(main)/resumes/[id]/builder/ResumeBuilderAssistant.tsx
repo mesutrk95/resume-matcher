@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronsDown,
   LucideCheckCircle,
+  LucideCircleAlert,
   LucideCircleSlash,
   LucideLoaderCircle,
 } from 'lucide-react';
@@ -28,6 +29,7 @@ interface ResumeBuilderAssistantProps {
   jobResume: JobResume;
   initialStatusFlags?: JobResumeStatusFlags;
   onVisibilityChange?: (isVisible: boolean) => void;
+  onAnalyzeResumeScore?: (clearCache: boolean) => void;
 }
 
 function AnalyzingItem({
@@ -35,11 +37,13 @@ function AnalyzingItem({
   text,
   loadingText,
   noneText,
+  errorText,
 }: {
   state?: JobResumeStatusFlagState;
   text: string;
   loadingText: string;
   noneText: string;
+  errorText: string;
 }) {
   const loading = state === 'pending';
   if (!state || state === 'none') {
@@ -47,6 +51,14 @@ function AnalyzingItem({
       <div className={clsx('flex space-x-1 items-center', loading ? '' : 'text-slate-600')}>
         <LucideCircleSlash className="" size={14} />
         <span>{noneText}</span>
+      </div>
+    );
+  }
+  if (state === 'error') {
+    return (
+      <div className={clsx('flex space-x-1 items-center', loading ? '' : 'text-red-500')}>
+        <LucideCircleAlert className="" size={14} />
+        <span>{errorText}</span>
       </div>
     );
   }
@@ -88,7 +100,7 @@ function getLastStatusFlags(
 export const ResumeBuilderAssistant = forwardRef<
   ResumeBuilderAssistantRef,
   ResumeBuilderAssistantProps
->(({ onVisibilityChange, initialStatusFlags, jobResume }, ref) => {
+>(({ onVisibilityChange, initialStatusFlags, jobResume, onAnalyzeResumeScore }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isNoticed, setIsNoticied] = useState(true);
   // const [statusFlags, setStatusFlags] = useState(initialStatusFlags);
@@ -179,14 +191,14 @@ export const ResumeBuilderAssistant = forwardRef<
   });
 
   const statusFlags = getLastStatusFlags(remoteStatusFlags, localStatusFlags);
-  const analying = isAnalyzing(statusFlags);
+  const analyzing = isAnalyzing(statusFlags);
 
   useEffect(() => {
-    if (analying) {
+    if (analyzing) {
       setIsVisible(true);
       setIsNoticied(true);
     }
-  }, [analying]);
+  }, [analyzing]);
 
   // Expose methods to parent through ref
   useImperativeHandle(ref, () => ({
@@ -198,8 +210,8 @@ export const ResumeBuilderAssistant = forwardRef<
   }));
 
   return (
-    <div className="sticky bottom-0 left-0 w-full ">
-      <div className="px-5">
+    <div className="sticky bottom-0 left-0 w-full pt-2">
+      <div className="px-3">
         <div
           className={clsx(
             'flex justify-start ease-in-out',
@@ -234,7 +246,7 @@ export const ResumeBuilderAssistant = forwardRef<
                     width={30}
                     height={30}
                     icon="/iconly/Ai19-white.json"
-                    autoPlay={analying}
+                    autoPlay={analyzing}
                   />
                   {/* <BadgeHelp className="h-10 w-10" />
                   <span
@@ -280,25 +292,34 @@ export const ResumeBuilderAssistant = forwardRef<
                           loadingText="Analyzing Experiences ..."
                           text="Experiences Analyzed."
                           noneText="Experiences are not analyzed yet."
+                          errorText="Experiences analyze failed."
                         />
                         <AnalyzingItem
                           state={statusFlags?.analyzingProjects}
                           loadingText="Analyzing Projects ..."
                           text="Projects Analyzed."
                           noneText="Projects are not analyzed yet."
+                          errorText="Projects analyze failed."
                         />
                         <AnalyzingItem
                           state={statusFlags?.analyzingSummaries}
                           loadingText="Analyzing Summaries ..."
                           text="Summaries Analyzed."
                           noneText="Summaries are not analyzed yet."
+                          errorText="Summaries analyze failed."
                         />
                       </div>
-                      {/* <div className=" ">
-                        <Button variant="warning" size={'sm'}>
-                          Analyze Now
-                        </Button> 
-                      </div> */}
+                      {!analyzing && (
+                        <div className=" ">
+                          <Button
+                            variant="default"
+                            size={'sm'}
+                            onClick={() => onAnalyzeResumeScore?.(false)}
+                          >
+                            Analyze Again
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>

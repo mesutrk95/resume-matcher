@@ -1,12 +1,11 @@
 'use client';
 
 import React from 'react';
-import { updateJobResume } from '@/actions/job-resume';
 import { ResumeBuilderProvider } from '@/components/job-resumes/resume-builder/context/ResumeBuilderProvider';
 import { ResumeAnalyzeResults, ResumeContent } from '@/types/resume';
 import { Job, JobResume, ResumeTemplate } from '@prisma/client';
 import { JobMatcher } from './JobMatcher';
-import { runAction } from '@/app/_utils/runAction';
+import { trpc } from '@/providers/trpc';
 
 export const ResumeBuilderPage = ({
   jobResume,
@@ -15,29 +14,14 @@ export const ResumeBuilderPage = ({
   jobResume: JobResume & { job: Job | null };
   resumeTemplate: ResumeTemplate | null;
 }) => {
+  const updateJobResume = trpc.jobResume.updateJobResume.useMutation();
+
   const handleUpdate = async (resume: ResumeContent) => {
-    await runAction(
-      updateJobResume,
-      {
-        successMessage: 'Resume updated successfully',
-      },
-      {
-        id: jobResume.id,
-        content: resume,
-      },
-    );
+    updateJobResume.mutateAsync({ jobResumeId: jobResume.id, content: resume });
   };
+
   const handleResumeTemplateUpdated = async (template: ResumeTemplate) => {
-    await runAction(
-      updateJobResume,
-      {
-        successMessage: 'Resume template updated successfully',
-      },
-      {
-        id: jobResume.id,
-        templateId: template.id,
-      },
-    );
+    updateJobResume.mutateAsync({ jobResumeId: jobResume.id, templateId: template.id });
   };
 
   return (

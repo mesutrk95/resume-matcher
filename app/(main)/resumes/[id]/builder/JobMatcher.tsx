@@ -238,7 +238,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                     </TabsTrigger>
                   </TabsList>
                 </div>
-                <div className="mt-2 pb-2 px-[1px]">
+                <div className="mt-2 pb-0 px-[1px] h-full">
                   <TabsContent className="p-0 mt-0 " value="builder">
                     <ResumeBuilder />
                   </TabsContent>
@@ -256,6 +256,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                     ref={assistantRef}
                     jobResume={jobResume}
                     initialStatusFlags={jobResume.statusFlags as JobResumeStatusFlags}
+                    onAnalyzeResumeScore={handleAnalyzeResume}
                   />
                 </div>
               </Tabs>

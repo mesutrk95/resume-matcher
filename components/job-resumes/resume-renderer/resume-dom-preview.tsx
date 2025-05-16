@@ -134,7 +134,7 @@ export const ResumeDomPreview = ({
                 'data-id': itemData?.id,
                 id: 'doc-' + itemData?.id,
               })}
-              {...props}
+              // {...props}
             >
               {element.elements &&
                 renderNode(
@@ -167,7 +167,7 @@ export const ResumeDomPreview = ({
                 'data-id': itemData?.id,
                 id: 'doc-' + itemData?.id,
               })}
-              {...props}
+              // {...props}
             >
               {textData}
             </ElementType>

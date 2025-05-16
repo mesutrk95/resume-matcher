@@ -1,11 +1,24 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import { TrpcContextOptions } from './context';
+import { ZodError } from 'zod';
 
 /**
  * Initialization of tRPC backend
  * Should be done only once per backend!
  */
-const t = initTRPC.context<TrpcContextOptions>().create();
+const t = initTRPC.context<TrpcContextOptions>().create({
+  errorFormatter(opts) {
+    const { shape, error } = opts;
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.code === 'BAD_REQUEST' && error.cause instanceof ZodError ? error.cause : null,
+      },
+    };
+  },
+});
 
 // Middleware for protected routes
 const protectedProcedure = t.procedure.use(({ ctx, next }) => {

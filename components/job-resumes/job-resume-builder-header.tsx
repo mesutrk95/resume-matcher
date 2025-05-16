@@ -14,8 +14,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { JobResume } from '@prisma/client';
-import { updateJobResume } from '@/actions/job-resume';
 import { toast } from 'sonner';
+import { trpc } from '@/providers/trpc';
+import { useRouter } from 'next/navigation';
 
 interface ResumeHeaderProps {
   jobResume: JobResume;
@@ -26,28 +27,29 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({ jobResume, onUpdate 
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [newName, setNewName] = useState<string>(jobResume.name || '');
-  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
-  const handleRename = () => {
+  const updateJobResume = trpc.jobResume.updateJobResume.useMutation();
+
+  const handleRename = async () => {
     if (!newName?.trim()) return;
+    try {
+      await updateJobResume.mutateAsync({
+        jobResumeId: jobResume.id,
+        name: newName,
+      });
 
-    startTransition(async () => {
-      try {
-        const result = await updateJobResume({ id: jobResume.id, name: newName }, true);
+      setIsDialogOpen(false);
 
-        if (result.success) {
-          setIsDialogOpen(false);
-
-          // Call the optional onUpdate callback to refresh parent data if needed
-          if (onUpdate) {
-            onUpdate();
-          }
-          toast.success('Resume name updated successfully!');
-        } else toast.error('Failed to update resume name. Please try again.');
-      } catch (error) {
-        toast.error('Failed to update resume name. Please try again.');
+      // Call the optional onUpdate callback to refresh parent data if needed
+      if (onUpdate) {
+        onUpdate();
       }
-    });
+      toast.success('Resume name updated successfully!');
+      router.refresh();
+    } catch (error) {
+      toast.error('Failed to update resume name. Please try again.');
+    }
   };
 
   // Reset name when dialog opens to current value
@@ -60,7 +62,7 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({ jobResume, onUpdate 
 
   // Handle Enter key press
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !isPending && newName?.trim()) {
+    if (e.key === 'Enter' && !updateJobResume.isPending && newName?.trim()) {
       handleRename();
     }
   };
@@ -99,7 +101,6 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({ jobResume, onUpdate 
           </DialogHeader>
           <div className="py-4">
             <Input
-              id="resume-name"
               value={newName}
               onChange={e => setNewName(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -109,8 +110,12 @@ export const ResumeHeader: React.FC<ResumeHeaderProps> = ({ jobResume, onUpdate 
             />
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleRename} disabled={isPending || !newName?.trim()}>
-              {isPending ? 'Saving...' : 'Save changes'}
+            <Button
+              type="submit"
+              onClick={handleRename}
+              disabled={updateJobResume.isPending || !newName?.trim()}
+            >
+              {updateJobResume.isPending ? 'Saving...' : 'Save changes'}
             </Button>
           </DialogFooter>
         </DialogContent>
