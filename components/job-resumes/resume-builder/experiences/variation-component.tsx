@@ -1,20 +1,22 @@
 'use client';
 
-import { useState } from 'react';
-import type { Variation } from '@/types/resume';
+import { useEffect, useState } from 'react';
+import type { ExperienceItem, Variation } from '@/types/resume';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Edit, GripVertical, Save, Trash2, X } from 'lucide-react';
+import { Edit, GripVertical, Inspect, Save, Trash2, X } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { VariationMatchingScores } from './variation-matching-scores';
 import { HighlightElement } from '@/components/highlight-element';
+import { countWords, shakeElement } from '../utils';
 
 type VariationComponentProps = {
   experienceId: string;
   itemId: string;
   variation: Variation;
+  experienceItem: ExperienceItem;
   onUpdate: (variation: Variation) => void;
   onDelete: (variationId: string) => void;
 };
@@ -23,6 +25,7 @@ export function VariationComponent({
   experienceId,
   itemId,
   variation,
+  experienceItem,
   onUpdate,
   onDelete,
 }: VariationComponentProps) {
@@ -66,10 +69,16 @@ export function VariationComponent({
     });
   };
 
+  // useEffect(() => {
+  //   const totalWords = countWords(variation.content);
+  //   const warn = totalWords < 8 || totalWords > 40;
+  //   console.log(variation.content, totalWords, warn);
+  // }, [variation.content]);
+
   return (
     <HighlightElement id={variation.id}>
-      <div ref={setNodeRef} style={style} className={`z-10`}>
-        <div className={`p-2 border-b`}>
+      <div ref={setNodeRef} style={style} className={`z-2 group relative`}>
+        <div className={`p-2 border-b group-hover:bg-slate-50`}>
           <div className="flex items-start">
             <div
               className=" mr-2 mt-1 cursor-grab text-muted-foreground hover:text-foreground"
@@ -84,9 +93,10 @@ export function VariationComponent({
               checked={variation.enabled}
               onCheckedChange={handleToggleEnabled}
               className="mr-2 mt-1"
+              disabled={!experienceItem.enabled}
             />
 
-            <div className="flex-1">
+            <div className="flex-1 ">
               <div className="flex justify-between items-start gap-2">
                 <div className="flex-1">
                   {isEditing ? (
@@ -103,7 +113,9 @@ export function VariationComponent({
                       rows={5}
                     />
                   ) : (
-                    <div className={`text-sm ${!variation.enabled ? 'text-muted-foreground' : ''}`}>
+                    <div
+                      className={`text-sm ${variation.enabled && experienceItem.enabled ? '' : 'text-muted-foreground'}`}
+                    >
                       <p>{variation.content}</p>
 
                       <VariationMatchingScores variation={variation} />
@@ -128,11 +140,24 @@ export function VariationComponent({
                       </Button>
                     </>
                   ) : (
-                    <div className="flex flex-col">
-                      <Button variant="ghost" size="sm" onClick={handleEdit}>
+                    <div className="bg-white/80 self-start gap-2 p-3 group-hover:flex hidden absolute top-0 right-0 rounded-2xl">
+                      {variation.enabled && experienceItem.enabled && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => shakeElement('doc-' + variation.id)}
+                        >
+                          <Inspect className="h-4 w-4" />
+                        </Button>
+                      )}
+                      <Button variant="outline" size="sm" onClick={handleEdit}>
                         <Edit className="h-3 w-3" />
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => onDelete(variation.id)}>
+                      <Button
+                        variant="outline-destructive"
+                        size="sm"
+                        onClick={() => onDelete(variation.id)}
+                      >
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>

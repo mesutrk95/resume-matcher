@@ -6,6 +6,7 @@ import React, { ReactNode, useState } from 'react';
 import { trpc } from '.';
 import { observable } from '@trpc/server/observable';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 function getBaseUrl() {
   if (typeof window !== 'undefined')
@@ -22,6 +23,7 @@ function getBaseUrl() {
 }
 
 export function TRPCProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
@@ -32,7 +34,7 @@ export function TRPCProvider({ children }: { children: ReactNode }) {
         runtime => {
           return ({ op, next }) => {
             // You can do something before the request is sent
-            console.log(`Making request to ${op.path} with input:`, op.input);
+            // console.log(`Making request to ${op.path} with input:`, op.input);
 
             // Process the response or catch errors
             return observable(observer => {
@@ -48,14 +50,12 @@ export function TRPCProvider({ children }: { children: ReactNode }) {
                   console.error('tRPC error intercepted:', err.data?.code, err);
 
                   // // You can transform the error
-                  // if (err.data?.code === 'NOT_FOUND') {
-                  //   console.log('Resource not found error handled');
-                  //   // Maybe navigate to a 404 page or show a specific notification
-                  // }
-                  if (err.data?.code === 'BAD_REQUEST' && err.data?.zodError) {
+                  if (err.data?.code === 'UNAUTHORIZED') {
+                    return router.refresh();
+                  } else if (err.data?.code === 'BAD_REQUEST' && err.data?.zodError) {
                     // This is a Zod validation error
                     console.log('Input validation error:', err.data.zodError);
-                    toast.error('Data is invalid.');
+                    toast.error('Action failed, data validation failed.');
                   } else {
                     err?.message && toast.error(err?.message);
                   }

@@ -348,6 +348,7 @@ export function ItemComponent({ experienceId, item, onUpdate, onDelete }: ItemCo
                 >
                   <VariationList
                     experienceId={experienceId}
+                    experienceItem={item}
                     itemId={item.id}
                     variations={item.variations}
                     onUpdate={handleUpdateVariation}

@@ -191,6 +191,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
             </div>
           </div>
         </div>
+
         <div className=" container">
           <div className="grid grid-cols-1">
             {!jobResume.jobId && (
@@ -238,7 +239,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                     </TabsTrigger>
                   </TabsList>
                 </div>
-                <div className="mt-2 pb-0 px-[1px] h-full">
+                <div className="mt-2 pb-15 px-[1px] h-full">
                   <TabsContent className="p-0 mt-0 " value="builder">
                     <ResumeBuilder />
                   </TabsContent>
@@ -252,12 +253,6 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                       resumeTemplate={resumeTemplate?.content as ResumeTemplateContent}
                     />
                   </TabsContent>
-                  <ResumeBuilderAssistant
-                    ref={assistantRef}
-                    jobResume={jobResume}
-                    initialStatusFlags={jobResume.statusFlags as JobResumeStatusFlags}
-                    onAnalyzeResumeScore={handleAnalyzeResume}
-                  />
                 </div>
               </Tabs>
             </div>
@@ -333,6 +328,18 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                   </Card>
                 </Tabs>
               </div>
+            </div>
+          </div>
+        </div>
+        <div className="fixed bottom-0 left-0 w-full pt-2">
+          <div className="container grid grid-cols-12">
+            <div className=" col-span-7">
+              <ResumeBuilderAssistant
+                ref={assistantRef}
+                jobResume={jobResume}
+                initialStatusFlags={jobResume.statusFlags as JobResumeStatusFlags}
+                onAnalyzeResumeScore={handleAnalyzeResume}
+              />
             </div>
           </div>
         </div>

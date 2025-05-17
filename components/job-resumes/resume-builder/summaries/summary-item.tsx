@@ -63,8 +63,8 @@ export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
 
   return (
     <HighlightElement id={summary.id}>
-      <div ref={setNodeRef} style={style} className="border rounded-md p-4">
-        <div className="flex items-start">
+      <div ref={setNodeRef} style={style} className="border rounded-md p-4 relative ">
+        <div className="flex items-start group">
           <div
             className="p-1 mr-2 cursor-grab text-muted-foreground hover:text-foreground"
             {...attributes}
@@ -129,7 +129,7 @@ export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
                 </Button>
               </>
             ) : (
-              <>
+              <div className="bg-white/80 self-start gap-2 p-3 group-hover:flex hidden absolute top-0 right-0 rounded-2xl">
                 <Button variant="outline" size="sm" onClick={handleEdit}>
                   <Edit className="h-4 w-4" />
                 </Button>
@@ -140,7 +140,7 @@ export function SummaryItem({ summary, onUpdate, onDelete }: SummaryItemProps) {
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
-              </>
+              </div>
             )}
           </div>
         </div>
