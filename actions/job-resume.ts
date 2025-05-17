@@ -30,7 +30,7 @@ export const analyzeResumeScore = withErrorHandling(
 
     const user = await currentUser();
     const jobResume = await db.jobResume.findUnique({
-      where: { id: jobResumeId, userId: user?.id },
+      where: { id: jobResumeId, userId: user.id },
       include: {
         job: true,
       },
@@ -323,7 +323,7 @@ export const askCustomQuestionFromAI = withErrorHandling(
     const jobResume = await db.jobResume.findUnique({
       where: {
         id: jobResumeId,
-        userId: user?.id,
+        userId: user.id,
       },
       select: {
         job: {

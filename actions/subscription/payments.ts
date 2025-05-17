@@ -26,7 +26,7 @@ export const getPaymentHistory = async (): Promise<{
 }> => {
   try {
     const user = await currentUser();
-    if (!user?.id) {
+    if (user.id) {
       throw new BadRequestException('User not authenticated');
     }
 

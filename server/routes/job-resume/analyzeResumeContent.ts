@@ -152,7 +152,7 @@ export default protectedProcedure
     const jobResume = await db.jobResume.findUnique({
       where: {
         id: jobResumeId,
-        userId: user?.id,
+        userId: user.id,
       },
       include: {
         job: true,

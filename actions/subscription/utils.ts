@@ -78,7 +78,6 @@ export const getCustomerById = async (customerId: string) => {
 
 export async function checkTrialEligibility() {
   const user = await currentUser();
-  if (!user?.id) return false;
 
   const subscriptionCount = await db.subscription.count({
     where: {

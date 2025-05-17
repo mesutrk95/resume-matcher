@@ -45,7 +45,7 @@ export default async function CareerProfilesPage({ searchParams }: CareerProfile
   // Get templates with filters, pagination and sorting
   const careerProfiles = await db.careerProfile.findMany({
     where: {
-      userId: user?.id,
+      userId: user.id,
       ...searchFilter,
     },
     orderBy: {
@@ -58,7 +58,7 @@ export default async function CareerProfilesPage({ searchParams }: CareerProfile
   // Get total count for pagination
   const total = await db.careerProfile.count({
     where: {
-      userId: user?.id,
+      userId: user.id,
       ...searchFilter,
     },
   });

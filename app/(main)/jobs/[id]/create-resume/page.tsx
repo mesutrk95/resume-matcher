@@ -24,12 +24,11 @@ export default async function CreateResumePage({ params }: CreateResumePageProps
   const user = await currentUser();
   const paramsResult = await params;
   const { id: jobId } = paramsResult;
-
   // Fetch the job
   const job = await db.job.findUnique({
     where: {
       id: jobId,
-      userId: user?.id,
+      userId: user.id,
     },
   });
 
@@ -40,7 +39,7 @@ export default async function CreateResumePage({ params }: CreateResumePageProps
   // Fetch all resume careerProfiles for the user
   const careerProfiles = await db.careerProfile.findMany({
     where: {
-      userId: user?.id,
+      userId: user.id,
       draft: false,
     },
   });
@@ -48,7 +47,7 @@ export default async function CreateResumePage({ params }: CreateResumePageProps
   // don't wait directly create resume of the career profile!
   if (careerProfiles.length === 1) {
     try {
-      const jobResumeResult = await createJobResume(user?.id!, careerProfiles[0].id, job.id);
+      const jobResumeResult = await createJobResume(user.id, careerProfiles[0].id, job.id);
       return redirect('/resumes/' + jobResumeResult?.id + '/builder');
     } catch (error: any) {
       return <>{error?.message || 'Ops! Something went wrong!'} </>;

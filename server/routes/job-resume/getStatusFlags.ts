@@ -4,5 +4,5 @@ import { z } from 'zod';
 
 export default protectedProcedure.input(z.string()).query(async ({ input, ctx }) => {
   const { user } = ctx.session;
-  return getJobResumeStatusFlags(input, user?.id);
+  return getJobResumeStatusFlags(input, user.id);
 });

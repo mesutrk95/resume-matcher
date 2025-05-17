@@ -21,7 +21,7 @@ export default async function middleware(req: NextRequest) {
 
     const { nextUrl } = req;
     const session = await auth();
-    const isLoggedIn = !!session;
+    const isLoggedIn = !!session?.user;
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     if (isApiAuthRoute) {

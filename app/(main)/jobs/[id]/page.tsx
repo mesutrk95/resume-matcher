@@ -22,7 +22,7 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
   const job = await db.job.findUnique({
     where: {
       id: paramsResult.id,
-      userId: user?.id,
+      userId: user.id,
     },
   });
 
@@ -34,7 +34,7 @@ export default async function JobResumesPage({ params }: JobResumesPageProps) {
   const resumeJobs = await db.jobResume.findMany({
     where: {
       jobId: paramsResult.id,
-      userId: user?.id,
+      userId: user.id,
     },
     // include: {
     //   resumeTemplate: true,

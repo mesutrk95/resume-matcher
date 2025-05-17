@@ -37,7 +37,7 @@ export default async function ResumesPage({ searchParams }: ResumesPageProps) {
   // Get templates with filters, pagination and sorting
   const jobResumes = await db.jobResume.findMany({
     where: {
-      userId: user?.id,
+      userId: user.id,
       ...searchFilter,
     },
     select: {
@@ -65,7 +65,7 @@ export default async function ResumesPage({ searchParams }: ResumesPageProps) {
   // Get total count for pagination
   const totalJobResume = await db.jobResume.count({
     where: {
-      userId: user?.id,
+      userId: user.id,
       ...searchFilter,
     },
   });

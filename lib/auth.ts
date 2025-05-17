@@ -4,7 +4,8 @@ import { UserRole } from '@prisma/client';
 export const currentUser = async () => {
   const session = await auth();
 
-  return session?.user;
+  if (!session?.user) throw 'user not found!';
+  return session.user;
 };
 
 export const currentRole = async () => {

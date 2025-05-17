@@ -26,7 +26,7 @@ export default protectedProcedure
     await db.jobResume.update({
       where: {
         id: jobResumeId,
-        userId: user?.id,
+        userId: user.id,
       },
       data: {
         ...otherProps,

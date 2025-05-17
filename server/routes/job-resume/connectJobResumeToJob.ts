@@ -21,7 +21,7 @@ export default protectedProcedure
     const { jobId, jobResumeId } = input;
 
     const job = await db.job.findUnique({
-      where: { id: jobId, userId: user?.id },
+      where: { id: jobId, userId: user.id },
       select: { id: true },
     });
 

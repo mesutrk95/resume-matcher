@@ -38,7 +38,7 @@ export const createJob = withErrorHandling(
         url: values.url,
         postedAt: values.postedAt && new Date(values.postedAt),
         createdAt: new Date(),
-        userId: user?.id!,
+        userId: user.id,
       },
     });
 
@@ -89,7 +89,7 @@ export const getJobs = withErrorHandling(
     // Get jobs with filters, pagination and sorting
     const jobs = await db.job.findMany({
       where: {
-        userId: user?.id,
+        userId: user.id,
         ...searchFilter,
         ...statusFilter,
       },
@@ -113,7 +113,7 @@ export const getJobs = withErrorHandling(
     // Get total count for pagination
     const totalJobs = await db.job.count({
       where: {
-        userId: user?.id,
+        userId: user.id,
         ...searchFilter,
         ...statusFilter,
       },
@@ -138,7 +138,7 @@ export const updateJob = withErrorHandling(
     const updatedJob = await db.job.update({
       where: {
         id: values.id,
-        userId: user?.id,
+        userId: user.id,
       },
       data: {
         title: values.title,
@@ -166,7 +166,7 @@ export const updateJobStatus = withErrorHandling(async (jobId: string, newStatus
   await db.job.update({
     where: {
       id: jobId,
-      userId: user?.id,
+      userId: user.id,
     },
     data: {
       status: newStatus,
@@ -187,7 +187,7 @@ export const deleteJob = withErrorHandling(async (id: string): Promise<boolean> 
   const job = await db.job.findUnique({
     where: {
       id,
-      userId: user?.id,
+      userId: user.id,
     },
   });
 
@@ -262,7 +262,7 @@ export const analyzeJobByAI = withErrorHandling(async (jobId: string) => {
   const job = await db.job.findUnique({
     where: {
       id: jobId,
-      userId: user?.id,
+      userId: user.id,
     },
   });
 

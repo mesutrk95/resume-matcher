@@ -22,7 +22,7 @@ export const deleteCareerProfile = withErrorHandling(async (id: string) => {
     throw new ForbiddenException('Email not verified.');
   }
   await db.careerProfile.delete({
-    where: { id, userId: user?.id },
+    where: { id, userId: user.id },
   });
   revalidatePath('/career-profiles');
   return true;
@@ -39,7 +39,7 @@ export const updateCareerProfile = withErrorHandling(
     const updatedJob = await db.careerProfile.update({
       where: {
         id: careerProfile.id,
-        userId: user?.id,
+        userId: user.id,
       },
       data: {
         name: careerProfile.name,
@@ -66,7 +66,7 @@ export const updateCareerProfileContent = withErrorHandling(
     const updatedJob = await db.careerProfile.update({
       where: {
         id: careerProfileId,
-        userId: user?.id,
+        userId: user.id,
       },
       data: {
         content: resumeContent || DEFAULT_RESUME_CONTENT,
@@ -93,7 +93,7 @@ export const createCareerProfile = withErrorHandling(
         name: name || 'No name Career Profile',
         description: description,
         content: resumeContent || DEFAULT_RESUME_CONTENT,
-        userId: user?.id!,
+        userId: user.id,
         draft: false,
       },
     });
@@ -189,7 +189,7 @@ export const createCareerProfileFromResumePdf = withErrorHandling(async (formDat
     data: {
       name: processedContent.titles?.[0]?.content || 'No name career profile',
       content: processedContent,
-      userId: user?.id!,
+      userId: user.id,
     },
   });
 
@@ -204,7 +204,7 @@ export const getCareerProfile = withErrorHandling(async (id: string) => {
   const rt = await db.careerProfile.findUnique({
     where: {
       id,
-      userId: user?.id!,
+      userId: user.id,
     },
   });
 

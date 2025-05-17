@@ -24,7 +24,7 @@ export default async function EditResumePage({ params }: EditResumePageProps) {
   const jobResume = await db.jobResume.findUnique({
     where: {
       id: paramsResult.id,
-      userId: user?.id,
+      userId: user.id,
     },
     include: {
       job: true,
