@@ -19,7 +19,7 @@ export function countWords(text?: string): number {
 
   for (let i = 0; i < text.length; i++) {
     // Check if current character is a word separator (whitespace or punctuation)
-    const isSeparator = /[\s,\-\.;:!?()[\]{}'"\/\\]/.test(text[i]);
+    const isSeparator = /[\s,\-;:!?()[\]{}'"\\/]/.test(text[i]);
 
     // If we transition from separator to non-separator, we've found a new word
     if (!isSeparator && !isInWord) {
