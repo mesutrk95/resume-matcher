@@ -118,7 +118,7 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
   // const [rightPanelActiveTab, setRightPanelActiveTab] = useState<'jd' | 'preview'>('preview');
   return (
     <div>
-      <div defaultValue="builder" className="flex flex-col   justify-stretch">
+      <div defaultValue="builder" className="flex flex-col justify-stretch ">
         {/* toolbar */}
         <div className=" relative z-1 flex items-center pt-2 ">
           <div className="container">
@@ -192,6 +192,18 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
           </div>
         </div>
 
+        <div className="fixed bottom-0 left-0 w-full pt-2 z-3 pe-1">
+          <div className="container grid grid-cols-12">
+            <div className="col-span-7">
+              <ResumeBuilderAssistant
+                ref={assistantRef}
+                jobResume={jobResume}
+                initialStatusFlags={jobResume.statusFlags as JobResumeStatusFlags}
+                onAnalyzeResumeScore={handleAnalyzeResume}
+              />
+            </div>
+          </div>
+        </div>
         <div className=" container">
           <div className="grid grid-cols-1">
             {!jobResume.jobId && (
@@ -328,18 +340,6 @@ export const JobMatcher = ({ jobResume, job }: { jobResume: JobResume; job: Job 
                   </Card>
                 </Tabs>
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="fixed bottom-0 left-0 w-full pt-2">
-          <div className="container grid grid-cols-12">
-            <div className=" col-span-7">
-              <ResumeBuilderAssistant
-                ref={assistantRef}
-                jobResume={jobResume}
-                initialStatusFlags={jobResume.statusFlags as JobResumeStatusFlags}
-                onAnalyzeResumeScore={handleAnalyzeResume}
-              />
             </div>
           </div>
         </div>

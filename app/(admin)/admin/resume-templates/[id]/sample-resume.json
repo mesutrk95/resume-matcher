@@ -10,7 +10,7 @@
       "items": [
         {
           "id": "expitem_abc123",
-          "description": "",
+          "description": "Test title",
           "enabled": true,
           "variations": [
             {

@@ -11,6 +11,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { VariationMatchingScores } from './variation-matching-scores';
 import { HighlightElement } from '@/components/highlight-element';
 import { countWords, shakeElement } from '../utils';
+import { SimpleTooltip } from '@/components/ui/simple-tooltip';
 
 type VariationComponentProps = {
   experienceId: string;
@@ -142,24 +143,30 @@ export function VariationComponent({
                   ) : (
                     <div className="bg-white/80 self-start gap-2 p-3 group-hover:flex hidden absolute top-0 right-0 rounded-2xl">
                       {variation.enabled && experienceItem.enabled && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => shakeElement('doc-' + variation.id)}
-                        >
-                          <Inspect className="h-4 w-4" />
-                        </Button>
+                        <SimpleTooltip text="Find in Resume">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => shakeElement('doc-' + variation.id)}
+                          >
+                            <Inspect className="h-4 w-4" />
+                          </Button>
+                        </SimpleTooltip>
                       )}
-                      <Button variant="outline" size="sm" onClick={handleEdit}>
-                        <Edit className="h-3 w-3" />
-                      </Button>
-                      <Button
-                        variant="outline-destructive"
-                        size="sm"
-                        onClick={() => onDelete(variation.id)}
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
+                      <SimpleTooltip text="Edit Item">
+                        <Button variant="outline" size="sm" onClick={handleEdit}>
+                          <Edit className="h-3 w-3" />
+                        </Button>
+                      </SimpleTooltip>
+                      <SimpleTooltip text="Delete Item">
+                        <Button
+                          variant="outline-destructive"
+                          size="sm"
+                          onClick={() => onDelete(variation.id)}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </SimpleTooltip>
                     </div>
                   )}
                 </div>

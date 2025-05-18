@@ -1,6 +1,7 @@
 'use client';
 
 import { HighlightProvider } from '@/components/highlight-element/context';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { ResumeAnalyzeResults, ResumeContent } from '@/types/resume';
 import { ResumeTemplate } from '@prisma/client';
 // import { migrateResumeContent } from '@/utils/resume-migration';
@@ -75,7 +76,9 @@ export const ResumeBuilderProvider = ({
         setResumeAnalyzeResults,
       }}
     >
-      <HighlightProvider>{children}</HighlightProvider>
+      <TooltipProvider>
+        <HighlightProvider>{children}</HighlightProvider>
+      </TooltipProvider>
     </ResumeBuilderContext.Provider>
   );
 };
