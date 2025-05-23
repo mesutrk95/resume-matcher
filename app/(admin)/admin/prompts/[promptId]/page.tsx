@@ -5,6 +5,7 @@ import { getAIPrompt } from '@/actions/admin/prompt/get';
 import { getAIPromptCategories } from '@/actions/admin/prompt/getCategories';
 import { EditPromptForm } from '@/app/(admin)/_components/edit-prompt-form';
 import { PromptExportButton } from '@/app/(admin)/_components/prompt-export-button';
+import { PromptPublishButton } from '@/app/(admin)/_components/prompt-publish-button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const metadata: Metadata = {
@@ -73,6 +74,12 @@ export default async function AdminEditPromptPage({
                 </TooltipTrigger>
                 <TooltipContent>Export Prompt</TooltipContent>
               </Tooltip>
+              <PromptPublishButton
+                promptKey={promptId}
+                promptName={promptDetails.name}
+                hasVariations={(promptDetails.variations?.length || 0) > 0}
+                currentStatus={promptDetails.status}
+              />
             </div>
           </div>
           <h1 className="text-2xl font-bold mt-2">Edit Prompt: {promptDetails.name}</h1>

@@ -57,23 +57,31 @@ export const deleteAIPromptVariation = withErrorHandling(
 
     // For permanent delete, verify the variation is in DRAFT status
     if (permanent) {
-      if (variation.status !== AIPromptVariationStatus.DRAFT) {
-        throw new ForbiddenException('Only variations in DRAFT status can be permanently deleted');
+      // Allow permanent deletion if the variation is DRAFT (initial permanent delete)
+      // OR if it's already DELETED (removing from deleted filter permanently)
+      if (
+        variation.status === AIPromptVariationStatus.DRAFT ||
+        variation.status === AIPromptVariationStatus.DELETED
+      ) {
+        // Permanently delete the variation and its requests
+        await db.aIRequest.deleteMany({
+          where: { variationId: id },
+        });
+
+        await db.aIPromptVariation.delete({
+          where: { id },
+        });
+
+        return {
+          success: true,
+          message: `Prompt variation permanently deleted`,
+        };
+      } else {
+        // If trying to permanently delete a variation that is not DRAFT and not already DELETED (e.g. ACTIVE)
+        throw new ForbiddenException(
+          'Permanent deletion is only allowed for DRAFT variations or items already in the deleted filter.',
+        );
       }
-
-      // Permanently delete the variation and its requests
-      await db.aIRequest.deleteMany({
-        where: { variationId: id },
-      });
-
-      await db.aIPromptVariation.delete({
-        where: { id },
-      });
-
-      return {
-        success: true,
-        message: `Prompt variation permanently deleted`,
-      };
     } else {
       // Soft delete by updating status to DELETED
       await db.aIPromptVariation.update({

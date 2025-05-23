@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getAIPromptVariation } from '@/actions/admin/prompt/variations/get';
 import { EditVariationForm } from '@/app/(admin)/_components/edit-variation-form';
+import { VariationStatusToggleButton } from '@/app/(admin)/_components/variation-status-toggle-button';
 
 export const metadata: Metadata = {
   title: 'Admin - Edit Variation',
@@ -53,7 +54,12 @@ export default async function AdminEditVariationPage({
           ← Back to Variations
         </Link>
         <h1 className="text-2xl font-bold mt-2">Edit Variation</h1>
-        <div className="text-sm text-gray-500">ID: {variationId}</div>
+        <div className="text-sm text-gray-500 mb-2">ID: {variationId}</div>
+        <VariationStatusToggleButton
+          variationId={variationDetails.id}
+          currentStatus={variationDetails.status}
+          variationName={`Variation (${variationDetails.id.substring(0, 8)}) for prompt "${variationDetails.prompt?.name || 'N/A'}"`}
+        />
       </div>
 
       <EditVariationForm variation={variationDetails} promptId={promptId} />

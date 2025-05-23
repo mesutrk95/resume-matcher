@@ -19,13 +19,18 @@ export function VariationDeleteButton({ variationId, status }: VariationDeleteBu
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const isDraft = status === AIPromptVariationStatus.DRAFT;
+  const isAlreadyDeleted = status === AIPromptVariationStatus.DELETED;
 
-  const handleDelete = async (permanent: boolean) => {
+  const handleDelete = async (permanentChoiceFromModal: boolean) => {
+    // If the item is already in DELETED status (viewing deleted filter),
+    // then this action should always be a permanent delete.
+    const shouldBePermanent = isAlreadyDeleted ? true : permanentChoiceFromModal;
+
     try {
       setIsDeleting(true);
       const result = await deleteAIPromptVariation({
         id: variationId,
-        permanent,
+        permanent: shouldBePermanent,
       });
 
       if (result.success && result.data) {
@@ -43,6 +48,17 @@ export function VariationDeleteButton({ variationId, status }: VariationDeleteBu
     }
   };
 
+  let modalDescription = `Are you sure you want to delete this variation?`;
+  if (isAlreadyDeleted) {
+    modalDescription = `Are you sure you want to permanently delete this variation? This action cannot be undone.`;
+  } else if (isDraft) {
+    modalDescription +=
+      ' Since this variation is in DRAFT status, you can choose to delete it permanently.';
+  } else {
+    modalDescription +=
+      ' This will mark the variation as deleted but not remove it from the database.';
+  }
+
   return (
     <>
       <Button
@@ -59,13 +75,11 @@ export function VariationDeleteButton({ variationId, status }: VariationDeleteBu
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDelete}
-        title="Delete Variation"
-        description={`Are you sure you want to delete this variation? ${
-          isDraft
-            ? 'Since this variation is in DRAFT status, you can choose to delete it permanently.'
-            : 'This will mark the variation as deleted but not remove it from the database.'
-        }`}
-        isDraft={isDraft}
+        title={isAlreadyDeleted ? 'Permanently Delete Variation' : 'Delete Variation'}
+        description={modalDescription}
+        // Show checkbox only if it's a DRAFT item and not already in the DELETED filter view.
+        // If it's in DELETED view, permanent is implied for the delete action.
+        isDraft={isDraft && !isAlreadyDeleted}
       />
     </>
   );

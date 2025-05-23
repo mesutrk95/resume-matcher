@@ -46,24 +46,30 @@ export const deleteAIPrompt = withErrorHandling(async (data: DeletePromptInput) 
 
   // For permanent delete, verify the prompt is in DRAFT status
   if (permanent) {
-    if (prompt.status !== AIPromptStatus.DRAFT) {
-      throw new ForbiddenException('Only prompts in DRAFT status can be permanently deleted');
+    // Allow permanent deletion if the prompt is DRAFT (initial permanent delete)
+    // OR if it's already DELETED (removing from deleted filter permanently)
+    if (prompt.status === AIPromptStatus.DRAFT || prompt.status === AIPromptStatus.DELETED) {
+      // Permanently delete the prompt and its variations
+      await db.aIPromptVariation.deleteMany({
+        where: { promptId: key },
+      });
+
+      await db.aIPrompt.delete({
+        where: { key },
+      });
+
+      return {
+        success: true,
+        message: `Prompt "${key}" permanently deleted`,
+      };
+    } else {
+      // If trying to permanently delete a prompt that is not DRAFT and not already DELETED (e.g. ACTIVE)
+      throw new ForbiddenException(
+        'Permanent deletion is only allowed for DRAFT prompts or items already in the deleted filter.',
+      );
     }
-
-    // Permanently delete the prompt and its variations
-    await db.aIPromptVariation.deleteMany({
-      where: { promptId: key },
-    });
-
-    await db.aIPrompt.delete({
-      where: { key },
-    });
-
-    return {
-      success: true,
-      message: `Prompt "${key}" permanently deleted`,
-    };
   } else {
+    // Soft delete: mark as DELETED
     await db.aIPrompt.update({
       where: { key },
       data: { status: AIPromptStatus.DELETED },

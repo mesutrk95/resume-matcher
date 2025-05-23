@@ -4,9 +4,10 @@ import { getAllAIPrompts } from '@/actions/admin/prompt/getAll';
 import { getAIPromptCategories } from '@/actions/admin/prompt/getCategories';
 import { AIPromptStatus } from '@prisma/client';
 import { PromptDeleteButton } from '@/app/(admin)/_components/prompt-delete-button';
+import { PromptRestoreButton } from '@/app/(admin)/_components/prompt-restore-button'; // Added
 import { PromptExportButton } from '@/app/(admin)/_components/prompt-export-button';
 import { PromptImportButton } from '@/app/(admin)/_components/prompt-import-button';
-import { Pencil, Layers } from 'lucide-react';
+import { Pencil, Layers, Undo2, Trash2 } from 'lucide-react'; // Added Undo2, Trash2 for clarity if needed
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const metadata: Metadata = {
@@ -200,48 +201,79 @@ export default async function AdminPromptsPage({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2 items-center">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Link
-                              href={`/admin/prompts/${prompt.key}`}
-                              className="text-blue-600 hover:text-blue-800"
-                            >
-                              <Pencil size={18} />
-                            </Link>
-                          </TooltipTrigger>
-                          <TooltipContent>Edit Prompt</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Link
-                              href={`/admin/prompts/${prompt.key}/variations`}
-                              className="text-green-600 hover:text-green-800"
-                            >
-                              <Layers size={18} />
-                            </Link>
-                          </TooltipTrigger>
-                          <TooltipContent>View Variations</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div>
-                              <PromptExportButton promptKey={prompt.key} />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>Export Prompt</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div>
-                              <PromptDeleteButton
-                                promptKey={prompt.key}
-                                promptName={prompt.name}
-                                status={prompt.status}
-                              />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>Delete Prompt</TooltipContent>
-                        </Tooltip>
+                        {status === AIPromptStatus.DELETED ? (
+                          <>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <PromptRestoreButton
+                                    promptKey={prompt.key}
+                                    promptName={prompt.name}
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>Restore Prompt (to DRAFT)</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  {/* This button will now trigger permanent delete for DELETED items */}
+                                  <PromptDeleteButton
+                                    promptKey={prompt.key}
+                                    promptName={prompt.name}
+                                    status={prompt.status} // Pass DELETED status
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>Permanently Delete Prompt</TooltipContent>
+                            </Tooltip>
+                          </>
+                        ) : (
+                          <>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Link
+                                  href={`/admin/prompts/${prompt.key}`}
+                                  className="text-blue-600 hover:text-blue-800"
+                                >
+                                  <Pencil size={18} />
+                                </Link>
+                              </TooltipTrigger>
+                              <TooltipContent>Edit Prompt</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Link
+                                  href={`/admin/prompts/${prompt.key}/variations`}
+                                  className="text-green-600 hover:text-green-800"
+                                >
+                                  <Layers size={18} />
+                                </Link>
+                              </TooltipTrigger>
+                              <TooltipContent>View Variations</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <PromptExportButton promptKey={prompt.key} />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>Export Prompt</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <PromptDeleteButton
+                                    promptKey={prompt.key}
+                                    promptName={prompt.name}
+                                    status={prompt.status}
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>Delete Prompt</TooltipContent>
+                            </Tooltip>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>

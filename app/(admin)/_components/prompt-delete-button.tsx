@@ -20,18 +20,23 @@ export function PromptDeleteButton({ promptKey, promptName, status }: PromptDele
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const isDraft = status === AIPromptStatus.DRAFT;
+  const isAlreadyDeleted = status === AIPromptStatus.DELETED;
 
-  const handleDelete = async (permanent: boolean) => {
+  const handleDelete = async (permanentChoiceFromModal: boolean) => {
+    // If the item is already in DELETED status (viewing deleted filter),
+    // then this action should always be a permanent delete.
+    const shouldBePermanent = isAlreadyDeleted ? true : permanentChoiceFromModal;
+
     try {
       setIsDeleting(true);
 
       const result = await runAction(
         deleteAIPrompt({
           key: promptKey,
-          permanent,
+          permanent: shouldBePermanent,
         }),
         {
-          successMessage: permanent
+          successMessage: shouldBePermanent
             ? `Prompt "${promptName}" permanently deleted`
             : `Prompt "${promptName}" marked as deleted`,
           errorMessage: 'Failed to delete prompt',
@@ -48,6 +53,17 @@ export function PromptDeleteButton({ promptKey, promptName, status }: PromptDele
       setIsDeleting(false);
     }
   };
+
+  let modalDescription = `Are you sure you want to delete the prompt "${promptName}"?`;
+  if (isAlreadyDeleted) {
+    modalDescription = `Are you sure you want to permanently delete the prompt "${promptName}"? This action cannot be undone.`;
+  } else if (isDraft) {
+    modalDescription +=
+      ' Since this prompt is in DRAFT status, you can choose to delete it permanently.';
+  } else {
+    modalDescription +=
+      ' This will mark the prompt as deleted but not remove it from the database.';
+  }
 
   return (
     <>
@@ -66,13 +82,11 @@ export function PromptDeleteButton({ promptKey, promptName, status }: PromptDele
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleDelete}
-        title="Delete Prompt"
-        description={`Are you sure you want to delete the prompt "${promptName}"? ${
-          isDraft
-            ? 'Since this prompt is in DRAFT status, you can choose to delete it permanently.'
-            : 'This will mark the prompt as deleted but not remove it from the database.'
-        }`}
-        isDraft={isDraft}
+        title={isAlreadyDeleted ? 'Permanently Delete Prompt' : 'Delete Prompt'}
+        description={modalDescription}
+        // Show checkbox only if it's a DRAFT item and not already in the DELETED filter view.
+        // If it's in DELETED view, permanent is implied for the delete action.
+        isDraft={isDraft && !isAlreadyDeleted}
       />
     </>
   );

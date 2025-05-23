@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { getAllAIPromptVariations } from '@/actions/admin/prompt/variations/getAll';
 import { AIPromptVariationStatus } from '@prisma/client';
 import { VariationDeleteButton } from '@/app/(admin)/_components/variation-delete-button';
-import { Eye, Pencil } from 'lucide-react';
+import { VariationRestoreButton } from '@/app/(admin)/_components/variation-restore-button'; // Added
+import { Eye, Pencil, Undo2, Trash2 } from 'lucide-react'; // Added Undo2, Trash2
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const metadata: Metadata = {
@@ -184,28 +185,55 @@ export default async function AdminPromptVariationsPage({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2 items-center">
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Link
-                              href={`/admin/prompts/${promptId}/variations/${variation.id}`}
-                              className="text-green-600 hover:text-green-800"
-                            >
-                              <Pencil size={18} />
-                            </Link>
-                          </TooltipTrigger>
-                          <TooltipContent>Edit Variation</TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div>
-                              <VariationDeleteButton
-                                variationId={variation.id}
-                                status={variation.status}
-                              />
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>Delete Variation</TooltipContent>
-                        </Tooltip>
+                        {status === AIPromptVariationStatus.DELETED ? (
+                          <>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <VariationRestoreButton variationId={variation.id} />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>Restore Variation (to DRAFT)</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  {/* This button will now trigger permanent delete for DELETED items */}
+                                  <VariationDeleteButton
+                                    variationId={variation.id}
+                                    status={variation.status} // Pass DELETED status
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>Permanently Delete Variation</TooltipContent>
+                            </Tooltip>
+                          </>
+                        ) : (
+                          <>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Link
+                                  href={`/admin/prompts/${promptId}/variations/${variation.id}`}
+                                  className="text-green-600 hover:text-green-800"
+                                >
+                                  <Pencil size={18} />
+                                </Link>
+                              </TooltipTrigger>
+                              <TooltipContent>Edit Variation</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <VariationDeleteButton
+                                    variationId={variation.id}
+                                    status={variation.status}
+                                  />
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>Delete Variation</TooltipContent>
+                            </Tooltip>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
