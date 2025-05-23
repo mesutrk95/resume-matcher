@@ -122,7 +122,6 @@ export interface AIRequestModelV2<TResponse = any> {
   contents?: ContentItem[];
 
   chatHistory?: ChatHistoryItem[];
-  systemInstruction?: string;
 
   responseValidator?: Validator<TResponse>;
   zodSchema?: z.ZodType<TResponse>;
