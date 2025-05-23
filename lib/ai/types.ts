@@ -1,3 +1,4 @@
+import { Reason } from '@/domains/reasons';
 import * as z from 'zod';
 
 export interface AIRequestOptions {
@@ -111,6 +112,33 @@ export interface AIRequestModel<TResponse = any> {
   context?: {
     userId?: string;
     requestId?: string;
-    reason?: string;
+    reason?: Reason;
+  };
+}
+
+export interface AIRequestModelV2<TResponse = any> {
+  promptKey: Reason;
+  responseFormat: ResponseFormat;
+  contents?: ContentItem[];
+
+  chatHistory?: ChatHistoryItem[];
+  systemInstruction?: string;
+
+  responseValidator?: Validator<TResponse>;
+  zodSchema?: z.ZodType<TResponse>;
+
+  options?: {
+    maxTokens?: number;
+    temperature?: number;
+    topP?: number;
+    stopSequences?: string[];
+    timeout?: number;
+    provider?: string;
+    model?: string;
+  };
+
+  context?: {
+    userId?: string;
+    requestId?: string;
   };
 }

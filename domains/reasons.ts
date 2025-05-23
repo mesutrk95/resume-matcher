@@ -16,3 +16,5 @@ export const Reasons = {
   ANALYZE_JOB_KEYWORDS: 'ANALYZE_JOB_KEYWORDS',
   EXTRACT_JOB_DESCRIPTION: 'EXTRACT_JOB_DESCRIPTION',
 };
+
+export type Reason = (typeof Reasons)[keyof typeof Reasons];
