@@ -51,154 +51,72 @@ export class AIServiceManager {
    * Execute an AI request with retry capabilities and response validation
    */
   async executeRequest<T>(request: AIRequestModel<T>): Promise<T> {
-    // If zodSchema is provided, create a validator from it
-    if (request.zodSchema && !request.responseValidator) {
-      request.responseValidator = createJsonSchemaValidator(request.zodSchema);
-    }
-    const requestId = request.context?.requestId || (await getCurrentRequestId());
-    const userId = request.context?.userId || (await currentUser())?.id;
-    const reason = request.context?.reason || Reasons.GENERAL;
+    const { requestId, userId, reason, isChatRequest, responseValidator } =
+      await this._initializeRequestParameters(request);
+    request.responseValidator = responseValidator; // Ensure request object has the validator
+
+    await this.checkPreExecutionConditions(userId, request);
+
+    const client = this.getClientForRequest(request);
     let retryCount = 0;
     let lastError: Error | null = null;
+    let currentValidationErrors: string[] | undefined;
 
-    // Check if this is a chat request
-    const isChatRequest = request.chatHistory && request.chatHistory.length > 0;
-
-    // Check usage limits if user ID is provided
-    if (userId) {
-      // Check token usage limits
-      const canProceed = await this.usageService.checkIntent(userId);
-
-      if (!canProceed) {
-        throw new TokenLimitExceededError('Token usage limit exceeded');
-      }
-
-      // Check rate limits if rate limit service is provided
-      if (this.rateLimitService) {
-        // Select the client to get its ID
-        const client = this.getClientForRequest(request);
-        const clientId = client.getClientId();
-
-        const rateLimitCheck = await this.rateLimitService.checkRateLimit(userId, clientId);
-
-        if (!rateLimitCheck.allowed) {
-          throw new RateLimitExceededError(rateLimitCheck.reason || 'Rate limit exceeded');
-        }
-      }
-    }
-
-    // Select the client (currently just using default)
-    const client = this.getClientForRequest(request);
-
-    // Retry loop
     while (retryCount <= this.maxRetries) {
       try {
-        let response;
-        let validationErrors: string[] | undefined;
-        const startTime = performance.now();
-
-        if (isChatRequest) {
-          // Handle chat request
-          response = await client.generateChatContent(
-            request.chatHistory!,
-            request.systemInstruction,
-            request.options,
-          );
-        } else {
-          // Process the prompt for non-chat requests
-          const processedPrompt = await this.processPrompt(request, validationErrors);
-
-          // Call the AI service with the processed prompt
-          response = await client.generateContent(
-            processedPrompt,
-            request.systemInstruction,
-            request.contents,
-            request.options,
-          );
-        }
-
-        const endTime = performance.now();
-        const responseTime = Math.round(endTime - startTime);
-
-        if (userId) {
-          this.recordUsage(
-            userId,
-            reason,
-            client.getClientId(),
-            response.tokenUsage.promptTokens,
-            response.tokenUsage.completionTokens,
-            responseTime,
-          );
-
-          // Record request for rate limiting if rate limit service is provided
-          if (this.rateLimitService) {
-            const client = this.getClientForRequest(request);
-            await this.rateLimitService.recordRequest(userId, client.getClientId());
-          }
-        }
-
-        // Process the response
-        const processedResponse = await this.processResponse(response.content, request);
-
-        // Validate the response if a validator is provided
-        if (request.responseValidator) {
-          const validationResult = request.responseValidator(processedResponse);
-          if (!validationResult.valid) {
-            if (retryCount < this.maxRetries) {
-              Logger.warn(`Response validation failed on attempt ${retryCount + 1}`, {
-                requestId,
-                errors: validationResult.errors,
-              });
-              // Append validation errors to the prompt for the next attempt
-              validationErrors = validationResult.errors;
-              saveStuff('FailedValidationPrompts', {
-                prompt: request.prompt,
-                processedResponse,
-                response: response,
-                validationResult,
-                reason,
-                requestId,
-              }).catch(() => {});
-              retryCount++;
-              continue;
-            } else {
-              // On last retry, still return the response but log the validation failure
-              Logger.error(`Response validation failed after ${retryCount + 1} attempts`, {
-                requestId,
-                errors: validationResult.errors,
-              });
-              throw new ValidationError('Response validation failed', validationResult.errors);
-            }
-          }
-        }
-
-        saveStuff('FinishedPrompts', {
+        const attemptResult = await this.executeSingleAIAttempt(
           request,
+          client,
+          isChatRequest,
+          currentValidationErrors,
           requestId,
-          response,
-          processedResponse,
-        }).catch(() => {});
-        return processedResponse;
-      } catch (error) {
-        lastError = error instanceof Error ? error : new Error(String(error));
-        Logger.error(`AI request failed on attempt ${retryCount + 1}`, {
-          requestId,
-          error: lastError.message,
-          retryCount,
-        });
-        saveStuff('FailedPrompts', {
-          prompt: request.prompt,
-          error,
-          message: error instanceof Error ? error.toString() || error.message : undefined,
+          userId,
           reason,
-          requestId,
-        }).catch(() => {});
+        );
+
+        if (attemptResult.success) {
+          return attemptResult.processedResponse as T;
+        } else {
+          // Validation failed
+          currentValidationErrors = attemptResult.validationErrors;
+          if (retryCount >= this.maxRetries) {
+            // This was the last attempt, and it still failed validation
+            Logger.error(`Response validation failed after ${retryCount + 1} attempts`, {
+              requestId,
+              errors: currentValidationErrors,
+            });
+            throw new ValidationError(
+              'Response validation failed after max retries',
+              currentValidationErrors,
+            );
+          } else {
+            // Log warning and prepare for retry
+            Logger.warn(`Response validation failed on attempt ${retryCount + 1}`, {
+              requestId,
+              errors: currentValidationErrors,
+            });
+            retryCount++;
+            continue;
+          }
+        }
+      } catch (error) {
+        // Catch errors from _executeSingleAIAttempt (e.g., client errors)
+        // or the ValidationError thrown above if it's the last validation attempt.
+        if (error instanceof ValidationError) {
+          // If it's the validation error from the last attempt, rethrow
+          lastError = error;
+          throw error;
+        }
+        lastError = error instanceof Error ? error : new Error(String(error));
+        // Ensure lastError is not null before passing
+        if (lastError) {
+          this.logFailedAttempt(request, lastError, requestId, reason, retryCount);
+        }
 
         if (retryCount < this.maxRetries) {
           retryCount++;
           continue;
         } else {
-          // Record failed attempt in usage service
           if (userId) {
             this.recordFailedAttempt(userId, reason);
           }
@@ -210,10 +128,151 @@ export class AIServiceManager {
       }
     }
 
-    // This should never be reached due to the throw in the catch block
+    // This should never be reached due to the throw in the catch block or successful return
     throw new AIServiceError('Unexpected execution path in AI service', {
       cause: lastError,
     });
+  }
+
+  private async _initializeRequestParameters<T>(request: AIRequestModel<T>) {
+    // If zodSchema is provided, create a validator from it
+    let responseValidator = request.responseValidator;
+    if (request.zodSchema && !responseValidator) {
+      responseValidator = createJsonSchemaValidator(request.zodSchema);
+    }
+
+    const requestId = request.context?.requestId || (await getCurrentRequestId());
+    const userId = request.context?.userId || (await currentUser())?.id;
+    const reason = request.context?.reason || Reasons.GENERAL;
+    const isChatRequest = !!(request.chatHistory && request.chatHistory.length > 0);
+
+    return { requestId, userId, reason, isChatRequest, responseValidator };
+  }
+
+  private async checkPreExecutionConditions<T>(
+    userId: string | undefined,
+    request: AIRequestModel<T>,
+  ): Promise<void> {
+    if (userId) {
+      // Check token usage limits
+      const canProceed = await this.usageService.checkIntent(userId);
+      if (!canProceed) {
+        throw new TokenLimitExceededError('Token usage limit exceeded');
+      }
+
+      // Check rate limits if rate limit service is provided
+      if (this.rateLimitService) {
+        const client = this.getClientForRequest(request); // Assuming getClientForRequest is synchronous or cheap
+        const clientId = client.getClientId();
+        const rateLimitCheck = await this.rateLimitService.checkRateLimit(userId, clientId);
+        if (!rateLimitCheck.allowed) {
+          throw new RateLimitExceededError(rateLimitCheck.reason || 'Rate limit exceeded');
+        }
+      }
+    }
+  }
+
+  private logFailedAttempt<T>(
+    request: AIRequestModel<T>,
+    errorToLog: Error, // Changed parameter name for clarity
+    requestId: string,
+    reason: string,
+    retryCount: number,
+  ) {
+    Logger.error(`AI request failed on attempt ${retryCount + 1}`, {
+      requestId,
+      error: errorToLog.message,
+      retryCount,
+    });
+    saveStuff('FailedPrompts', {
+      prompt: request.prompt,
+      error: errorToLog,
+      message: errorToLog.toString(), // errorToLog is guaranteed to be an Error instance
+      reason,
+      requestId,
+    }).catch(() => {});
+  }
+
+  private async executeSingleAIAttempt<T>(
+    request: AIRequestModel<T>,
+    client: AIModelClient,
+    isChatRequest: boolean,
+    currentValidationErrors: string[] | undefined,
+    requestId: string,
+    userId: string | undefined,
+    reason: string,
+  ): Promise<{
+    success: boolean;
+    processedResponse?: T;
+    validationErrors?: string[];
+    error?: Error;
+  }> {
+    let responsePayload;
+    const startTime = performance.now();
+
+    if (isChatRequest) {
+      responsePayload = await client.generateChatContent(
+        request.chatHistory!,
+        request.systemInstruction,
+        request.options,
+      );
+    } else {
+      const processedPrompt = await this.processPrompt(request, currentValidationErrors);
+      responsePayload = await client.generateContent(
+        processedPrompt,
+        request.systemInstruction,
+        request.contents,
+        request.options,
+      );
+    }
+
+    const endTime = performance.now();
+    const responseTime = Math.round(endTime - startTime);
+
+    if (userId) {
+      this.recordUsage(
+        userId,
+        reason,
+        client.getClientId(),
+        responsePayload.tokenUsage.promptTokens,
+        responsePayload.tokenUsage.completionTokens,
+        responseTime,
+      );
+      if (this.rateLimitService) {
+        await this.rateLimitService.recordRequest(userId, client.getClientId());
+      }
+    }
+
+    const processedResponse = await this.processResponse(responsePayload.content, request);
+
+    if (request.responseValidator) {
+      const validationResult = request.responseValidator(processedResponse);
+      if (!validationResult.valid) {
+        Logger.warn(`Response validation failed on attempt`, {
+          // Retry count handled by caller
+          requestId,
+          errors: validationResult.errors,
+        });
+        saveStuff('FailedValidationPrompts', {
+          prompt: request.prompt,
+          processedResponse,
+          response: responsePayload,
+          validationResult,
+          reason,
+          requestId,
+        }).catch(() => {});
+        // Signal validation failure; the main loop decides if it's the absolute last attempt.
+        return { success: false, validationErrors: validationResult.errors };
+      }
+    }
+
+    saveStuff('FinishedPrompts', {
+      request,
+      requestId,
+      response: responsePayload,
+      processedResponse,
+    }).catch(() => {});
+    return { success: true, processedResponse };
   }
 
   /**
