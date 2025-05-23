@@ -277,8 +277,6 @@ enum AIPromptVariationStatus {
 enum AIRequestStatus {
   COMPLETED
   FAILED
-  RATE_LIMITED
-  PROCESSING
 }
 
 model AIPrompt {
