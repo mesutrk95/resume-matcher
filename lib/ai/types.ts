@@ -141,4 +141,8 @@ export interface AIRequestModelV2<TResponse = any> {
     userId?: string;
     requestId?: string;
   };
+
+  data?: {
+    [key: string]: any;
+  };
 }
