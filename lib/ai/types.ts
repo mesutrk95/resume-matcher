@@ -27,6 +27,7 @@ export type ContentType = 'text' | 'image' | 'pdf' | 'audio' | 'video';
 export interface AIModelClient {
   generateContent(
     prompt: string,
+    systemInstruction?: string,
     contents?: ContentItem[],
     options?: AIRequestOptions,
   ): Promise<AIResponse>;

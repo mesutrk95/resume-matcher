@@ -20,6 +20,7 @@ export class GeminiClient implements AIModelClient {
 
   async generateContent(
     prompt: string,
+    systemInstruction?: string,
     contents?: ContentItem[],
     options?: AIRequestOptions,
   ): Promise<AIResponse> {
@@ -36,6 +37,7 @@ export class GeminiClient implements AIModelClient {
       const model = this.client.getGenerativeModel({
         model: this.modelName,
         generationConfig,
+        systemInstruction,
       });
 
       // Transform content items to Gemini-specific format

@@ -111,6 +111,7 @@ export class AIServiceManager {
           // Call the AI service with the processed prompt
           response = await client.generateContent(
             processedPrompt,
+            request.systemInstruction,
             request.contents,
             request.options,
           );
