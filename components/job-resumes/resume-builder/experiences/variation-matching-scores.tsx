@@ -15,12 +15,12 @@ export const VariationMatchingScores = ({
 }) => {
   const { resumeAnalyzeResults } = useResumeBuilder();
   const score = resumeAnalyzeResults?.itemsScore?.[variation.id];
-  if (!score) return null;
 
   const contentHash = useMemo(() => {
     return variation.content && hashString(variation.content, 8);
   }, [variation.content]);
 
+  if (!score) return null;
   const isInvalid = contentHash !== score.hash;
   return (
     <>
